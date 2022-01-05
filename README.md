@@ -1,34 +1,175 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+Definitely NextJS has positioned itself as the best React framework at present.
 
-## Getting Started
+The purpose of this post is to show how easy and intuitive it can be to make a navbar in NextJS with the help of TailwindCSS. 
 
-First, run the development server:
+# Setup and configuration
 
-```bash
-npm run dev
-# or
-yarn dev
+So, the first thing that we need is install NextJS and tailwindcss. Information captured from [here](https://tailwindcss.com/docs/guides/nextjs)
+
+```shell
+$ npx create-next-app blog_demo
+$ npm install -D tailwindcss postcss autoprefixer
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+postcss is the tool that tailwind is going to use to purge unwanted css classes. This helps to drastically reduce the final css of the css
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+It also used `autoprefixer` tool so that our site can look good across multiple deivices
 
-## Learn More
+2. Install tailwindcss configuration files for tailwindcss.config.js as well as postcss.config.js
 
-To learn more about Next.js, take a look at the following resources:
+```shell
+npx tailwindcss init -p
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+`-p` witch specifies to generate `postcss.config.js`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+If we open postcss.config.js, then you can see two plugins specified: tailwindcss and autoprefixer
 
-## Deploy on Vercel
+3. Open your tailwind.config.js and paste the following content:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```js
+module.exports = {
+  content: [
+    "./pages/**/*.{js,ts,jsx,tsx}",
+    "./components/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+content entry specifies where to look for tailwindcss utilities classes. As obviously we'll be using them inside of js/jsx file, we specified those entries.
+
+4. There are two ways to incorporate to include the tailwindcss to your project.
+
+   - one by specifying into `globals.css`:
+
+     ```css
+     @tailwind base;
+     @tailwind components;
+     @tailwind utilities;
+     ```
+
+  -   Another by specifying in `pages/index.js`. I'll use this approach:
+
+      ```js
+      import 'tailwindcss/tailwind.css'
+      ```
+
+Before running, let's remove the boiler plate code from inside the `index.js`. Add only following statements inside the `index.js`:
+
+```js
+import 'tailwindcss/tailwind.css'
+
+export default function Home() {
+    return (
+        <h1 className="text-3xl font-bold underline items-center text-green-500">
+          Hello world!
+        </h1>
+      )
+}
+```
+
+We can rewrite this function as ***arrow function***, which looks more modern:
+
+```js
+import 'tailwindcss/tailwind.css'
+
+const Home = () => {
+    return (
+        <h1 className="text-3xl font-bold underline items-center text-green-500">
+          Hello world!
+        </h1>
+      )
+}
+
+export default Home;
+```
+
+> Don't forget to `export default` the function. Otherwise, you'll not be able to use it outside.
+
+5. Now, run your node server:
+
+   ```shell
+   $ npm run dev
+   ```
+
+   Open your browser to `http://localhost:3000/`. You should see following output:
+
+   ![image-20220104073053837](README.assets/image-20220104073053837.png)
+
+## Adding Website title and favicon
+
+`<Head>` tag allows you ti insert data into the HTML `head` tag. You can say it's analogous to HTML `<head>` tag. 
+
+Let's set the page title and the meta tags with its help:
+
+```js
+import Head from 'next/head';
+import 'tailwindcss/tailwind.css'
+
+const Home = () => {
+    return (
+        <div>
+            <Head>
+                <title>My Personal Blog</title>
+                <meta name='description' content='My personal Blog on modern software technologies' />
+                <link rel='icon' href='/favicon.ico' />
+            </Head>
+            <h1 className="text-3xl font-bold underline items-center text-green-500">
+                Hello world!
+            </h1>
+        </div>
+    )
+}
+
+export default Home;
+```
+
+## Building NextJS App
+
+Let's conclude our today's discussion by building our NextJS app as:
+
+```shell
+$ npm run build
+```
+
+You should find your package inside:
+
+`.next\server\`
+
+This is the package, where whole of our application is stored. Open `.next\server\pages\index.html` and you should see the same page as above.
+
+
+
+
+
+----
+
+
+
+
+
+# Creating Navbar component
+
+Let's create a new component to show responsive navigation bar. Let's name it as `Navbar`:
+
+*Remember that all our components will be stored inside `components` directory.*
+
+First let's create a new directory `components` in our root folder. Then create a new file `components/Navbar.jsx` and add following content:
+
+```jsx
+```
+
+
+
+Install react-icons:
+
+```shell
+$ npm install react-icons --save
+```
+
