@@ -1,35 +1,61 @@
-import Head from 'next/head';
-import { Element } from 'react-scroll';
+import fs from 'fs'
+import path from 'path'
+import matter from 'gray-matter'
+
+import Link from 'next/link'
+import Image from 'next/image'
+
 import 'tailwindcss/tailwind.css'
 
-import { Navbar } from '../components/Navbar';
+const Home = ({ posts }) => {
+  return (
+    <div className="mt-5">
+      {posts.map((post, index) => (
+        <Link href={'/blog/' + post.blog} passHref key={index}>
+          <div className="cursor-pointer card mb-3 pointer" style={{ maxWidth: '540px' }}>
+            <div className="row g-0">
+              <div className="col-md-8">
+                <div className="card-body">
+                  <h5 className="card-title">{post.frontMatter.title}</h5>
+                  <p className="card-text">{post.frontMatter.description}</p>
+                  <p className="card-text">
+                    <small className="text-muted">{post.frontMatter.date}</small>
+                  </p>
+                </div>
+              </div>
+              <div className="col-md-4 m-auto">
+                <Image
+                  src={post.frontMatter.thumbnailUrl}
+                  className="img-fluid mt-1 rounded-start"
+                  alt="thumbnail"
+                  width={500}
+                  height={400}
+                  objectFit="cover"
+                />
+              </div>
+            </div>
+          </div>
+        </Link>
+      ))}
+    </div>
+  )
+}
 
-const Home = () => {
-    return (
-        <div className='w-full'>
-        <div className=' mx-auto min-h-screen md:max-w-screen-lg xl:max-w-[1167px] shadow-sm '>
-            <Head>
-                <title>My Personal Blog</title>
-                <meta name='description' content='My personal Blog on modern software technologies' />
-                <link rel='icon' href='/favicon.ico' />
-            </Head>
-            <Navbar />
-            <h1 className="text-3xl font-bold underline items-center text-green-500">
-                Hello world!
-            </h1>
-            <Element name="Market" className="element min-h-[1500px]" >
-            test 1
-        </Element>
-
-        <Element name="Exchange" className="element min-h-[1500px]">
-            test 2
-        </Element>
-        <Element name="Tutorials" className="element min-h-[1500px]">
-            test 3
-        </Element>
-        </div>
-        </div>
-    )
+export const getStaticProps = async () => {
+  const files = fs.readdirSync(path.join('posts'))
+  const posts = files.map(filename => {
+    const markdownWithMeta = fs.readFileSync(path.join('posts', filename), 'utf-8')
+    const { data: frontMatter } = matter(markdownWithMeta)
+    return {
+      frontMatter,
+      blog: filename.split('.')[0]
+    }
+  })
+  return {
+    props: {
+      posts
+    }
+  }
 }
 
 export default Home;
