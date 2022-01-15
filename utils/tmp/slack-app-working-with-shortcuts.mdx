@@ -1,0 +1,185 @@
+---
+author: Sukhdeep Singh
+categories:
+- Python
+date: May, 21
+description: ''
+post_status: publish
+post_type: post
+tags:
+- Programming
+- Slack
+- app development
+- tutorials
+thumbnailUrl: https://pennow.tech/wp-content/uploads/2021/05/Slack-shortcut-title-image.svg
+title: 'Slack App with Python: Working with Shortcuts [Part-8]'
+---
+
+Shortcuts are a convenient way provided by _Slack_ to work with dialogues.
+These are easily accessible either through the message composer window or
+through the message context menu.
+
+* * *
+
+## Types of Shortcuts
+
+As discussed below, there are two types of shortcuts provided by Slack. One is
+a _message shortcut_ , and another is a _global shortcut_. Both can be
+configured from the same webpage. However, there use case is totally different
+from each other. Let's see how.
+
+### Message Shortcuts
+
+Message shortcuts are initiated from the context menu of a message. These are
+an ideal choice when you want to pass the corresponding message information to
+the shortcuts. An example could be to _raise an issue_ when you receive any
+kind of notification such as the website is down. [caption
+id="attachment_1549" align="aligncenter" width="726"]![Slack-Message-
+Shortcut](https://pennow.tech/wp-content/uploads/2021/05/Slack-Message-
+Shortcut.gif) Slack Message Shortcut[/caption]
+
+This article is part of: [Most effective way to understand the Slack app
+development](https://pennow.tech/essential-skills-to-develop-slack-apps/)
+series.
+
+### Global Shortcuts
+
+Global shortcuts are initiated from the button provided on your message
+composer window. As these are not initiated from any message, so they can be
+called independently of any context. This makes them an ideal choice when you
+want to start afresh. An example could be to create a new _web-monitoring
+job_. [caption id="attachment_1548" align="aligncenter" width="725"]![Slack-
+global-Shortcut](https://pennow.tech/wp-content/uploads/2021/05/Slack-global-
+Shortcut.gif) Slack global Shortcut[/caption] Let's summarize our use case
+once again:
+
+  * Global shortcuts to create a new _website monitoring job_
+  * Message shortcuts to raise an issue ticket when any _outing is notified_
+
+> I've divided this article into two parts. This article will revolve mostly
+> around configuration section of both types of messages, and implementation
+> of Global Shortcuts. In the next part of the discussion we'll touch upon
+> implementation of [Message shortcuts](https://pennow.tech/slack-app-working-
+> with-message-shortcuts/).
+
+## Slack Configuration For Shortcuts
+
+Shortcuts can be configured from the **Features > Interactive Components**
+page. For that, you need to enable **Interactivity** first, and then
+[configure the **Request URL**](https://pennow.tech/handling-slack-
+events/#Getting_a_web_URL). By default, slack sends every shortcut message to
+`/slack/events` endpoint. ![](https://pennow.tech/wp-
+content/uploads/2021/05/Configure-interactivity-1.png)
+
+### Create Slack shortcuts
+
+Now, on the same page, a little down, you'll notice a section: **Shortcut**.
+There you click on the button **Create New Shortcut**. [caption
+id="attachment_1542" align="aligncenter" width="771"]![slack-create-
+shortcut](https://pennow.tech/wp-content/uploads/2021/05/slack-create-
+shortcut.png) slack create shortcut[/caption]
+
+#### Global shortcut configuration
+
+On the next screen select **Global** , and click **Next**. You will be
+presented with a form to fill such as:
+
+  * **Name** : This will be shown when pressing the _shortcut_ button. Let's name it as `webmonitor create`
+  * **Short Description** : A short description of the shortcut
+  * **Callback ID** : identifier to distinguish your callback: `webmonitor-job-cb`
+
+[caption id="attachment_1543" align="aligncenter" width="570"]![Slack-global
+-shortcut creation](https://pennow.tech/wp-content/uploads/2021/05/Slack-
+global-shortcut-creation.png) Slack global shortcut creation[/caption] Click
+**Create** and it should be created and displayed under **shortcuts** on the
+same configuration page.
+
+#### Message shortcut configuration
+
+Same way, create a _message shortcut_. The only difference is that this time
+selects the **On message** after clicking **Create New Shortcut** button. Rest
+all the information will be same.
+
+  * **Name** : This will be shown when pressing the _shortcut_ button. Let's name it as `Raise Website Issue`
+  * **Short Description** : A short description of the shortcut
+  * **Callback ID** : identifier to distinguish your callback: `raise-website-issue-cb`
+
+Now, you should have two shortcuts created under your **Shortcuts** : [caption
+id="attachment_1544" align="aligncenter" width="778"]![slack-shortcuts-
+created](https://pennow.tech/wp-content/uploads/2021/05/slack-shortcuts-
+created.png) slack shortcuts created[/caption] Finally, click on the **Save
+Changes** button at the bottom, and you're done with the configuration. Now
+open your _Slack_ window, and both newly created shortcut should be visible in
+the _context menu_ as well as _message shortcuts_ However, clicking on either
+of them will only through an error: [caption id="attachment_1538"
+align="aligncenter" width="402"]![Empty-slack-shortcuts-not-
+implementation](https://pennow.tech/wp-content/uploads/2021/05/Empty-slack-
+shortcuts-not-implementation.png) slack shortcuts no implementation[/caption]
+It's obvious because they haven't been implemented yet. So let's start
+implementing it. Before proceeding further, let's revise how Slack's event
+system works, and how it can help us to handle any shortcut. [caption
+id="attachment_1541" align="aligncenter" width="1060"]![Shortcut Sequence
+Diagram](https://pennow.tech/wp-content/uploads/2021/05/Shortcut-Sequence-
+Diagram.png) Shortcut Sequence Diagram[/caption]
+
+## Implementing Shortcuts
+
+Shortcuts use `shortcut()` method to listen for any shortcut event. This
+method expects `callback id` which we provided while configuring our
+shortcuts.
+
+### Global Shortcuts
+
+With this information in hand, let's implement our _global_ shortcut:
+
+    
+    
+    @app.shortcut("webmonitor-job-cb")
+    def webmonitor_shortcut(ack, payload, client):
+        ack()
+    
+        client.views_open(
+            trigger_id=payload["trigger_id"],
+            view= job_create_view()
+        )
+    
+
+Code for this is almost similar to what we discussed during our [modal view
+implementation](https://pennow.tech/slack-app-open-modal-
+views/#Implementing_job_creation_view) for website monitoring job creation. I
+reused that code here with a single line change at the top:
+`@app.shortcut()`as we're listening for shortcut events now. As we discussed
+before that _modal views_ require [a `trigger_id` to open a
+view](https://pennow.tech/slack-app-open-modal-views/#Defining_a_view) and we
+also know that every shortcut contains a `trigger_id`.So that makes it
+possible to open a view whenever a shortcut is pressed. **Now our shortcut is
+ready. Yeah, that's it** ✨ 😊 Run your program, click on _shortcuts_ in your
+message composer box and type your shortcut name which we specified while
+configuring. [caption id="attachment_1539" align="aligncenter"
+width="865"]![Global-shortcut-display](https://pennow.tech/wp-
+content/uploads/2021/05/Global-shortcut-display.png) Global shortcut
+display[/caption] Clicking on it'll open the _website monitoring job creation
+form_. If you fill in the wrong URL, it'll give you an error. On providing a
+valid URL, it'll provide you with the result of whether the website is up and
+working or any issue with that. If it reports any issue, then let's raise a
+ticket. For this, we'll use _message shortcuts_ because of their inherent
+feature to provide context information. However, we'll discuss that part in
+the [coming article](https://pennow.tech/slack-app-working-with-message-
+shortcuts/).  Source Code:
+[handling_global_shortcuts.py](https://github.com/pennowtech/slack-app-python-
+slack-bolt/blob/master/handling_global_shortcuts.py)
+
+## Summary
+
+We've to stop our discussion here. I don't want to make it a heavy article to
+grasp. That's why divided to break into two smaller parts. As said at the very
+beginning of our journey, we'll finish our journey in small steps. Our whole
+motto is to discuss and learn without putting extra pressure on the mind.
+Anyway, let's summarize our today's discussion.
+
+  * different types of _shortcuts_ such as _global_ shortcuts and _message_ shortcuts
+  * how to configure and create these through Slack configuration page
+  * implemented _global_ shortcut to display website monitoring job creation form. Implementation of it was almost similar to what we did for _slash commands_. So it was quite quick.
+
+Title image credit: [Business Vectors by
+Vecteezy](https://www.vecteezy.com/free-vector/business)

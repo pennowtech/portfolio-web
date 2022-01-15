@@ -1,0 +1,29 @@
+---
+author: Sukhdeep Singh
+categories:
+- Git
+date: Aug, 21
+description: ''
+post_status: publish
+post_type: post
+tags: ''
+thumbnailUrl: https://pennow.tech/wp-content/uploads/2021/08/git-logo.jpg
+title: Git and Kdiff3
+---
+
+[Kdiff3](http://kdiff3.sourceforge.net) has been my favourite diff tool for a
+while and I always have to look up how to configure it to be automatically
+launched when using [Git](https://git-scm.com/) from the command line. So it's
+going in the blog!
+
+    
+    
+    git config --global --add merge.tool kdiff3
+    git config --global --add mergetool.kdiff3.path "/usr/bin/kdiff3"
+    git config --global --add mergetool.kdiff3.trustExitCode false
+    git config --global --add mergetool.prompt false
+    
+    git config --global --add diff.guitool kdiff3
+    git config --global --add difftool.kdiff3.path "/usr/bin/kdiff3"
+    git config --global --add difftool.kdiff3.trustExitCode false
+    git config --global --add difftool.prompt false

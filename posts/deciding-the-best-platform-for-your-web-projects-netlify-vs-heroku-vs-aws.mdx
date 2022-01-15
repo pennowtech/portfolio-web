@@ -1,0 +1,195 @@
+---
+author: Sukhdeep Singh
+categories:
+- Web Apps
+date: Mar, 21
+description: ''
+post_status: publish
+post_type: post
+tags:
+- ReactJS
+- Deployment
+thumbnailUrl: https://pennow.tech/wp-content/uploads/2021/03/19362653-scaled-e1620588012388.jpg
+title: Deciding the Best Platform for your Web Projects - Netlify vs Heroku vs AWS
+---
+
+Modern JavaScript has made web development very straightforward and exciting.
+However, when it comes the time to deploy our full-stack web application,
+people are normally confused between multiple platform options.
+
+There are a plethora of platforms provided by companies like Google, Amazon,
+and other organizations. However, we will discuss the following popular
+options.
+
+  * Amazon Web Services
+  * Heroku
+  * Netlify
+
+This is not going to be an exhaustive comparison, but it can help us in taking
+a better decision.
+
+## Netlify
+
+Netlify is the first contender on our list. Netlify UX is very easy to work
+with. You can host your web application either by:
+
+  1. dragging and dropping the folder from your machine to Netlify, or
+  2. by importing your Git repositories
+  3. with Netlify CLI
+
+It makes life much easier by providing hassle-free setups and any maintenance
+issues.
+
+### Netlify Features
+
+Here, I'm going to list a few of my favorite features which I like in
+_Netlify_.
+
+  1. **Contextual Build** : Apart from deploying different branches, _Netlify_ also provides the options to build for different contexts such as _staging, testing,_ or production.
+  2. **SSL Management** : It is very important to serve your websites over HTTPS. (If you do not know the reason then just google it). Netlify makes it super easy to set up HTTPS for your web apps. You have both the options whether you want to setup Paid SSL or free SSL provided by Let's Encrypt.
+  3. **Notifications** : Netlify allows you to set up various notifications. You can specify whether you want to receive notifications on successful deployment or failure or any other events. Notifications will be sent to email addresses or Slack channels which is also configurable.
+  4. **Subdomains** : Just like you can build for multiple branches, you also have the option to deploy for multiple branches. Consequently, you get a subdomain configured automatically for that particular deployment.
+  5. **Continuous Integration and Deployment** : Netlify automatically deploys your website when you push your changes to your connected Git repositories. It will also run the test cases and will notify you of their status whether they passed or failed.
+  6. Apart from the above, Netlify provides the options: 
+    1. to roll back to previous versions,
+    2. custom domains,
+    3. function for serverless operations,
+    4. command-line interface (CLI) to let you deploy or configure your websites straight from the command line,
+    5. instant forms to collect user data, etc.
+
+### Netlify Limitations
+
+The major downside is that one cannot use server-side programming languages
+like Java or others. If you want an alternative to server-side, then you are
+encouraged to use _Netlify functions_.
+
+### Netlify Pricing
+
+Netlify comes in three flavors:
+
+  1. **Starter** : This is the free pack and enough for individual usage. It offers 100 GB of bandwidth, and 300 minutes of build per month. You can run at most 1 build at a time.
+  2. **Pro** pack: This is paid version. This offers 400 GB of bandwidth and 1000 minutes of build per month. Apart from that it also offers email/slack notifications. You can run 3 builds simultaneously.
+  3. **Business** pack: This is the top pack available from Netlify. It provides 600 GB of bandwidth and 1000 minutes of build per month. In addition, it offers email/slack notifications, and role-based access control. The number of concurrent builds offered is as high as 5.
+
+All of the above packs provide continuous deployments, instant cache
+validation, team management, authentication, CLI dev server, and custom
+domains.
+
+## Heroku
+
+Heroku is another service provider which facilitates in build and deployment
+of web applications. Heroku runs these applications in virtual systems called
+_dynos_. You can also scale horizontally or vertically if you need more
+resources.
+
+### Heroku Features
+
+  1. **Ease server management** : Without worrying about server management, you can concentrate on development. It provides a vast array of features, which can ease the life of developers.
+  2. **Scaling options** : Heroku provides a horizontal scaling option. It means you can run multiple instances of your application just with one click. To handle unprecedented traffic spikes, it creates more dynos (Autoscaling)
+  3. **Support for backend development** : Heroku supports most popular languages like Java, Python, JS, Node.js, etc. This makes it a better choice for full-stack development.
+  4. **Microservices support** : Another option that makes it attractive for full-stack development is that microservices can be started quickly, in just a few minutes.
+  5. **Simplicity** : Heroku is preferred for its simplicity. Its easy-to-use interface makes the deployment of new web apps very convenient.
+  6. **Continuous integration** : Like Netlify, Heroku also provides the option of continuous integration. However, you have to turn on the CI option.
+
+### Heroku Pricing
+
+  * **Free** account: As per the organization, this is best suited for non-commercial applications, which are mainly designed as proof of concepts (POC) or personal projects. It is fine for experimenting. The major catch is that it sleeps after 30 minutes of inactive users.
+  * **Hobbyists** : It costs you $7 per dyno. Unlike a _free_ account, it never sleeps. Moreover, it provides free SSL for custom domains.
+  * **Production** : This is an entry-level account for commercial application, and costs $25 per dynos per month. It comes with horizontal scaling.
+  * **Advanced** : It costs $250+ per dyno per month. As the name suggests, this offers high availability servers with very low latency for high-end applications. It provides dedicated resources, and auto-scaling.
+
+Apart from above, Heroku also offers customized priced option specialized for
+Managed SQL, Kafka, Redis, and other.
+
+Heroku is relatively costlier than Netlify. However, scaling options provided
+by it can be a lucrative offer.
+
+### Heroku Disadvantages
+
+  1. You cannot run any other services on dynos
+  2. Expensive for high traffic apps
+  3. Not ideally suited for heavy-computing applications
+  4. network latency is high
+  5. Installing any library or service is not possible unless there is any plugin available for that.
+  6. It takes time to restart dynos. So it makes deployment slower for bigger apps.
+  7. In a free account, dyno sleeps after 30 minutes of inactivity. Hence, if it sleeps, the first request will take a longer time to serve during this time. This is because the dyno needs to first boot up before serving the request.
+  8. If you want to use MySQL or any other databases apart from MongoDB or PostgreSQL, then you have to rely on plugins provided by third-party vendors. This will add extra cost to your budget.
+
+## Amazon Web Services (AWS)
+
+AWS offers a lot of varieties in terms of services. Some of the popular
+products offered by it are:
+
+  * Amazon EC2 (virtual servers)
+  * Amazon S3 (cloud servers)
+  * Amazon DynamoDB (NoSQL database)
+
+### AWS Features
+
+  1. **Flexibility** : It is a much more powerful and flexible setup because it provides full control over its resources.
+  2. **Pay only for what you use** : It's a cost-effective solution where you will be paying only for what you use.
+  3. **Backend development** : Just like Heroku, it also provides support for languages like Java, Python, Node.js, etc., and hence supports backend development too.
+  4. **Autoscaling** : It provides the option to scale automatically based on the specific needs and development conditions.
+
+### AWS Limitations
+
+You might be surprised why limitations are discussed in the context of AWS
+when we didn't discuss them in the case of other twos. The only reason for
+that is the complex nature of AWS.
+
+  1. The learning curve is very steep. Thus it is not easy for beginners
+  2. The deployment process is relatively much harder even for a single website or app.
+  3. The creation of a server is a relatively complicated process.
+  4. The launch of multiple application instances is also very difficult
+
+In short, AWS hosts a lot of features and security. However, the only cost you
+have to pay is technical proficiency in AWS.
+
+If you are interested to know more about AWS comparison, then I have got you
+another reference providing a [comparison between AWS services and
+Heroku](https://www.upguard.com/blog/heroku-ec2).
+
+## Final Comparison
+
+We've seen the various features, and price models offered by these platforms.
+Let's put some lights on their one-to-one comparison. This can help us in
+making our final decision.
+
+Firstly, Netlify is geared more towards static web apps. However, Heroku is a
+better choice for full-stack web application developers. AWS gives you full
+access to install any services or programming languages. Thus this is also a
+good option for full-stack developers.
+
+Secondly, the learning curve of Netlify is very smooth. Heroku is a little
+complex than Netlify. However, AWS is quite complicated, and you might need a
+dedicated employee to look after that.
+
+Thirdly, Netlify is focused on web development while Heroku supports web as
+well as web apps.
+
+In terms of security, AWS is more secure than Heroku or Netlify.
+
+If someone is interested in a detailed price comparison between Heroku vs AWS,
+then refer to [Heroku vs AWS price
+comparison](https://railsware.com/blog/heroku-vs-aws-which-paas-hosting-to-
+choose/)
+
+## Conclusion
+
+Every platform has its own benefits and limitations. So it depends on your
+budget, feature requirements, and development criteria.
+
+If you need flexibility or high computing power, then AWS is the perfect
+choice from these three options.
+
+In my view, I believe the first two options are best suitable for startups or
+medium enterprises while AWS is most suitable for large enterprises.
+
+What's your view? Let me know through the comments section.
+
+
+
+
+
+Image Courtesy: [Man vector created by upklyak -
+www.freepik.com](https://www.freepik.com/vectors/man)
