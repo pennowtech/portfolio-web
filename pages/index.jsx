@@ -12,6 +12,8 @@ import { gqlClient } from '@utils/gqlclient';
 import { SelectedPostsList } from '@utils/consts';
 import BlogMain from '../components/BlogMain';
 import Login from '../components/Login';
+import ThemeToggle from '../components/ThemeToggle';
+import Header from '../components/Header';
 import HomeArticles from '../components/HomeArticles';
 import 'tailwindcss/tailwind.css';
 import ContactForm from '../components/ContactForm';

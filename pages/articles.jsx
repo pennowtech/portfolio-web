@@ -91,6 +91,13 @@ export default function Articles({ selectedposts }) {
           ))}
         </div>
 
+        <div className="font-Monda ">
+          <div className="font-medium mx-auto rounded-full px-2 py-1 md:px-4 cursor-pointer">
+            <Link href="articles">
+              View all articles
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );

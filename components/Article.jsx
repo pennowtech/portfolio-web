@@ -11,7 +11,7 @@ const data = { btn_text: 'Click Me' };
 const Article = ({ frontMatter, mdxSource }) => (
   <>
     {/* <p>{frontMatter.description}</p> */}
-    <article id="post" refs="articleRef" className="prose-a:text-[#f97316] dark:prose-a:text-[#ec4899] hover:prose-a:text-blue-600">
+    <article id="post" refs="articleRef">
       <MDXRemote
         {...mdxSource}
         components={{
