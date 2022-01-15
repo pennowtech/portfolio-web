@@ -1,60 +1,53 @@
-import { HiMenuAlt4 } from 'react-icons/hi'
-import { AiOutlineClose } from 'react-icons/ai'
-import { Link } from "react-scroll";
-import Image from 'next/image';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { AiOutlineBars, AiOutlineClose } from 'react-icons/ai';
 
-import logo from '../public/logo.png'
+import { MenuItems } from '../utils/consts';
+import NavBarItem from './NavBarItem';
 
-import { MenuItems } from '../utils/consts'
+// const MyLink = React.forwardRef((props, ref) => <Link href={href}>{props.children}</Link>);
 
-// const MenuItems = ["Link1", "Link2", "Link3", "Link4"];
-
-const NavBarItem = ({ menu, classprops }) => (
-  <li className='border-b md:border-0 w-full py-2'><Link
-    activeClass="active"
-    to={menu.path}
-    spy={true}
-    smooth={true}
-    offset={-100}
-    duration={500}
-    className={`cursor-pointer hover:bg-blue-600 text-black hover:text-white px-3 py-2 rounded-md text-sm font-medium ${classprops || ''}`.trim()}
-  >
-    {menu.title}
-  </Link>
-  </li>
-);
-
-export const Navbar = () => {
-  const [isMenuVisible, setMenuVisible] = useState(false)
+const Navbar = () => {
+  const [isMenuVisible, setMenuVisible] = useState(false);
   return (
-    <nav className="bg-slate-50 sticky top-0 z-50 w-full flex justify-between items-center p-4">
-      <div className="md:flex-[0.5] flex-initial justify-center items-center">
-        <Image src={logo} alt="logo" className="w-32 cursor-pointer" ></Image>
-      </div>
-      <ul className="md:flex hidden list-none flex-row justify-between items-center flex-initial">
-        {MenuItems.map((item, index) => (
-          <NavBarItem key={item.title + index} menu={item} />
+    <div className="inline-block pl-8">
+
+      <ul className="hidden font-Monda text-lg list-none md:flex flex-row items-center flex-initial">
+        {MenuItems.map((item) => (
+          <NavBarItem key={item.title} menu={item} />
         ))}
         <li className="bg-[#2952e3] text-white py-2 px-7 mx-4 rounded-full cursor-pointer hover:bg-[#2546bd]">
           Login
         </li>
       </ul>
-      <div className="flex relative">
+      <div className="md:hidden w-full flex justify-end">
         {!isMenuVisible && (
-          <HiMenuAlt4 fontSize={28} className="md:hidden cursor-pointer" onClick={() => setMenuVisible(true)} />
+        <AiOutlineBars
+          fontSize={28}
+          className="cursor-pointer"
+          onClick={() => setMenuVisible(true)}
+        />
         )}
         {isMenuVisible && (
-          <ul
-            className="z-10 fixed -top-0 -right-2 p-3 w-[70vw] h-screen shadow-2xl md:hidden list-none flex flex-col justify-start items-end rounded-md blue-glassmorphism animate-slide-in transition"
-          >
-            <li ><AiOutlineClose fontSize={28} className="m-2 md:hidden cursor-pointer" onClick={() => setMenuVisible(false)} /></li>
-            {MenuItems.map(
-              (item, index) => <NavBarItem key={item.title + index} menu={item} classprops="my-2 text-lg" />,
-            )}
-          </ul>
+        <ul className="z-10 fixed -top-0 -right-2 p-3 w-[70vw] h-screen shadow-2xl md:hidden list-none flex flex-col justify-start items-end rounded-md bg-slate-200 animate-slide-in transition">
+          <li>
+            <AiOutlineClose
+              fontSize={28}
+              className="m-2 md:hidden cursor-pointer"
+              onClick={() => setMenuVisible(false)}
+            />
+          </li>
+          {MenuItems.map((item) => (
+            <NavBarItem
+              key={item.title}
+              menu={item}
+              classprops="my-2 text-lg"
+            />
+          ))}
+        </ul>
         )}
       </div>
-    </nav>
+    </div>
   );
 };
+
+export default Navbar;

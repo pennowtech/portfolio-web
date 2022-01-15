@@ -1,39 +1,98 @@
 ---
-title: Functions for Beginners
-date: "August 4, 2021"
-description: Learn how to create and use functions
+title: In the Snowfall was above average and Functions for Beginners
+author: Sukhdeep Singh
+date: "August, 2021"
+description: The purpose of this post is to show how easy and intuitive it can be to make a navbar in NextJS with the help of TailwindCSS.
 thumbnailUrl: "/thumbnail.jpg"
-tags: ["functions", "javascript"]
+tags:
+  - Guide
+  - tutorials
+  - Kafka
 ---
 
-export const name = "world";
+The purpose of this post is to show how easy and intuitive it can be to make a navbar in NextJS with the help of TailwindCSS.
 
-# Hello {name}
+# Setup and Configuration
 
-# Last year’s snowfall
+So, the first thing that we need is install NextJS and tailwindcss. Information captured from [here](https://tailwindcss.com/docs/guides/nextjs)
+
+```shell
+$npx create-next-app blog_demo
+$npm install -D tailwindcss postcss autoprefixer
+```
+
+postcss is the tool that tailwind is going to use to purge unwanted css classes. This helps to drastically reduce the final css of the css
+
+It also used `autoprefixer` tool so that our site can look good across multiple deivices
+
+2. Install tailwindcss configuration files for tailwindcss.config.js as well as postcss.config.js
+
+```shell
+$npx tailwindcss init -p
+```
+
+`-p` witch specifies to generate `postcss.config.js`.
+
+If we open postcss.config.js, then you can see two plugins specified: tailwindcss and autoprefixer
+
+3. Open your tailwind.config.js and paste the following content:
+
+```js
+module.exports = {
+  content: [
+    "./pages/**/*.{js,ts,jsx,tsx}",
+    "./components/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+};
+```
+
+content entry specifies where to look for tailwindcss utilities classes. As obviously we'll be using them inside of js/jsx file, we specified those entries.
+
+# Heading 1
+
+## Heading 2
+
+### Heading 3
+
+#### Heading 4
+
+##### Heading 5
 
 I **love** using [Next.js](https://nextjs.org/)
 
-In {{year}}, {year} the snowfall was above average.
+In 2014, the snowfall was above average.
 It was followed by a warm spring which caused
-flood <div className='underline'>conditions</div> in many of the nearby rivers.
+flood <div className='underline inline'>conditions</div> in many of the nearby rivers.
 
 > A block quote with ~~strikethrough~~ and a URL: https://reactjs.org.
 
 - Lists
-- [ ] todo
-- [x] done
+  1. [ ] todo
+  2. [x] done
 
 A table:
 
-| a   | b   |
-| --- | --- |
+| Left-Aligned  | Center Aligned  | Right Aligned |
+| :------------ | :-------------: | ------------: |
+| col 3 is      | some wordy text |         $1600 |
+| col 2 is      |    centered     |           $12 |
+| zebra stripes |    are neat     |            $1 |
 
 We just used a `###` subheading in our blog post.
 
 Following example is of `code`.
 
-```js filename="myfile.js" hl=2,4-8
+```cpp filename="myfile.js" hl=2
+int main(){
+    int x=0;
+}
+```
+
+```js filename="myfile.js" hl=2,5-8
 const Highlighter = (props) => {
   const result = props.linesToHighlight.split(",");
   var linesToHighlight = convertLineStrToArray(props.linesToHighlight);
@@ -42,19 +101,13 @@ const Highlighter = (props) => {
   return (
     <SyntaxHighlighter
       language={props.language}
-      wrapLines={true}
-      showLineNumbers={true}
-      style={theme}
       lineProps={(lineNumber) => {
         const style = {
           display: "block",
           width: "100%",
         };
         if (linesToHighlight.includes(lineNumber)) {
-          style.backgroundColor = lineHighlight;
-          style.borderLeft = "4px solid #3f51b5";
-          style.marginLeft = -16px;
-          style.marginRight = -16px;
+          style.margin = -16px 2px;
         }
         return { style };
       }}

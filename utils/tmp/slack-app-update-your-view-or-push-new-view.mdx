@@ -1,0 +1,393 @@
+---
+author: Sukhdeep Singh
+categories:
+- Python
+date: May, 21
+description: ''
+post_status: publish
+post_type: post
+tags:
+- Programming
+- Slack
+- app development
+- tutorials
+thumbnailUrl: https://pennow.tech/wp-content/uploads/2021/05/update-view-title.png
+title: 'Slack App with Python: Update your view or Push new View [Extra]'
+---
+
+We've already discussed modal views in detail. I'd strongly recommend you to
+go through my article on [Working with Slack modal
+views](https://pennow.tech/slack-app-open-modal-views/). This article is a
+supplement to that article.
+
+Now one can ask me why I put in _extra_. The answer is that I didn't require
+this feature for the product which we're developing in that series of
+articles. Here we'll be discussing two subsections of modal views:
+
+  * one is how to update the existing view
+  * second is how to push a new view
+
+Then. let's start with updating views. **Disclaimer** : Examples given might
+not fit into the practical world. However, my only perspective of writing this
+article is to give an overview of how `views.update()` and `views.push()`
+works. So let's concentrate on that part only.
+
+## Update Views
+
+Suppose this is our current view where a user is looking for information on an
+employee. [caption id="attachment_1516" align="aligncenter"
+width="639"]![Slack-Actual-Modal-View](https://pennow.tech/wp-
+content/uploads/2021/05/Slack-Actual-Modal-View.png) Slack Actual Modal
+View[/caption] However, while entering the department name, he realizes that
+he **_doesn't know the exact name_** of the departments. He needs some hints.
+So he needs some way to fetch the department's list. He'd prefer it should be
+on the same page instead of *closing * the view, and open another view to
+fetch the list, then come back here again. It'd be a tedious task. So we'll
+help him by providing him with an extra button. He can click on that button,
+and our department input box will be replaced with a selection box. So we'll
+be designing two forms. But the user will feel as there is only one. 😄
+
+This article is part of: [Most effective way to understand Slack app
+development](https://pennow.tech/essential-skills-to-develop-slack-apps/).
+
+The first form will be normal form as above with the addition of a button:
+[caption id="attachment_1517" align="aligncenter" width="642"]![updated-
+sketch-employee-form](https://pennow.tech/wp-content/uploads/2021/05/updated-
+sketch-employee-form.png) Updated sketch employee form[/caption] Seconds form
+is with the option to select from a list. This form will be presented only
+when the user clicks on the **Click Me** button on the first. As this form
+will be replacing the existing form, so this is a use case of _updating modal
+views_. [caption id="attachment_1515" align="aligncenter"
+width="643"]![employee-form-select-department](https://pennow.tech/wp-
+content/uploads/2021/05/employee-form-select-department.png) an employee from
+select department[/caption] Now, cutting long story short, let's start with
+the implementation.  __Important Again, I'd strongly recommend you to go
+through my article on [Working with Slack modal
+views](https://pennow.tech/slack-app-open-modal-views/) before proceeding
+further. Otherwise, this article will be too difficult to understand.
+
+### Design modal views
+
+With the help of [Slack Builder Kit](https://pennow.tech/slack-publishing-ui-
+messages/#Brief_Overview_of_Slack_Block_Kit_Builder), let's design the UIs for
+both views. We'll store JSON of the first view inside a function
+`employee_view()` :
+
+    
+    
+    def employee_view():
+        return ({
+    	"type": "modal",
+    	"callback_id": "employee_view",
+    	"title": {
+    		"type": "plain_text",
+    		"text": "Employee information"
+    	},
+    	"submit": {
+    		"type": "plain_text",
+    		"text": "Submit"
+    	},
+    	"blocks": [
+    		{
+    			"type": "input",
+    			"block_id": "name_input_block",
+    			"element": {
+    				"type": "plain_text_input",
+    				"action_id": "name_input",
+    				"placeholder": {
+    					"type": "plain_text",
+    					"text": "Enter employee's name"
+    				}
+    			},
+    			"label": {
+    				"type": "plain_text",
+    				"text": "Name"
+    			}
+    		},
+    		{
+    			"type": "input",
+    			"element": {
+    				"type": "plain_text_input",
+    				"action_id": "plain_text_input-action",
+    				"placeholder": {
+    					"type": "plain_text",
+    					"text": "Enter employee's department"
+    				}
+    			},
+    			"label": {
+    				"type": "plain_text",
+    				"text": "Department",
+    				"emoji": True
+    			}
+    		},
+    		{
+    			"type": "section",
+    			"text": {
+    				"type": "mrkdwn",
+    				"text": "If you want to select from department list:"
+    			},
+    			"accessory": {
+    				"type": "button",
+    				"text": {
+    					"type": "plain_text",
+    					"text": "Click Me",
+    					"emoji": True
+    				},
+    				"value": "click_me_123",
+    				"action_id": "button-action"
+    			}
+    		}
+    	]
+    }) 
+    
+
+and store JSON of second view inside `employee_view_with_department_list()`:
+
+    
+    
+    def employee_view_with_department_list():
+        return ({
+    	"type": "modal",
+    	"callback_id": "employee_view_with_department_list",
+    	"title": {
+    		"type": "plain_text",
+    		"text": "Employee information"
+    	},
+    	"submit": {
+    		"type": "plain_text",
+    		"text": "Submit"
+    	},
+    	"blocks": [
+    		{
+    			"type": "input",
+    			"block_id": "name_input_block",
+    			"element": {
+    				"type": "plain_text_input",
+    				"action_id": "name_input",
+    				"placeholder": {
+    					"type": "plain_text",
+    					"text": "Enter employee's name"
+    				}
+    			},
+    			"label": {
+    				"type": "plain_text",
+    				"text": "Name"
+    			}
+    		},
+    		{
+    			"type": "input",
+    			"block_id": "department_select_block",
+    			"element": {
+    				"type": "static_select",
+    				"placeholder": {
+    					"type": "plain_text",
+    					"text": "Select an item",
+    					"emoji": True
+    				},
+    				"options": [
+    					{
+    						"text": {
+    							"type": "plain_text",
+    							"text": "Electrical",
+    							"emoji": True
+    						},
+    						"value": "electrical"
+    					},
+    					{
+    						"text": {
+    							"type": "plain_text",
+    							"text": "Management",
+    							"emoji": True
+    						},
+    						"value": "management"
+    					},
+    					{
+    						"text": {
+    							"type": "plain_text",
+    							"text": "Mechanical",
+    							"emoji": True
+    						},
+    						"value": "mechanical"
+    					}
+    				],
+    				"action_id": "department_select_action"
+    			},
+    			"label": {
+    				"type": "plain_text",
+    				"text": "Department",
+    				"emoji": True
+    			}
+    		}
+    	]
+    })
+    
+
+### Implementing command handler
+
+The first step is to decide how to display the first view. Either you can use
+a _slash command handler_ or you can implement a _shortcut_. Both approaches
+are fine. Let's go with the command handler. If you don't know then you can
+refer to my article on how to implement [slack command
+handlers](https://pennow.tech/slack-slash-commands/)
+
+    
+    
+    @app.command("/employee")
+    def employee_command_handler(ack, payload, client):
+        ack()
+    
+        res = client.views_open(
+            trigger_id=payload["trigger_id"],
+            view=job_create_view()
+        )
+    
+
+Now, the user will be presented with a view. However, the **Click Me** button
+will not work yet. Therefore, implement a handler for this button. This button
+is supposed to return the second form. Let's do it:
+
+    
+    
+    @app.action("button-action")
+    def update_employee_view(ack, body, client, respond):
+        ack()
+        view_info = employee_view_with_department_list()
+    
+        client.views_update(
+            view_id=body["view"]["id"],
+            hash=body["view"]["hash"],
+            view=view_info
+        )
+    
+
+Here, we're using `views_update()` method to update the existing view.
+However, if you want to update an existing view, you'll need a _view id_ of
+that. This we fetched from the body of the message passed to our handler
+function. _The second parameter_ is hash that's required to avoid race
+conditions. If you don't know about it, then refer to Slack's documentation.
+_the third parameter_ is our new view with which we want to replace the
+existing view. Note: Updating a view is only possible when the event is
+triggered through actionable components such as button, select-box, etc. Now,
+run your program, and it'll present you with the first form. Click on the
+**Click Me** button there, and you'll be presented with another form,
+replacing the first one.
+
+### Retain old form's information
+
+Suppose, you already entered the employee's name, and want to retain this
+information in the new form, then that's also possible with a little change.
+First, retrieve the value from the old form before presenting a new form/view.
+Then pass this value to the function which is returning JSON of the new view:
+
+    
+    
+    @app.action("button-action")
+    def update_employee_view(ack, body, client, respond):
+        ack()
+        employee_name = body['view']['state']['values']['name_input_block']['name_input']['value']
+        view_info = employee_view_with_department_list(employee_name)
+    
+
+Secondly, modify the JSON of your second form to fill in this information as
+`initial_value`:
+
+    
+    
+    def employee_view_with_department_list(employee_name):
+        return ({
+    	...
+    	"blocks": [
+    		{
+    			"type": "input",
+    			"block_id": "name_input_block",
+    			"element": {
+    				"type": "plain_text_input",
+    				"action_id": "name_input",
+    				"initial_value": employee_name if employee_name else "",
+    				"placeholder": {
+    					"type": "plain_text",
+    					"text": "Enter employee's name"
+    				}
+    			},
+                ...
+    
+    
+
+Rest whole of the message will remain as before. Now run your program again,
+and it should work as expected.
+
+### Handling view submission
+
+We need to handle the view submission of both forms. Both forms have different
+`callback_id`. So that's easy to distinguish which form was submitted. I'll
+add here for the second form. You'll try for the first form. My view
+submission is too simple. It just fetches the values from the submitted form
+and prints the result on your terminal:
+
+    
+    
+    @app.view('employee_view_with_department_list')
+    def employee_view_submission(ack, say, respond, client, body):
+        ack()
+        employee_name = body['view']['state']['values']['name_input_block']['name_input']['value']
+        employee_deptt = body['view']['state']['values']['department_select_block']['department_select_action']['selected_option']['value']
+    
+        text=(f"Employee name: {employee_name}. "
+              f"Employee department: {employee_deptt}")
+        print(text)
+    
+    
+
+## Push views
+
+Another feature supported by view is to push another view over the first view.
+Unlike _update_ , it doesn't replace the existing view. However, on top of
+that, it'll display another view. When you submit/cancel the latest view, it
+returns to the existing view. We can use the same views/forms which we
+designed for our update view discussion. As I told you before, my perspective
+here is not to present any logical design but to explain how _push_ and
+_update_ feature works.
+
+### Implementation
+
+Let's use the same command to display the first form as we're doing in update
+views. Now coming to pushing the new view. Then there is a little change. Now
+instead of calling `views_update()`, we'll be calling `views_push()` method.
+The arguments expected by it are the same as we're in the case of
+`views_open()`. So let's implement our second view handler:
+
+    
+    
+    @app.action("button-action")
+    def update_employee_view(ack, body, client, respond):
+        ack()
+        employee_name = body['view']['state']['values']['name_input_block']['name_input']['value']
+        view_info = employee_view_with_department_list(employee_name)
+    
+        client.views_push(
+            trigger_id=body["trigger_id"],
+            view=view_info
+        )
+    
+    
+
+Now, run your app, and get yourself the feel of how _push_ modal works.
+Source Code: 1\. [update_modal_view.py](https://github.com/pennowtech/slack-
+app-python-slack-bolt/blob/master/update_modal_view.py), 2.
+[push_modal_view.py](https://github.com/pennowtech/slack-app-python-slack-
+bolt/blob/master/push_modal_view.py)
+
+## Summary
+
+As mentioned at the beginning of this article is a supplement to our existing
+article on Slack modal views. Here, we discussed two other features of Slack
+modal views. One was how to update the existing displayed form. The second one
+was to discuss how to push a new form over the existing one without replacing
+it. Some guys find these concepts a little difficult to understand in the
+beginning. Even I'd struggled during my time. That's why I thought to write on
+these topics. [wpdiscuz-feedback id="6n9ru1ydde" question="Please leave a
+feedback on this" opened="0"][/wpdiscuz-feedback] Hope it can help you guys.
+If you need any clarification, then let me know through your comments.
+
+Title image credit:[Background vector created by freepik -
+www.freepik.com](https://www.freepik.com/vectors/background)
