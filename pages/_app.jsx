@@ -4,18 +4,59 @@ import Head from 'next/head';
 import Script from 'next/script';
 
 import { ThemeProvider } from 'next-themes';
-import Header from '../components/Header';
-// import '../styles/globals.css'
+import {
+  makeOperation, defaultExchanges,
+} from 'urql';
+// import {  Provider, createClient,} from 'urql';
+import { authExchange } from '@urql/exchange-auth';
+import { withUrqlClient } from 'next-urql';
 import 'tailwindcss/tailwind.css';
-// import '../styles/prism/prism.css'
-// import '../styles/prism/prism-one-light.css'
-// import '../public/prism.js'
 import '../styles/globals.css';
-// import "../styles/articles.module.css";
-import ThemeToggle from '../components/ThemeToggle';
-import Navbar from '../components/Navbar';
+import { devtoolsExchange } from '@urql/devtools';
+import { Provider as AlertProvider } from 'react-alert';
+import AlertTemplate from 'react-alert-template-basic';
+import Router from 'next/router';
+import nProgress from 'nprogress';
+import { GRAPHQL_URL } from '../utils/consts';
+import { deleteToken, getToken } from '../utils/token';
+
+nProgress.configure({ showSpinner: false });
+Router.events.on('routeChangeStart', () => nProgress.start());
+Router.events.on('routeChangeComplete', () => nProgress.done());
+Router.events.on('routeChangeError', () => nProgress.done());
+
+const a = {
+  query: `
+mutation LoginUser {
+  login( input: {
+    clientMutationId: "uniqueId",
+    username: "sdsingh.developer@gmail.com",
+    password: "eTR8b5AHG7"
+  } ) {
+    authToken
+    user {
+      id
+      name
+    }
+  }
+}`,
+};
 
 function MyApp({ Component, pageProps }) {
+  // const client = createClient({
+  // // url: 'https://pennow.tech/graphql',
+  //   url: 'https://wordpress-561320-2383780.cloudwaysapps.com/graphql',
+  //   exchanges: [devtoolsExchange, ...defaultExchanges],
+  //   fetchOptions: () => {
+  //     const token = getToken();
+  //     console.log(token);
+  //     return {
+  //       headers: { Authorization: token ? `Bearer ${token}` : '' },
+  //     };
+  //   },
+
+  // });
+
   return (
     <>
       <Head>
@@ -28,10 +69,13 @@ function MyApp({ Component, pageProps }) {
       </Head>
       <div className="appjs w-full ">
 
-        <main className="min-h-screenshadow-sm font-Merriweather text-base leading-7 dark:bg-gray-600 max-w-[100%] w-full dark:selection:bg-slate-300 dark:selection:text-slate-600  selection:bg-slate-800 selection:text-slate-50 prose dark:prose-invert prose-base prose-a:text-[#f97316] dark:prose-a:text-[#ec4899] hover:prose-a:text-blue-600 prose-a:no-underline prose-pre:p-0 prose-code:text-base md:prose-pre:p-0 lg:prose-pre:p-0 prose-pre:border  prose-pre:bg-inherit dark:prose-ul:marker:bg-white">
+        <main className="main min-h-screen">
           <ThemeProvider attribute="class">
-
-            <Component {...pageProps} />
+            {/* <Provider value={client}> */}
+            <AlertProvider template={AlertTemplate}>
+              <Component {...pageProps} />
+            </AlertProvider>
+            {/* </Provider> */}
           </ThemeProvider>
 
         </main>
@@ -40,4 +84,18 @@ function MyApp({ Component, pageProps }) {
   );
 }
 
-export default MyApp;
+export default withUrqlClient(
+  () => ({
+    url: GRAPHQL_URL,
+    fetchOptions: () => {
+      const token = typeof localStorage !== 'undefined' ? getToken() : undefined;
+      return {
+        headers: { authorization: token ? `Bearer ${token}` : '' },
+      };
+    },
+    exchanges: [devtoolsExchange, ...defaultExchanges],
+  }),
+  { ssr: false },
+)(MyApp);
+
+// export default MyApp;

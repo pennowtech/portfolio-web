@@ -1,64 +1,46 @@
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 
-export default function HomeArticles({ posts, selectedposts }) {
+import { FlatMDXData } from '@utils/FlatData';
+import HorizontalCard from './Post/HorizontalCard';
+
+export default function HomeArticles({ posts }) {
   return (
-    <div>
-      {selectedposts
-        && selectedposts.map((post, i) => (
-          <h3 key={post.title + i}>{post.title}</h3>
-        ))}
-      <div className="py-10 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-8">
-        {posts.map((post, index) => (
-          <div key={index} className="max-w-sm rounded overflow-hidden shadow-lg mb-6  ">
-            <Link href={`/blog/${post.blog}`}>
-              <div className="grow rounded-lg cursor-pointer ">
-                <div className="rounded-lg">
-                  <div className="relative rounded-t-lg overflow-hidden">
-                    <Image
-                      src={post.frontMatter.thumbnailUrl}
-                      alt={post.frontMatter.title}
-                      layout="intrinsic"
-                      className="object-cover w-full"
-                      width={700}
-                      height={475}
-                    />
-                    {post.frontMatter.categories && (
-                    <div className="absolute py-2.5 top-0 inset-x-0 text-white flex text-xs leading-4">
-                      <div className="bg-red-500 shadow-xl font-medium m-4 rounded-full px-2 py-1 md:px-4">{post.frontMatter.categories}</div>
-                    </div>
-                    )}
-
-                  </div>
-                </div>
-                <div className="px-6 py-4">
-                  <h3 className="md:text-2xl text-semibold font-Neuton">{post.frontMatter.title}</h3>
-                  {/* <p className="md:my-4 md:leading-7 hidden md:block text-sm">{post.frontMatter.description}</p> */}
-                  <p>
-                    <small className="text-muted">{post.frontMatter.date}</small>
-                  </p>
-                  <div className="my-4 flex font-Monda text-xs gap-x-4">
-                    {post.frontMatter.tags.slice(0, 2).map((tag, idx) => (
-                      <div
-                        key={tag + idx}
-                        className="bg-gray-100 rounded-full px-2 py-1 md:px-4"
-                      >
-                        {tag}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </Link>
-          </div>
-        ))}
+    <div className="relative bg-slate-200 dark:bg-slate-400 py-4">
+      <div
+        className="bottom-auto top-0 left-0 right-0 w-full absolute pointer-events-none overflow-hidden -mt-20 h-20 "
+        style={{ transform: 'translateZ(0)' }}
+      >
+        <svg
+          className="absolute bottom-0 overflow-hidden"
+          xmlns="http://www.w3.org/2000/svg"
+          preserveAspectRatio="none"
+          version="1.1"
+          viewBox="0 0 2560 100"
+          x="0"
+          y="0"
+        >
+          <polygon
+            className="text-slate-200 dark:text-slate-400  fill-current"
+            points="2560 0 2560 100 0 100"
+          />
+        </svg>
+      </div>
+      <h1 className="mt-4 mb-0 font-Offside underline underline-offset-2 mx-auto justify-center text-center">Articles</h1>
+      {/* <div className="w-full lg:max-w-[1167px] lg:mx-auto py-10 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-8"> */}
+      <div className="w-full lg:max-w-[1167px] lg:mx-auto py-10 ">
+        {posts.map((post, index) => {
+          const postData = FlatMDXData(post);
+          return (
+            <HorizontalCard post={postData} key={index} />
+          );
+        })}
 
       </div>
       <div className="grid font-Monda justify-center">
-        <div className="bg-green-600 dark:bg-slate-800 dark:hover:bg-slate-00 text-cyan-100 shadow-xl font-medium mx-auto rounded-full px-2 py-1 md:px-4 cursor-pointer">
-          <Link href="/articles">
-            View all articles
+        <div className="button focus:shadow-outline cursor-pointer">
+          <Link href="/blog">
+            <a className="text-white">View all articles</a>
           </Link>
         </div>
       </div>

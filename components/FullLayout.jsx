@@ -4,7 +4,7 @@ import Head from 'next/head';
 import Header from './Header';
 import Footer from './Footer';
 
-const Layout = (props) => {
+const FullLayout = (props) => {
   const { title, metaKeywords, metaDesc } = props.metaInfo;
   return (
     <>
@@ -12,9 +12,8 @@ const Layout = (props) => {
         <title>{title}</title>
         <meta name="description" content={metaDesc} />
         <meta name="keywords" content={metaKeywords} />
-        <link href="/static/styles.css" rel="stylesheet" key="mainstyle" />
       </Head>
-      <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col">
         <Header />
         <div
           id="content"
@@ -23,13 +22,12 @@ const Layout = (props) => {
           {props.children}
         </div>
 
-        <Footer />
       </div>
     </>
   );
 };
 
-Layout.defaultProps = {
+FullLayout.defaultProps = {
   metaInfo: {
     title: 'Default Title',
     metaKeywords: 'Default metaKeywords',
@@ -37,4 +35,4 @@ Layout.defaultProps = {
   },
 };
 
-export default Layout;
+export default FullLayout;

@@ -13,7 +13,7 @@ import matter from 'gray-matter';
 import dynamic from 'next/dynamic';
 import BlogTitleBar from '../../components/BlogTitleBar';
 import Article from '../../components/Article';
-import Layout from '../../components/Layout';
+import FullLayout from '../../components/FullLayout';
 // import ToC from "../../components/ToC";
 
 export const getStaticPaths = async () => {
@@ -90,7 +90,7 @@ const PostPage = ({ frontMatter, mdxSource, content }) => {
     metaDesc: frontMatter.description,
   };
   return (
-    <Layout metaInfo={metaInfo}>
+    <FullLayout metaInfo={metaInfo}>
       <BlogTitleBar frontMatter={frontMatter} />
 
       <div className="w-full lg:max-w-[1167px] lg:mx-auto flex flex-col wide:flex-row flex-grow overflow-hidden  ">
@@ -101,7 +101,7 @@ const PostPage = ({ frontMatter, mdxSource, content }) => {
           <ToC content={content} className="" />
         </div>
       </div>
-    </Layout>
+    </FullLayout>
   );
 };
 export default PostPage;

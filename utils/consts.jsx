@@ -25,6 +25,11 @@ const SocialIconList = [
   { icon: <ImLinkedin />, path: '/', title: 'linkedin' },
   { icon: <ImTwitter />, path: 'http://twitter.com', title: 'twitter' },
 ];
+
+const GRAPHQL_URL = 'https://wordpress-561320-2383780.cloudwaysapps.com/graphql';
+const PER_PAGE_BLOGS = 5;
+
+export const SelectedPostsList = [32, 34, 36];
 export {
-  MenuItems, SocialIconList, FooterMainMenuItems, FooterOtherMenuItems,
+  MenuItems, SocialIconList, FooterMainMenuItems, FooterOtherMenuItems, GRAPHQL_URL, PER_PAGE_BLOGS,
 };

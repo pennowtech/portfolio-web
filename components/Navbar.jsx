@@ -9,7 +9,7 @@ import NavBarItem from './NavBarItem';
 const Navbar = () => {
   const [isMenuVisible, setMenuVisible] = useState(false);
   return (
-    <div className="inline-block pl-8">
+    <div className="inline-block pl-8 ">
 
       <ul className="hidden font-Monda text-lg list-none md:flex flex-row items-center flex-initial">
         {MenuItems.map((item) => (

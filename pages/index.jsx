@@ -4,44 +4,46 @@ import path from 'path';
 import matter from 'gray-matter';
 
 import { Element } from 'react-scroll';
+
+import algoliasearch from 'algoliasearch/lite';
+import SelectedPosts from '@components/SelectedPosts';
+import { SELECTED_POST_QUERY } from 'queries/queries';
+import { gqlClient } from '@utils/gqlclient';
+import { SelectedPostsList } from '@utils/consts';
 import BlogMain from '../components/BlogMain';
 import Login from '../components/Login';
-import ThemeToggle from '../components/ThemeToggle';
-import Header from '../components/Header';
 import HomeArticles from '../components/HomeArticles';
 import 'tailwindcss/tailwind.css';
 import ContactForm from '../components/ContactForm';
-import Layout from '../components/Layout';
+import FullLayout from '../components/FullLayout';
+import { ssrCache } from '../utils/gqlclient';
 
-function Home({ posts, selectedposts }) {
+function Index({ posts, selectedposts }) {
   const metaInfo = {
     title: 'Writing down my learnings',
     metaKeywords: 'Reactjs, C++, cpp, Python, Data Science, Database',
     metaDesc: '',
   };
   return (
-    <Layout metaInfo={metaInfo}>
-      {' '}
-      <div className="w-full lg:max-w-[1167px] lg:mx-auto p-5">
-        <Element id="about-me" className="element min-h-[600px]">
-          <Login />
-        </Element>
-        <Element id="blog" className="element min-h-[630px]">
-          <BlogMain />
-        </Element>
-        <Element id="articles" className="element min-h-[630px]">
-          <HomeArticles posts={posts} selectedposts={selectedposts} />
-        </Element>
-        <Element id="notifications" className="element min-h-[600px]">
-          test 3
-        </Element>
-        <ContactForm />
-      </div>
-    </Layout>
+    <FullLayout metaInfo={metaInfo}>
+
+      <Element id="about-me" className="element min-h-[600px]">
+        <SelectedPosts selectedposts={selectedposts} />
+        <Login />
+      </Element>
+      <Element id="blog" className="element min-h-[630px]">
+        <BlogMain />
+      </Element>
+      <Element id="articles" className="element">
+        <HomeArticles posts={posts} />
+      </Element>
+      <ContactForm />
+    </FullLayout>
   );
 }
 
 export const getStaticProps = async () => {
+  // Read post
   const files = fs.readdirSync(path.join('posts'));
   const posts = files.map((filename) => {
     const markdownWithMeta = fs.readFileSync(
@@ -61,15 +63,32 @@ export const getStaticProps = async () => {
       'Content-Type': 'application/json',
     },
   });
+  const selectedposts2 = await res.json()?.message;
 
-  const selectedposts = await res.json();
-
+  const unresolvedPromises = SelectedPostsList.map((postId) => gqlClient.query(
+    SELECTED_POST_QUERY,
+    {
+      id: postId,
+    },
+  ).toPromise());
+  const postResult = await Promise.all(unresolvedPromises);
+  const selectedposts = postResult.map((value) => value.data);
   return {
     props: {
       posts,
-      selectedposts: selectedposts.message || [],
+      selectedposts: selectedposts || [],
+      // selectedposts: JSON.stringify(selectedposts) || [],
+      urqlState: ssrCache.extractData(),
     },
+    revalidate: 600,
   };
 };
 
-export default Home;
+// export default withUrqlClient(
+//   () => ({
+//     url: 'https://wordpress-561320-2383780.cloudwaysapps.com/graphql',
+//   }),
+//   { ssr: false },
+// )(Index);
+
+export default Index;

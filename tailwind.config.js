@@ -44,7 +44,7 @@ module.exports = {
         Offside: ['Offside', 'cursive'],
       },
       screens: {
-        wide: '927px',
+        wide: '827px',
         // => @media (min-height: 800px) { ... }
       },
     },

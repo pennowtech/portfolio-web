@@ -68,16 +68,16 @@ const IconLink = ({ SocialIcon }) => (
     </Link>
   </div>
 );
-const MainMenuLink = ({ key, menuItem }) => (
-  <li key={key} className="pb-2 cursor-pointer whitespace-nowrap overflow-hidden">
+const MainMenuLink = ({ menuItem }) => (
+  <li key={menuItem.title} className="pb-2 cursor-pointer whitespace-nowrap overflow-hidden">
     <Link href={menuItem.path}>
       <a>{menuItem.title}</a>
     </Link>
   </li>
 );
 
-const OtherMenuLink = ({ key, menuItem }) => (
-  <li className="pb-2 block cursor-pointer whitespace-nowrap overflow-hidden">
+const OtherMenuLink = ({ menuItem }) => (
+  <li key={menuItem.title} className="pb-2 block cursor-pointer whitespace-nowrap overflow-hidden">
     <Link href={menuItem.path}>
       <a>{menuItem.title}</a>
     </Link>
@@ -128,7 +128,7 @@ const Footer = () => (
               </span>
               <ul className="list-none  text-sm">
                 {FooterMainMenuItems.map((menuItem) => (
-                  <MainMenuLink key={menuItem.title} menuItem={menuItem} />
+                  <MainMenuLink menuItem={menuItem} />
                 ))}
               </ul>
             </div>
@@ -138,7 +138,7 @@ const Footer = () => (
               </span>
               <ul className="list-none  text-sm">
                 {FooterOtherMenuItems.map((menuItem) => (
-                  <OtherMenuLink key={menuItem.title} menuItem={menuItem} />
+                  <OtherMenuLink menuItem={menuItem} />
                 ))}
               </ul>
             </div>

@@ -4,11 +4,12 @@ import { BsPencil, BsCalendar3 } from 'react-icons/bs';
 import { FiUser } from 'react-icons/fi';
 import { BiTimer } from 'react-icons/bi';
 import Image from 'next/image';
+import PostDate from './Post/PostDate';
 
 const BlogTitleBar = ({ frontMatter }) => {
   const [month, year] = frontMatter.date.split(',');
   console.log(year);
-  console.log(month);
+  console.log(frontMatter.readingTime);
   const color = ['bg-red-600', 'bg-blue-700', 'bg-green-700'];
 
   return (
@@ -46,18 +47,8 @@ const BlogTitleBar = ({ frontMatter }) => {
                 {frontMatter.title}
               </h1>
               <div className="flex my-4 text-zinc-400 font-Monda text-xs inline gap-x-4 md:gap-x-12">
-                <div className="flex">
-                  <FiUser className="text-base mr-2" />
-                  {frontMatter.author}
-                </div>
-                <div className="flex">
-                  <BsCalendar3 className="text-base mr-2" />
-                  {frontMatter.date}
-                </div>
-                <div className="flex">
-                  <BiTimer className="text-base mr-2" />
-                  {frontMatter.readingTime.text}
-                </div>
+                <PostDate date={frontMatter.date} readingTime={Math.ceil(frontMatter.readingTime.minutes)} author={frontMatter.author} />
+
               </div>
             </div>
           </div>
