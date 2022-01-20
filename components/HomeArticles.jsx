@@ -6,7 +6,7 @@ import HorizontalCard from './Post/HorizontalCard';
 
 export default function HomeArticles({ posts }) {
   return (
-    <div className="relative bg-slate-200 dark:bg-slate-400 py-4">
+    <div className="relative px-2 bg-slate-200 dark:bg-slate-400 py-4 ">
       <div
         className="bottom-auto top-0 left-0 right-0 w-full absolute pointer-events-none overflow-hidden -mt-20 h-20 "
         style={{ transform: 'translateZ(0)' }}
@@ -28,7 +28,7 @@ export default function HomeArticles({ posts }) {
       </div>
       <h1 className="mt-4 mb-0 font-Offside underline underline-offset-2 mx-auto justify-center text-center">Articles</h1>
       {/* <div className="w-full lg:max-w-[1167px] lg:mx-auto py-10 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-8"> */}
-      <div className="w-full lg:max-w-[1167px] lg:mx-auto py-10 ">
+      <div className="container lg:mx-auto py-10 ">
         {posts.map((post, index) => {
           const postData = FlatMDXData(post);
           return (

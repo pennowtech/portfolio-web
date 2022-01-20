@@ -5,7 +5,7 @@ import {
 } from 'react-icons/im';
 
 const MenuItems = [
-  { title: 'Home', path: '/' },
+  { title: 'Home', path: 'home' },
   { title: 'Articles', path: 'articles' },
   { title: 'About Me', path: 'about-me' },
   { title: 'Contact', path: 'contact' },

@@ -11,6 +11,7 @@ import path from 'path';
 import matter from 'gray-matter';
 
 import dynamic from 'next/dynamic';
+import HeaderMain from '@components/HeaderMain';
 import BlogTitleBar from '../../components/BlogTitleBar';
 import Article from '../../components/Article';
 import FullLayout from '../../components/FullLayout';
@@ -91,6 +92,7 @@ const PostPage = ({ frontMatter, mdxSource, content }) => {
   };
   return (
     <FullLayout metaInfo={metaInfo}>
+      <HeaderMain />
       <BlogTitleBar frontMatter={frontMatter} />
 
       <div className="w-full lg:max-w-[1167px] lg:mx-auto flex flex-col wide:flex-row flex-grow overflow-hidden  ">

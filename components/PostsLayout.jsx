@@ -1,8 +1,8 @@
 import React from 'react';
 
 import Head from 'next/head';
-import Header from './Header';
 import Sidebar from './Sidebar';
+import HeaderMain from './HeaderMain';
 
 const PostsLayout = ({ pageTitle = 'Title', metaInfo, ...props }) => {
   const { title, metaKeywords, metaDesc } = metaInfo;
@@ -14,7 +14,7 @@ const PostsLayout = ({ pageTitle = 'Title', metaInfo, ...props }) => {
         <meta name="keywords" content={metaKeywords} />
       </Head>
       <div className="flex flex-col">
-        <Header />
+        <HeaderMain />
         <div id="content" className="flex-grow mx-auto w-full">
           <div className="w-full lg:max-w-[1167px] lg:mx-auto p-4 lg:py-12 ">
             <h1 className="mt-8">{pageTitle}</h1>

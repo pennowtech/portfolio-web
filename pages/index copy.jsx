@@ -4,10 +4,10 @@ import path from 'path';
 import matter from 'gray-matter';
 
 import { Element } from 'react-scroll';
-import BlogMain from '../components/BlogMain';
+import BlogMain from '../components/Intro/IntroHighlight';
 import Login from '../components/Login';
 import ThemeToggle from '../components/ThemeToggle';
-import Header from '../components/Header';
+import Header from '../components/HeaderMain';
 import HomeArticles from '../components/HomeArticles';
 import 'tailwindcss/tailwind.css';
 import ContactForm from '../components/ContactForm';
