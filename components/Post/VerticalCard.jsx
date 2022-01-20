@@ -4,12 +4,13 @@ import Link from 'next/link';
 import PostTags from './PostTags';
 import PostDate from './PostDate';
 import PostCategories from './PostCategories';
+import PostExcerpt from './PostExcerpt';
 
 const VerticalCard = ({ post }) => (
   <div className="max-w-sm rounded-lg overflow-hidden shadow-lg mb-6 block bg-slate-50  dark:bg-gray-700">
 
-    <div className="grow rounded-lg cursor-pointer ">
-      <div className="rounded-lg">
+    <div className="grow rounded-lg  ">
+      <div className="relative rounded-lg">
         <div className="relative rounded-t-lg overflow-hidden">
           <Link href={`/blog/${post.link}`}>
             <a>
@@ -56,6 +57,7 @@ const VerticalCard = ({ post }) => (
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </div>

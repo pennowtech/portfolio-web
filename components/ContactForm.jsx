@@ -1,12 +1,18 @@
 import React from 'react';
+import Link from 'next/link';
 
 function ContactForm() {
   return (
-    <div className="relative py-16 ">
+    <div className="relative container mx-auto py-16 px-4 md:px-2">
       <h2 className="flex justify-center lg:text-3xl text-bold leading-normal md:mt-20 mt-8">
         Want to Contact me?
       </h2>
-      <p className="flex justify-center text-bold leading-normal md:mb-20 mb-8">Complete this form and I will get back to you.</p>
+      <p className="flex justify-center text-bold leading-normal md:mb-2 mb-8">Complete this form and I will get back to you.</p>
+      <div className="flex font-semibold items-center justify-center text-bold leading-normal md:mb-20 mb-8">
+        Or better contact me through
+        <Link href="http://linkedin.com/in/pennowtech"><a className="text-red-400 dark:text-pink-500">&nbsp; linkedin</a></Link>
+      </div>
+      {' '}
       <div className="flex justify-center">
         <form className="w-full max-w-lg">
           <div className="flex flex-wrap -mx-3 mb-6">

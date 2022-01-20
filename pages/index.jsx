@@ -10,13 +10,15 @@ import SelectedPosts from '@components/SelectedPosts';
 import { SELECTED_POST_QUERY } from 'queries/queries';
 import { gqlClient } from '@utils/gqlclient';
 import { SelectedPostsList } from '@utils/consts';
-import BlogMain from '../components/BlogMain';
+import IntroHighlight from '../components/Intro/IntroHighlight';
 import Login from '../components/Login';
 import HomeArticles from '../components/HomeArticles';
 import 'tailwindcss/tailwind.css';
 import ContactForm from '../components/ContactForm';
 import FullLayout from '../components/FullLayout';
 import { ssrCache } from '../utils/gqlclient';
+import AboutSection from '@components/Intro/AboutSection';
+import HeaderMain from '@components/HeaderMain';
 
 function Index({ posts, selectedposts }) {
   const metaInfo = {
@@ -26,18 +28,23 @@ function Index({ posts, selectedposts }) {
   };
   return (
     <FullLayout metaInfo={metaInfo}>
+      <HeaderMain />
 
-      <Element id="about-me" className="element min-h-[600px]">
-        <SelectedPosts selectedposts={selectedposts} />
-        <Login />
+      <Element id="home" className="element">
+        <AboutSection />
       </Element>
-      <Element id="blog" className="element min-h-[630px]">
-        <BlogMain />
+      <Element id="Selected" className="element">
+        <SelectedPosts selectedposts={selectedposts} />
+      </Element>
+      <Element id="about-me" className="element min-h-[630px]">
+        <IntroHighlight />
       </Element>
       <Element id="articles" className="element">
         <HomeArticles posts={posts} />
       </Element>
-      <ContactForm />
+      <Element id="contact" className="element">
+        <ContactForm />
+      </Element>
     </FullLayout>
   );
 }
@@ -56,7 +63,9 @@ export const getStaticProps = async () => {
       blog: filename.split('.')[0],
     };
   });
-
+  posts.sort((a, b) => Date.parse(b.frontMatter.date) - Date.parse(a.frontMatter.date));
+  // posts.forEach((p) => console.log(Date.parse(p.frontMatter.date)));
+  console.log(posts);
   const res = await fetch('http://localhost:3000/api/selectedposts', {
     method: 'GET',
     headers: {

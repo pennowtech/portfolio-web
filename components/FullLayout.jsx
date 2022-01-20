@@ -1,7 +1,6 @@
 import React from 'react';
 
 import Head from 'next/head';
-import Header from './Header';
 import Footer from './Footer';
 
 const FullLayout = (props) => {
@@ -14,7 +13,6 @@ const FullLayout = (props) => {
         <meta name="keywords" content={metaKeywords} />
       </Head>
       <div className="flex flex-col">
-        <Header />
         <div
           id="content"
           className="flex-grow mx-auto w-full"
