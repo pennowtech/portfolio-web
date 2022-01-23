@@ -26,6 +26,7 @@ function code({ className, children, filename, hl, ...props }) {
     <SyntaxHighlighter
       language={match[1]}
       PreTag="div"
+      // eslint-disable-next-line react/no-children-prop
       children={children.trim()}
       style={theme}
       wrapLines={true}
