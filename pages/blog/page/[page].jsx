@@ -1,11 +1,12 @@
+/* eslint-disable react/destructuring-assignment */
 import React from 'react';
 import gql from 'graphql-tag';
 import { withUrqlClient } from 'next-urql';
 import { defaultExchanges, useQuery } from 'urql';
 import { devtoolsExchange } from '@urql/devtools';
-import { getPageOffset } from '@components/Pagination/PaginationUtils';
 import { GET_TOTAL_POSTS_COUNT, PAGES_POSTS_QUERY } from 'queries/queries';
-import { gqlClient, ssrCache } from '../../../utils/gqlclient';
+import { getPageOffset } from '../../../components/Pagination/PaginationUtils';
+import { gqlAuthClient, gqlClient, ssrCache } from '../../../utils/gqlclient';
 import PostsLayout from '../../../components/PostsLayout';
 import { GRAPHQL_URL, PER_PAGE_BLOGS } from '../../../utils/consts';
 import Posts from '../../../components/PostList';
@@ -30,14 +31,14 @@ const Blog = (props) => {
 };
 
 export async function getStaticPaths() {
-  const result = await gqlClient.query(GET_TOTAL_POSTS_COUNT).toPromise();
+  const result = await gqlAuthClient(false).query(GET_TOTAL_POSTS_COUNT).toPromise();
   const totalPosts = result?.data?.postsCount?.pageInfo?.offsetPagination?.total ?? 0;
   const totalPages = Math.ceil(totalPosts / PER_PAGE_BLOGS);
   console.warn('Fetching All Posts data...', totalPosts);
 
   const paths = [];
 
-  for (let page = 1; page <= totalPages; page++) {
+  for (let page = 1; page <= totalPages; page += 1) {
     paths.push({ params: { page: page.toString() } });
   }
 
@@ -48,7 +49,7 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  const s = await gqlClient.query(PAGES_POSTS_QUERY, {
+  const s = await gqlAuthClient(false).query(PAGES_POSTS_QUERY, {
     perPage: PER_PAGE_BLOGS,
     offset: getPageOffset(params.page),
   }).toPromise();

@@ -1,36 +1,33 @@
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
-import { FaCaretRight } from 'react-icons/fa';
 import { htmlToText } from 'html-to-text';
-import DOMPurify from 'dompurify';
-import { FlatWPData } from '@utils/FlatData';
+import { FlatWPData } from '../utils/FlatData';
 import PostDate from './Post/PostDate';
 import PostTags from './Post/PostTags';
 import PostExcerpt from './Post/PostExcerpt';
 import PostCategories from './Post/PostCategories';
+import ImageWithFallback from './ImageWithFallback';
 
 const Post = ({ post }) => {
   // const excerpt = htmlToText(DOMPurify.sanitize(post?.excerpt));
-  post = FlatWPData(post);
+  post = FlatWPData(post); // eslint-disable-line no-param-reassign
   const excerpt = htmlToText(post?.excerpt);
   const blogUrl = `/blog/${post.link}`;
   // const tags = post?.tags?.edges?.map((tag) => tag.node.name);
-  const featuredImage = post?.featuredImage ? post?.featuredImage.node.sourceUrl : '/blank.jpg';
   return (
     <div className="border-b-2 border-slate-200 dark:border-slate-500">
       <Link href={blogUrl}>
         <a href={blogUrl}>
           <div className="cursor-pointer">
-            <div className="relative w-full max-h-[350px]">
+            <div className="relative w-full h-52 md:h-64 lg:h-80">
 
-              <Image
-                src={featuredImage}
-                alt={post?.featuredImage?.node.altText}
+              <ImageWithFallback
+                src={post?.thumbnailUrl}
+                fallbackSrc="/blank.jpg"
+                layout="fill"
+                alt={post?.altText}
                 title={post.title}
                 className="object-cover w-full rounded-xl"
-                width={800}
-                height={350}
               />
               <PostCategories categories={post.categories} />
 

@@ -13,6 +13,7 @@
   transform: translateX(24px);
   transition: transform 0.3s linear;
 } */
+
 @layer components {
   #nprogress .bar {
     @apply dark:bg-slate-100 bg-slate-800;

@@ -1,19 +1,18 @@
+/* eslint-disable max-len */
 import React from 'react';
 
 import Link from 'next/link';
 import { GrReactjs, GrSystem } from 'react-icons/gr';
-import { SiNextdotjs, SiJavascript, SiCplusplus } from 'react-icons/si';
+import { SiNextdotjs, SiCplusplus } from 'react-icons/si';
 import { IoLogoJavascript, IoMdBuild } from 'react-icons/io';
 import { MdOutlineDesignServices, MdOutlineDeveloperMode, MdOutlineStickyNote2 } from 'react-icons/md';
 import Image from 'next/image';
-import PostTags from '@components/Post/PostTags';
 import {
   BsHddNetwork, BsLayoutTextWindow, BsListCheck, BsTools,
 } from 'react-icons/bs';
 import { FiDatabase } from 'react-icons/fi';
-import { BiCompass } from 'react-icons/bi';
-import { FaCompass, FaDraftingCompass } from 'react-icons/fa';
-import VerticalCard from '@components/Post/VerticalCard';
+import { FaDraftingCompass } from 'react-icons/fa';
+import PostTags from '../Post/PostTags';
 import TechCard from './TechCard';
 import ProfileCard from './ProfileCard';
 
@@ -52,7 +51,8 @@ const IntroHighlight = () => (
                   </div>
                 </div>
                 <p className="mb-4">
-                  Worked with various networking protocols, like TCP, IPV4, IPv6, DHCP, SNMP, ARP, etc.
+                  Worked with various networking protocols, like
+                  &nbsp;TCP, IPV4, IPv6, DHCP, SNMP, ARP, etc.
                 </p>
               </div>
             </div>
@@ -135,13 +135,13 @@ const IntroHighlight = () => (
 
         <div className="w-full md:w-4/12 mr-auto px-4 pt-4 md:pt-0">
           <div
-            className="shadow-xl"
+            className="shadow-xl relative h-48 lg:h-56"
             style={{
               transform:
                     'perspective(1040px) rotateY(-11deg) rotateX(2deg) rotate(2deg)',
             }}
           >
-            <Image width={540} height={371} src="/blank.jpg" className="rounded-t-lg " />
+            <Image layout="fill" src="/blank.jpg" className="rounded-lg " />
           </div>
         </div>
       </div>

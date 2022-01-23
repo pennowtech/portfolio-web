@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 
-import { FlatMDXData } from '@utils/FlatData';
+import { FlatMDXData } from '../utils/FlatData';
 import HorizontalCard from './Post/HorizontalCard';
 
 export default function HomeArticles({ posts }) {
@@ -27,12 +27,12 @@ export default function HomeArticles({ posts }) {
         </svg>
       </div>
       <h1 className="mt-4 mb-0 font-Offside underline underline-offset-2 mx-auto justify-center text-center">Articles</h1>
-      {/* <div className="w-full lg:max-w-[1167px] lg:mx-auto py-10 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-8"> */}
+
       <div className="container lg:mx-auto py-10 ">
         {posts.map((post, index) => {
           const postData = FlatMDXData(post);
           return (
-            <HorizontalCard post={postData} key={index} />
+            <HorizontalCard post={postData} key={postData.link} />
           );
         })}
 

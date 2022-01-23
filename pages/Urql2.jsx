@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import { useQuery, useMutation } from 'urql';
 import gql from 'graphql-tag';
 import { useAlert } from 'react-alert';
+import { CREATE_POST } from 'queries/queries';
 import { setToken, deleteToken, getToken } from '../utils/token';
-import PostUrql from './post_urql';
 
 const QueryString = gql`
 query Posts($id: ID!)
@@ -49,11 +49,18 @@ mutation CREATE_POST($title: String!, $content: String!) {
     title: $title
     content: $content
     status: PUBLISH
-  }) {
+    excerpt: $description
+    readingTime: $readingTime
+    categories: $categories
+    slug:$slug
+    tags:$tags
+    }) {
     post {
       id
       title
       date
+
+
     }
   }
 }
@@ -117,10 +124,12 @@ const Urql2 = () => {
       });
   }, [executeLoginUser]);
   //------------------------
-  const [res2, executePostCreation] = useMutation(createPostString);
+  const [res2, executePostCreation] = useMutation(CREATE_POST);
   const CreatePost = React.useCallback(() => {
     // executePostCreation()
-    executePostCreation({ title: 'New Course!', content: 'Dummy' })
+    executePostCreation({
+      title: 'New Course2!', content: 'Dummy', description: 'excerpt', slug: 'slug-1', tag: 'tag-1', cat: 'cat-1',
+    })
       .then((result) => {
         console.log(result);
         if (result.error) {
@@ -157,7 +166,6 @@ const Urql2 = () => {
       >
         Get Post
       </button>
-      {' '}
       <button
         type="button"
         className="pointer mr2 button"
@@ -166,26 +174,27 @@ const Urql2 = () => {
       >
         Create Post
       </button>
-      {isLogin ? (
-        <button
-          type="button"
-          className="pointer mr2 button"
+      {isLogin
+        ? (
+          <button
+            type="button"
+            className="pointer mr2 button"
       // disabled={state.fetching}
-          onClick={executeLogout}
-        >
-          Logout
-        </button>
-      ) : (
-        <button
-          type="button"
-          className="pointer mr2 button"
+            onClick={executeLogout}
+          >
+            Logout
+          </button>
+        )
+        : (
+          <button
+            type="button"
+            className="pointer mr2 button"
       // disabled={state.fetching}
-          onClick={executeLogin}
-        >
-          Login
-        </button>
-      )}
-      <PostUrql />
+            onClick={executeLogin}
+          >
+            Login
+          </button>
+        )}
     </div>
   );
 };

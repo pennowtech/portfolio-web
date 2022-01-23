@@ -1,8 +1,8 @@
+/* eslint-disable max-len */
 import React from 'react';
 import Image from 'next/image';
 import { Link as ScrollLink } from 'react-scroll';
 import { FaCodepen, FaLaptopCode } from 'react-icons/fa';
-import { SiCodeproject } from 'react-icons/si';
 import { GrStackOverflow } from 'react-icons/gr';
 
 const AboutSection = () => {
@@ -142,7 +142,6 @@ const AboutSection = () => {
                           Reviewed and revised software designs, and to propose architectural improvements
                         </li>
                       </ul>
-                      <p className="font-Offside text-lg">The main purpose of this site is to note down my learnings and share my thoughts.</p>
                     </div>
 
                     <ScrollLink
