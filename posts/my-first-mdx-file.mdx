@@ -1,0 +1,75 @@
+---
+title: Functions for Beginners
+date: "August 4, 2021"
+description: Learn how to create and use functions
+thumbnailUrl: "/thumbnail.jpg"
+tags: ["functions", "javascript"]
+---
+
+export const name = "world";
+
+# Hello {name}
+
+# Last year’s snowfall
+
+I **love** using [Next.js](https://nextjs.org/)
+
+In {{year}}, {year} the snowfall was above average.
+It was followed by a warm spring which caused
+flood <div className='underline'>conditions</div> in many of the nearby rivers.
+
+> A block quote with ~~strikethrough~~ and a URL: https://reactjs.org.
+
+- Lists
+- [ ] todo
+- [x] done
+
+A table:
+
+| a   | b   |
+| --- | --- |
+
+We just used a `###` subheading in our blog post.
+
+Following example is of `code`.
+
+```js filename="myfile.js" hl=2,4-8
+const Highlighter = (props) => {
+  const result = props.linesToHighlight.split(",");
+  var linesToHighlight = convertLineStrToArray(props.linesToHighlight);
+
+  console.log(linesToHighlight);
+  return (
+    <SyntaxHighlighter
+      language={props.language}
+      wrapLines={true}
+      showLineNumbers={true}
+      style={theme}
+      lineProps={(lineNumber) => {
+        const style = {
+          display: "block",
+          width: "100%",
+        };
+        if (linesToHighlight.includes(lineNumber)) {
+          style.backgroundColor = lineHighlight;
+          style.borderLeft = "4px solid #3f51b5";
+          style.marginLeft = -16px;
+          style.marginRight = -16px;
+        }
+        return { style };
+      }}
+    >
+      {props.children.trim()}
+    </SyntaxHighlighter>
+  );
+};
+export default Highlighter;
+```
+
+<Button text={btn_text} />
+<Image
+  width={200}
+  height={200}
+  alt="sds"
+  src="https://www.nasa.gov/sites/default/files/1-bluemarble_west.jpg"
+/>; ```
