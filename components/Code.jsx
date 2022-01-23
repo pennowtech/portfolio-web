@@ -37,7 +37,6 @@ function Code({
       language={match[1]}
       children={codeText}
       PreTag="div"
-      style={codeTheme}
       wrapLines
       showLineNumbers
       lineProps={(lineNumber) => {
