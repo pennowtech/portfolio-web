@@ -1,7 +1,8 @@
+/* eslint-disable react/destructuring-assignment */
 import React from 'react';
 
 import { PAGES_POSTS_QUERY } from 'queries/queries';
-import { gqlClient, ssrCache } from '../../utils/gqlclient';
+import { gqlAuthClient, gqlClient, ssrCache } from '../../utils/gqlclient';
 import PostsLayout from '../../components/PostsLayout';
 import { PER_PAGE_BLOGS } from '../../utils/consts';
 import PostList from '../../components/PostList';
@@ -27,7 +28,7 @@ const Blog = (props) => {
 };
 
 export async function getStaticProps() {
-  const result = await gqlClient.query(PAGES_POSTS_QUERY, {
+  const result = await gqlAuthClient(false).query(PAGES_POSTS_QUERY, {
     perPage: PER_PAGE_BLOGS,
     offset: null,
   }).toPromise();

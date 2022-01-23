@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import ImageWithFallback from '../ImageWithFallback';
 import PostTags from './PostTags';
 import PostDate from './PostDate';
 import PostCategories from './PostCategories';
@@ -11,16 +12,16 @@ const HorizontalCard = ({ post }) => (
 
     <div className="rounded-lg">
       <div className="relative grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 lg:gap-8 rounded-l-lg overflow-hidden">
-        <div>
+        <div className="relative w-full h-52 md:h-64 lg:h-80">
           <Link href={`/blog/${post.link}`}>
             <a>
-              <Image
-                src={post.thumbnailUrl}
-                alt={post.title}
-                layout="intrinsic"
+              <ImageWithFallback
+                src={post?.thumbnailUrl}
+                fallbackSrc="/blank.jpg"
                 className="object-cover w-full"
-                width={700}
-                height={550}
+                layout="fill"
+                alt={post?.altText}
+                title={post.title}
               />
               <PostCategories categories={post.categories} />
             </a>

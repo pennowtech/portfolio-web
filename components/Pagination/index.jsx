@@ -1,6 +1,5 @@
 import React from 'react';
 import Link from 'next/link';
-import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import cx from 'classnames';
 import { createPaginationLinks } from './PaginationUtils';
@@ -32,6 +31,7 @@ const Pagination = ({ totalPages, postName }) => {
 
         return (
           typeof pageNo === 'number' ? (
+            /* eslint-disable react/no-array-index-key */
             <Link key={`id-${index}`} href={paginationLink}>
               <a
                 className={cx('border rounded-full border-gray-300 px-4 py-2 font-Monda transition duration-500 ease-in-out hover:bg-gray-400 hover:text-white', {

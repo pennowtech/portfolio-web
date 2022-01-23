@@ -27,7 +27,7 @@ export function FlatMDXData(postData) {
 export function FlatWPData(postData) {
   const post = {};
   post.title = postData.title;
-  post.thumbnailUrl = postData?.featuredImage ? postData?.featuredImage.node.sourceUrl : '/blank.jpg';
+  post.thumbnailUrl = postData?.featuredImage ? postData?.featuredImage.node.sourceUrl : `/${postData.slug}.jpg`;
   post.categories = postData.categories.edges.map((cat) => {
     const catDict = {};
     catDict.name = cat.node.name;

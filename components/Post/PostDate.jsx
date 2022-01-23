@@ -9,11 +9,11 @@ import { DateForDateTime, DateForDisplay } from '../../utils/date';
 const PostDate = ({ date, readingTime, author }) => {
   if (date === undefined) { return ''; }
   return (
-    <div className="m-0 overflow-hidden text-muted text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase font-Monda">
+    <div className="m-0 overflow-hidden text-muted text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase font-Monda flex h-full items-center">
       {author
       && (
       <div className="inline-block">
-        <div className="flex">
+        <div className="flex h-full items-center">
           <BiUserCircle className="text-base mr-2" />
           {author}
           <BiDotsVerticalRounded className="mx-2 md:mx-4 inline-block" />
@@ -21,7 +21,7 @@ const PostDate = ({ date, readingTime, author }) => {
       </div>
       )}
       <div className="inline-block">
-        <div className="flex">
+        <div className="flex h-full items-center">
           <BiCalendar className="text-base mr-2" />
           <time dateTime={DateForDateTime(date)}>
             {DateForDisplay(date)}
@@ -30,7 +30,7 @@ const PostDate = ({ date, readingTime, author }) => {
       </div>
       {readingTime && (
       <div className="inline-block">
-        <div className="flex">
+        <div className="flex h-full items-center">
           <BiDotsVerticalRounded className="mx-2 md:mx-4 inline-block" />
           <BiTimer className="text-base mr-2" />
           {`${readingTime} min read`}

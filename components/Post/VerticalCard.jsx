@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import ImageWithFallback from '../ImageWithFallback';
 import PostTags from './PostTags';
 import PostDate from './PostDate';
 import PostCategories from './PostCategories';
@@ -14,10 +15,10 @@ const VerticalCard = ({ post }) => (
         <div className="relative rounded-t-lg overflow-hidden">
           <Link href={`/blog/${post.link}`}>
             <a>
-              <Image
+              <ImageWithFallback
+                fallbackSrc="/blank.jpg"
                 src={post.thumbnailUrl}
                 alt={post.title}
-                layout="intrinsic"
                 className="object-cover w-full"
                 width={700}
                 height={465}

@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 import React from 'react';
 import Link from 'next/link';
 
@@ -26,6 +27,7 @@ function ContactForm() {
               <input
                 className="appearance-none block w-full bg-gray-100 dark:bg-gray-300 text-gray-700 dark:border-gray-800 rounded-lg py-3 px-4 leading-tight focus:outline-none border-secondary border-4 focus:bg-white border-gray-300 focus:border-gray-400"
                 id="firstname"
+                name="firstname"
                 type="text"
                 placeholder="First Name"
               />
@@ -70,7 +72,6 @@ function ContactForm() {
               <label
                 htmlFor="message"
                 className="block uppercase tracking-wide text-xs font-bold mb-2"
-                htmlFor="message"
               >
                 Message
               </label>

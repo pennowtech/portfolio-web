@@ -3,7 +3,6 @@ import React from 'react';
 import Image from 'next/image';
 import { MDXRemote } from 'next-mdx-remote';
 
-import Button from './Button';
 import code from './Code';
 
 const data = { btn_text: 'Click Me' };
@@ -16,7 +15,6 @@ const Article = ({ frontMatter, mdxSource }) => (
         {...mdxSource}
         components={{
           // <h2 className="text-5xl" {...props} />,
-          Button,
           code,
           Image,
         }}

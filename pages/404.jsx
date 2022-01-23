@@ -1,3 +1,5 @@
+import React from 'react';
+
 import Link from 'next/link';
 import PostsLayout from '../components/PostsLayout';
 
@@ -43,13 +45,13 @@ function Error404({ data }) {
 export default Error404;
 
 // export async function getStaticProps() {
+//   const { data } = await client.query({
+//     query: GET_MENUS,
+//   });
 
-// 	const {data} = await client.query( {
-// 		query: GET_MENUS,
-// 	} );
-
-// 	return {
-// 		props: {
-// 			data: data || {}
-// 		},
-// 	};
+//   return {
+//     props: {
+//       data: data || {},
+//     },
+//   };
+// }

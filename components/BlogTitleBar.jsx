@@ -8,8 +8,6 @@ import PostDate from './Post/PostDate';
 
 const BlogTitleBar = ({ frontMatter }) => {
   const [month, year] = frontMatter.date.split(',');
-  console.log(year);
-  console.log(frontMatter.readingTime);
   const color = ['bg-red-600', 'bg-blue-700', 'bg-green-700'];
 
   return (
@@ -26,11 +24,11 @@ const BlogTitleBar = ({ frontMatter }) => {
         <span className="-mt-1 text-3xl ">{year.trim().slice(2, 4)}</span>
       </div>
       <div className="md:max-w-screen-lg xl:max-w-[1167px] mx-auto">
-        <div className="absolute mx-4 w-full bottom-0 text-white justify-center leading-4 md:max-w-screen-lg xl:max-w-[1167px] items-center mx-auto">
+        <div className="absolute w-full bottom-0 text-white justify-center leading-4 md:max-w-screen-lg xl:max-w-[1167px] items-center mx-auto">
           <div className="my-4 text-white text-sm md:text-base font-Offside  flex gap-x-4">
             {frontMatter.tags.map((tag, idx) => (
               <div
-                key={tag + idx}
+                key={tag}
                 className={`${color[idx]} rounded-full px-2 md:px-6`}
               >
                 {tag}
@@ -46,8 +44,12 @@ const BlogTitleBar = ({ frontMatter }) => {
               <h1 className="mb-2 font-Neuton text-3xl md:text-6xl pr-4 text-slate-50">
                 {frontMatter.title}
               </h1>
-              <div className="flex my-4 text-zinc-400 font-Monda text-xs inline gap-x-4 md:gap-x-12">
-                <PostDate date={frontMatter.date} readingTime={Math.ceil(frontMatter.readingTime.minutes)} author={frontMatter.author} />
+              <div className="flex my-4 text-zinc-400 font-Monda text-xs gap-x-4 md:gap-x-12">
+                <PostDate
+                  date={frontMatter.date}
+                  readingTime={Math.ceil(frontMatter.readingTime.minutes)}
+                  author={frontMatter.author}
+                />
 
               </div>
             </div>

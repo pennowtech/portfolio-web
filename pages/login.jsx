@@ -1,20 +1,21 @@
 import React from 'react';
+import Login from '../components/Login';
 import FullLayout from '../components/FullLayout';
 import HeaderMain from '../components/HeaderMain';
-import ContactForm from '../components/ContactForm';
 
-const contact = () => {
+export default function LoginForm() {
   const metaInfo = {
-    title: 'Contact Us',
-    metaKeywords: '',
+    title: 'Login Form',
+    metaKeywords: 'markdown',
     metaDesc: '',
   };
+
   return (
     <FullLayout metaInfo={metaInfo}>
       <HeaderMain />
-      <ContactForm />
+      <div className="mt-12" />
+      <Login />
     </FullLayout>
-  );
-};
 
-export default contact;
+  );
+}

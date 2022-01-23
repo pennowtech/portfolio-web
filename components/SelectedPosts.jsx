@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatWPData } from '@utils/FlatData';
+import { FlatWPData } from '../utils/FlatData';
 import VerticalCard from './Post/VerticalCard';
 
 export default function SelectedPosts({ selectedposts }) {

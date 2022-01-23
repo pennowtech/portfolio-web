@@ -8,7 +8,7 @@ export const getPageOffset = (pageNo) => {
      * @type {number}
      */
   let offset = 0;
-  pageNo = Number(pageNo);
+  pageNo = Number(pageNo); // eslint-disable-line no-param-reassign
   if (pageNo === 1) {
     offset = 0;
   } else {
@@ -63,7 +63,8 @@ export const createPaginationLinks = (currentPage, totalPages) => {
   /**
      * Push the '...' at the end of the array.
      * only if the difference of between the last and 2nd last item is greater than 2.
-     * We remove the count of dot items from the array to get the actual indexes, while checking the condition.
+     * We remove the count of dot items from the array to get the
+     * actual indexes, while checking the condition.
      */
   if (totalPages - paginationArray[paginationArray.length - (2 - countOfDotItems)] > 2) {
     paginationArray.push('...');

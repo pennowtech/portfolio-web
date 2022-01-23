@@ -37,4 +37,4 @@ yarn-error.log*
 .pytest_cache
 test-results/
 playwright-report/
-dummy
+*.orig

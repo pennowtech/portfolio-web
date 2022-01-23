@@ -1,15 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 
 import { Element } from 'react-scroll';
-
 import algoliasearch from 'algoliasearch/lite';
-import SelectedPosts from '@components/SelectedPosts';
-import { SELECTED_POST_QUERY } from 'queries/queries';
-import { gqlClient } from '@utils/gqlclient';
-import { SelectedPostsList } from '@utils/consts';
+import { SELECTED_POST_QUERY, LOGIN_WP_USER } from 'queries/queries';
+import { SelectedPostsList, GRAPHQL_URL } from '../utils/consts';
+import SelectedPosts from '../components/SelectedPosts';
+import { gqlClient, ssrCache } from '../utils/gqlclient';
 import IntroHighlight from '../components/Intro/IntroHighlight';
 import Login from '../components/Login';
 import ThemeToggle from '../components/ThemeToggle';
@@ -18,11 +17,38 @@ import HomeArticles from '../components/HomeArticles';
 import 'tailwindcss/tailwind.css';
 import ContactForm from '../components/ContactForm';
 import FullLayout from '../components/FullLayout';
-import { ssrCache } from '../utils/gqlclient';
-import AboutSection from '@components/Intro/AboutSection';
-import HeaderMain from '@components/HeaderMain';
+import AboutSection from '../components/Intro/AboutSection';
+import HeaderMain from '../components/HeaderMain';
+import { setToken, deleteToken } from '../utils/token';
+import PostTags from '../components/Post/PostTags';
+
+const LoginWP = () => {
+  console.warn('Creating token...');
+  fetch(GRAPHQL_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      query: LOGIN_WP_USER,
+      variables: {
+        username: 'sdsingh.developer@gmail.com',
+        password: 'eTR8b5AHG7',
+      },
+    }),
+  })
+    .then((res) => res.json())
+    .then((res) => {
+      // deleteToken();
+      setToken(res.data.login.authToken);
+    });
+};
 
 function Index({ posts, selectedposts }) {
+  // useEffect(() => {
+  //   LoginWP();
+  // }, []);
+
   const metaInfo = {
     title: 'Writing down my learnings',
     metaKeywords: 'Reactjs, C++, cpp, Python, Data Science, Database',
@@ -30,10 +56,27 @@ function Index({ posts, selectedposts }) {
   };
   return (
     <FullLayout metaInfo={metaInfo}>
-      <HeaderMain />
+      <HeaderMain homepage />
 
       <Element id="home" className="element">
         <AboutSection />
+        <div className="px-4 container font-Offside mx-auto text-base">
+          <p className="">The main purpose of this site is to note down my learnings and share my thoughts.</p>
+          <p className="text-pink-500 dark:text-green-400 font-semibold">This whole website is designed by me, from designing till development. </p>
+          <PostTags
+            limitedTags={false}
+            tags={[
+              { name: 'ReactJS' },
+              { name: 'NodeJS' },
+              { name: 'PostgreSQL' },
+              { name: 'GraphQL' },
+              { name: 'Urql' },
+              { name: 'REST API' },
+              { name: 'Axios' },
+            ]}
+          />
+        </div>
+
       </Element>
       <Element id="Selected" className="element">
         <SelectedPosts selectedposts={selectedposts} />
@@ -67,16 +110,8 @@ export const getStaticProps = async () => {
   });
   posts.sort((a, b) => Date.parse(b.frontMatter.date) - Date.parse(a.frontMatter.date));
   // posts.forEach((p) => console.log(Date.parse(p.frontMatter.date)));
-  console.log(posts);
-  const res = await fetch('http://localhost:3000/api/selectedposts', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  const selectedposts2 = await res.json()?.message;
 
-  const unresolvedPromises = SelectedPostsList.map((postId) => gqlClient.query(
+  const unresolvedPromises = SelectedPostsList.map((postId) => gqlClient().query(
     SELECTED_POST_QUERY,
     {
       id: postId,
@@ -84,6 +119,7 @@ export const getStaticProps = async () => {
   ).toPromise());
   const postResult = await Promise.all(unresolvedPromises);
   const selectedposts = postResult.map((value) => value.data);
+
   return {
     props: {
       posts,
