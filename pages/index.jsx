@@ -55,13 +55,13 @@ export const getStaticProps = async () => {
     };
   });
 
-  const res = await fetch('http://localhost:3000/api/selectedposts', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  console.log(11, res);
+  // const res = await fetch('/api/selectedposts', {
+  //   method: 'GET',
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //   },
+  // });
+  // console.log(11, res);
   const selectedposts = []; // await res.json();
 
   return {
