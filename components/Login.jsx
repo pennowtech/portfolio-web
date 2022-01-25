@@ -1,14 +1,14 @@
 const Login = () => {
   return (
-    <div class="bg-white shadow rounded-lg lg:flex items-center justify-center md:mt-0 w-full lg:max-w-screen-lg 2xl:max:max-w-screen-lg xl:p-0 md:mx-auto">
-      <div class="hidden lg:flex w-2/3 max-h-[450px]">
+    <div className="bg-white shadow rounded-lg lg:flex items-center justify-center md:mt-0 w-full lg:max-w-screen-lg 2xl:max:max-w-screen-lg xl:p-0 md:mx-auto">
+      <div className="hidden lg:flex w-2/3 max-h-[450px]">
         <img
-          class="rounded-l-lg"
+          className="rounded-l-lg"
           src="https://flowbite.com/application-ui/demo/images/authentication/login.jpg"
           alt="login image"
         />
       </div>
-      <div class="w-full p-6 sm:p-8 lg:p-16 lg:py-0 space-y-8">
+      <div className="w-full p-6 sm:p-8 lg:p-16 lg:py-0 space-y-8">
         <h2 className="text-2xl lg:text-3xl font-bold text-gray-900">
           Sign in to patform
         </h2>
