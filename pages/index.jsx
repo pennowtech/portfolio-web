@@ -30,7 +30,7 @@ function Home({ posts, selectedposts }) {
           <BlogMain />
         </Element>
         <Element id="articles" className="element min-h-[630px]">
-          <HomeArticles posts={posts} selectedposts={selectedposts} />
+          {/* <HomeArticles posts={posts} selectedposts={selectedposts} /> */}
         </Element>
         <Element id="notifications" className="element min-h-[600px]">
           test 3
@@ -61,8 +61,8 @@ export const getStaticProps = async () => {
       'Content-Type': 'application/json',
     },
   });
-
-  const selectedposts = await res.json();
+  console.log(11, res);
+  const selectedposts = []; // await res.json();
 
   return {
     props: {

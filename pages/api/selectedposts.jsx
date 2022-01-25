@@ -8,11 +8,16 @@ async function getSelectedPosts(db, req, res) {
       .find({})
       .sort({ published: -1 })
       .toArray();
+    console.log(23, JSON.stringify(posts));
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Cache-Control', 'max-age=180000');
+    res.end(JSON.stringify(posts));
     // return the posts
-    return res.json({
-      message: JSON.parse(JSON.stringify(posts)),
-      success: true,
-    });
+    // res.json({
+    //   message: JSON.parse(JSON.stringify(posts)),
+    //   success: true,
+    // });
   } catch (error) {
     // return the error
     return res.json({
@@ -49,12 +54,6 @@ export default async function handler(req, res) {
   const db = client.db(process.env.DB_NAME);
   // connect to the database
   // const { db } = await connectToDatabase();
-
-  // function for catch errors
-  const catcher = (error) => res.status(400).json({
-    message: new Error(error).message,
-    success: false,
-  });
 
   switch (req.method) {
     case 'GET':
