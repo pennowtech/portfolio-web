@@ -1,19 +1,17 @@
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { atomDark as darktheme } from "react-syntax-highlighter/dist/cjs/styles/prism";
-import { base16AteliersulphurpoolLight as lighttheme } from "react-syntax-highlighter/dist/cjs/styles/prism";
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { atomDark as darktheme, base16AteliersulphurpoolLight as lighttheme } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
-const colorMode = "light";
-const theme = colorMode === "light" ? lighttheme : darktheme;
-const lineHighlight = colorMode === "light" ? "#dfefffcc" : "#37415180";
+const colorMode = 'light';
+const theme = colorMode === 'light' ? lighttheme : darktheme;
+const lineHighlight = colorMode === 'light' ? '#dfefffcc' : '#37415180';
 
-const convertLineStrToArray = (str) =>
-  str.split(",").flatMap((s) => {
-    if (!s.includes("-")) return +s;
+const convertLineStrToArray = (str) => str.split(',').flatMap((s) => {
+  if (!s.includes('-')) return +s;
 
-    const [min, max] = s.split("-");
+  const [min, max] = s.split('-');
 
-    return Array.from({ length: max - min + 1 }, (_, n) => n + +min);
-  });
+  return Array.from({ length: max - min + 1 }, (_, n) => n + +min);
+});
 
 // const Highlighter = (props) => {
 //   const result = props.linesToHighlight.split(",");

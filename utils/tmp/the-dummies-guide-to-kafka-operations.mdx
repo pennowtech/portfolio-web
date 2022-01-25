@@ -1,0 +1,551 @@
+---
+author: Sukhdeep Singh
+categories:
+- Kafka
+date: May, 21
+description: ''
+post_status: publish
+post_type: post
+tags:
+- Guide
+- tutorials
+- Kafka
+thumbnailUrl: https://pennow.tech/wp-content/uploads/2021/05/checking-data-laptop.png
+title: The Dummies' Guide to Kafka Operations
+---
+
+In the last article, we discussed [Apache Kafka
+architecture](https://pennow.tech/apache-kafka-architecture-and-essential-
+components/). We also covered all the essential components of Apache Kafka. I
+tried to explain everything in a simple manner. Therefore, I feel it shouldn't
+be difficult for you to understand the various concepts. If you still have any
+questions, please let me know through your comments. In the current article,
+we'll install and set up Kafka. In the later part, we'll discuss common
+operations to get started with Kafka. Now let's start with installation first.
+
+## Kafka installation
+
+Kafka's basic requirement is Java. So make sure that Java is installed on your
+system by entering the following command:
+
+    
+    
+    $ java -version
+    
+
+If java is successfully installed on your machine, you could see the version
+of the installed Java. If it's not installed then follow the next step.
+Otherwise, jump straight to Kafka installation.
+
+> I'm using an Ubuntu machine for installation and setup. However, the steps
+> are almost similar for Mac. Windows OS might require different steps.
+> However, if you're using _cygwin_ or _WSL2_ on windows, then same steps can
+> be performed on windows too (except Java installation).
+
+### 1\. Install Java
+
+I'm not going into detail on how to install Java. However, I collected a few
+helpful link to install [Java on
+Ubuntu](https://www.digitalocean.com/community/tutorials/how-to-install-java-
+with-apt-on-ubuntu-18-04) or on [windows](https://www.guru99.com/install-
+java.html).
+
+### 2\. Apache Kafka Installation
+
+To install Kafka, just download and extract it. **Download Kafka** Download
+the latest version of Kafka from the Apache Kafka website: [Apache Kafka
+Download](https://kafka.apache.org/downloads.html) **Extract the tar file**
+Extract the tar file using the following command −
+
+    
+    
+    $ tar -zxf kafka_2.11.0.9.0.0 tar.gz
+    $ cd kafka_2.11.0.9.0.0
+    
+
+Now Kafka is ready to be used on your system. Let's start working with it.
+
+## Basic operations
+
+Now our Kafka is installed. Go to the root directory of Kafka where you
+extracted Kafka during Kafka installation.
+
+> If you're using windows, then I'll suggest you to use WSL as I found that
+> easier to setup.
+
+### Server Operations
+
+#### Start Zookeeper
+
+To run Kafka server/broker, first, you must run zookeeper:
+
+    
+    
+    $ bin/zookeeper-server-start.sh -daemon config/zookeeper.properties
+    
+
+By default, the zookeeper server runs on port number **2181**. If you want to
+verify it, just `telnet` to this port:
+
+    
+    
+    $ telnet localhost 2181
+    
+
+where `2181` is the port number and `localhost` is the hostname of the IP. If
+you notice the following response, then it means your zookeeper is running.
+
+    
+    
+    Connected to localhost.
+    
+
+Press `Ctrl+C` and come out of `telenet` prompt.
+
+#### Start Kafka server
+
+Now, You can start the server/broker by giving the following command
+
+    
+    
+    $ bin/kafka-server-start.sh -daemon config/server.properties
+    
+
+Running Kafka as root is not a recommended configuration. Kafka will try to
+connect to the zookeeper. By default, it will try to connect zookeeper running
+on port 2181 on the same machine. However, if Zookeeper is running on a
+different machine or a different port, then you will be required to edit your
+`config/server.properties`: `zookeeper.connect=<ip>:<port>` Here `ip`
+specifies the ip address of the machine, and `port` specifies the port number,
+where the zookeeper is running
+
+#### Stop the Servers
+
+After performing all the operations, you can stop the server using the
+following command −
+
+    
+    
+    $ bin/kafka-server-stop.sh
+    bin/zookeeper-server-stop.sh
+    
+
+Now we know how to start and stop the Kafka servers. Let's move ahead and
+discuss some common operations which we can perform through the command line.
+
+### Topics
+
+#### Creating a Kafka Topic
+
+To create a Kafka topic, you need to provide the zookeeper's _network_
+information. You also have to provide the _number of replications_ and
+_partitions_ to create. Format of `kafka-topics` command is: **Syntax**
+
+    
+    
+    $ bin/kafka-topics.sh --zookeeper [zookeeper-ip:port] --create --topic [topic_name] --replication-factor [num_replica] --partitions [num_partitions]
+    
+
+**Example** In our case, the zookeeper is running on the same machine at port
+_2181_. Thus `[zookeeper-ip:port]` will be replaced with `localhost:2181`.
+We'll assume the same for all of our future discussions unless specified
+explicitly. Thus to create a topic with `1` partition, and `1` replica-factor,
+the command would be:
+
+    
+    
+    $ bin/kafka-topics.sh --zookeeper localhost:2181 --create --topic first-topic --replication-factor 1 --partitions 1
+    
+
+We named our topic: `first-topic`. Obviously, you can give it any name. On
+successful execution, you should get output similar to the following:
+
+    
+    
+    Created topic first-topic
+    
+
+#### Listing of topics
+
+To get a list of topics in the Kafka server, you can use the following
+command:
+
+    
+    
+    bin/kafka-topics.sh --zookeeper localhost:2181 --list 
+    
+
+**Output**
+
+    
+    
+    __consumer_offset
+    first-topic
+    
+
+You might be surprised that we created only one topic: `first-topic`, then who
+created `__consumer_offset`. It's created by Kafka itself to store various
+offsets as we also discussed under [Essential features of the
+consumer](https://pennow.tech/apache-kafka-architecture-and-essential-
+components/#Essential_Features_of_the_consumers).
+
+#### Detail on a _topic_
+
+To get more details on a particular topic like replication factor, partition
+count, leader, and ISRs:
+
+    
+    
+    $ bin/kafka-topics.sh --zookeeper localhost:2181 --describe --topic first-topic
+    
+
+**Output:**
+
+    
+    
+    Topic:first-topic PartitionCount:1 ReplicationFactor:1 Configs:
+    Topic: first-topic Partition: 0 Leader: 0 Replicas: 0 Isr: 0
+    
+
+As you can see at the top, it's showing that the topic `first-topic` has
+`Partition count` 1 and `Replication factor` is also 1. The next lines provide
+information on each partition. As we've only one partition, it lists only that
+one.
+
+#### Modify a topic
+
+You can add more partitions to a topic by invoking `--alter`:
+
+    
+    
+    $ bin/Kafka-Topics.sh –zookeeper localhost:2181 --alter --topic first-topic --partitions 5
+    
+
+Note that if the number of partitions is changed for a **topic that has a
+key** , the partition logic or ordering of the messages will be affected. The
+reason for this is that message distribution is directly dependent on the
+[number of partitions](https://pennow.tech/apache-kafka-architecture-and-
+essential-components/#Significance_of_Key).
+
+#### Delete a topic
+
+Deletion is also quicker. Just invoke the option `--delete` along with the
+_topic name_ :
+
+    
+    
+    $ bin/Kafka-Topics.sh –zookeeper localhost:2181 --delete --topic first-topic
+    
+
+**Output**
+
+    
+    
+    > Topic first-topic marked for deletion
+    
+
+**Note:** This will have no impact if `delete.topic.enable` is not set to
+`true`
+
+### Start Producer to Send Messages
+
+Kafka provides commands to publish messages through the terminal. _We can also
+do it programmatically, which we'll see in the next article._ **Syntax**
+
+    
+    
+    $ bin/kafka-console-producer.sh --bootstrap-server [broker ip:port] --topic [topic_name]
+    
+
+From the above command, it's clear that we need to provide two inputs:
+
+  * One is broker `ip:port` where the producer will be sending the message, you can also specify multiple brokers separated by a comma.
+  * another is the topic name to publish
+
+> Just to remind you that there can be multiple topics inside a broker. So
+> it's must for the publisher to tell where to post the message.
+
+**`broker-list`** We configured only have one broker, and that's running on
+port `9092`. You can change this port by modifying `config/server.properties`
+file. If you want to run multiple brokers running on the same machine, you
+must change the port by editing this file. We'll see later how to do it.
+**Example**
+
+    
+    
+    $ bin/kafka-console-producer.sh --bootstrap-server localhost:9092 --topic first-topic
+    
+
+This will open the input terminal where you can type any text and press enter.
+That will be posted to Kafka. Now, let's see how to consume these texts.
+
+#### Connect to multiple brokers
+
+_Just in case_ , if you want to connect to more than one broker, specify the
+comma-separated brokers list. Following is an example command in case I want
+to connect to two brokers:
+
+    
+    
+    $ bin/kafka-console-producer.sh --bootstrap-server localhost:9092,localhost:9093 --topic first-topic
+    
+
+### Start Consumer to Receive Messages
+
+This command is almost similar to the _producer_ command. However, we should
+also provide a _[consumer group id](https://pennow.tech/apache-kafka-
+architecture-and-essential-components/#Consumer_Group)_ of which the consumer
+is part. If you don't specify, then Kafka will generate a random group id for
+you. **Syntax**
+
+    
+    
+    $ bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic csptest --group first_consumer_group --from-beginning
+    
+
+I named our consumer as `first_consumer_group`. Now, enter the message in the
+producer's terminal, and you should receive them in the consumer's terminal.
+Just like producers, consumers can also connect to multiple brokers.
+
+#### Reading data from ___consumer_offset_ :
+
+As we discussed before that whenever you start a Kafka server, Kafka creates
+one topic to manage the consumer's offsets. You can read the data from this
+topic in the same way as you can for other topics:
+
+    
+    
+    $ bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic __consumer_offsets
+    
+
+### Getting information on consumer groups
+
+If you want to get information on all the consumers in a particular group:
+
+    
+    
+    $ bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group first_consumer_group --describe
+    
+
+This will provide you with output similar to the following. All information is
+self-evident from the header.
+
+    
+    
+    GROUP                TOPIC       PARTITION  CURRENT-OFFSET LOG-END-OFFSET  LAG CONSUMER-ID      HOST      CLIENT-ID
+    first_consumer_group first-topic     0              2         2                  0  consumer-1-..  /127.0.0.1  consumer-1
+    
+
+If you want to get the information on all the consumer groups connected to the
+specified broker(s):
+
+    
+    
+    $ bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --all-groups
+    
+
+### More commands
+
+I never used any other command apart from these. But if you want to dig deeper
+into Kafka's commands, then refer to _Cloudera_ on an exhaustive list of
+[Kafka
+commands](https://docs.cloudera.com/documentation/enterprise/6/6.3/topics/kafka_admin_cli.html).
+
+## Setup multiple brokers
+
+Above was an example of a single broker setup. Now, let's move on to a little
+complex with multiple broker setups. We'll run both brokers on the same
+machine. Start ZooKeeper server as we did before.
+
+### Create multiple brokers configuration
+
+Go inside `config` directory of your `kafka` folder, and copy
+`server.properties` file. Remember this is the file that we specified while
+running Kafka server/broker. If you'd open this file, then this file specifies
+two unique parameters. One is `broker.id` and another is port number. So we've
+to change these attributes in the copied file. Rename these files as
+`server-a.properties` and `server-b.properties`. You can name them any way you
+want. both new files and assign the following changes −
+**Edit`server-a.properties`**
+
+    
+    
+    # The id of the broker. This must be set to a unique integer for each broker.
+    broker.id=1
+    # The port the socket server listens on
+    port=9093
+    # A comma seperated list of directories under which to store log files
+    log.dirs=/tmp/kafka-logs-1
+    
+
+**Edit`server-b.properties`**
+
+    
+    
+    # The id of the broker. This must be set to a unique integer for each broker.
+    broker.id=2
+    # The port the socket server listens on
+    port=9094
+    # A comma seperated list of directories under which to store log files
+    log.dirs=/tmp/kafka-logs-2
+    
+
+### Run multiple brokers
+
+Run Kafka servers as usual. However, both will be provided different
+configuration files as we edited above.
+
+    
+    
+    $ bin/kafka-server-start.sh -daemon config/server-a.properties
+    bin/kafka-server-start.sh -daemon config/server-b.properties
+    
+
+Now we have two different brokers running on the same machine.
+
+### Creating a Topic
+
+Now as we have two brokers, we can have replicate the partition twice. Hence,
+let's create a topic with a replication factor of `2`:
+
+    
+    
+    $ bin/kafka-topics.sh --zookeeper localhost:2181 --create --topic second-topic --replication-factor 2 --partitions 1
+    
+
+**Output**
+
+    
+    
+    created topic “second-topic”
+    
+
+The Describe command is used to check which broker is listening on the current
+created topic as shown below −
+
+    
+    
+    $ bin/kafka-topics.sh --zookeeper localhost:2181 --describe --topic second-topic
+    
+
+### Publish and receive messages
+
+**Producer** As we want to connect to two brokers now, so provide both brokers
+as an argument to `--bootstrap-servers`
+
+    
+    
+    $ bin/kafka-console-producer.sh --bootstrap-server localhost:9093,localhost:9094 --topic second-topic
+    
+
+**Consumer to Receive Messages**
+
+    
+    
+    $ bin/kafka-console-consumer.sh  --bootstrap-server localhost:9093,localhost:9094 --topic second-topic --from-beginning
+    
+
+Now the connection is established. Send message from producer and messages
+should be received in consumer terminal
+
+### A note on broker configuration
+
+If you want multiple brokers to join the same cluster, then there are two
+important configuration parameters in `config/server.properties`:
+
+  * brokers must have the same `zookeeper.connect` parameter
+  * brokers must have different `broker.id` . Otherwise, brokers will not start.
+
+## Multiple partitions-multiple consumers
+
+Till now, we've got enough idea about Kafka commands. Let's quickly discuss
+one more configuration where we've 2 partitions and 2 consumers. Remember, a
+[single consumer from the same group can't be assigned to more than one
+partition from the same topic](https://pennow.tech/apache-kafka-architecture-
+and-essential-components/#Consumer_Group). So if we want to have 2 consumers
+in the same group, then create one more partition, or else an extra consumer
+will be sitting idle. If your Kafka server is still running, let's stop all,
+and restart from the beginning: start zookeeper and Kafka server. Then create
+a topic with 2 partitions:
+
+    
+    
+    $ bin/kafka-topics.sh --zookeeper localhost:2181 --create --topic second-topic --replication-factor 2 --partitions 2
+    
+
+Now start two consumers in two separate terminals: **Terminal 1:**
+
+    
+    
+    $ bin/kafka-console-consumer.sh  --bootstrap-server localhost:9092 --topic second-topic --from-beginning
+    
+
+**Terminal 2:**
+
+    
+    
+    $ bin/kafka-console-consumer.sh  --bootstrap-server localhost:9092 --topic second-topic --from-beginning
+    
+
+You must have noticed that command is the same in both the terminals. However,
+they are two different instances. Now, start the producer, and send a message.
+You should check the behavior of how the consumers are responding to the
+published message. Just take this as an assignment to what all we discussed
+yesterday 🙂 If you run, `kafka-consumer-groups.sh` command, you should see
+that each consumer is linked to a different topic.
+
+## Security parameters
+
+Till now, we set up our producer and consumer to directly interact with Kafka.
+However, that's too risky when Kafka brokers are running remotely on some
+external machines. To handle such scenarios, Kafka employs security protocols.
+One option is to SSL certificates, and another is to use a username/password
+to connect to the Kafka server. In this section, I'm taking an example of a
+_username_ and _password_. In the next article, we'll discuss the certificate
+mechanism while building a simple Kafka application. However, both can be used
+interchangeably. Now, coming to the point, if Kafka broker is asking for
+username and password, then producer and consumer can't connect directly. To
+handle this, we'll provide the relevant information through configuration
+files. Therefore, open your `config/producer.properties` file, and add the
+following information at the very end:
+
+    
+    
+    security.protocol=SASL_SSL
+    sasl.mechanism=SCRAM-SHA-256
+    sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required \
+      username="xxxxx" \
+      password="xxxxxxxxxxx";
+    
+
+replace `username` and `password` with actual values. Noe open
+`config/consumer.properties` file, and do the same configuration for consumers
+also. While running _producer_ and _consumer_ pass these config files we just
+edited.
+
+    
+    
+    $ bin/kafka-console-producer.sh --bootstrap-server dory-01.srvs.cloudkafka.com:9094 --topic t1esjulj-default  --producer.config config/producer.properties
+    
+    
+    
+    $ bin/kafka-console-consumer.sh --bootstrap-server dory-01.srvs.cloudkafka.com:9094 --topic t1esjulj-default  --from-beginning --consumer.config config/consumer.properties
+    
+
+Now, it should run. To test my changes, I used [cloudkarafka's free
+account](https://www.cloudkarafka.com/). With this, let's conclude our today's
+discussion.
+
+## Summary
+
+Our today's discussion was a little longer. However, it was full of practical
+material. I tried to cover all the common operations of Kafka in a simple to
+understand manner. That made me add some extra information just to make my
+point easier to grasp. In the next article, we'll discuss how to develop a
+simple producer and a consumer. We'll also discuss how to create topics
+through a program. In the end, if you feel some of the information is not
+clear, then let me know through your comments. Any kind of feedback will be
+much appreciated 🙂
+
+Title image credit: [People photo created by pressfoto -
+www.freepik.com](https://www.freepik.com/photos/people)

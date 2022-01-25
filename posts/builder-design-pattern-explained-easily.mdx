@@ -1,0 +1,542 @@
+---
+author: Sukhdeep Singh
+categories:
+  - Design Pattern
+date: May, 2021
+description: ""
+post_status: publish
+post_type: post
+tags:
+  - Design Patterns
+  - UML
+  - Programming
+thumbnailUrl: /builder_design_pattern.png
+title: Builder Design Pattern Explained Easily
+---
+
+_The builder pattern_ helps to separate the construction of a complex object from
+its representation so that the same construction process can produce different representations(outputs).
+
+Let us see what kind of problem it can solve.
+
+The **Builder Pattern** solves a very specific problem: **Telescoping
+Constructors**. To understand it, let us suppose we have the following
+constructor definitions for class `Vehicle`
+
+```java
+public Vehicle(int id, String name)
+{
+    this(id, name, 0, 0);
+}
+
+public Vehicle(int id, String name, int number_of_tyres)
+{
+    this(id, name, number_of_tyres, 0);
+}
+```
+
+This might not look like an issue at the earlier stages but if you have eight
+optional parameters and you want to represent every useful combination, you'll
+need 256 constructors.
+
+Moreover, suppose there is another constructor:
+
+```java
+public Vehicle(int id, String name, int number_of_headlights)
+{
+    this(id, name, 0, number_of_headlights);
+}
+```
+
+Here `number_of_headlights` has the same type as `number_of_tyres` mentioned
+in the earlier constructor. Hence polymorphism concept of having different
+constructors for different parameters fails here.
+
+## _Telescoping Constructors_ Problem
+
+If you use the Builder Pattern instead, you can simply:
+
+```java
+Vehicle vehicle = new VehicleBuilder().SetName("Car").SetTyres(4).SetHeadlights(2);
+```
+
+So in short, builder design pattern:
+
+1. allows using the same construction process to create different representations of an object.
+
+2. simplifies the creation of complex objects
+
+> Given that the builder pattern sets up a method for constructing new
+> objects, it is understandably categorized as a **creational design
+> pattern**.
+
+## Builder Design Pattern Participants
+
+The Builder Design Pattern has **four major participants:**
+
+- **Director** : Director is the one which constructs the complex object by using the builder's interface.
+
+- **Builder** : Provides an interface to create the components of a complex object/product.
+
+- **Concrete Builder** : This actor **creates all the parts needed of a complex object**. It contains a reference to the final product/output. Thus client gets the final product from this actor once object construction is completed.
+
+- **Product** : This is the final object to be constructed. It provides the interface to build all the parts of the final object and assemble them.
+
+The **director** performs the decisive process of the builder pattern, the
+**separation** of the **production** of an object/product from **the client.**
+
+The client :
+
+1. creates a **concrete builder** class object for the required product.
+
+2. creates a **director** object.
+
+3. injects the _concrete builder class object_ , created in the first step to the _director_.
+
+4. asks the _director_ to _construct_ the object.
+
+5. gets the final product from the concrete builder class object.
+
+## Builder Design Pattern in Real Life
+
+To explain the builder design pattern, let's take a real-life example of a
+burger restaurant where a customer orders a meal. The meal can consist of the
+main item(cheeseburger, chicken burger, etc.), a side item (French fries,
+etc.), and a drink(coke, coffee).
+
+The order is passed to the front desk executive who acts as a **director** in
+this case. He will pass the order to the main chef who in turn asks the
+respective chefs(concrete builder) to prepare the asked meal. This entire
+process takes place behind the scenes. The customer does not know what is
+happening in the kitchen to carry out his order. However, he gets his order
+served at his table.
+
+## Builder Design Pattern UML Diagrams
+
+Let us take a _vehicle_ building example where different types of vehicles are
+manufactured such as cars, bikes, etc. These are the **final products**.
+
+`IVehicleBuilder` is the interface used to create parts of the final
+product/object. The final assembly process is described in **Product**.
+
+`CarBuilder` and `BikeBuilder` are the concrete implementations of
+`IVehicleBuilder`. The first three methods fit the engine, tires, and
+headlights to the vehicle. `GetVehicle()` will return the ultimate product.
+
+Finally, `VehiclePlant` will be acting as **director**. It is ultimately
+responsible for constructing the vehicle, and build the product with
+`IVehicleBuilder` interface. _It uses the same construct() method to create
+different types of vehicles._
+
+### Class Diagram
+
+The below graphic shows the UML class diagram of a _builder pattern_
+consisting of several entities **interacting with each other.**
+![Builder Pattern Class
+Diagram](https://pennow.tech/wp-content/uploads/2021/03/image-20210329185638366.png) Builder Pattern Class
+Diagram
+
+### Sequence Diagram
+
+![Builder Pattern
+Sequence Diagram](https://pennow.tech/wp-content/uploads/2021/03/image-20210329190944811.png) Builder Pattern Sequence
+Diagram
+
+## Implementation
+
+### In C++
+
+**IVehicleBuilder class:**
+
+```cpp
+class IVehicleBuilder
+{
+public:
+    virtual void FitEngine() = 0;
+    virtual void FitTyres() = 0;
+    virtual void FitHeadlight() = 0;
+    virtual Vehicle GetVehicle() = 0;
+};
+```
+
+**CarBuilder Class:**
+
+```cpp
+class CarBuilder : public IVehicleBuilder
+{
+private:
+    Vehicle vehicle;
+
+public:
+    void FitEngine() override
+    {
+        vehicle.AddPart("Engine Added");
+    }
+
+    void FitTyres() override
+    {
+        vehicle.AddPart("Tyres Inserted");
+    }
+
+    void FitHeadlight() override
+    {
+        vehicle.AddPart("Fitted Headlight");
+    }
+
+    Vehicle GetVehicle() override
+    {
+        return vehicle;
+    }
+};
+```
+
+**Vehicle class:**
+
+```cpp
+class Vehicle
+{
+private:
+    vector<string> parts;
+
+public:
+    void AddPart(string part)
+    {
+        parts.emplace_back(part);
+    }
+
+    void PrintDetails()
+    {
+        for (auto &part : parts)
+            std::cout << part << "\n";
+    }
+};
+```
+
+**VehiclePlant class:**
+
+```cpp
+class VehiclePlant
+{
+private:
+    IVehicleBuilder& vehicleBuilder;
+
+public:
+    VehiclePlant(IVehicleBuilder& vBuilder):
+    vehicleBuilder(vBuilder)
+    {
+
+    }
+
+    void Construct()
+    {
+        vehicleBuilder.FitEngine();
+        vehicleBuilder.FitTyres();
+        vehicleBuilder.FitHeadlight();
+    }
+};
+```
+
+**Client program:**
+
+```cpp
+int main()
+{
+    CarBuilder carBuilder;
+    VehiclePlant vehiclePlant(carBuilder);
+
+    vehiclePlant.Construct();
+
+    Vehicle vehicle = carBuilder.GetVehicle();
+
+    vehicle.PrintDetails();
+}
+```
+
+### In Python
+
+```python
+from abc import ABC, abstractmethod
+
+class Vehicle:
+    def __init__(self):
+        self.__parts__ = []
+
+    def AddPart(self, part):
+        self.__parts__.append(part)
+
+    def PrintDetails(self):
+        for part in self.__parts__:
+            print(part)
+
+
+class IVehicleBuilder(ABC):
+    @abstractmethod
+    def FitEngine(self):
+        pass
+
+    @abstractmethod
+    def FitTyres(self):
+        pass
+
+    @abstractmethod
+    def FitHeadlight(self):
+        pass
+
+    @abstractmethod
+    def GetVehicle(self):
+        pass
+
+class CarBuilder(IVehicleBuilder):
+    def __init__(self):
+        super().__init__()
+        self.__vehicle__ = Vehicle()
+
+    def FitEngine(self):
+        self.__vehicle__.AddPart("Engine Added");
+
+    def FitTyres(self):
+        self.__vehicle__.AddPart("Tyres Inserted");
+
+    def FitHeadlight(self):
+        self.__vehicle__.AddPart("Fitted Headlight");
+
+    def GetVehicle(self):
+        return self.__vehicle__;
+
+class VehiclePlant:
+    def __init__(self, vBuilder):
+        self.__vehicleBuilder__ = vBuilder
+
+    def Construct(self):
+        self.__vehicleBuilder__.FitEngine();
+        self.__vehicleBuilder__.FitTyres();
+        self.__vehicleBuilder__.FitHeadlight();
+
+if __name__ == '__main__':
+    carBuilder = CarBuilder()
+    vehiclePlant = VehiclePlant (carBuilder);
+    vehiclePlant.Construct()
+    vehicle = carBuilder.GetVehicle()
+    vehicle.PrintDetails()
+```
+
+<section className="message">
+
+<header>
+  {/* <FaRegLightbulb className="inline" /> */}
+  <i></i>
+  Note
+</header>
+
+By default, Python does not provide support for abstract classes. However,
+Python comes with a module that provides the base for defining Abstract Base
+classes(ABC). `ABC` works by decorating methods of the base class as abstract
+and then registering concrete classes as implementations of the abstract base. A
+method becomes abstract when decorated with the keyword `@abstractmethod`.
+
+For Example (Reference taken from geeksforgeeks.com)
+
+```python
+from abc import ABC, abstractmethod
+
+class Polygon(ABC):
+    @abstractmethod
+    def noofsides(self):
+        pass
+
+
+class Triangle(Polygon):
+    # overriding abstract method
+    def noofsides(self):
+        print("I have 3 sides")
+
+# Driver code
+R = Triangle()
+R.noofsides()
+```
+
+</section>
+
+## ​Variation of the Builder pattern
+
+**The builder pattern** has a slightly modified version where _build methods_
+are chained to each other like below. This method is called the **Fluent
+Builder**.
+
+```cpp
+    Vehicle vehicle = carBuilder.FitEngine().FitTyres().FitHeadlight().build();
+```
+
+This is accomplished by returning itself from each of the build methods. The
+final build() method returns the final object. Moreover, note that you don't
+need **Director** class here.
+
+Here, is the alternate implementation:
+
+### in C++
+
+**IVehicleBuilder Class**
+
+```cpp
+class IVehicleBuilder
+{
+    using self = IVehicleBuilder;
+public:
+    virtual self& FitEngine() = 0;
+    virtual self& FitTyres() = 0;
+    virtual self& FitHeadlight() = 0;
+    virtual Vehicle GetVehicle() = 0;
+};
+```
+
+**CarBuilder class**
+
+```cpp
+class CarBuilder: public IVehicleBuilder
+{
+private:
+    using self = CarBuilder;
+    Vehicle vehicle;
+
+public:
+    self& FitEngine() override
+    {
+        vehicle.AddPart("Engine Added");
+        return *this;
+    }
+
+    self& FitTyres() override
+    {
+        vehicle.AddPart("Tyres Inserted");
+        return *this;
+    }
+
+    self& FitHeadlight() override
+    {
+        vehicle.AddPart("Fitted Headlight");
+        return *this;
+    }
+
+    Vehicle GetVehicle() override
+    {
+        return vehicle;
+    }
+};
+```
+
+**main program**
+
+```cpp
+int main()
+{
+    CarBuilder carBuilder;
+
+    Vehicle vehicle = carBuilder.FitEngine().FitTyres().FitHeadlight().GetVehicle();
+    vehicle.PrintDetails();
+}
+```
+
+You can also use pointers instead of references. In that case, define
+**Fit...()** methods like this:
+
+```cpp
+self* FitEngine() override
+{
+    vehicle.AddPart("Engine Added");
+    return this;
+}
+```
+
+Replace your chain calls with the -> operator:
+
+```cpp
+Vehicle vehicle = carBuilder->FitEngine()->FitTyres()->FitHeadlight()->GetVehicle();
+```
+
+You can also replace your `GetVehicle()` method with **function operator** to
+yield the final product:
+
+```cpp
+class CarBuilder: public IVehicleBuilder
+{
+    ...
+
+    Vehicle operator()()
+    {
+        return vehicle;
+    }
+};
+
+int main()
+{
+    CarBuilder carBuilder;
+    Vehicle vehicle = carBuilder.FitEngine().FitTyres().FitHeadlight()();
+    vehicle.PrintDetails();
+}
+```
+
+### in Python
+
+```python
+class CarBuilder(IVehicleBuilder):
+    def __init__(self):
+        super().__init__()
+        self.__vehicle__ = Vehicle()
+
+    def FitEngine(self):
+        self.__vehicle__.AddPart("Engine Added")
+        return self
+
+    def FitTyres(self):
+        self.__vehicle__.AddPart("Tyres Inserted");
+        return self
+
+    def FitHeadlight(self):
+        self.__vehicle__.AddPart("Fitted Headlight");
+        return self
+
+    def GetVehicle(self):
+        return self.__vehicle__;
+
+if __name__ == '__main__':
+    vehicle = CarBuilder().FitEngine().FitTyres().FitHeadlight().GetVehicle()
+    vehicle.PrintDetails()
+```
+
+## Advantages vs Disadvantages
+
+### ​Benefits
+
+As the construction process is totally segregated from the final
+object/product, so you can easily change the steps required to build the
+product.
+
+As the director isn't aware of the builder process, and the build process
+doesn't have to change so you can easily insert new **concrete builder**
+classes to build a new product.
+
+### Disadvantages
+
+There is a **close coupling** between the product, the concrete builder, and
+the builder interface. Hence the change in any class requires changes in all
+the other classes. This makes any **changes** to the **pattern** a little
+**difficult.**
+
+Also, if we want a mutable object (an object which can be modified after the
+creational process is over), we should not use this pattern.
+
+## Final Words
+
+The builder pattern really is a powerful pattern to solve complex object
+creation problems.
+
+However, many programmers can be tempted to use a builder design pattern, and
+overlook simpler and perhaps more elegant solutions. So as a thumb rule, you
+don't need to use a builder pattern if the object can be constructed easily,
+and has a limited number of constructor parameters.
+
+A Builder pattern is usually a better candidate if:
+
+- when we want to create a complex object, which is composed of multiple parts and creation steps. Each of these steps might need to follow a specific order.
+
+- We want to decouple the construction process from its representation or output. This will eventually help us to insert more _concrete builders_ whenever needed.
