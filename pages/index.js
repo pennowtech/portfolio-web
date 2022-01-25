@@ -10,6 +10,7 @@ import 'tailwindcss/tailwind.css'
 const Home = ({ posts }) => {
   return (
     <main className="mt-5">
+      Hello World!
       {posts.map((post, index) => (
         <Link href={'/blog/' + post.blog} passHref key={index}>
           <div className="cursor-pointer card mb-3 pointer" style={{ maxWidth: '540px' }}>
