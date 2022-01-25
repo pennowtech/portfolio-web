@@ -26,7 +26,7 @@ function MyApp({ Component, pageProps }) {
           <Component {...pageProps} />
 
           <Element name="home" className="element min-h-[1500px]" >
-            test 1
+            test 1234
           </Element>
 
           <Element name="explore" className="element min-h-[1500px]">
