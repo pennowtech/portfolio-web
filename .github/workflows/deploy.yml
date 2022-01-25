@@ -40,7 +40,7 @@ jobs:
 
       - name: Install NPM Dependencies
         if: steps.cache-npmmodules.outputs.cache-hit != 'true'
-        run: npm ci
+        run: npm ci --ignore-scripts
 
       - run: npm run lint
       - run: npm run build
