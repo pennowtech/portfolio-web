@@ -11,35 +11,7 @@
   transform: translateX(24px);
   transition: transform 0.3s linear;
 }
-@layer components {
-  .prose :where(ul > li):not(:where([class~="not-prose"] *))::marker {
-    @apply dark:text-slate-300;
-  }
-  .sidebar a {
-    @apply text-slate-600;
-    @apply dark:text-slate-300;
-  }
-  .message {
-    @apply bg-slate-100 border rounded-md overflow-hidden mx-2;
-  }
-  .button {
-    @apply bg-green-700 opacity-100 hover:bg-green-600  dark:bg-amber-600 dark:hover:bg-amber-700  shadow font-Monda focus:outline-none text-white font-bold py-2 px-4 rounded-lg cursor-pointer;
-  }
-  .message header {
-    @apply bg-[#42b983] w-full p-1 text-white font-semibold;
-  }
-  .message i:before {
-    font-family: "Font Awesome 5 Free";
-    font-weight: 900;
-    content: "";
-    font-style: normal;
-    padding: 0.5em 0.75em;
-    width: 2.5em;
-    height: 100%;
-  }
-  .message p {
-    @apply px-4;
-} */
+
 /* #checkbox: checked + label .switch-ball {
   background-color: white;
   transform: translateX(24px);

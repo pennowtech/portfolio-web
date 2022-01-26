@@ -11,38 +11,13 @@ import SelectedPosts from '../components/SelectedPosts';
 import { gqlClient, ssrCache } from '../utils/gqlclient';
 import IntroHighlight from '../components/Intro/IntroHighlight';
 import Login from '../components/Login';
-import ThemeToggle from '../components/ThemeToggle';
-import Header from '../components/Header';
 import HomeArticles from '../components/HomeArticles';
 import 'tailwindcss/tailwind.css';
 import ContactForm from '../components/ContactForm';
 import FullLayout from '../components/FullLayout';
 import AboutSection from '../components/Intro/AboutSection';
 import HeaderMain from '../components/HeaderMain';
-import { setToken, deleteToken } from '../utils/token';
 import PostTags from '../components/Post/PostTags';
-
-const LoginWP = () => {
-  console.warn('Creating token...');
-  fetch(GRAPHQL_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      query: LOGIN_WP_USER,
-      variables: {
-        username: 'sdsingh.developer@gmail.com',
-        password: 'eTR8b5AHG7',
-      },
-    }),
-  })
-    .then((res) => res.json())
-    .then((res) => {
-      // deleteToken();
-      setToken(res.data.login.authToken);
-    });
-};
 
 function Index({ posts, selectedposts }) {
   // useEffect(() => {

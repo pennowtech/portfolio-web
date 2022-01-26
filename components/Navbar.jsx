@@ -9,7 +9,7 @@ import NavBarItem from './NavBarItem';
 const Navbar = ({ homepage }) => {
   const [isMenuVisible, setMenuVisible] = useState(false);
   return (
-    <nav className="bg-slate-50 sticky top-0 z-50 w-full flex justify-between items-center p-4">
+    <div className="inline-block pl-8 ">
 
       <ul className="hidden font-Monda text-lg list-none md:flex flex-row items-center flex-initial">
         {MenuItems.map((item) => (
