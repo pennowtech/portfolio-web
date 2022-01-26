@@ -15,8 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        node-version: [14.x, 16.x]
 
     steps:
       - uses: actions/checkout@v2
@@ -24,19 +23,9 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
+          cache: "npm"
 
-      - name: Cache npm modules
-        id: cache-npmmodules
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-npm-modules
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-
-      - name: Install NPM Dependencies
-        if: steps.cache-npmmodules.outputs.cache-hit != 'true'
-        run: npm ci
+      - run: npm ci
 
       - run: npm run lint
       - run: npm run build
