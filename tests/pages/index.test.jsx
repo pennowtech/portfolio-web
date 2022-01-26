@@ -3,19 +3,20 @@ import { render, screen } from '@testing-library/react'
 import Home from '../../pages/index'
 
 describe('Home', () => {
-  it('renders a heading', () => {
-    render(<Home posts={[]} />)
 
-    // const heading = screen.getByRole('heading', {
-    //   name: /welcome to next\.js!/i,
-    // })
+  // it('renders a heading', () => {
+  //   render(<Home posts={[]}  selectedposts={[]} />)
 
-    // expect(heading).toBeInTheDocument()
-    const main = screen.getByRole("main");
-    expect(main).toBeInTheDocument();
-  }),
+  //   // const heading = screen.getByRole('heading', {
+  //   //   name: /welcome to next\.js!/i,
+  //   // })
+
+  //   // expect(heading).toBeInTheDocument()
+  //   const main = screen.getByRole("link");
+  //   expect(main).toBeInTheDocument();
+  // }),
   it("should render the heading", () => {
-    const textToFind = "Hello World!"
+    const textToFind = "First Name"
 
     render(<Home posts={[]} />)
     const heading = screen.getByText(textToFind);

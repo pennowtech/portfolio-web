@@ -50,12 +50,6 @@ export default async function handler(req, res) {
   // connect to the database
   // const { db } = await connectToDatabase();
 
-  // function for catch errors
-  const catcher = (error) => res.status(400).json({
-    message: new Error(error).message,
-    success: false,
-  });
-
   switch (req.method) {
     case 'GET':
       getSelectedPosts(db, req, res);

@@ -63,6 +63,7 @@ function Index({ posts, selectedposts }) {
         <HomeArticles posts={posts} />
       </Element>
       <Element id="contact" className="element">
+
         <ContactForm />
       </Element>
     </FullLayout>
@@ -94,6 +95,7 @@ export const getStaticProps = async () => {
   ).toPromise());
   const postResult = await Promise.all(unresolvedPromises);
   const selectedposts = postResult.map((value) => value.data);
+
 
   return {
     props: {

@@ -13,7 +13,7 @@ const BlogTitleBar = ({ frontMatter }) => {
   return (
     <div className="relative w-full h-[280px] md:h-[480px] overflow-hidden mb-8 left-0">
       <Image
-        src={frontMatter.thumbnailUrl}
+        src={`/${frontMatter.thumbnailUrl}`}
         alt={frontMatter.title}
         layout="fill"
         className="object-cover w-full bg-center opacity-93  dark:grayscale"
