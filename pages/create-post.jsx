@@ -3,7 +3,6 @@ import { useMutation, defaultExchanges, useQuery } from 'urql';
 import { withUrqlClient } from 'next-urql';
 import { devtoolsExchange } from '@urql/devtools';
 // import { getToken } from '@utils/token';
-import { CREATE_POST, LOGIN_WP_USER, FIND_POST_BY_TITLE } from 'queries/queries';
 import matter from 'gray-matter';
 import readingTime from 'reading-time';
 import dynamic from 'next/dynamic';
@@ -13,6 +12,7 @@ import { useRouter } from 'next/router';
 import { isEmpty } from 'lodash';
 import axios from 'axios';
 import Link from 'next/link';
+import { CREATE_POST, LOGIN_WP_USER, FIND_POST_BY_TITLE } from '../queries/queries';
 import { GRAPHQL_URL } from '../utils/consts';
 import { DateForDateTime } from '../utils/date';
 import {

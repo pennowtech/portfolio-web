@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
-import { CATEGORY_LIST } from 'queries/queries';
 import { useQuery } from 'urql';
+import { CATEGORY_LIST } from '../queries/queries';
 
 const SidebarCategories = () => {
   const [result, getPosts] = useQuery({ query: CATEGORY_LIST });

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useQuery, useMutation } from 'urql';
 import gql from 'graphql-tag';
 import { useAlert } from 'react-alert';
-import { CREATE_POST } from 'queries/queries';
+import { CREATE_POST } from '../queries/queries';
 import { setToken, deleteToken, getToken } from '../utils/token';
 
 const QueryString = gql`

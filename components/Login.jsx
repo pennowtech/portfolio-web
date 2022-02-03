@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { useMutation } from 'urql';
-import { LOGIN_WP_USER } from 'queries/queries';
+import { LOGIN_WP_USER } from '../queries/queries';
 import { useRouter } from 'next/router';
 import { isEmpty } from 'lodash';
 import { setToken, setLoggedUser } from '../utils/token';

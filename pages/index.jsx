@@ -5,7 +5,7 @@ import matter from 'gray-matter';
 
 import { Element } from 'react-scroll';
 import algoliasearch from 'algoliasearch/lite';
-import { SELECTED_POST_QUERY, LOGIN_WP_USER } from 'queries/queries';
+import { SELECTED_POST_QUERY, LOGIN_WP_USER } from '../queries/queries';
 import { SelectedPostsList, GRAPHQL_URL } from '../utils/consts';
 import SelectedPosts from '../components/SelectedPosts';
 import { gqlClient, ssrCache } from '../utils/gqlclient';

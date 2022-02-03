@@ -1,4 +1,4 @@
-import { CREATE_POST } from 'queries/queries';
+import { CREATE_POST } from '../../queries/queries';
 import { gqlAuthClient } from '../../utils/gqlclient';
 
 const CreatePost = async (req, res) => {

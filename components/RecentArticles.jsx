@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
-import { FIRST_FIVE_POSTS } from 'queries/queries';
 import { useQuery } from 'urql';
+import { FIRST_FIVE_POSTS } from '../queries/queries';
 import PostDate from './Post/PostDate';
 
 const RecentArticles = () => {

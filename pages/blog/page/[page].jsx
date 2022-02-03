@@ -4,7 +4,7 @@ import gql from 'graphql-tag';
 import { withUrqlClient } from 'next-urql';
 import { defaultExchanges, useQuery } from 'urql';
 import { devtoolsExchange } from '@urql/devtools';
-import { GET_TOTAL_POSTS_COUNT, PAGES_POSTS_QUERY } from 'queries/queries';
+import { GET_TOTAL_POSTS_COUNT, PAGES_POSTS_QUERY } from '../../../queries/queries';
 import { getPageOffset } from '../../../components/Pagination/PaginationUtils';
 import { gqlAuthClient, gqlClient, ssrCache } from '../../../utils/gqlclient';
 import PostsLayout from '../../../components/PostsLayout';

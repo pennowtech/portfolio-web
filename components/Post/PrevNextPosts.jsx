@@ -1,9 +1,9 @@
 import Link from 'next/link';
-import { FIND_POST_BY_SLUG } from 'queries/queries';
 import React from 'react';
 import { useQuery } from 'urql';
 import Image from 'next/image';
 import { FaArrowCircleLeft, FaArrowCircleRight } from 'react-icons/fa';
+import { FIND_POST_BY_SLUG } from '../../queries/queries';
 
 const PrevNextPosts = ({ curPostSlug }) => {
   const findPost = {
