@@ -5,6 +5,7 @@ module.exports = {
     './components/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
+
     extend: {
       typography: (theme) => ({
 
@@ -43,8 +44,16 @@ module.exports = {
         Neuton: ['Neuton', 'serif'],
         Offside: ['Offside', 'cursive'],
       },
+      container: {
+        screens: {
+          sm: '100%',
+          md: '100%',
+          lg: '1024px',
+          xl: '1167px',
+        },
+      },
       screens: {
-        wide: '927px',
+        wide: '827px',
         // => @media (min-height: 800px) { ... }
       },
     },

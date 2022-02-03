@@ -6,14 +6,14 @@ import NavBarItem from './NavBarItem';
 
 // const MyLink = React.forwardRef((props, ref) => <Link href={href}>{props.children}</Link>);
 
-const Navbar = () => {
+const Navbar = ({ homepage }) => {
   const [isMenuVisible, setMenuVisible] = useState(false);
   return (
-    <div className="inline-block pl-8">
+    <div className="inline-block pl-8 ">
 
       <ul className="hidden font-Monda text-lg list-none md:flex flex-row items-center flex-initial">
         {MenuItems.map((item) => (
-          <NavBarItem key={item.title} menu={item} />
+          <NavBarItem key={item.title} menu={item} homepage={homepage} />
         ))}
         <li className="bg-[#2952e3] text-white py-2 px-7 mx-4 rounded-full cursor-pointer hover:bg-[#2546bd]">
           Login

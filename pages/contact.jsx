@@ -1,6 +1,6 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import Layout from '../components/Layout';
+import FullLayout from '../components/FullLayout';
+import HeaderMain from '../components/HeaderMain';
 import ContactForm from '../components/ContactForm';
 
 const contact = () => {
@@ -10,9 +10,10 @@ const contact = () => {
     metaDesc: '',
   };
   return (
-    <Layout metaInfo={metaInfo}>
+    <FullLayout metaInfo={metaInfo}>
+      <HeaderMain />
       <ContactForm />
-    </Layout>
+    </FullLayout>
   );
 };
 

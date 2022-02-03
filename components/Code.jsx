@@ -35,9 +35,9 @@ function Code({
   return match ? (
     <SyntaxHighlighter
       language={match[1]}
+      // eslint-disable-next-line react/no-children-prop
       children={codeText}
       PreTag="div"
-      style={codeTheme}
       wrapLines
       showLineNumbers
       lineProps={(lineNumber) => {

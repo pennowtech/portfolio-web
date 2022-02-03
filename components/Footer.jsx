@@ -3,56 +3,7 @@ import React from 'react';
 
 import Link from 'next/link';
 import { SocialIconList, FooterMainMenuItems, FooterOtherMenuItems } from '../utils/consts';
-// import { CenteredFooter } from '../footer/CenteredFooter';
-// import { Section } from '../layout/Section';
-import Logo from './Logo';
 
-// const IconLink = ({ SocialIcon }) => (
-//   <div className="cursor-pointer inline-block">
-//     <Link href={SocialIcon.path}>
-//       <a>{SocialIcon.icon}</a>
-//     </Link>
-//   </div>
-// );
-
-// const Footer = () => (
-//   <footer className="mt-12 pt-8 w-full text-center bg-slate-700 dark:bg-slate-800 p-4 prose-a:text-gray-400 text-gray-400 prose-a:hover:text-gray-400 dark:prose-a:text-gray-400 dark:prose-a:hover:text-gray-400">
-//     <Logo position="footer" />
-//     <section>
-//       <div className="py-8 flex flex-row justify-center items-center gap-8 text-3xl ">
-//         {SocialIconList.map((icon) => (
-//           <IconLink key={icon.title} SocialIcon={icon} />
-//         ))}
-//       </div>
-//       <ul className="list-none  ">
-//         <li className="mx-4 inline-block prose-a:hover:underline prose-a:hover:text-gray-400">
-//           <Link href="/">
-//             Home
-//           </Link>
-//         </li>
-//         <li className="mx-4 inline-block prose-a:hover:underline prose-a:hover:text-gray-400">
-//           <Link href="/">
-//             About
-//           </Link>
-//         </li>
-//         <li className="mx-4 inline-block prose-a:hover:underline prose-a:hover:text-gray-400">
-//           <Link href="/">
-//             Docs
-//           </Link>
-//         </li>
-//         <li className="mx-4 inline-block prose-a:hover:underline prose-a:hover:text-gray-400">
-//           <Link href="https://github.com/">
-//             GitHub
-//           </Link>
-//         </li>
-//       </ul>
-//       <span className="lg:text-sm font-Fira">
-//         &copy; PenNow.tech,&nbsp;
-//         {new Date().getFullYear()}
-//       </span>
-//     </section>
-//   </footer>
-// );
 const IconLinkRoundSquare = ({ SocialIcon }) => (
   <button className="cursor-pointer  bg-slate-200 shadow-lg h-12 w-12 items-center justify-center align-center rounded-full outline-none focus:outline-none pl-2" type="button">
     <Link href={SocialIcon.path}>
@@ -68,16 +19,16 @@ const IconLink = ({ SocialIcon }) => (
     </Link>
   </div>
 );
-const MainMenuLink = ({ key, menuItem }) => (
-  <li key={key} className="pb-2 cursor-pointer whitespace-nowrap overflow-hidden">
+const MainMenuLink = ({ menuItem }) => (
+  <li key={menuItem.title} className="pb-2 cursor-pointer whitespace-nowrap overflow-hidden">
     <Link href={menuItem.path}>
       <a>{menuItem.title}</a>
     </Link>
   </li>
 );
 
-const OtherMenuLink = ({ key, menuItem }) => (
-  <li className="pb-2 block cursor-pointer whitespace-nowrap overflow-hidden">
+const OtherMenuLink = ({ menuItem }) => (
+  <li key={menuItem.title} className="pb-2 block cursor-pointer whitespace-nowrap overflow-hidden">
     <Link href={menuItem.path}>
       <a>{menuItem.title}</a>
     </Link>
@@ -108,7 +59,7 @@ const Footer = () => (
     <div className="container w-full lg:max-w-[1167px] lg:mx-auto md:px-4">
       <div className="flex flex-wrap text-center lg:text-left">
         <div className="w-full lg:w-6/12 px-4">
-          <div className="md:mt-8 text-3xl font-semibold">Let's keep in touch!</div>
+          <div className="md:mt-8 text-3xl font-semibold">Let&apos;s keep in touch!</div>
           <div className="text-lg mt-0 mb-2 text-blueGray-600">
             Find me on any of these platforms.
             (I usually respond in 1-2 business days, but it can be longer).
@@ -128,7 +79,7 @@ const Footer = () => (
               </span>
               <ul className="list-none  text-sm">
                 {FooterMainMenuItems.map((menuItem) => (
-                  <MainMenuLink key={menuItem.title} menuItem={menuItem} />
+                  <MainMenuLink menuItem={menuItem} />
                 ))}
               </ul>
             </div>
@@ -138,7 +89,7 @@ const Footer = () => (
               </span>
               <ul className="list-none  text-sm">
                 {FooterOtherMenuItems.map((menuItem) => (
-                  <OtherMenuLink key={menuItem.title} menuItem={menuItem} />
+                  <OtherMenuLink menuItem={menuItem} />
                 ))}
               </ul>
             </div>

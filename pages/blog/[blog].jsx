@@ -11,11 +11,13 @@ import path from 'path';
 import matter from 'gray-matter';
 
 import dynamic from 'next/dynamic';
+import emoji from 'remark-emoji';
+import HeaderMain from '../../components/HeaderMain';
+import PrevNextPosts from '../../components/Post/PrevNextPosts';
 import BlogTitleBar from '../../components/BlogTitleBar';
 import Article from '../../components/Article';
-import Layout from '../../components/Layout';
+import FullLayout from '../../components/FullLayout';
 // import ToC from "../../components/ToC";
-
 export const getStaticPaths = async () => {
   const files = fs.readdirSync(path.join('posts'));
   const paths = files.map((filename) => ({
@@ -40,6 +42,7 @@ export const getStaticProps = async ({ params: { blog } }) => {
   const options = {
     mdxOptions: {
       // remarkPlugins: [remarkToc],
+      remarkPlugins: [emoji],
       rehypePlugins: [
         rehypeSlug,
         [rehypeAutolinkHeadings, { behavior: 'before' }],
@@ -75,33 +78,41 @@ export const getStaticProps = async ({ params: { blog } }) => {
       },
       mdxSource,
       content,
+      slug: blog,
     },
   };
 };
-// import for this particular component should be done in foolowing way. otherwise
-// you'll get: Must use import to load ES Module: ...\mdast-util-from-markdown\index.js require() of ES modules is not supported
+/* import for this particular component should be done in following
+ way. otherwise you'll get:
+ Must use import to load ES Module: ...\mdast-util-from-markdown\index.js require()
+ of ES modules is not supported
+*/
 const ToC = dynamic(() => import('../../components/ToC'), {
   ssr: false,
 });
-const PostPage = ({ frontMatter, mdxSource, content }) => {
+const PostPage = ({
+  frontMatter, mdxSource, content, slug,
+}) => {
   const metaInfo = {
     title: frontMatter.title,
     metaKeywords: frontMatter.tags.join(','),
     metaDesc: frontMatter.description,
   };
   return (
-    <Layout metaInfo={metaInfo}>
+    <FullLayout metaInfo={metaInfo}>
+      <HeaderMain />
       <BlogTitleBar frontMatter={frontMatter} />
 
       <div className="w-full lg:max-w-[1167px] lg:mx-auto flex flex-col wide:flex-row flex-grow overflow-hidden  ">
         <div className="w-full h-full flex-grow p-3 overflow-auto">
           <Article frontMatter={frontMatter} mdxSource={mdxSource} />
+          <PrevNextPosts curPostSlug={slug} />
         </div>
         <div className="sidebar font-Roboto wide:min-w-[30%] max-w-[400px] flex-shrink flex-grow-0 mx-auto p-4">
           <ToC content={content} className="" />
         </div>
       </div>
-    </Layout>
+    </FullLayout>
   );
 };
 export default PostPage;

@@ -41,9 +41,8 @@ const ThemeToggle = () => {
     //   document.documentElement.style.cssText = 'color-scheme:light';
     // }
     setTheme(checked ? 'dark' : 'light');
-    console.log(theme);
     localStorage.setItem('pntDarkTheme', checked);
-  }, [checked, setTheme]);
+  }, [checked, setTheme, theme]);
 
   const dayButton = useMemo(() => ({
     color: 'gold',
