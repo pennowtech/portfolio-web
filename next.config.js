@@ -17,7 +17,6 @@ module.exports = removeImports({
     loader: 'akamai',
     path: '',
   },
-  webpack5: false,
   reactStrictMode: true,
   serverRuntimeConfig: {
     PROJECT_ROOT: __dirname,
