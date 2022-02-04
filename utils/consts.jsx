@@ -31,7 +31,7 @@ const PER_PAGE_BLOGS = 5;
 
 const isDev = process.env.NODE_ENV === 'development';
 // export const BASE_URL = isDev ? 'http://localhost:3000' : 'http://pennow.tech';
-export const BASE_URL = isDev ? 'http://localhost:3000' : '/';
+export const BASE_URL = isDev ? 'http://localhost:3000' : '';
 
 export const SelectedPostsList = [463, 465, 467];
 export {
