@@ -50,10 +50,10 @@ const PrevNextPosts = ({ curPostSlug }) => {
           />
           <div className="absolute opacity-70 bg-zinc-900 h-full w-full" />
           <div className="absolute w-full h-full left-0 px-6 py-4">
-            <Link href={`/blog/${data.post.next.slug}`}>
+            <Link href={`/blog/${data.post.prev.slug}`}>
               <a className="flex h-full items-center text-white gap-4">
                 <div className="w-10/12 mb-3 text-md tracking-tight text-left">
-                  {data.post.next.title}
+                  {data.post.prev.title}
                 </div>
                 <FaArrowCircleRight className="w-2/12 text-2xl" />
               </a>
