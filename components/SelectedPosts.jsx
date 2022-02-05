@@ -9,11 +9,14 @@ export default function SelectedPosts({ selectedposts }) {
       <div className="container mx-auto py-10 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-8 px-4 md:px-8 rounded-xl ">
         {selectedposts
         && selectedposts.map((val, i) => {
-          const post = FlatWPData(val.post);
-          post.excerpt = ''; // dont want to show excerpt
-          return (
-            <VerticalCard key={val.post.id} post={post} />
-          );
+          if (val.post) {
+            const post = FlatWPData(val.post);
+            post.excerpt = ''; // dont want to show excerpt
+            return (
+              <VerticalCard key={val.post.id} post={post} />
+            );
+          }
+          return '';
         })}
       </div>
     </div>

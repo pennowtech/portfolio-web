@@ -30,9 +30,11 @@ const GRAPHQL_URL = 'https://wordpress-561320-2383780.cloudwaysapps.com/graphql'
 const PER_PAGE_BLOGS = 5;
 
 const isDev = process.env.NODE_ENV === 'development';
-export const BASE_URL = isDev ? 'http://localhost:3000' : 'http://pennow.tech';
+// export const BASE_URL = isDev ? 'http://localhost:3000' : 'http://pennow.tech';
+export const BASE_URL = isDev ? 'http://localhost:3000' : '';
 
-export const SelectedPostsList = [463, 465, 467];
+// export const SelectedPostsList = [463, 465, 467];
+export const SelectedPostsList = [];
 export {
   MenuItems, SocialIconList, FooterMainMenuItems, FooterOtherMenuItems, GRAPHQL_URL, PER_PAGE_BLOGS,
 };
