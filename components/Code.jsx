@@ -35,6 +35,7 @@ function Code({
   return match ? (
     <SyntaxHighlighter
       language={match[1]}
+      style={codeTheme}
       // eslint-disable-next-line react/no-children-prop
       children={codeText}
       PreTag="div"
