@@ -57,4 +57,39 @@
   .message p {
     @apply px-4;
   }
+  .read-extra {
+    @apply break-words relative py-4 px-2 border-2 rounded-xl border-pink-500
+    overflow-wrap break-word;
+  }
+
+  .read-extra:before {
+    content: "Refer";
+    background: #ff828c;
+  }
+
+  .read-extra:before {
+    padding: 1px 8px 1px 3rem;
+    font-weight: 700;
+    border: 1px solid;
+    border-radius: 32px;
+  }
+
+  .read-extra:after,
+  .read-extra:before {
+    margin: 0;
+    position: absolute;
+    top: -1em;
+    left: 10px;
+    color: #fff;
+  }
+
+  .read-extra:after {
+    content: "";
+    font-family: Font awesome\5 Free;
+    font-weight: 900;
+  }
+
+  .read-extra:after {
+    padding: 1.5px 8px;
+  }
 }

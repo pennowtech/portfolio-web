@@ -1,0 +1,274 @@
+---
+author: Sukhdeep Singh
+categories:
+  - Python
+date: 6 May, 21
+description: ""
+post_status: publish
+post_type: post
+tags:
+  - Programming
+  - Slack
+  - app development
+thumbnailUrl: /slack-app-getting-started.svg
+title: "Slack App with Python: Getting Started with Development [Part -1]"
+
+nextPostLink: sending-messages-to-slack
+nextPostTitle: "Slack App with Python: Sending Messages to Slack [Part-2]"
+nextPostImg: /sending-message-to-slack.svg
+prevPostLink: essential-skills-to-develop-slack-apps
+prevPostTitle: Master the Essential Skills to Develop Slack Apps in 10 Easy Steps
+prevPostImg: /essential-skills-to-develop-slack-apps.png
+---
+
+<p className="italic font-semibold">
+  The agenda of this first article in the series is to get familiar with the
+  Slack configuration webpage. Along with that we'll also set up our development
+  environment, and finish with a simple messaging application.
+</p>
+
+---
+
+This article will serve as _Hello World_ program of our _slack_ application.
+Even if it sounds very simple, still I'll suggest to go through it sincerely.
+This article will serve as our foundation stone. Many of the terms,
+configurations, and technicalities learned here will be used in later
+articles. So just pay attention here.
+
+<section className="message">
+  <header><i></i>Revise</header>
+
+We already discussed our
+action plan on what is our expectation from series of these articles. [Refer
+our introductory article](https://pennow.tech/essential-skills-to-develop-slack-apps/) if you did not get the chance to go through that.
+
+</section>
+
+## Slack app configuration
+
+Let's start with slack configuration first. However, as it is our first time,
+we need to create a Slack app first.
+
+### Create a Slack app
+
+<section className="text-sm">
+
+This article is part of: [Most effective way to understand Slack app
+development](/essential-skills-to-develop-slack-apps/)
+
+</section>
+
+Before you start, you will need a Slack App. Head on [Slack's app creation
+webpage](https://api.slack.com/apps/new) , and create a new app. If you are
+signed into more than one workspace, pick a Development Workspace from the
+dropdown. ![Create a Slack app](/slack-app-creation.png)
+Click on **Create App** button, and you will be taken to app's _basic configuration_ page.
+
+### Provide permission to the app
+
+We want our app to appear like any other user, which can participate in any
+conversations inside channels. In a Slack app, this is called a [bot
+user](https://api.slack.com/bot-users). We'll provide our _bot/app_ the
+permission to send any messages. To do this, navigate to **Features > OAuth &
+Permissions**, and scroll down down a little to **Scopes**. Click on **Add an
+OAuth Scope** , and select **chat:write** from the drop down.
+![ Add an OAuth Scope](/slack-add-an-aouth-scope.png)
+Now go on top, and click on **Install to Workspace**. This will install the app into our development workspace.
+![Install To Workspace](/Install-To-Workspace.png)
+Next page will ask your permission to access your workspace. **Allow** it ![Permission to access your workspace](/permission-to-access.png)
+It'll return to the same screen. Once the App is installed, it displays a **Bot User OAuth
+Token**. This will be required to authenticate our app with the _Slack_ We'll
+come to this part later when we'll start development.
+![Bot User OAuth Token](/oauth-and-permissions.png)
+
+## Setting up our development environment
+
+As I told you before that we'll be using Python for our development. So let's
+get to our development machine, and set it up for our future endeavor. Open
+your terminal, and change into the directory where you want to create your
+project. **Create Virtual Environment** Create a fresh virtual environment for
+our development purpose. I named it `webmonitor`
+
+```shell
+    $ python -m venv .venv
+```
+
+Activate the newly created virtual environment:
+
+```shell
+    $ source .venv/Scripts/activate
+```
+
+**Install`slack_bolt` package**
+
+`slack_bolt` is a helper library officially
+built by Slack. It can send and receive messages from a Slack channel. Install
+it with the `pip` command:
+
+```shell
+    $ pip install slack_bolt
+```
+
+**Install`dotenv`library**
+
+We'll be exporting a few of the environment
+variables such as the **OAuth Token** we just discussed above. A common
+practice for Python developers is to export these as _environment variables_.
+However, I personally don't favor that approach. I prefer to do it
+_programmatically_ with the help of `python-dotenv` package. Install it too.
+
+```shell
+    $ pip install python-dotenv
+```
+
+## Start with implementation
+
+We've got everything we need to start writing our first app.
+
+As a first step copy your **Bot User OAuth Token** from **Features > OAuth & Permissions** page. Also copy the **Signing Secret** code from the **Basic Information** page.
+
+Now the question is where to save these tokens. As I'll be storing my files on **Github**'s public domain so I don't want to expose these tokens through my source code. The better option is to store them in a file, which will not be checked in. So I create a config file called `.env`, which is added to the `.gitignore` file.
+
+Create a `.env` file, and add this line:
+
+```yaml
+SLACK_API_TOKEN=xoxb-...
+SLACK_SIGNING_SECRET=72e...
+```
+
+I want to have easy access to these variables. This is where our `dotenv`
+package will be helpful. It reads the _key, value_ pair from `.env` file, and
+adds them to the environment variable at runtime. Create a new file named
+`get_channels_list.py` and include the following code to set the environment
+variable.
+
+```python
+from dotenv import load_dotenv
+load_dotenv()
+```
+
+After loading our environment variables, let us initialize our _slack_ app. Go
+to the same file, and add these lines:
+
+```python
+from slack_bolt import App
+
+
+app = App(
+    token=os.environ.get("SLACK_API_TOKEN"),
+    signing_secret=os.environ.get("SLACK_SIGNING_SECRET")
+)
+```
+
+The code initializes the _slack_ `App` with our `SLACK_API_TOKEN`, and
+`SLACK_SIGNING_SECRET` exported as an environment variable earlier. To test
+whether our app has been initialized successfully; type the following code:
+
+```python
+    print(app.client.api_test()) # or print(app.client.api_call('api.test'))
+```
+
+If it returns something similar to the following, then your app was
+initialized successfully:
+
+```shell
+    {'ok': True, 'args': {'token': '<your token should be displayed here>'}}
+```
+
+If you get back `{u'ok': False, u'error': u'invalid_auth'}` then double-check
+whether you copied your Slack tokens correctly.
+
+<section class="message">
+  <header>
+    <i></i>Tip
+  </header>
+
+You can also test any Slack APIs on its website. So go to the [Slack website to
+test `api.test` method](https://api.slack.com/methods/api.test/test) to verify
+your tokens. It will also display the result immediately. This is a great place
+to explore the working of any slack APIs.
+
+</section>
+
+Enter one more quick test for our authentication with another line of code in the REPL:
+
+```python
+    slack_client.api_call("auth.test")
+```
+
+You should see an output similar to this one:
+
+```shell
+    {'ok': True, 'url': 'https://pennowtech.slack.com/', 'team': 'PenNow.tech', 'user': 'websitemonitoring', 'team_id': 'T0217DCRW64', 'user_id': 'U020LGB9XC3', 'bot_id': 'B020YU6U01X', 'is_enterprise_install': False}
+```
+
+Awesome! We’re authorized to start using the Slack API through our account.
+
+Now the fun begins as we can start programmatically obtaining Slack data and handling messages!
+
+First, let’s fetch information on what all channels are listed in _Slack_ via `conversations_list`. We will also provide which _type_ of channels we want to fetch whether private or public ones.
+
+```python
+result = app.client.conversations_list(
+    types="public_channel, private_channel"
+)
+```
+
+Slack returns back the result with two keys: `ok` and `channels`. `ok` tells
+us the result of our query execution and `channels` contains the data we need
+on the list of channels.
+
+Finally, let’s print all the channels:
+
+```python
+if result.get('ok'):
+    channels_list = result['channels']
+    for channel in channels_list:
+        print(channel['name'] + " (" + channel['id'] + ")")
+```
+
+Now run the code. Ah but it fails! Let's look at the error trace:
+
+```shell
+slack.errors.SlackApiError: The request to the Slack API failed.
+The server responded with: {'ok': False, 'error': 'missing_scope', 'needed': 'groups:read', 'provided': 'chat:write,commands,channels:read'}
+```
+
+Here, it is asking us to add some more scopes before proceeding further. In
+this case, it is asking for `channels:read` and others to add. Let's add these
+_scopes_ in the same way as we did for `chat:write` in our first step.
+
+Go to **Features > OAuth & Permissions > Scopes**, and click on **Add an OAuth Scope**. Add all the scopes which were reported in the above _error_ trace.
+
+![Slack add channels:read](/slack-add-group-and-channel-read-scope.png)
+
+Now, run the same program, and you should get the channels list. It returns the name of the channel along with their unique identifier:
+
+```shell
+$ python post_simple_message_to_slack.py
+  Channels:
+  general (C020EGX0VRB)
+  development (C020HRG2ELB)
+
+$ test (C020JUNPFJR)
+  random (C0217DCS9PA)
+```
+
+Source code:[get_channels_list.py(GitHub)](https://github.com/pennowtech/slack-app-python-slack-bolt/blob/master/get_channels_list.py)
+
+## Summary
+
+In this article we discussed:
+
+- how to create our first app, and how to add various scopes to enable our app to communicate with Slack.
+- Next, we set up our development environment, which was really easy
+- Finally, we saw how to write a simple app that can fetch the data from Slack.
+
+I know this was a little longer article. However, all the details were very
+basics. Therefore, I hope you didn't face any difficulty to comprehend any
+details.
+
+---
+
+Title image by [Graphic Art Sangla](https://pixabay.com/users/negigraphic365-6516708/?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=4536630) from
+[Pixabay](https://pixabay.com/?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=4536630)
