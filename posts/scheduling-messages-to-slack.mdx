@@ -3,7 +3,9 @@ author: Sukhdeep Singh
 categories:
   - Python
 date: 8 May, 21
-description: ""
+description:
+  "Scheduling a massage can help one to reduce the number of missed appointments.
+  You can schedule messages programmatically also."
 post_status: publish
 post_type: post
 tags:
@@ -23,8 +25,9 @@ prevPostImg: /sending-message-to-slack.svg
 
 <p className="italic font-semibold">
   Scheduling a massage can help one to reduce the number of missed appointments.
-  You can **schedule** messages programmatically also.
+  You can schedule messages programmatically also.
 </p>
+
 ---
 
 The agenda of this discussion is how to send the messages at some particular
@@ -32,49 +35,65 @@ time instead of immediately. For example, if I want to send a message after 20
 seconds, then how can I do that. That's really simple. Let's see how to do
 that.
 
-This article is part of: [Most effective way to understand Slack app
-development](https://pennow.tech/essential-skills-to-develop-slack-apps/)
+<section className="text-sm">
 
-\_\_Reference In case, you are new to Slack app development, I will advise you
-to go through our article on [getting started with
-Slack](https://pennow.tech/slack-app-getting-started/). This will help you to
-quickly come to the level where you can understand our current discussion.
+This article is part of: [Most effective way to understand Slack app development](https://pennow.tech/essential-skills-to-develop-slack-apps/)
+
+</section>
+
+<section class="message">
+  <header>
+    <i></i>Reference
+  </header>
+
+In case, you are new to Slack app development, I will advise you to go through
+our article on [getting started with Slack](/slack-app-getting-started/). This
+will help you to quickly come to the level where you can understand our current
+discussion.
+
+</section>
 
 ## Schedule a message to _Slack_
 
-\*Slack provides us with a very nice _API_ : `chat.scheduleMessage`. Firstly, include all of the required dependencies, and initialize _slack client_ with the help of `SLACK_API_TOKEN`.
+**Slack** provides us with a very nice _API_ : `chat.scheduleMessage`. Firstly, include all of the required dependencies, and initialize _slack client_ with the help of `SLACK_API_TOKEN`.
 
-    import os
-    from dotenv import load_dotenv
-    from slack import WebClient
-    import datetime
+```python
+import os
+from dotenv import load_dotenv
+from slack import WebClient
+import datetime
 
-    load_dotenv()
+load_dotenv()
 
-    SLACK_API_TOKEN = token = os.environ['SLACK_API_TOKEN']
+SLACK_API_TOKEN = token = os.environ['SLACK_API_TOKEN']
 
-    slack_client = WebClient(SLACK_API_TOKEN)
+slack_client = WebClient(SLACK_API_TOKEN)
+```
 
 Now with the help of `datetime` module, we can get the required time after 40
 seconds:
 
-    scheduled_time = datetime.datetime.now() + datetime.timedelta(seconds=20)
+```python
+scheduled_time = datetime.datetime.now() + datetime.timedelta(seconds=20)
+```
 
 Use this time to schedule your message:
 
-        slack_client.chat_scheduleMessage(
-            channel='#web-monitor',
-            post_at=scheduled_time.timestamp(),
-            text="Scheduled Message: Hello"
-        )
+```python
+slack_client.chat_scheduleMessage(
+    channel='#web-monitor',
+    post_at=scheduled_time.timestamp(),
+    text="Scheduled Message: Hello"
+)
+```
 
-`channel` is the name of the channel where you want to send the message.
-`post_at` specifies the time when this message should be sent to _slack app_
-`text` is any message which you want to send. This could be plain text or a
-JSON message. Now run the program, and you should receive the message after 40
-seconds. Even your program returned immediately, still, you'll get the
-message. This is how scheduling works. We can also schedule a message for
-_days, months, years, etc_.
+- `channel` is the name of the channel where you want to send the message.
+- `post_at` specifies the time when this message should be sent to _slack app_
+- `text` is any message which you want to send. This could be plain text or a JSON message.
+
+Now run the program, and you should receive the message after 40 seconds. Even your program returned immediately, still, you'll get the message. This is how scheduling works.
+
+We can also schedule a message for _days, months, years, etc_.
 
 ### Scheduling at some particular fixed time
 
@@ -82,20 +101,19 @@ If you want to schedule a message at some particular time, then that is also
 very easy to achieve. Say, if you want to schedule your massage at _10pm_ on
 _02/05/2021_ :
 
-    scheduled_time = datetime.datetime(2021, 5, 2, 10, 0).timestamp()
+```python
+scheduled_time = datetime.datetime(2021, 5, 2, 10, 0).timestamp()
+```
 
 The rest of the code will remain as before.
 
 ## Summary
 
-So we say how to schedule a message. You can set your schedule time after a
-few seconds, days or months. Not just this, but you can also schedule your
-message at some fixed time in the future. Source [shcedule_message.py
-(GitHub)](https://github.com/pennowtech/slack-app-python-slack-
-bolt/blob/master/shcedule_message.py)
+So we say how to schedule a message. You can set your schedule time after a few seconds, days or months. Not just this, but you can also schedule your message at some fixed time in the future.
 
-Image by [Clker-Free-Vector-Images](https://pixabay.com/users/clker-free-
-vector-images-3736/?utm_source=link-
-attribution&utm_medium=referral&utm_campaign=image&utm_content=311519) from
-[Pixabay](https://pixabay.com/?utm_source=link-
-attribution&utm_medium=referral&utm_campaign=image&utm_content=311519)
+**Source** [shcedule_message.py(GitHub)](https://github.com/pennowtech/slack-app-python-slack-bolt/blob/master/shcedule_message.py)
+
+---
+
+Image by [Clker-Free-Vector-Images](https://pixabay.com/users/clker-free-vector-images-3736/?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=311519) from
+[Pixabay](https://pixabay.com/?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=311519)
