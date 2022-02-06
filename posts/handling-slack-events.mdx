@@ -1,0 +1,361 @@
+---
+author: Sukhdeep Singh
+categories:
+  - Python
+date: 8 May, 21
+description:
+  "Listening to events from Slack gives you more control over activities going
+  inside Slack. You can delete the messages, you can react on emojis, or you can
+  file a bug and many more."
+post_status: publish
+post_type: post
+tags:
+  - Programming
+  - Slack
+  - app development
+thumbnailUrl: /handling-slack-events.svg
+title: "Slack App with Python: Handling Slack Events [Part-3]"
+
+nextPostLink: slack-slash-commands
+nextPostTitle: "Slack App With Python: Slash Commands [Part-4]"
+nextPostImg: /slack-slash-commands.png
+prevPostLink: scheduling-messages-to-slack
+prevPostTitle: "Slack App With Python: Scheduling Messages To Slack [Slack Extra]"
+prevPostImg: /scheduling-messages-to-slack.svg
+---
+
+<p className="italic font-semibold">
+  Listening to events from Slack gives you more control over activities going
+  inside Slack. You can delete the messages, you can react on emojis, or you can
+  file a bug and many more.
+</p>
+
+---
+
+In the last article, we saw[ how to send a message to Slack](/sending-messages-to-slack/). However, we cannot see what exactly is going inside the channel or what messages are sent😕. We want to have a provision to watch those activities and take action.
+
+Let's say any user sends a _Hello!_ message. Our python app will reply to him back with
+_Hello [username]_. Here, _username_ will be replaced with the actual name of
+the user. We'll also add one more feature. whenever anyone sends _emoji_ ,
+we'll reply back with the same _emoji_.
+
+Yeah, that's pretty much possible! This is where Slack _events_ come into play🚀. Let's see how this will work.
+
+<section class="message">
+  <header>
+    <i></i>Note
+  </header>
+
+Slack supports many events. You can refer to the full [list of slack events](https://api.slack.com/events) on its website.
+
+</section>
+
+## Configuring Slack events
+
+<section className="text-sm">
+
+This article is part of: [Most effective way to understand Slack app development](/essential-skills-to-develop-slack-apps/)
+
+</section>
+
+Before using the _event_ feature, first, configure it. Open your app
+configuration in the [Slack UI](https://api.slack.com/). Click on **Event
+Subscriptions** in the UI sidebar and toggle the **Enable Events** radio
+button (1).
+![enable-slack-events](/enable-slack-events.png)
+
+When you _enable events_ , it will immediately ask for the **Request URL**.
+This is the URL where Slack will send the events. Then, you will have to
+capture events from there. But before that, we need a URL.
+
+Hence, Let us get a URL before going to step 2.
+
+### Getting a web URL
+
+We can run a web server on our machine. However, chances are big that your
+server will not be accessible from outside of our local network. Then how to
+access this?
+
+This problem can be solved by **ngrok**.
+
+### Working with ngrok
+
+Download _ngrok_ from its [website](https://ngrok.com/download) and run it as:
+
+```shell
+    $ ngrok http 5000
+```
+
+`3000` is a port number. **Note down this port number.** We'll need this in
+our python program later.
+
+Copy the **HTTPS** _Forwarding endpoint_ from the
+output. We'll need it in our next step and future articles too.
+![running-ngrok-webserver](/running-ngrok-webserver.png)
+
+<section class="message warning">
+  <header><i></i>Attention!</header>
+
+The problem with ngrok is that the HTTPS Forwarding name is changed every two hours. This
+requires you to update Slack Request URLs too. Otherwise you will not be able
+to receive the events.
+
+[vortex](https://www.vortexhub.io/) is a better alternative in this regard. However, for our learning purpose, 2 hours time is sufficient.🚴
+
+</section>
+
+### Configure _Request URL_ under the _Events_ page
+
+We got the URL now. Now, we also need to specify endpoints where our python
+app will be listening for our events. By default, Slack sends events on
+`/slack/events`. So the combination of these two will compose a _complete_
+**Request URL**.
+
+Now, go back to step 2 of Configuring Slack events, and enter
+the URL copied from _ngrok_ window along with _endpoints_.
+![enable-slack-events](/enable-slack-events.png)
+Slack will make an attempt to connect to your endpoint. If everything goes fine, you should see **Request URL** **Verified**. Otherwise, make sure you follow the same steps as mentioned above.
+
+<section class="message">
+  <header>
+    <i></i>Note
+  </header>
+
+Whenever your ngrok URL changes, you must _change_ these Request URLs too. Otherwise, your application will fail to respond to events.
+
+</section>
+
+### Subscribe to Bot Events
+
+The next step is to _subscribe to the bot events_ on the same page. There are
+four kinds of events, which you can subscribe to:
+
+- `message.channels` if you want to listen to all the messages posted on public channels
+- `message.groups` if you want to listen to all the messages posted on private channels
+- `message.im` if you want to listen to all the messages posted in your DMs
+- `message.mpim` if you want to listen to all the messages posted in multi-person DMs
+
+_Remember, for the first two events, your app must be part of the intended channels._
+
+For our current article, let's add **message.channels** events permission. This will allow us to receive all of the messages posted on our channel.
+![enable-slack-events-message](/enable-slack-events-message.png)
+
+**message.channels** also require **channels:history** scope. This _scope_
+will be added automatically when you press on **Save Changes** button at the
+bottom. You can verify this by going to **Features > OAuth & Permissions > Scopes**
+
+After saving your changes, you need to **reinstall your app** as displayed on top.
+![reinstall-slack-workspace](/reinstall-slack-workspace.png)
+
+> Every time you change _permissions_ you'll need to **reinstall** your app.
+
+Our configuration part for this section is done now. Let's implement event
+handling now.
+
+## Application Flow Diagram
+
+Before going further with our implementation. Let's take a halt, and take a look at our sequence diagram: ![](/Event-Flow-Sequence-Diagram.png)
+
+We completed the first three parts, and now moving further with the last implementation of the
+last leg in our _sequence diagram_
+
+## Implementation to listen and react to events
+
+Now initialize your slack app as usual:
+
+```python
+import os
+from dotenv import load_dotenv
+from slack_bolt import App
+
+load_dotenv()
+
+# Initializes your app with your bot token and signing secret
+app = App(
+    token=os.environ.get("SLACK_API_TOKEN"),
+    signing_secret=os.environ.get("SLACK_SIGNING_SECRET")
+)
+```
+
+If you want to understand what we did above, then refer to our first chapter in series of [getting started with Slack](/slack-app-getting-started/#start-with-implementation)
+
+### Run local webserver
+
+One change from previous articles is that now you also need to run your python
+app as a _webserver_. I'll call this a _local webserver_. Our local webserver
+should connect with the ngrok server which we ran earlier. That's why it
+should run on the same port which we specified while running _ngrok_ : port
+number **5000** :
+
+```python
+...
+if __name__ == "__main__":
+    app.start(port=5000)
+```
+
+Run your program, and it should display that `Bolt app is running!`.
+
+The next step we'll do is to _listen for message events_.
+
+### Handling for _message_ events
+
+To listen for _message_ events, use `@app.message `decorator specifying
+_messages_ which you want to listen to. So if we just want to listen to
+"hello" messages, then your decorator should be `@app.message('hello')`.
+
+Now, add event handling for this message:
+
+```python
+@app.message('hello')
+def hello_handler(payload, say):
+    say(f"Hello <@{payload['user']}>!\nHow are you?")
+```
+
+As you can see there are two parameters passed to our handler function: `payload`, and `say`. There are more but we'll discuss them in coming discussions. These parameters are passed automatically by the Slack app decorator.
+
+- `payload` contains all the information related to the events such as who sent the message, message text, etc.
+- `say` is a function that sends a message to the **_associated channel_**. You can use it to send simple text messages or complex messages in JSON format.
+- The last line is simply sending a message to the sender retrieved through `payload['user']`.
+
+Now, run your program, and sends a message from Slack. You should get the response:
+![message-event-response-output](/message-event-response-output.png)
+
+<section class="message">
+  <header>
+    <i></i>Note
+  </header>
+
+To send a message to a different channel: `say(text=text, channel=welcome_channel_id)`
+
+</section>
+
+#### Using regular expressions to handle events
+
+There is a catch in the current program. It can respond to any "hello"
+messages (starting with small 'h') but not to "Hello" messages (starting with
+'H'). So do we need to write two different handlers for them?
+
+The answer is _No_. Regular expressions will come to our rescue 😄
+
+```python
+import re
+...
+@app.message(re.compile("(hello|Hello)"))
+def hello_handler(payload, say):
+    say(f"Hello <@{payload['user']}>!\nHow are you?")
+```
+
+There is another catch with this code. Now it will respond to any message
+containing the string 'hello' or 'Hello'. For example, if someone enters a
+garbage string such as 'dushallo', it will still respond. You can try at your
+end 😄
+
+To handle this, again regular expression is at the rescue. The only change required is to replace the above regular expression with the below:
+
+```python
+    @app.message(re.compile("^(hello|Hello)$"))
+```
+
+You can try other regular expressions tricks too. 🌟
+
+### Handling emojis
+
+If you want to take action on emoji, then that's also simple. Instead of
+listening for a message, listen for emoji:
+
+```python
+@app.message(":wave:")
+def emoji_handler(payload, say):
+    say(f"Hey <@{payload['user']}>, {payload['text']}")
+```
+
+The above program will listen for 👋 emojis and responds back with the same
+emoji along with _greeting_ text. Try this at your end.
+
+### Handling Reactions
+
+Slack users can react to messages with emojis. To react to any message, just
+hover your mouse on the required messages, and you will be presented with a
+menu. There you can click on the _face_ icon to react to any message.
+![sending-reaction-from-slack](/sending-reaction-from-slack.png)
+
+So whenever anyone reacts with emojis, Slack sends a **reaction_added** event.
+
+#### Configuring _reaction_added_ event
+
+To handle this reaction, first, provide permission to listen for this event.
+Open Slack [configuration webpage](https://api.slack.com/apps), select your
+app, and navigate to **Features > Event Subscriptions**. Click on **Add Bot
+User Event** under **Subscribe to bot events** , and add _reaction_added_.
+![enable-slack-event-for-reaction](/enable-slack-event-for-reaction.png)
+
+#### Add an event handler for _reaction_added_
+
+To listen to any such events, use `event()` the method provided by
+_slack_bolt_ module, and pass _event name_ :
+
+```python
+@app.event("reaction_added")
+def reaction_added(payload, say):
+    emoji = payload["reaction"]
+    emoji_text = f':{emoji}:'
+    say(emoji_text)
+```
+
+Here, our app responds with the same emoji whichever was reacted with.
+
+### Reacting with emoji reaction instead of emoji message
+
+But what if you want to react with an emoji instead of sending a message. Is
+that possible?
+
+Yeah, that's pretty much possible.
+
+First, enable permission scope for **reactions:write** from **Features > OAuth & Permissions**, and
+then modify your code for `reaction_added` function:
+
+```python
+@app.event("reaction_added")
+def reaction_added(payload, say, client):
+    channel_id=payload["item"]["channel"]
+    ts=payload["item"]["ts"]
+
+    client.reactions_add(
+        name="wave",
+        channel=channel_id,
+        timestamp=ts,
+    )
+```
+
+One **important** thing to note is that we're sending our reaction message at
+the same timestamp value when the reaction was received. This is required
+because we want to react to the same emoji. Otherwise, it will be shown as a
+new message.
+
+Now, when you run the program, it should react with 👋 to every
+emoji. You can even react with the same emoji or different emojis. That's now
+up to your creativity. 🍧
+
+**Source code:** [handling_events.py(GitHub)](https://github.com/pennowtech/slack-app-python-slack-bolt/blob/master/handling_events.py)
+
+<section class="message">
+  <header>
+    <i></i>Reference
+  </header>
+
+I'd again suggest you at least have a glance at all the [events supported by Slack](https://api.slack.com/events). That will help you a lot in the future while designing your app.
+
+</section>
+
+## Summary
+
+This was a pretty interesting chapter so far. Now we can know how to react to
+any event 👂 Let's summarize what all we covered:
+
+- how to setup configure events and endpoints through Slack
+- implementing event handler for messages, emojis, and reactions.
+- in between, we also discussed how to set up proxy webservers if we've limitations in accessing our app from outside of our network.
+
+Overall, it was a good learning experience. I really enjoyed discussing this
+topic. If you need clarification on any part, please let me know through your
+comments.✨
