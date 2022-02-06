@@ -43,6 +43,7 @@ function Index({ posts, selectedposts }) {
             tags={[
               { name: 'ReactJS' },
               { name: 'NodeJS' },
+              { name: 'Python' },
               { name: 'PostgreSQL' },
               { name: 'GraphQL' },
               { name: 'Urql' },
