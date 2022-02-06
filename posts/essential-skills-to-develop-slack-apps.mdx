@@ -12,7 +12,6 @@ tags:
   - Programming
   - Slack
   - app development
-  - series
 thumbnailUrl: /essential-skills-to-develop-slack-apps.png
 title: Master the Essential Skills to Develop Slack Apps in 10 Easy Steps
 prevPostLink: builder-design-pattern-explained-easily
@@ -20,7 +19,7 @@ prevPostTitle: Builder Design Pattern Explained Easily
 prevPostImg: /builder-design-pattern-explained-easily.png
 ---
 
-<p className="post-snippet">
+<p className="italic font-semibold">
   Slack helps to ensure clear communication among teams distributed in different
   locations. It offers a diverse set of APIs to build effective Apps. Here,
   we'll see how to use these APIs to develop an App.
@@ -38,7 +37,7 @@ how to develop such wonderful apps. We'll cover this in small articles. Each
 article will target a single feature, and step by step we will build a full-
 fledged application.
 
-<section class="message warning">
+<section className="message warning">
   <header>
     <i></i>
     Disclaimer
@@ -80,7 +79,7 @@ As I mentioned before, we'll be covering or app learning journey in small
 steps. I've listed all of the steps here pointing to their respective
 articles.
 
-<section class="message header">
+<section className="message header">
   <header>
     <i></i>
     Note
@@ -151,11 +150,15 @@ tickets, etc.
 - **Shortcuts** :
   - **To create the job**. Apart from **slash commands** , one can also create a job through _slack_ **shortcuts**
 - **Failure Notifications** : Message to be sent whenever an issue is faced with the following information:
+
   - **Title** : ⚠️ Alert
   - **Job Identifier**
   - **Web URL**
   - **Error Message** such as _connection timed out_ , _string not found(if configured)_ , _website not found_ , _internal server error_ , etc.
-  - **Assign to:** To assign the issue to a user to debug and resolve it. \_\_Note Whenever any issue occurs, it will stop sending further notifications until the website is up again. However, one can run the job manually to check the current status with **/webmonitor run [job-id]** slash command.
+  - **Assign to:** To assign the issue to a user to debug and resolve it.
+
+    **Note:** Whenever any issue occurs, it will stop sending further notifications until the website is up again. However, one can run the job manually to check the current status with **/webmonitor run [job-id]** slash command.
+
 - **Success Notification** : Notification to send if web URL is _up_ again. Also, it'll resolve the assigned ticket automatically as well as unpin the _alert_ message raised earlier.
   - **Title** : ✔️ Restored
   - **Job Identifier**

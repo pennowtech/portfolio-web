@@ -118,7 +118,7 @@ const PostPage = ({
           <PrevNextPosts postsNextPrevInfo={postsNextPrevInfo} />
         </div>
         <div className="sidebar font-Roboto wide:min-w-[30%] max-w-[400px] flex-shrink flex-grow-0 mx-auto p-4">
-          <ToC content={content} className="" />
+          <ToC content={content} className="text-base" />
         </div>
       </div>
     </FullLayout>
