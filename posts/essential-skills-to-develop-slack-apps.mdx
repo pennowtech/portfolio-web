@@ -1,0 +1,190 @@
+---
+author: Sukhdeep Singh
+categories:
+  - Python
+date: May, 21
+description: "Slack helps to ensure clear communication among teams distributed in different
+locations. It offers a diverse set of APIs to build effective Apps. Here,
+we'll see how to use these APIs to develop an App."
+post_status: publish
+post_type: post
+tags:
+  - Programming
+  - Slack
+  - app development
+  - series
+thumbnailUrl: /essential-skills-to-develop-slack-apps.png
+title: Master the Essential Skills to Develop Slack Apps in 10 Easy Steps
+prevPostLink: builder-design-pattern-explained-easily
+prevPostTitle: Builder Design Pattern Explained Easily
+prevPostImg: /builder-design-pattern-explained-easily.png
+---
+
+<p className="post-snippet">
+  Slack helps to ensure clear communication among teams distributed in different
+  locations. It offers a diverse set of APIs to build effective Apps. Here,
+  we'll see how to use these APIs to develop an App.
+</p>
+
+---
+
+Slack apps in reality are just another kind of message. You can create polls,
+raise bugs or service tickets, and many more simply through messages. Of
+course, it looks really exciting when we say all of these are possible just
+with a messaging app.
+
+Cutting long story short. Here, we will be discussing
+how to develop such wonderful apps. We'll cover this in small articles. Each
+article will target a single feature, and step by step we will build a full-
+fledged application.
+
+<section class="message warning">
+  <header>
+    <i></i>
+    Disclaimer
+  </header>
+
+We'll not be discussing the slack app in _general_ such as what it does. However,
+if required, I'll also touch on these topics. But our whole discussion will be
+from a programming perspective.
+
+</section>
+
+If anyone wants to know how to use slack, then I'll suggest referring [tips and tricks
+given by Maggie Tillman](https://www.pocket-lint.com/apps/news/150925-what-is-slack-and-how-does-it-work-tips-tricks).
+She explained it all in a very crispy yet concise way.
+
+## What we'll be building
+
+Here, we'll be building an _app_ , which allows you to monitor websites,
+create tickets if any issue is faced or the website is down, assigning and
+tracking those tickets, etc. If you need more details, jump to the bottom of
+this article under the _feature_ section.
+
+> I'll soon be coming with the application mock-ups.
+
+## Technical proficiency requirements
+
+Like other apps, you don't need to learn a new programming language. You can
+use any existing programming language with which you're comfortable.
+
+I'll be using Python for our development purpose. It's not only easy to use but also
+has a plethora of libraries, which anyone can imagine. So you don't have to
+reinvent the wheel. Just concentrate on your work.
+
+Hence the only requirement is: intermediate level of Python proficiency 😊
+
+## Learning Steps
+
+As I mentioned before, we'll be covering or app learning journey in small
+steps. I've listed all of the steps here pointing to their respective
+articles.
+
+<section class="message header">
+  <header>
+    <i></i>
+    Note
+  </header>
+
+We'll be using the _slack_bolt_ library officially released
+by Slack. There is another set of libraries named SlackClient. I'll also be
+covering that in the future. However, I'll discourage you to use that as
+that's deprecated by Slack.
+
+</section>
+
+- [Step.1.](/slack-app-getting-started/) We will walk through setting up our development environment, configuring the slack app, and coding our app in Python.
+- [Step.2](/sending-messages-to-slack/). Send a plain text message to Slack or a complex one comprised of multiple sections. Also, discuss how to add our app to a channel.
+- [Step.3](/slack-app-with-python-handling-slack-events-part-3/). Listen and react to various events like messages, emojis, and reactions.
+- [Step.4](/slack-slash-commands/). Discussion on slash commands, a powerful way to send messages to Slack
+- [Step.5](/slack-publishing-ui-messages/). Publishing messages containing elements like buttons, select-menus, date-pickers, and more
+- [Step.6](/slack-handling-actions-from-slack-dialogues/). This article is in continuation of the previous article. Here we will be discussing how to handle actions triggered from visual elements such as button clicks or a date selection.
+- [Step.7](/slack-app-open-modal-views/). Modal dialogues where messages are displayed in visual blocks elements such as buttons, date picker, etc.
+- [Step.8](/slack-app-working-with-shortcuts/). Discussion about message shortcuts and global shortcuts, a convenient way to work with Slack.
+- [Step.9](/slack-app-working-with-message-shortcuts/). This article is in continuation of the previous article. Here we’ll discuss message shortcuts.
+- Step.10. Publishing your app to Slash App Home.
+
+### Extras
+
+These are just a few add-ons. I just covered them as a reference section here:
+
+- [Scheduling messages to Slack](/scheduling-messages-to-slack/)
+- [Pin And Unpin Messages](/slack-app-pin-and-unpin-messages/)
+- Test your Slack App
+- How to deploy Slack App
+
+The code for this whole tutorial is available on
+[Github](https://github.com/pennowtech/slack-app-python-slack-bolt).
+
+> I'll keep on updating this section as I add more and more articles under this series.
+
+## App Features
+
+We'll build an _app_ , which allows one to monitor websites, create tickets if
+any issue is faced or the website is down, assigning and tracking those
+tickets, etc.
+
+- Create a monitoring job with details such as:
+  - **Job identifier** A unique identifier to identify your job (Max length is 20 characters).
+  - **Web URL** to monitor.
+  - **Search for any string** to make sure that website isn't hacked.
+  - **Monitoring Frequency** when the job should run to monitor the website.
+  - **Date** from when the job should start monitoring. A use case when the job website isn't ready yet.
+- Each time a new job is created, the slack App send back a notification with details of creation:
+  - **Job identifier**
+  - **Web URL**
+  - **Search for the string**
+  - **Monitoring Frequency**
+  - **Start from [date]**
+  - **Next monitoring time**
+  - A **_footnote_** with information on who created the job, and when.
+- Each created job should automatically be pinned so that easier to access.
+- Various **slash commands** such as:
+  - `/webmonitor create`: To display the UI to create a new monitoring job.
+  - `/webmonitor list`: to list down all web monitor jobs along with their IDs.
+  - `/webmonitor kill [job-id]`: To stop the monitoring job without deleting it.
+  - `/webmonitor delete [job-id]`: To delete the monitoring job.
+  - `/webmonitor run [job-id]`: To run URL monitoring before its scheduled time. Useful while debugging.
+  - `/webmonitor list issues`: To list all the issues assigned or unassigned.
+  - `/webmonitor close issue [id]`: To close an issue specified by _id._
+  - `/webmonitor view issue [id]`: To view an issue specified by _id._
+- **Shortcuts** :
+  - **To create the job**. Apart from **slash commands** , one can also create a job through _slack_ **shortcuts**
+- **Failure Notifications** : Message to be sent whenever an issue is faced with the following information:
+  - **Title** : ⚠️ Alert
+  - **Job Identifier**
+  - **Web URL**
+  - **Error Message** such as _connection timed out_ , _string not found(if configured)_ , _website not found_ , _internal server error_ , etc.
+  - **Assign to:** To assign the issue to a user to debug and resolve it. \_\_Note Whenever any issue occurs, it will stop sending further notifications until the website is up again. However, one can run the job manually to check the current status with **/webmonitor run [job-id]** slash command.
+- **Success Notification** : Notification to send if web URL is _up_ again. Also, it'll resolve the assigned ticket automatically as well as unpin the _alert_ message raised earlier.
+  - **Title** : ✔️ Restored
+  - **Job Identifier**
+  - **Web URL**
+  - **Error Message** : What was the problem reported?
+  - **Assigned to:** whom it was assigned
+  - Footnote: ⏰ Downtime
+- **Ticket Operations:**
+  - **Create Ticket** Option to create the tickets will only be available from the received alert. Fields will be:
+    - **#id** : A number assigned automatically. Displayed at the top.
+    - **Assignee** : Whom to assign from the team
+    - **Planned date** (optional): Till when to fix the issue
+    - **Extra Details(optional)** : Any detail which could be supportive.
+- `/webmonitor close issue [id]`: Apart from closing automatically when the website is up; one can also close it manually. The only information to fill in is **Closing details** such as what was the problem, how was it resolved, or just to drop the idea to fix the issue for whatsoever reason.
+- `/webmonitor view issue [id]`: View the ticket details. Here, you can also edit the issue, like any change in assignee, date or details, etc. The last 2 changes and one from creation time will be displayed as history at bottom of the window. To view complete history no option planned as yet.
+
+## Final Words
+
+I'm really excited to discuss my learning with you guys. I hope I'll be able
+to convey my thoughts in a clear and concise way. At the same time, I'll also
+expect your valuable feedback on whatever we discuss. It'll help me to improve
+the quality of my articles.
+
+If you've any questions, please feel free to let me know through your comments.
+
+Now let's start our journey ☕️
+
+---
+
+Image by
+[GraphicMama-team](https://pixabay.com/users/graphicmama-team-2641041/) from
+[Pixabay](https://pixabay.com/)

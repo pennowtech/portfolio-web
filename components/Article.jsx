@@ -10,7 +10,7 @@ const data = { btn_text: 'Click Me' };
 const Article = ({ frontMatter, mdxSource }) => (
   <>
     {/* <p>{frontMatter.description}</p> */}
-    <article id="post" refs="articleRef" className="prose-a:text-[#0366d6] dark:prose-a:text-blue-300">
+    <article id="post" refs="articleRef" className="prose-a:text-[#0366d6] dark:prose-a:text-blue-300 text-lg leading-8">
       <MDXRemote
         {...mdxSource}
         components={{

@@ -98,6 +98,15 @@ const PostPage = ({
     metaKeywords: frontMatter.tags.join(','),
     metaDesc: frontMatter.description,
   };
+
+  const postsNextPrevInfo = {
+    nextPostLink: frontMatter.nextPostLink,
+    nextPostTitle: frontMatter.nextPostTitle,
+    nextPostImg: frontMatter.nextPostImg,
+    prevPostLink: frontMatter.prevPostLink,
+    prevPostTitle: frontMatter.prevPostTitle,
+    prevPostImg: frontMatter.prevPostImg,
+  };
   return (
     <FullLayout metaInfo={metaInfo}>
       <HeaderMain />
@@ -106,7 +115,7 @@ const PostPage = ({
       <div className="w-full lg:max-w-[1167px] lg:mx-auto flex flex-col wide:flex-row flex-grow overflow-hidden  ">
         <div className="w-full h-full flex-grow p-3 overflow-auto">
           <Article frontMatter={frontMatter} mdxSource={mdxSource} />
-          <PrevNextPosts curPostSlug={slug} />
+          <PrevNextPosts postsNextPrevInfo={postsNextPrevInfo} />
         </div>
         <div className="sidebar font-Roboto wide:min-w-[30%] max-w-[400px] flex-shrink flex-grow-0 mx-auto p-4">
           <ToC content={content} className="" />
