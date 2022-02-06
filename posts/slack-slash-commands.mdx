@@ -1,0 +1,372 @@
+---
+author: Sukhdeep Singh
+categories:
+  - Python
+date: 9 May, 21
+description: "Slash commands are keywords to send a request to a specified endpoint (like
+event endpoints). The command can be with or without a text/body. These are
+invoked by typing the slash(/) followed by your command."
+post_status: publish
+post_type: post
+tags:
+  - Programming
+  - Slack
+  - app development
+  - tutorials
+thumbnailUrl: /slack-slash-commands.png
+title: "Slack App with Python: Slash Commands [Part-4]"
+
+nextPostLink: slack-publishing-ui-messages
+nextPostTitle: "Slack App With Python: Publishing UI Messages [Part-5]"
+nextPostImg: /slack-publishing-ui-messages.png
+prevPostLink: handling-slack-events
+prevPostTitle: "Slack App With Python: Handling Slack Events [Part-3]"
+prevPostImg: /handling-slack-events.svg
+---
+
+<p className="italic font-semibold">
+  Slash commands are keywords to send a request to a _specified endpoint_ (like
+  event endpoints). The command _can be with or without a text/body_. These are
+  invoked by typing the slash(/) followed by your command.
+</p>
+
+---
+
+We already covered _slack events_. Events are great but lack interactivity. We
+want something that can be kicked off manually. This is where _slash commands_
+come into play.
+
+There are many predefined commands by Slack. However, we want
+to implement our own command as per our requirements. Let's name our command
+as `/webmonitor`.
+
+<section class="message">
+  <header>
+    <i></i>Note
+  </header>
+
+Refer to my first article to get the essence of the whole of this discussion: [Most effective way to understand Slack app development](/blog/essential-skills-to-develop-slack-apps)
+
+</section>
+
+## Overview of _slash_ commands
+
+When a user enters a command into Slack's _message composer box_ , slack sends
+those commands to a configured endpoint. From there these commands are
+received by the app, which processes these commands and returns the response
+back.
+
+The whole sequence is explained beautifully by the flow diagram:
+![slash-command-sequence-diagram](/slash-command-sequence-diagram.png)
+Response sent back by the app could be in _plain text_ or in _JSON_ format.
+
+In this article we'll be implementing two of our slash commands:
+
+- `/webmonitor create [website url]`: To create a new monitoring job that will ping a given website URL.
+- `/webmonitor list`: to list down all the web monitoring jobs created in the running session.
+
+Actually, it's a single command but carrying a different text/body. That's why
+I referred to them as two commands.
+
+As part of our project, we'll be implementing multiple such commands. Visit our introductory article to see a [list of all of these slash commands](/blog/essential-skills-to-develop-slack-apps/#webmonitor-slash-commands).
+
+Then without further delay, let's build our slash commands, which will return us current time in Germany
+
+## Configuration _Slash Command_
+
+Open your Slack _application's_ configuration page, and navigate to **Features > Slash commands**. Click on **Create new Command**:
+
+![slash-command-creation](/slash-command-creation.png)
+When you click on this button, you will be taken to the next screen. There you will be asked to fill in a few pieces of information. The most important of them are the following:
+
+- **Command** : Enter your slash command name, which you will be implementing. In our case, it is a **web monitor**.
+- **Request URL:** As we discussed in the [previous article](/blog/slack-app-with-python-handling-slack-events-part-3/#configuring-slack-events), a **Request URL** is a combination of a _webserver address_ and an _endpoint_. Just to remind you that endpoint is where Slack will send this command to be processed. Just like events, Slack sends every command on `/slack/events` by default.
+
+Our filled page should look like below.
+![slash-command-creation-form](/slashc-command-creation-form.png)
+Click on the **Save** button, and we're halfway done to our working application.
+
+<section class="message warning">
+  <header>
+    <i></i>Attention
+  </header>
+
+You might require to add a permission scope for commands to your Slack app's configuration page. Otherwise, you'll get a permission error while running your app. So make sure commands permission is added under **Features > OAuth & Permissions > Scopes**
+
+</section>
+
+## Command Handler Implementation
+
+Let us get back to our development machine. Create a new file, and [initialize our slack app](/blog/slack-app-getting-started/#Start_with_implementation):
+
+```python
+import os
+from dotenv import load_dotenv
+from slack_bolt import App
+
+load_dotenv()
+
+app = App(
+    token=os.environ.get("SLACK_API_TOKEN"),
+    signing_secret=os.environ.get("SLACK_SIGNING_SECRET")
+)
+...
+if __name__ == '__main__':
+    app.start(port=5000)
+```
+
+Now, let's implement our command handler. Start with something simple. For
+example, you'll enter the command `webmonitor` in Slack, and our app will
+simply return `Hello`
+
+```python
+@app.command("/webmonitor")
+def repeat_text(ack, say, payload):
+    ack()
+    say("Hello")
+```
+
+There are two things important here:
+
+- First, we added a command handler at the top handle command `\webmonitor`.
+- Second is the `ack()` statement to acknowledge the command sent by Slack. This must be sent _within 3 seconds_ of receiving the command. Otherwise, you'll receive an **_Operation timeout_** error:
+
+![slack-command-timeout](/slack-command-timeout.png)
+Hence, it should always be the first statement in the handler.
+
+### Specifying Command Parameters
+
+Each command takes exactly one parameter: **text**. It is everything you can
+write after the command name. You can write any number of words, separated by
+spaces.
+
+It doesn't require any changes inside your _slack app configuration page_. However, it needs some changes inside your code to respond back as per the command body.
+
+After knowing this, let's extend our existing command. Let's enter: `/webmonitor create www.google.com`. This time we'll simply return the command parameters entered. Later on, we'll add actual functionality to our command.
+
+Now, modify our command handler to read the extra text supplied with our command:
+
+```python hl=4
+@app.command("/webmonitor")
+def webmonitor_command_handler(ack, say, payload):
+    ack()
+    command_parameters = payload.get('text')
+    if command_parameters:
+        say (f'You entered: {command_parameters}.')
+    else:
+        say('No command body was entered.')
+```
+
+- First, we retrieved the _parameters specified along with the slash command_ (line 4)
+- Then we returned the response whether _command parameters_ were specified or not.
+
+Let's modify the above code a little bit to parse the input command
+parameters:
+
+```python
+jobs_list = []
+
+@app.command("/webmonitor")
+def webmonitor_command_handler(ack, say, payload, respond):
+    ack()
+    text = payload.get('text')
+
+    if text is None:
+        respond ('Nothing to do')
+        return
+
+    user = payload.get('user_name')
+    command_params = tuple(text.split())
+
+    if command_params[0] == 'create':
+        web_url=command_params[1]
+        jobs_list.append(web_url)
+        job_id = jobs_list.index(web_url)
+        status = "Yet to implement"
+        say (f"Command for {web_url} was created by {user}")
+```
+
+All of this code is self-explanatory. First, we checked if there are any
+command parameters. If there is no parameter, then respond back, and return.
+
+However, if there are command parameters, then extract them and check if the
+first parameter is for URL monitoring _job_ creation. If yes, then parse the
+required parameters, and respond as:
+![webmonitor-job-creation-response-plain-text](/webmonitor-job-creation-response-plain-text.png)
+If we look at the display, this looks very dull. Let's make it a little
+sophisticated.
+
+### Sending JSON Response instead of Plain Text
+
+Till now, we're sending responses in _plain text_. However, as we discussed
+before, we can send a more customized [responses with the help of _JSON_](/blog/sending-messages-to-slack/#Formatting_the_message).
+Our returned message will be displayed like:
+![webmonitor-job-creation-response](/webmonitor-job-creation-response.png)
+Let's compose our JSON message first:
+
+```json
+def create_response(web_url, job_id, status, creator):
+    data = {
+        "text": "New Paid Time Off request from Fred Enriquez",
+        "blocks": [
+            {
+                "type": "header",
+                "text": {
+                    "type": "plain_text",
+                    "text": "Web Monitoring Job",
+                    "emoji": True
+                }
+            },
+            {
+                "type": "section",
+                "fields": [
+                    {
+                        "type": "mrkdwn",
+                        "text": f"*Job ID:*\n{job_id}"
+                    },
+                    {
+                        "type": "mrkdwn",
+                        "text": f"*URL:*\n{web_url}"
+                    }
+                ]
+            },
+            {
+                "type": "section",
+                "fields": [
+                    {
+                        "type": "mrkdwn",
+                        "text": f"*Created by:*\n<@{creator}>"
+                    },
+                    {
+                        "type": "mrkdwn",
+                        "text": f"*Status:*\n{status}"
+                    }
+                ]
+            }
+        ]
+    }
+
+    return data
+```
+
+If you have gone through my article on [formatting the message](/blog/sending-messages-to-slack/#Formatting*the_message), then the above code should be easy to understand that each Slack message is composed of multiple blocks. Here, at the top we're specifying the header of the message, then we specified two _sections_ inside the blocks, and each section is of type text.
+
+We did all that inside a function only to have code clarity and readability. This
+function accepts a few more parameters to fill inside the response message.
+
+Now, let's replace our existing statement to respond back with the following one. Rest, all of the code will remain the same as before.
+
+```python
+        say (create_response(web_url, job_id, status, user))
+```
+
+Run your program, and you should see the message displayed in the same format as we discussed above.
+
+### Implementing _/webmonitor list_ command
+
+This command will simply return all the jobs stored inside the app. Implementation of this is almost similar to _create a job_. The only difference is how we fetch the list.
+
+So, let's fetch the jobs from the list, and make our response message:
+
+```python
+def list_response(jobs_list):
+    data = {
+        "text": "New Paid Time Off request from Fred Enriquez",
+        "blocks": [
+            {
+                "type": "header",
+                "text": {
+                    "type": "plain_text",
+                    "text": "Web Monitoring Jobs List",
+                    "emoji": True
+                }
+            }
+        ]
+    }
+
+    section_format = {
+                "type": "section",
+                "fields": [
+                    {
+                        "type": "mrkdwn",
+                        "text": "*Job ID:*\n{job_id}"
+                    },
+                    {
+                        "type": "mrkdwn",
+                        "text": "*URL:*\n{url}"
+                    }
+                ]
+            }
+
+    for job_id, url in enumerate(jobs_list):
+        text_id = f"*Job ID:*\n{job_id}"
+        text_url = f"*URL:*\n{url}"
+
+        section_format['fields'][0]['text'] = text_id
+        section_format['fields'][1]['text'] = text_url
+
+        data['blocks'].append(copy.deepcopy(section_format))
+
+    return data
+```
+
+This is all related to Python: creating a dictionary, iterating lists, and filling the dictionary, and finally returning the composed dictionary.
+
+Next, we'll implement handling for `/webmonitor lists` command. Go to the same handler function, and add the following code snippet.
+
+```python
+@app.command("/webmonitor")
+def webmonitor_command_handler(ack, say, payload, respond):
+    ...
+    elif command_params[0] == 'list':
+        if jobs_list:
+            say (list_response(jobs_list))
+```
+
+The above code checks whether the command parameter was for `list`. If the
+answer is yes, then it sends the message we composed above.
+
+Now run your program, and you should see a similar response as below: ![webmonitor-list-response](/webmonitor-list-response.png)
+In the same way, you can also implement other commands.
+
+**Source Code:** [slash_commands.py(GitHub)](https://github.com/pennowtech/slack-app-python-slack-bolt/blob/master/slash_commands.py)
+
+<section class="message">
+  <header>
+    <i></i>Note
+  </header>
+
+This might be that the source code
+could be changed by the time you check it. You might find other commands that
+could also be implemented in the checked-in code with more functionalities
+
+</section>
+
+## Limitation
+
+We have seen how helpful could be _slash commands_. You simply send a command
+to the endpoint(or app) and receive the response back. However, here is one
+limitation of the _slash commands_.
+
+You can't send more than one parameter to
+slack commands. It is not possible to specify additional parameters. Of
+course, you can parse the string, and look for specific parameters. But that
+will be an extra work and impacts the simplicity provided by _slack apps_.
+
+_Slack_ was also aware of this, and that's why they provide another feature:
+_interactive dialogues or messages_. Yes, we will be discussing that in our
+next article.
+
+## Summary
+
+Here we discussed:
+
+- how to _create and configure_ slack slash commands
+- _implementing_ command handlers
+- specifying _command parameters_
+- sending the response in _JSON format_
+- and finally discussed one major limitation of the _slash commands_
+
+---
+
+[People vector created by rawpixel.com -www.freepik.com](https://www.freepik.com/vectors/people)

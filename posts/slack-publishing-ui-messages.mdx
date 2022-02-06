@@ -1,0 +1,344 @@
+---
+
+author: Sukhdeep Singh
+categories:
+    - Python
+date: 9 May, 21
+description: 'Slack has the features like buttons, select-menus, date-pickers, and more. You
+can add these features to your message, and make them more interactive. This
+tutorial will walk you through how to use these features to make your app
+interactive'
+post_status: publish
+post_type: post
+tags:
+    - Programming
+    - Slack
+    - app development
+    - tutorials
+thumbnailUrl: /slack-publishing-ui-messages.png
+title: 'Slack App with Python: Publishing UI Messages [Part-5]'
+
+nextPostLink: slack-handling-actions-from-slack-dialogues
+nextPostTitle: 'Slack App With Python: Handling Actions From Slack Dialogues [Part-6]'
+nextPostImg: /slack-handling-actions-from-slack-dialogues.png
+prevPostLink: slack-slash-commands
+prevPostTitle: "Slack App With Python: Slash Commands [Part-4]"
+prevPostImg: /slack-slash-commands.png
+---
+
+<p className="italic font-semibold">
+  Slack has the features like buttons, select-menus, date-pickers, and more. You
+  can add these features to your message, and make them more interactive. This
+  tutorial will walk you through how to use these features to make your app
+  interactive
+</p>
+
+---
+
+Till now we're seeing simple messages to interact with our app such as
+_events_ , and _slash commands_. However, if we need to pass multiple
+information, then this is where the _slack_ app's _interactive components_
+come into play.
+
+For a better understanding, take the example of a form. One
+can open the form, and submit it back after filling in the required
+information. This way we can send multiple information to the app.
+
+Our working prototype will look like this by end of this chapter:
+![Slack-dialgue-window-response](/Slack-dialgue-window-response.png)
+
+Browse the [interactive components](https://api.slack.com/block-kit/interactivity) to see a full list of components.
+
+<section className="text-sm">
+
+Refer to my first article to get the essence of the whole of this discussion: [Most effective way to understand Slack app development](/blog/essential-skills-to-develop-slack-apps)
+
+</section>
+
+Before proceeding further, let us discuss how to layout the UI of our interactive message.
+
+## Brief Overview of _Slack Block Kit Builder_
+
+[Block Kit Builder](https://api.slack.com/tools/block-kit-builder) is a tool
+that helps to visually prototype the layout of a UI with various components.
+These components can range from simple texts to _select boxes, radio boxes,
+and many more_.
+![Slack-kit-builder](/Slack-kit-builder.png)
+Interactive components such as _buttons, checkboxes_ , etc. are on the left. Simply click
+on the one, which you need, and drag it to the middles window. This is where
+you can preview your app.
+
+You can also customize the layout by directly
+modifying the _JSON file on the right side of the builder UI_. If you want to
+know the structure of this JSON file, then you're advised to refer to [Block
+Kit instructions on how to build](https://api.slack.com/block-kit/building)
+
+Once you're done with your design, copy the whole of the JSON code from the
+right side of the window. Open your python file and store it in a variable. If
+it's a little confusing, then just hold on for a few minutes. We will be doing
+the same in our current article.
+
+<section class="message warning">
+  <header>
+    <i></i>Important
+  </header>
+
+As we saw in previous articles that we can send a message in JSON format. So that's the basis of this whole design. <br/>The Builder tool lets you layout your interactive message and **generates the corresponding JSON**. That JSON is then used directly in our app.
+
+</section>
+
+## Compose your interactive message
+
+Now, we have got a glimpse of _Slack Block kit Builder_ , let's design our UI
+message or dialogue window. Open _[Block Kit Builder](https://app.slack.com/block-kit-builder)_ webpage, and design a simple layout for right now:
+![Dialogue-window-preview](/Dialogue-window-preview.png)
+Here, we added a header with the text "Web Monitoring
+Configuration", an input box to ask for a URL with a _hint_ below that. At the
+very bottom, we've two buttons to _submit_ and _cancel_ the operation.
+
+Copy the corresponding JSON text from the same page to your source code:
+
+```json
+def get_dialog_data():
+    dialog_data = {
+        "blocks": [
+            {
+                "type": "header",
+                "text": {
+                    "type": "plain_text",
+                    "text": "Web Monitoring Configuration"
+                }
+            },
+            {
+                "type": "input",
+                "block_id": "url_input_block",
+                "element": {
+                    "type": "plain_text_input",
+                    "action_id": "sl_input",
+                    "placeholder": {
+                        "type": "plain_text",
+                        "text": "Enter URL"
+                    }
+                },
+                "label": {
+                    "type": "plain_text",
+                            "text": "URL"
+                },
+                "hint": {
+                    "type": "plain_text",
+                            "text": "URL of website to be monitored"
+                }
+            },
+            {
+                "type": "input",
+                "block_id": "buttons_block",
+                "element": {
+                    "type": "static_select",
+                    "placeholder": {
+                        "type": "plain_text",
+                        "text": "Select",
+                    },
+                    "options": [
+                        {
+                            "text": {
+                                "type": "plain_text",
+                                "text": "Every Minute"
+                            },
+                            "value": "minuetly"
+                        },
+                        {
+                            "text": {
+                                "type": "plain_text",
+                                "text": "Hourly"
+                            },
+                            "value": "hourly"
+                        },
+                        {
+                            "text": {
+                                "type": "plain_text",
+                                "text": "Daily"
+                            },
+                            "value": "daily"
+                        }
+                    ],
+                    "action_id": "static_select-action"
+                },
+                "label": {
+                    "type": "plain_text",
+                            "text": "Monitoring Frequency",
+                }
+            },
+            {
+                "type": "divider"
+            },
+            {
+                "type": "actions",
+                "elements": [
+                    {
+                        "type": "button",
+                        "text": {
+                            "type": "plain_text",
+                            "text": "Submit"
+                        },
+                        "style": "primary",
+                        "action_id":"submit_pressed",
+                        "value": "submit"
+                    },
+                    {
+                        "type": "button",
+                        "text": {
+                            "type": "plain_text",
+                            "text": "Cancel"
+                        },
+                        "style": "danger",
+                            "action_id":"cancel_pressed",
+                            "value": "cancel"
+                    }
+                ]
+            }
+        ]
+    }
+
+    return dialog_data
+```
+
+Just like before, I stored it inside a function for better readability, and
+code cleanliness. Whenever we need to display a UI on Slack, we'll invoke this
+function to return us with the JSON.
+
+<section class="message">
+  <header>
+    <i></i>Note
+  </header>
+
+Every block should have a unique `block_id` component to distinguish itself from other blocks. This will help us to access the block information in our source code as we'll see later.
+
+In addition, every actionable component like select-boxes, buttons should have `action_id`. This will be sent to our app whenever any event occurs on them. It helps our app to identify what action to take. I'll suggest you play with _Block Kit Builder_. That will help you to understand it better.
+
+</section>
+
+## Slack configuration for _Interactivity_ feature
+
+Similar to _events_ and _slash commands_ , we'll need to specify a **Request URL**. Whenever any action occurs such as button clicks, Slack will send the information to that URL.
+
+First, we need to enable **interactivity** through the configuration webpage. Navigate to **Features > Interactive Components**, and enable **interactivity**.
+
+When _interactivity_ is enabled, fill out the information for the **Request URL**. Just like we did for _events_ and _slash commands_ , you need to specify the webserver address and endpoint. Slack sends a message to this URL whenever any **action** occurs such as button
+clicks.
+
+Finally, _save_ the changes.
+![Configure Slack interactivity](/Configure-interactivity-1.png)
+This page also has the option to configure **Shortcuts** , which we will be discussing in
+coming articles.
+
+The next step is to implement source code to add interactivity. This I'll divide further into two steps. Otherwise, this article will become too long 😄:​
+
+- Publish a message that contains interactive elements like buttons and text boxes
+- Listen for events when a user responds such as submitting the form, etc.
+
+We'll cover the first part of this article, and the second part will be cover in the next article.
+
+## Publishing an interactive message
+
+If you've followed my articles on the slack app from the beginning, then this
+part should be very easy to implement. It is just like sending a normal
+message to _slack_ apps.
+
+Open the same python file where we stored the JSON data of the message. Let's [initialize our slack app](/blog/slack-app-getting-started/#Start_with_implementation):
+
+```python
+import os
+from dotenv import load_dotenv
+from slack_bolt import App
+
+load_dotenv()
+
+app = App(
+    token=os.environ.get("SLACK_API_TOKEN"),
+    signing_secret=os.environ.get("SLACK_SIGNING_SECRET")
+)
+...
+if __name__ == '__main__':
+    app.start(port=5000)
+```
+
+Now, send the dialogue message to _Slack_ :
+
+```python
+    app.client.chat_postMessage(channel='#web-monitor', blocks=get_dialog_data()['blocks'])
+```
+
+As of now, we know that `chat_postMessage()` sends the message to channel
+supplied through `channel=` parameter. Another parameter is `blocks=`
+containing the information of _blocks_ to display.
+
+Now, run the program and you should receive the same display as mine:
+![Slack-dialgue-window-response](/Slack-dialgue-window-response.png)
+
+See how easy it was all to achieve to send a fully-featured dialogue to the slack app. However, this doesn't sound interesting that dialogue message is sent only once and that too at startup. 😞
+
+So, let's make it a little interactive. There are two ways to do it.
+
+- Send it when a particular **_slash command_** is entered
+- Through **_shortcuts_** , _which we'll discuss in coming articles_.
+
+### Sending dialogue message on slash command
+
+Let's use our knowledge of what we learned in the previous article on [sending slash commands](/blog/slack-slash-commands). Thus whenever we receive a slash command: `/webmonitor create` we'll send this dialogue window.
+
+Let's start with our slash command implementation:
+
+```python
+@app.command("/webmonitor")
+def webmonitor_command_handler(ack, say):
+    ack()
+    say (blocks=get_dialog_data()['blocks'])
+```
+
+Yeah, that's it. It's done. 😄
+
+We just invoked the slack module's command
+handler for `/webmonitor` command, and then called `say()` function to send
+our dialogue message.
+
+**Remember** to send `ack()` within 3 seconds otherwise Slack will cry for `operation timeout`.
+
+Now, run the program and enter the slash command: `/webmonitor`. You should be presented with a UI. Voila! 🌟 It's done.
+
+Before concluding this article, let's add a few checks and
+verifications. The major change here is to display the _job creation form_
+only when the user supplies `create` as part of slash command (`/webmonitor create`).
+
+```python
+@app.command("/webmonitor")
+def webmonitor_command_handler(ack, say, payload, respond):
+    ack()
+    command_params = payload.get('text')
+
+    if command_params is None:
+        respond ('Nothing to do')
+        return
+
+    if command_params == 'create':
+        say (blocks=get_dialog_data()['blocks'])
+    else:
+        respond('Invalid parameters')
+```
+
+Now, run the program, and it should work as per the above requirements.
+
+**Source Code:** [publish_dialogue.py](https://github.com/pennowtech/slack-app-python-slack-bolt/blob/31853a3b0a49d267b478c62942892df216af2c1a/publish_dialogue.py)
+
+## Summary
+
+We are concluding our discussion here. In the next article, we will discuss
+how to handle interactivity in our python application such as text inputs or
+button clicks. Let's summarize what all we discussed in this article:
+
+- We started our discussion with a brief overview of the _Slack Block Kit Builder_ tool to build beautiful UI/dialogue for our messages.
+- We configured interactivity through the _slack app_ configuration page
+- Finally, we posted this message to the _slack app_ whenever a user enters a given slash command.
+
+---
+
+Title Image Source: [Developer Vectors by Vecteezy](https://www.vecteezy.com/free-vector/developer)

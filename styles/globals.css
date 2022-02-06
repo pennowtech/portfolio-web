@@ -57,6 +57,9 @@
   .message p {
     @apply px-4;
   }
+  span.comment.linenumber.react-syntax-highlighter-line-number {
+    @apply border-r mr-2;
+  }
   .read-extra {
     @apply break-words relative py-4 px-2 border-2 rounded-xl border-pink-500
     overflow-wrap break-word;
