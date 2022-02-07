@@ -32,7 +32,6 @@ export async function getStaticProps() {
     perPage: PER_PAGE_BLOGS,
     offset: null,
   }).toPromise();
-  console.warn('Fetching All Posts data...', result.data);
 
   return {
     props: {

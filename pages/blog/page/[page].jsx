@@ -34,7 +34,6 @@ export async function getStaticPaths() {
   const result = await gqlAuthClient(false).query(GET_TOTAL_POSTS_COUNT).toPromise();
   const totalPosts = result?.data?.postsCount?.pageInfo?.offsetPagination?.total ?? 0;
   const totalPages = Math.ceil(totalPosts / PER_PAGE_BLOGS);
-  console.warn('Fetching All Posts data...', totalPosts);
 
   const paths = [];
 
@@ -53,7 +52,6 @@ export async function getStaticProps({ params }) {
     perPage: PER_PAGE_BLOGS,
     offset: getPageOffset(params.page),
   }).toPromise();
-  console.warn('Fetching All Posts data...', s.data);
   return {
     props: {
       data: s.data,
