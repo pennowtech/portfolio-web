@@ -82,7 +82,7 @@ function ContactForm() {
       </h2>
       <p className="flex justify-center text-bold leading-normal md:mb-2 mb-8">Complete this form and I will get back to you.</p>
       <div className="flex font-semibold items-center justify-center text-bold leading-normal md:mb-20 mb-8">
-        Or better contact me through
+        This form is not operational right now. Better contact me through
         <Link href="http://linkedin.com/in/pennowtech"><a className="text-red-400 dark:text-pink-400 ">&nbsp; linkedin</a></Link>
       </div>
       {' '}
