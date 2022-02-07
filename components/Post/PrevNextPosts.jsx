@@ -20,7 +20,7 @@ const PrevNextPosts = ({ postsNextPrevInfo }) => (
         <Link href={`/blog/${postsNextPrevInfo.prevPostLink}`}>
           <a className="flex h-full items-center text-white gap-4">
             <FaArrowCircleLeft className="w-2/12 text-2xl" />
-            <div className="w-10/12 mb-3 text-md leading-7 tracking-tight text-left">
+            <div className="w-10/12 mb-3 text-base leading-7 tracking-tight text-left">
               {postsNextPrevInfo?.prevPostTitle}
             </div>
           </a>
@@ -41,7 +41,7 @@ const PrevNextPosts = ({ postsNextPrevInfo }) => (
       <div className="absolute w-full h-full left-0 px-6 py-4">
         <Link href={`/blog/${postsNextPrevInfo.nextPostLink}`}>
           <a className="flex h-full items-center text-white gap-4">
-            <div className="w-10/12 mb-3 text-md leading-7 tracking-tight text-left">
+            <div className="w-10/12 mb-3 text-base leading-7 tracking-tight text-left">
               {postsNextPrevInfo?.nextPostTitle}
             </div>
             <FaArrowCircleRight className="w-2/12 text-2xl" />

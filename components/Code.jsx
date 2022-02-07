@@ -2,9 +2,11 @@ import React from 'react';
 import { useTheme } from 'next-themes';
 // import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import SyntaxHighlighter from 'react-syntax-highlighter';
+// eslint-disable-next-line max-len
 import { a11yLight as lighttheme, a11yDark as darktheme } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 // import { coldarkDark as darktheme } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 // import { atomOneLight as lighttheme } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
+// import { a11yLight } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 
 const colorMode = 'dark';
 

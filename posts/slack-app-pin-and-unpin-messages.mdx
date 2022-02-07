@@ -1,0 +1,159 @@
+---
+author: Sukhdeep Singh
+categories:
+  - Python
+date: 18 May, 21
+description: "Slack provides the feature to 'pin' your messages. That way they can be reached quickly. Hence, whenever you feel any messages should be easily accessible such as company policies or FAQs, just pin those messages."
+post_status: publish
+post_type: post
+tags:
+  - Programming
+  - Slack
+  - app development
+  - tutorials
+thumbnailUrl: /slack-app-pin-and-unpin-messages.svg
+title: "Slack App with Python: Pin and Unpin Messages [Extra]"
+
+nextPostLink: learning-apache-kafka
+nextPostTitle: "Learning Apache Kafka Is Not Difficult Now"
+nextPostImg: /learning-apache-kafka.jpg
+prevPostLink: slack-app-working-with-message-shortcuts
+prevPostTitle: "Slack App With Python: Working With Message Shortcuts [Part-9]"
+prevPostImg: /slack-app-working-with-message-shortcuts.png
+---
+
+_**Slack provides the feature to 'pin' your messages. That way they can be reached quickly. Hence, whenever you feel any messages should be easily accessible such as company policies or FAQs, just pin those messages.**_
+
+---
+
+To pin any message, we can simply do it from the **_context menu_** of a
+required message. To access _pinned_ messages quickly, click on the
+_information_ symbol at the top, and reach to the **Pinned** section in the
+right sidebar of the _Slack_ app.
+![pin_messages](/pin_messages.gif)
+However, if we want to pin any messages programmatically, then how to do that?
+
+Thanks to Slack APIs. That is also very easy. In this article, we will discuss how to
+pin a message just after it is posted to the channel.
+
+First, I'll suggest you get to the [API webpage](https://api.slack.com/methods/pins.add). There, you will notice that this feature requires you to enable the _scope_ for `pins:write`. Let's add that scope.
+
+## Configuring scope to pin the messages
+
+Open your web configuration page, and navigate to **Features > OAuth &
+Permissions**. Scroll down a little below to locate **Scopes** , and add a new
+scope: `pins:write`.
+
+Once done, **reinstall your workspace** either by:
+
+- clicking from the _yellow bar_ shown at the top or
+- from the button displayed under **OAuth Tokens for Your Workspace** on the same page.
+
+On the next screen, click **Allow** and you're done with the configuration.
+
+<section class="message">
+  <header>
+    <i></i>Reference
+  </header>
+
+If you need a refresh on how to do it, refer very first article in the series on how to [provide permissions to the app](/blog/slack-app-getting-started/#Provide_permission_to_the_app).
+
+</section>
+
+## Handling implementation
+
+To pin a message, you will need to provide the `channel` id and the
+`timestamp` of the message that you want to pin.
+
+<section class="message">
+  <header>
+    <i></i>Note
+  </header>
+
+Combination of `channel` and `timestamp` provides a unique reference to any message.
+
+</section>
+
+Whenever in doubt about any arguments, always refer to the [API testing webpage](https://api.slack.com/methods/pins.add). That's really helpful if you want to:
+
+- understand the various parameters required,
+- know the scopes needed to configure, and also
+- to test your API before implementing.
+
+Getting a timestamp is very easy. Whenever you send any message through
+`chat.postMessage` or `say()`, it returns you a response back. Parse that
+response to get the timestamp of the sent message.
+
+Now, let's start with the implementation
+
+<p className="text-base">
+
+This article is part of: [Most effective way to understand the Slack app development](/blog/essential-skills-to-develop-slack-apps) series.
+
+</p>
+
+**Initialize the App**
+
+First, [initialize the app](/blog/slack-app-getting-started/#Start_with_implementation).
+
+```python
+import os
+from dotenv import load_dotenv
+from slack_bolt import App
+
+load_dotenv()
+
+# Initializes your app with your bot token and signing secret
+app = App(
+    token=os.environ.get("SLACK_API_TOKEN"),
+    signing_secret=os.environ.get("SLACK_SIGNING_SECRET")
+)
+```
+
+The next step is to send the message and retrieve its _timestamp_ which is
+stored inside `ts`:
+
+```python
+response = app.client.chat_postMessage(channel='#web-monitor', text="Hello!")
+timestamp = response['ts']
+```
+
+This is the `timestamp` which we will use to pin our message through
+`pins.add` method:
+
+```python
+    slack_client.pins_add(timestamp=timestamp, channel= channel_id)
+```
+
+Now, whatever message we sent last, will be pinned.
+![pinned-message-display](/pinned-message-display.png)
+
+You can _pin_ any message this way.
+
+### Unpin a message
+
+Unpinning a message is also easier. Just call `pin.remove()` API with the same
+parameter and value which we used during `pin.add()` method.
+
+```python
+    app.client.pins_add(timestamp=timestamp, channel= channel_id)
+```
+
+An exactly similar approach can be used with the message sent by `say()` method. Try at your end.
+
+**Source Code:** [pin_message.py](https://github.com/pennowtech/slack-app-python-slack-bolt/blob/master/pin_messages.py)
+
+## Summary
+
+This really was a small article in comparison to what we discussed before 🙂.
+In this article, we discussed:
+
+- an idea behind pins how they can be helpful
+- how to configure `pins:write` scope so that we can pin a message
+- finally the implementation, and important criteria required to pin a message
+
+Overall, this was a very small discussion without any complex configurations or implementation.
+
+---
+
+Title image credit: [Web Vectors by Vecteezy](https://www.vecteezy.com/free-vector/web)

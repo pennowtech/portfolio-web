@@ -1,0 +1,61 @@
+---
+author: Sukhdeep Singh
+categories:
+  - Git
+date: Aug, 21
+description: "KDiff3 can be used as a Git diff and merge tool. Just execute the follwing commands to add the required config into your gitconfig file."
+post_status: publish
+post_type: post
+tags:
+  - Git
+  - Kdiff3
+thumbnailUrl: /git-and-kdiff3.jpg
+title: Git and Kdiff3
+
+nextPostLink:
+nextPostTitle:
+nextPostImg:
+prevPostLink: apache-kafka-implementation
+prevPostTitle: "Put Apache Kafka Into Action - Implementation"
+prevPostImg: /apache-kafka-implementation.png
+---
+
+[Kdiff3](http://kdiff3.sourceforge.net) has been my favourite diff tool for a
+while and I always have to look up how to configure it to be automatically
+launched when using [Git](https://git-scm.com/) from the command line. So it's
+going in the blog!
+
+```shell
+$ git config --global --add merge.tool kdiff3
+$ git config --global --add mergetool.kdiff3.path "/usr/bin/kdiff3"
+$ git config --global --add mergetool.kdiff3.trustExitCode false
+$ git config --global --add mergetool.prompt false
+
+$ git config --global --add diff.guitool kdiff3
+$ git config --global --add difftool.kdiff3.path "/usr/bin/kdiff3"
+$ git config --global --add difftool.kdiff3.trustExitCode false
+$ git config --global --add difftool.prompt false
+```
+
+You should see the following lines into your `gitconfig` file.
+
+```ini
+[diff]
+        tool = kdiff3
+[difftool "kdiff3"]
+        path = /usr/bin/kdiff3
+[difftool]
+        prompt = false
+        keepBackup = false
+        trustExitCode = false
+[merge]
+        tool = kdiff3
+[mergetool]
+        prompt = false
+        keepBackup = false
+        keepTemporaries = false
+[mergetool "kdiff3"]
+        path = /usr/bin/kdiff3
+```
+
+You can also add the above lines directly into your `.gitconfig` file instead of executing the mentioned commands.
