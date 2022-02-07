@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { GrReactjs, GrSystem } from 'react-icons/gr';
 import {
-  SiNextdotjs, SiCplusplus, SiQt, SiSolidity, SiRos, SiSocketdotio, SiDocker, SiKubernetes, SiApachespark, SiApachekafka, SiWireshark, SiGit, SiPytest, SiPostgresql, SiMaterialdesign, SiDesignernews, SiJest, SiGraphql, SiFastapi,
+  SiNextdotjs, SiCplusplus, SiQt, SiSolidity, SiRos, SiSocketdotio, SiDocker, SiKubernetes, SiApachespark, SiApachekafka, SiWireshark, SiGit, SiPytest, SiPostgresql, SiMaterialdesign, SiDesignernews, SiJest, SiGraphql, SiFastapi, SiLinux,
 } from 'react-icons/si';
 import { IoLogoJavascript, IoMdBuild } from 'react-icons/io';
 import {
@@ -217,7 +217,7 @@ const IntroHighlight = () => (
       </div>
     </div>
     <div className="container mx-auto px-4 pb-24">
-      <div className="items-center flex flex-wrap gap-8">
+      <div className="items-center flex flex-wrap gap-12">
         <h2 className="w-full">Skills in short</h2>
         <div className="text-center text-sm mb-2">
           <SiCplusplus className="text-7xl mb-2" />
@@ -311,6 +311,11 @@ const IntroHighlight = () => (
           <SiGit className="text-7xl mb-2" />
           Git
         </div>
+        <div className="text-center text-sm mb-2">
+          <SiLinux className="text-7xl mb-2" />
+          Linux
+        </div>
+
       </div>
 
     </div>
