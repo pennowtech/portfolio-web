@@ -1,8 +1,14 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 
 function ContactForm() {
+  const [firstname, setFirstName] = useState('');
+  const [lastname, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+
   return (
     <div className="relative container mx-auto py-16 px-4 md:px-2">
       <h2 className="flex justify-center lg:text-3xl text-bold leading-normal md:mt-20 mt-8">
@@ -30,6 +36,7 @@ function ContactForm() {
                 name="firstname"
                 type="text"
                 placeholder="First Name"
+                onChange={(e) => { setFirstName(e.target.value); }}
               />
               <p className="text-red-500 text-xs italic">
                 Please fill out this field.
@@ -47,6 +54,7 @@ function ContactForm() {
                 id="lastname"
                 type="text"
                 placeholder="Last Name"
+                onChange={(e) => { setLastName(e.target.value); }}
               />
             </div>
           </div>
@@ -63,6 +71,7 @@ function ContactForm() {
                 id="email"
                 type="email"
                 placeholder="Enter email"
+                onChange={(e) => { setEmail(e.target.value); }}
               />
 
             </div>
@@ -80,6 +89,7 @@ function ContactForm() {
                 id="message"
                 name="message"
                 placeholder="Hey, I would like to get in touch with you"
+                onChange={(e) => { setMessage(e.target.value); }}
               />
             </div>
           </div>

@@ -42,7 +42,8 @@ const ThemeToggle = () => {
     // }
     setTheme(checked ? 'dark' : 'light');
     localStorage.setItem('pntDarkTheme', checked);
-  }, [checked, setTheme, theme]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [checked]);
 
   const dayButton = useMemo(() => ({
     color: 'gold',
