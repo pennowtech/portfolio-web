@@ -3,21 +3,27 @@ import React from 'react';
 
 import Link from 'next/link';
 import { GrReactjs, GrSystem } from 'react-icons/gr';
-import { SiNextdotjs, SiCplusplus } from 'react-icons/si';
+import {
+  SiNextdotjs, SiCplusplus, SiQt, SiSolidity, SiRos, SiSocketdotio, SiDocker, SiKubernetes, SiApachespark, SiApachekafka, SiWireshark, SiGit, SiPytest, SiPostgresql, SiMaterialdesign, SiDesignernews, SiJest, SiGraphql, SiFastapi,
+} from 'react-icons/si';
 import { IoLogoJavascript, IoMdBuild } from 'react-icons/io';
-import { MdOutlineDesignServices, MdOutlineDeveloperMode, MdOutlineStickyNote2 } from 'react-icons/md';
+import {
+  MdDesignServices, MdOutlineDesignServices, MdOutlineDeveloperMode, MdOutlineStickyNote2,
+} from 'react-icons/md';
 import Image from 'next/image';
 import {
   BsHddNetwork, BsLayoutTextWindow, BsListCheck, BsTools,
 } from 'react-icons/bs';
 import { FiDatabase } from 'react-icons/fi';
-import { FaDraftingCompass } from 'react-icons/fa';
+import {
+  FaDatabase, FaDraftingCompass, FaNetworkWired, FaPython,
+} from 'react-icons/fa';
 import PostTags from '../Post/PostTags';
 import TechCard from './TechCard';
 import ProfileCard from './ProfileCard';
 
 const IntroHighlight = () => (
-  <section className="mt-48 md:mt-10 pb-40 relative ">
+  <section className="mt-48 md:mt-10 pb-24 relative ">
     <div className="container mx-auto">
       <h2 className="mt-4 mb-0 font-Monda  underline-offset-2 mx-auto justify-center text-center">Profile Highlights</h2>
       <div className="flex flex-wrap items-center">
@@ -159,7 +165,7 @@ const IntroHighlight = () => (
             </div>
             <div className="my-4 w-full lg:w-6/12 px-4 lg:mt-16">
               <TechCard color="yellow-500" className="bg-yellow-500 text-yellow-500 mb-4" icon={<IoLogoJavascript />} text="JavaScript" />
-              <TechCard className="bg-green-600" icon={<Image src="/Qt.png" width={48} height={48} />} text="Qt, QML" />
+              <TechCard color="green-600" className="bg-green-600  text-green-600 mb-4" icon={<SiQt />} text="Qt, QML" />
 
             </div>
           </div>
@@ -210,6 +216,104 @@ const IntroHighlight = () => (
         </div>
       </div>
     </div>
+    <div className="container mx-auto px-4 pb-24">
+      <div className="items-center flex flex-wrap gap-8">
+        <h2 className="w-full">Skills in short</h2>
+        <div className="text-center text-sm mb-2">
+          <SiCplusplus className="text-7xl mb-2" />
+          C++ 11/17
+        </div>
+        <div className="text-center text-sm mb-2">
+          <FaPython className="text-7xl mb-2" />
+          Python
+        </div>
+        <div className="text-center text-sm mb-2">
+          <SiFastapi className="text-7xl mb-2" />
+          FastAPI
+        </div>
+        <div className="text-center text-sm mb-2">
+          <SiPytest className="text-7xl mb-2" />
+          Pytest
+        </div>
+        <div className="text-center text-sm mb-2">
+          <SiQt className="text-7xl mb-2" />
+          Qt
+        </div>
+        <div className="text-center text-sm mb-2">
+          <SiSolidity className="text-7xl mb-2" />
+          Solidity
+        </div>
+        <div className="text-center text-sm mb-2">
+          <FaNetworkWired className="text-7xl mb-2" />
+          TCP/IP
+        </div>
+        <div className="text-center text-sm mb-2">
+          <SiSocketdotio className="text-7xl mb-2" />
+          Sockets
+        </div>
+        <div className="text-center text-sm mb-2">
+          <SiWireshark className="text-7xl mb-2" />
+          Wireshark
+        </div>
+        <div className="text-center text-sm mb-2">
+          <SiRos className="text-7xl mb-2" />
+          ROS
+        </div>
+        <div className="text-center text-sm mb-2">
+          <GrReactjs className="text-7xl mb-2" />
+          ReactJS
+        </div>
+        <div className="text-center text-sm mb-2">
+          <SiNextdotjs className="text-7xl mb-2" />
+          Next.JS
+        </div>
+        <div className="text-center text-sm mb-2">
+          <IoLogoJavascript className="text-7xl mb-2" />
+          JS
+        </div>
+        <div className="text-center text-sm mb-2">
+          <SiJest className="text-7xl mb-2" />
+          Jest
+        </div>
+        <div className="text-center text-sm mb-2">
+          <SiPostgresql className="text-7xl mb-2" />
+          PostgreSQL
+        </div>
+        <div className="text-center text-sm mb-2">
+          <SiGraphql className="text-7xl mb-2" />
+          GraphQL
+        </div>
+        <div className="text-center text-sm mb-2">
+          <SiDocker className="text-7xl mb-2" />
+          Docker
+        </div>
+        <div className="text-center text-sm mb-2">
+          <SiKubernetes className="text-7xl mb-2" />
+          Kubernetes
+        </div>
+        <div className="text-center text-sm mb-2">
+          <SiApachespark className="text-7xl mb-2" />
+          PySpark
+        </div>
+        <div className="text-center text-sm mb-2">
+          <SiApachekafka className="text-7xl mb-2" />
+          Kafka
+        </div>
+        <div className="text-center text-sm mb-2">
+          <MdOutlineDesignServices className="text-7xl mb-2" />
+          Software Design
+        </div>
+        <div className="text-center text-sm mb-2">
+          <SiMaterialdesign className="text-7xl mb-2" />
+          UML
+        </div>
+        <div className="text-center text-sm mb-2">
+          <SiGit className="text-7xl mb-2" />
+          Git
+        </div>
+      </div>
+
+    </div>
     <Link href="/Sukhdeep Singh_CV_Architect.pdf">
       <a>
         <div className="button xl:w-48 w-40 text-center mx-auto">
@@ -217,6 +321,7 @@ const IntroHighlight = () => (
         </div>
       </a>
     </Link>
+
   </section>
 
 );

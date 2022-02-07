@@ -5,7 +5,7 @@ import {
 } from 'react-icons/im';
 
 const MenuItems = [
-  { title: 'Home', path: 'home' },
+  { title: 'Home', path: '' },
   { title: 'Articles', path: 'blog' },
   { title: 'About Me', path: 'about-me' },
   { title: 'Contact', path: 'contact' },
@@ -33,8 +33,8 @@ const isDev = process.env.NODE_ENV === 'development';
 // export const BASE_URL = isDev ? 'http://localhost:3000' : 'http://pennow.tech';
 export const BASE_URL = isDev ? 'http://localhost:3000' : 'https://sukhdeep.online';
 
-// export const SelectedPostsList = [463, 465, 467];
-export const SelectedPostsList = [];
+export const SelectedPostsList = [476, 480, 486];
+// export const SelectedPostsList = [];
 export {
   MenuItems, SocialIconList, FooterMainMenuItems, FooterOtherMenuItems, GRAPHQL_URL, PER_PAGE_BLOGS,
 };
