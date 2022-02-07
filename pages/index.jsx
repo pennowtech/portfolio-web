@@ -54,7 +54,7 @@ function Index({ posts, selectedposts }) {
 
       </Element>
       <Element id="Selected" className="element">
-        {selectedposts.some((post) => post.post !== null)
+        {selectedposts?.some((post) => post.post !== null)
         && <SelectedPosts selectedposts={selectedposts} />}
       </Element>
       <Element id="about-me" className="element min-h-[630px]">

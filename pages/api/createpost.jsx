@@ -11,7 +11,6 @@ const CreatePost = async (req, res) => {
     //   if (result.error) { console.log(33, result.error.message); }
     // });
   // return a message
-  console.error(33, createResult.error.message);
   res.status(200).json({
     message: 'Post added successfully',
     success: true,
