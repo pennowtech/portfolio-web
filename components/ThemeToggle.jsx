@@ -42,7 +42,7 @@ const ThemeToggle = () => {
     // }
     setTheme(checked ? 'dark' : 'light');
     localStorage.setItem('pntDarkTheme', checked);
-  }, [checked, setTheme, theme]);
+  }, [checked]);
 
   const dayButton = useMemo(() => ({
     color: 'gold',

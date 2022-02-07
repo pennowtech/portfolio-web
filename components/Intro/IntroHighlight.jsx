@@ -217,115 +217,115 @@ const IntroHighlight = () => (
       </div>
     </div>
     <div className="container mx-auto px-4 pb-24">
-      <div className="items-center flex flex-wrap gap-12">
+      <div className="items-center flex md:text-sm text-xs flex-wrap md:gap-12 gap-8">
         <h2 className="w-full">Skills in short</h2>
-        <div className="text-center text-sm mb-2">
-          <SiCplusplus className="text-7xl mb-2" />
+        <div className="text-center mb-2">
+          <SiCplusplus className="md:text-7xl text-5xl mb-2" />
           C++ 11/17
         </div>
-        <div className="text-center text-sm mb-2">
-          <FaPython className="text-7xl mb-2" />
+        <div className="text-center mb-2">
+          <FaPython className="md:text-7xl text-5xl mb-2" />
           Python
         </div>
-        <div className="text-center text-sm mb-2">
-          <SiFastapi className="text-7xl mb-2" />
+        <div className="text-center mb-2">
+          <SiFastapi className="md:text-7xl text-5xl mb-2" />
           FastAPI
         </div>
-        <div className="text-center text-sm mb-2">
-          <SiPytest className="text-7xl mb-2" />
+        <div className="text-center mb-2">
+          <SiPytest className="md:text-7xl text-5xl mb-2" />
           Pytest
         </div>
-        <div className="text-center text-sm mb-2">
-          <SiQt className="text-7xl mb-2" />
+        <div className="text-center mb-2">
+          <SiQt className="md:text-7xl text-5xl mb-2" />
           Qt
         </div>
-        <div className="text-center text-sm mb-2">
-          <SiSolidity className="text-7xl mb-2" />
+        <div className="text-center mb-2">
+          <SiSolidity className="md:text-7xl text-5xl mb-2" />
           Solidity
         </div>
-        <div className="text-center text-sm mb-2">
-          <FaNetworkWired className="text-7xl mb-2" />
+        <div className="text-center mb-2">
+          <FaNetworkWired className="md:text-7xl text-5xl mb-2" />
           TCP/IP
         </div>
-        <div className="text-center text-sm mb-2">
-          <SiSocketdotio className="text-7xl mb-2" />
+        <div className="text-center mb-2">
+          <SiSocketdotio className="md:text-7xl text-5xl mb-2" />
           Sockets
         </div>
-        <div className="text-center text-sm mb-2">
-          <SiWireshark className="text-7xl mb-2" />
+        <div className="text-center mb-2">
+          <SiWireshark className="md:text-7xl text-5xl mb-2" />
           Wireshark
         </div>
-        <div className="text-center text-sm mb-2">
-          <SiRos className="text-7xl mb-2" />
+        <div className="text-center mb-2">
+          <SiRos className="md:text-7xl text-5xl mb-2" />
           ROS
         </div>
-        <div className="text-center text-sm mb-2">
-          <GrReactjs className="text-7xl mb-2" />
+        <div className="text-center mb-2">
+          <GrReactjs className="md:text-7xl text-5xl mb-2" />
           ReactJS
         </div>
-        <div className="text-center text-sm mb-2">
-          <SiNextdotjs className="text-7xl mb-2" />
+        <div className="text-center mb-2">
+          <SiNextdotjs className="md:text-7xl text-5xl mb-2" />
           Next.JS
         </div>
-        <div className="text-center text-sm mb-2">
-          <IoLogoJavascript className="text-7xl mb-2" />
+        <div className="text-center mb-2">
+          <IoLogoJavascript className="md:text-7xl text-5xl mb-2" />
           JS
         </div>
-        <div className="text-center text-sm mb-2">
-          <SiJest className="text-7xl mb-2" />
+        <div className="text-center mb-2">
+          <SiJest className="md:text-7xl text-5xl mb-2" />
           Jest
         </div>
-        <div className="text-center text-sm mb-2">
-          <SiPostgresql className="text-7xl mb-2" />
+        <div className="text-center mb-2">
+          <SiPostgresql className="md:text-7xl text-5xl mb-2" />
           PostgreSQL
         </div>
-        <div className="text-center text-sm mb-2">
-          <SiGraphql className="text-7xl mb-2" />
+        <div className="text-center mb-2">
+          <SiGraphql className="md:text-7xl text-5xl mb-2" />
           GraphQL
         </div>
-        <div className="text-center text-sm mb-2">
-          <SiDocker className="text-7xl mb-2" />
+        <div className="text-center mb-2">
+          <SiDocker className="md:text-7xl text-5xl mb-2" />
           Docker
         </div>
-        <div className="text-center text-sm mb-2">
-          <SiKubernetes className="text-7xl mb-2" />
+        <div className="text-center mb-2">
+          <SiKubernetes className="md:text-7xl text-5xl mb-2" />
           Kubernetes
         </div>
-        <div className="text-center text-sm mb-2">
-          <SiApachespark className="text-7xl mb-2" />
+        <div className="text-center mb-2">
+          <SiApachespark className="md:text-7xl text-5xl mb-2" />
           PySpark
         </div>
-        <div className="text-center text-sm mb-2">
-          <SiApachekafka className="text-7xl mb-2" />
+        <div className="text-center mb-2">
+          <SiApachekafka className="md:text-7xl text-5xl mb-2" />
           Kafka
         </div>
-        <div className="text-center text-sm mb-2">
-          <MdOutlineDesignServices className="text-7xl mb-2" />
-          Software Design
+        <div className="text-center mb-2">
+          <MdOutlineDesignServices className="md:text-7xl text-5xl mb-2" />
+          Softw. Arch.
         </div>
-        <div className="text-center text-sm mb-2">
-          <SiMaterialdesign className="text-7xl mb-2" />
+        <div className="text-center mb-2">
+          <SiMaterialdesign className="md:text-7xl text-5xl mb-2" />
           UML
         </div>
-        <div className="text-center text-sm mb-2">
-          <SiGit className="text-7xl mb-2" />
+        <div className="text-center mb-2">
+          <SiGit className="md:text-7xl text-5xl mb-2" />
           Git
         </div>
-        <div className="text-center text-sm mb-2">
-          <SiLinux className="text-7xl mb-2" />
+        <div className="text-center mb-2">
+          <SiLinux className="md:text-7xl text-5xl mb-2" />
           Linux
         </div>
 
       </div>
 
     </div>
-    <Link href="/Sukhdeep Singh_CV_Architect.pdf">
+    {/* <Link href="/Sukhdeep Singh_CV_Architect.pdf">
       <a>
         <div className="button xl:w-48 w-40 text-center mx-auto">
           Complete CV
         </div>
       </a>
-    </Link>
+    </Link> */}
 
   </section>
 
