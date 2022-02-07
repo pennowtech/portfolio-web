@@ -1,17 +1,24 @@
 ---
 author: Sukhdeep Singh
 categories:
-- Kafka
-date: May, 21
-description: ''
+  - Kafka
+date: 29 May, 21
+description: "It's easy to program with Apache Kafka. Here, we will discuss how to setup our development environment and program it in Python. "
 post_status: publish
 post_type: post
 tags:
-- Guide
-- tutorials
-- Kafka
-thumbnailUrl: https://pennow.tech/wp-content/uploads/2021/05/Apache-Kafka-into-Action-31.png
+  - Guide
+  - tutorials
+  - Kafka
+thumbnailUrl: /apache-kafka-implementation.png
 title: Put Apache Kafka into Action - Implementation
+
+nextPostLink: git-and-kdiff3
+nextPostTitle: "Git And Kdiff3"
+nextPostImg: /git-and-kdiff3.jpg
+prevPostLink: the-dummies-guide-to-kafka-operations
+prevPostTitle: "The Dummies' Guide To Kafka Operations"
+prevPostImg: /the-dummies-guide-to-kafka-operations.png
 ---
 
 We already discussed Apache Kafka in detail in previous articles. If you
@@ -28,10 +35,9 @@ this module to create Kafka _topics_.
 
 Then, let's start with installing `confluent_kafka` module first:
 
-    
-    
-    $ pip install confluent_kafka
-    
+```python
+$ pip install confluent_kafka
+```
 
 After installing, let's create a configuration file where we'll be storing all
 the Kafka-specific parameters such as _bootstrap servers, topic name, consumer
@@ -39,16 +45,15 @@ group id, security parameters_ , etc.
 
 Let's create a `.env` file to store these parameters.
 
-    
-    
-    BOOTSTRAP_SERVERS=localhost:9092,localhost:9094
-    TOPIC=monitoring_topic
-    CONSUMER_GROUP=group-1
-    SECURITY_PROTOCOL=SSL
-    CA_FILE=certs/ca.pem
-    CERT_FILE=certs/service.cert
-    KEY_FILE=certs/service.key
-    
+```ini
+BOOTSTRAP_SERVERS=localhost:9092,localhost:9094
+TOPIC=monitoring_topic
+CONSUMER_GROUP=group-1
+SECURITY_PROTOCOL=SSL
+CA_FILE=certs/ca.pem
+CERT_FILE=certs/service.cert
+KEY_FILE=certs/service.key
+```
 
 Our _certificate_ files are stored inside the _cert_ folder. You can change it
 to any location.
@@ -59,60 +64,55 @@ Moreover, I don't want to set these parameters in my system's environment when
 I need them only for my current program. `python-dotenv` is one such module
 which will help us in this regard. Hence, let's install it first:
 
-    
-    
-    $ pip install python-dotenv
-    
+```shell
+$ pip install python-dotenv
+```
 
 Now, let's load our environment variables:
 
-    
-    
-    from dotenv import load_dotenv
-    import os
-    
-    load_dotenv()
-    
+```python
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+```
 
 ## Producer implementation
 
 After loading the environment variables, let's initialize the Kafka producer.
 
-    
-    
-    from confluent_kafka import Producer
-    
-    def get_producer():
-        conf_broker = {
-            'bootstrap.servers': os.environ.get("BOOTSTRAP_SERVERS"),
-            'security.protocol': os.environ.get("SECURITY_PROTOCOL"),
-            'ssl.ca.location': os.environ.get("CA_FILE"),
-            'ssl.certificate.location': os.environ.get("CERT_FILE"),
-            'ssl.key.location': os.environ.get("KEY_FILE")
-        }
-    
-        return Producer(**conf_broker)
-    
+```python
+from confluent_kafka import Producer
+
+def get_producer():
+    conf_broker = {
+        'bootstrap.servers': os.environ.get("BOOTSTRAP_SERVERS"),
+        'security.protocol': os.environ.get("SECURITY_PROTOCOL"),
+        'ssl.ca.location': os.environ.get("CA_FILE"),
+        'ssl.certificate.location': os.environ.get("CERT_FILE"),
+        'ssl.key.location': os.environ.get("KEY_FILE")
+    }
+
+    return Producer(**conf_broker)
+```
 
 We've already discussed why these parameters would be required. If there is
 not any security parameter, then you can skip the last 4 configuration
 parameters. However, if you're using a username/password instead of
 certification files, then you will have to replace these 4 lines with what
-parameters we discussed in our [previous article](https://pennow.tech/the-
-dummies-guide-to-kafka-operations/#Security_parameters).
+parameters we discussed in our [previous article](/blog/the-dummies-guide-to-kafka-operations/#Security_parameters).
 
 Let's now invoke the `produce` method to send the data to Kafka:
 
-    
-    
-    producer = get_producer()
-    topic = os.environ.get("TOPIC")
-    data = "Hello dear!"
-    producer.produce(
-        topic,
-        value=data.encode('utf-8'),
-        callback=delivery_callback)
-    
+```python
+producer = get_producer()
+topic = os.environ.get("TOPIC")
+data = "Hello dear!"
+producer.produce(
+    topic,
+    value=data.encode('utf-8'),
+    callback=delivery_callback)
+```
 
 If you also want to key to deliver your messages to a particular partition,
 then you can pass one `key=[key-name]` argument to `produce()` method. Replace
@@ -121,33 +121,30 @@ _[key-name]_ with the actual value without any square brackets.
 If you want to pass JSON data instead of plain text, you'll have to
 _serialize_ that. That's easier to do:
 
-    
-    
-    value=json.dumps(data).encode('utf-8')
-    
+```python
+value=json.dumps(data).encode('utf-8')
+```
 
 As `produce()` is an **asynchronous call** , so we don't know whether our
 message is delivered or not. For that, we're passing a callback function
 `delivery_callback()` that will be called whenever message delivery is
 successful or failed. Let's implement this callback function:
 
-    
-    
-    def delivery_callback(err, msg):
-        if err:
-            print(f'Message delivery failed: {err}')
-        else:
-            print(f'Message delivered to {msg.topic()} [{msg.partition()}] @ offset {msg.offset()}')
-    
+```python
+def delivery_callback(err, msg):
+    if err:
+        print(f'Message delivery failed: {err}')
+    else:
+        print(f'Message delivered to {msg.topic()} [{msg.partition()}] @ offset {msg.offset()}')
+```
 
 There is one more thing to do before this callback can be called, and that's
 to call `poll()` method. This method is called whenever an event occurs such
 as a message delivered etc.
 
-    
-    
-    producer.poll(0)
-    
+```python
+producer.poll(0)
+```
 
 It accepts _time-to-wait_ as an argument, and its value is in a unit of
 _seconds_. We don't want it to block for any event. That's why we passed
@@ -159,26 +156,24 @@ Now whenever any event occurs, it'll call our callback function, passed to
 Remember, we mentioned above that `produce()` method is an asynchronous call.
 So that means it will just send the message and return immediately. If you
 want it to wait, then you can use `flush()` it immediately after that.
+
 However, I'm against that as that will impact Kafka's throughput. But it is
 required in one scenario, and that is when you want to shut down your
 producer. In that case, you want to make sure that all your messages are
 delivered to Kafka.
 
-    
-    
+```python
     producer.flush()
-    
+```
 
 You can also add _exception handling_ in case your `produce()` method fails:
 
-    
-    
-    try:
-        producer.produce(...)
-    except BufferError as err:
-        print(f'Producer queue is full with {len(producer)} messages waiting to be delivered to broker.')
-        
-    
+```python
+try:
+    producer.produce(...)
+except BufferError as err:
+    print(f'Producer queue is full with {len(producer)} messages waiting to be delivered to broker.')
+```
 
 Now if the producer fails because its message queue gets full, then our
 program will report an error. Notice here we use `len(producer)` function to
@@ -191,47 +186,45 @@ complete code at the bottom.
 
 Steps to initialize _consumer_ is almost similar with a few additions.
 
-    
-    
-    def get_consumer():
-        conf_broker = {
-            'bootstrap.servers': os.environ.get("BOOTSTRAP_SERVERS"),
-            'group.id': os.environ.get("CONSUMER_GROUP"),
-            'session.timeout.ms': os.environ.get("SESSION_TIMEOUT"),
-            'auto.offset.reset': 'earliest',
-            'security.protocol': os.environ.get("SECURITY_PROTOCOL"),
-            'ssl.ca.location': os.environ.get("CA_FILE"),
-            'ssl.certificate.location': os.environ.get("CERT_FILE"),
-            'ssl.key.location': os.environ.get("KEY_FILE")
-        }
-    
-        return Consumer(**conf_broker)
-    
+```python
+def get_consumer():
+    conf_broker = {
+        'bootstrap.servers': os.environ.get("BOOTSTRAP_SERVERS"),
+        'group.id': os.environ.get("CONSUMER_GROUP"),
+        'session.timeout.ms': os.environ.get("SESSION_TIMEOUT"),
+        'auto.offset.reset': 'earliest',
+        'security.protocol': os.environ.get("SECURITY_PROTOCOL"),
+        'ssl.ca.location': os.environ.get("CA_FILE"),
+        'ssl.certificate.location': os.environ.get("CERT_FILE"),
+        'ssl.key.location': os.environ.get("KEY_FILE")
+    }
+
+    return Consumer(**conf_broker)
+```
 
 Here, we specified three extra parameters from the producer:
 
-  * `group.id`: It specifies the consumer group id.
-  * `session.timeout.ms`: This is the timeout period to check the liveness of the consumer. A consumer should regularly send a heartbeat before this timeout expires. Otherwise, the broker will remove the consumer. This is helpful in cases like consumer crashes.
-  * `auto.offset.reset`: This is used to define the behavior of the consumer when there is no committed position (which would be the case when the group is first initialized) or when you (manually) specify offset. There are three options to handle this behavior: 
-    * `earliest`: this means to receive the messages which were present even before subscribing.
-    * `latest`: this means receiving the messages that arrive after the consumer subscribed. It is the _default_.
-    * `none`: this is used when you want to manually specify the offset. However, it will throw an exception to the consumer if the provided offset is found out of range. In that case, handle the error manually.
+- `group.id`: It specifies the consumer group id.
+- `session.timeout.ms`: This is the timeout period to check the liveness of the consumer. A consumer should regularly send a heartbeat before this timeout expires. Otherwise, the broker will remove the consumer. This is helpful in cases like consumer crashes.
+- `auto.offset.reset`: This is used to define the behavior of the consumer when there is no committed position (which would be the case when the group is first initialized) or when you (manually) specify offset. There are three options to handle this behavior:
+  - `earliest`: this means to receive the messages which were present even before subscribing.
+  - `latest`: this means receiving the messages that arrive after the consumer subscribed. It is the _default_.
+  - `none`: this is used when you want to manually specify the offset. However, it will throw an exception to the consumer if the provided offset is found out of range. In that case, handle the error manually.
 
 Let's implement the feature to _poll_ messages:
 
-    
-    
-    consumer = get_consumer()
-    consumer.subscribe(os.environ.get("TOPIC"))
-    
-    def start():
-        while True:
-            try:
-                msg = consumer.poll(1.0)
-                process_msg(msg)
-            except KeyboardInterrupt:
-                break
-    
+```python
+consumer = get_consumer()
+consumer.subscribe(os.environ.get("TOPIC"))
+
+def start():
+    while True:
+        try:
+            msg = consumer.poll(1.0)
+            process_msg(msg)
+        except KeyboardInterrupt:
+            break
+```
 
 `poll()` is a blocking call and used to poll the messages from Kafka. Time is
 specified in milliseconds. This value should always be lesser than what we
@@ -243,23 +236,21 @@ out only when someone presses `Ctrl+C`.
 
 If you want to specify the partitions instead of a topic, you can use
 `assign()` method. However, that has some caveats attached to it, which you
-can refer to [here](https://dzone.com/articles/dont-use-apache-kafka-consumer-
-groups-the-wrong-wa).
+can refer to [here](https://dzone.com/articles/dont-use-apache-kafka-consumer-groups-the-wrong-wa).
 
 **Process message**
 
-    
-    
-    def process_msg(msg):
-        if msg is None:
-            return None
-        if msg.error():
-            print(f'Consumer error: {msg.error()}')
-            return None
-    
-        data = json.loads(msg.value().decode('utf-8'))
-        print(f'Received message: {data}')
-    
+```python hl=3,5,8
+def process_msg(msg):
+    if msg is None:
+        return None
+    if msg.error():
+        print(f'Consumer error: {msg.error()}')
+        return None
+
+    data = json.loads(msg.value().decode('utf-8'))
+    print(f'Received message: {data}')
+```
 
 If no message could be polled between specified times, then we don't have to
 do anything. That's why we simple returned (line 3)
@@ -272,17 +263,15 @@ value. Thus let's retrieve the value(line 8) and print it.
 
 In the end, we'll close the session.
 
-    
-    
+```python
         consumer.close()
-    
+```
 
 This will let Kafka free the resources assigned to it. Otherwise, Kafka will
 have to wait for `session.timeout.ms` to realize that the consumer has gone
 down.
 
-Source Code: [Kafka-producer-consumer](https://github.com/pennowtech/kafka-
-producer-consumer).
+**Source Code:** [Kafka-producer-consumer](https://github.com/pennowtech/kafka-producer-consumer).
 
 ## Conclusion
 
@@ -298,5 +287,6 @@ Now, we're here. At end of our Journey 🙂
 However, if you still need any clarification or want to provide me with your
 valuable feedback, then please let me know through your comments 📝
 
-Title image credit: [Business photo created by freepik -
-www.freepik.com](https://www.freepik.com/photos/business)
+---
+
+Title image credit: [Business photo created by freepik - www.freepik.com](https://www.freepik.com/photos/business)

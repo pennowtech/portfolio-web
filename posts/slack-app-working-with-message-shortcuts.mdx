@@ -1,387 +1,367 @@
 ---
 author: Sukhdeep Singh
 categories:
-- Python
-date: May, 21
-description: ''
+  - Python
+date: 17 May, 21
+description: "Shortcuts really are very handy if designed and programmed with full knowledge of the feature. That's the reason I divided this component into two separate articles to cover all the essential features while keeping each article short."
 post_status: publish
 post_type: post
 tags:
-- Programming
-- Slack
-- app development
-- tutorials
-thumbnailUrl: https://pennow.tech/wp-content/uploads/2021/05/message-shortcut-title.png
-title: 'Slack App with Python: Working with Message Shortcuts [Part-9]'
+  - Programming
+  - Slack
+  - app development
+  - tutorials
+thumbnailUrl: /slack-app-working-with-message-shortcuts.png
+title: "Slack App with Python: Working with Message Shortcuts [Part-9]"
+
+nextPostLink: slack-app-pin-and-unpin-messages
+nextPostTitle: "Slack App With Python: Pin And Unpin Messages [Extra]"
+nextPostImg: /slack-app-pin-and-unpin-messages.svg
+prevPostLink: slack-app-working-with-shortcuts
+prevPostTitle: "Slack App With Python: Working With Shortcuts [Part-8]"
+prevPostImg: /slack-app-working-with-shortcuts.svg
 ---
 
-Shortcuts really are very handy if designed and programmed with full knowledge
-of the feature. That's the reason I divided this component into two separate
-articles to cover all the essential features while keeping each article short.
+_**Shortcuts really are very handy if designed and programmed with full knowledge of the feature. That's the reason I divided this component into two separate articles to cover all the essential features while keeping each article short.**_
 
-* * *
+---
 
-In the [previous article](https://pennow.tech/slack-app-working-with-
-shortcuts/), we covered what are shortcuts, and how to configure them. We also
-covered how to implement Global shortcuts. This article is in continuation of
-that. Here we'll start our discussion with message shortcuts. As said before,
-message shortcuts are a convenient way when you want to pass the corresponding
-message information to the shortcuts. This helps us build a powerful UI as
-we'll see soon.
+In the [previous article](/blog/slack-app-working-with-shortcuts), we covered what are shortcuts, and how to configure them. We also covered how to implement Global shortcuts. This article is in continuation of that. Here we'll start our discussion with message shortcuts.
+
+As said before, message shortcuts are a convenient way when you want to pass the corresponding message information to the shortcuts. This helps us build a powerful UI as we'll see soon.
 
 ## Message Shortcuts
 
-We already [configured the message shortcut](https://pennow.tech/slack-app-
-working-with-shortcuts/#Message_shortcut_configuration). Let's build an app
-with the help of message shortcuts. Our app's purpose is to help us raise an
+We already [configured the message shortcut](/blog/slack-app-working-with-shortcuts/#Message_shortcut_configuration). Let's build an app with the help of message shortcuts. Our app's purpose is to help us raise an
 issue whenever any issue is reported. It'll have the following fields:
 
-  * **Context information** : This will be retrieved automatically from the message context. The text could be like website down, failure, etc.
-  * **#id** : A number assigned automatically. Displayed at the top.
-  * **Assignee** : Whom to assign from the team
-  * **Planned date** (optional): Till when to fix the issue
-  * **Extra Details** (optional): Any detail which could be supportive.
+- **Context information** : This will be retrieved automatically from the message context. The text could be like website down, failure, etc.
+- **#id** : A number assigned automatically. Displayed at the top.
+- **Assignee** : Whom to assign from the team
+- **Planned date** (optional): Till when to fix the issue
+- **Extra Details** (optional): Any detail which could be supportive.
 
-Let's open [Slack Kit Builder](https://pennow.tech/slack-publishing-ui-
-messages/#Brief_Overview_of_Slack_Block_Kit_Builder), and layout our view.
-It'd look like this: [caption id="attachment_1540" align="aligncenter"
-width="588"]![Raise-ticket](https://pennow.tech/wp-
-content/uploads/2021/05/Raise-ticket.png) Raise ticket[/caption] When the view
-is ready, copy the JSON to your source code. Just like before, I'll be storing
+Let's open [Slack Kit Builder](/blog/slack-publishing-ui-messages/#Brief_Overview_of_Slack_Block_Kit_Builder), and layout our view. It'd look like this:
+![Raise-ticket](/Raise-ticket.png)
+When the view is ready, copy the JSON to your source code. Just like before, I'll be storing
 it inside a function, and returning from there. One important piece of
 information to note down from here is `callback_id` which we'll require later
 while implementing form submission.
 
-    
-    
-    def raise_ticket_view():
-        return ({
-            "type": "modal",
-            "callback_id": "ticket_create_view",
-            "title": {
-                    "type": "plain_text",
-                    "text": "Raise a Ticket"
-            },
-            "submit": {
+```json
+def raise_ticket_view():
+    return ({
+        "type": "modal",
+        "callback_id": "ticket_create_view",
+        "title": {
                 "type": "plain_text",
-                "text": "Submit"
+                "text": "Raise a Ticket"
+        },
+        "submit": {
+            "type": "plain_text",
+            "text": "Submit"
+        },
+        "blocks": [
+            {
+                "type": "section",
+                "block_id": "ticket_info_block",
+                        "fields": [
+                            {
+                                "type": "mrkdwn",
+                                "text": "Monitoring Report for: <http://abc.com/gc>"
+                            },
+                            {
+                                "type": "mrkdwn",
+                                "text": "*Website Status:*\nNot Found"
+                            }
+                        ]
             },
-            "blocks": [
-                {
-                    "type": "section",
-                    "block_id": "ticket_info_block",
-                            "fields": [
+            {
+                "type": "divider"
+            },
+            {
+                "type": "context",
+                "block_id": "ticket_id_block",
+                        "elements": [
+                            {
+                                "type": "mrkdwn",
+                                "text": ":label: *Ticket ID: *"
+                            },
+                            {
+                                "type": "mrkdwn",
+                                "text": "1"
+                            }
+                        ]
+            },
+            {
+                "type": "input",
+                "block_id": "select_assignee_block",
+                        "element": {
+                            "type": "static_select",
+                            "placeholder": {
+                                    "type": "plain_text",
+                                "text": "Select an assignee :woman-raising-hand:",
+                                        "emoji": True
+                            },
+                            "options": [
                                 {
-                                    "type": "mrkdwn",
-                                    "text": "Monitoring Report for: <http://abc.com/gc>"
-                                },
-                                {
-                                    "type": "mrkdwn",
-                                    "text": "*Website Status:*\nNot Found"
-                                }
-                            ]
-                },
-                {
-                    "type": "divider"
-                },
-                {
-                    "type": "context",
-                    "block_id": "ticket_id_block",
-                            "elements": [
-                                {
-                                    "type": "mrkdwn",
-                                    "text": ":label: *Ticket ID: *"
-                                },
-                                {
-                                    "type": "mrkdwn",
-                                    "text": "1"
-                                }
-                            ]
-                },
-                {
-                    "type": "input",
-                    "block_id": "select_assignee_block",
-                            "element": {
-                                "type": "static_select",
-                                "placeholder": {
+                                    "text": {
                                         "type": "plain_text",
-                                    "text": "Select an assignee :woman-raising-hand:",
-                                            "emoji": True
+                                        "text": "User 1",
+                                        "emoji": True
+                                    },
+                                    "value": "u1"
                                 },
-                                "options": [
-                                    {
-                                        "text": {
-                                            "type": "plain_text",
-                                            "text": "User 1",
-                                            "emoji": True
-                                        },
-                                        "value": "u1"
-                                    },
-                                    {
-                                        "text": {
-                                            "type": "plain_text",
-                                            "text": "User 2",
-                                            "emoji": True
-                                        },
-                                        "value": "u2"
-                                    },
-                                    {
-                                        "text": {
-                                            "type": "plain_text",
-                                            "text": "User 3",
-                                            "emoji": True
-                                        },
-                                        "value": "u3"
-                                    }
-                                ],
-                                "action_id": "select_assignee_action"
-                            },
-                    "label": {
-                                "type": "plain_text",
-                                "text": "Assignee",
-                                "emoji": True
-                            }
-                },
-                {
-                    "type": "input",
-                    "optional": True,
-                            "block_id": "datepicker_block",
-                            "element": {
-                                "type": "datepicker",
-                                "placeholder": {
+                                {
+                                    "text": {
                                         "type": "plain_text",
-                                    "text": "Select a planned date",
-                                            "emoji": True
+                                        "text": "User 2",
+                                        "emoji": True
+                                    },
+                                    "value": "u2"
                                 },
-                                "action_id": "datepicker-action"
+                                {
+                                    "text": {
+                                        "type": "plain_text",
+                                        "text": "User 3",
+                                        "emoji": True
+                                    },
+                                    "value": "u3"
+                                }
+                            ],
+                            "action_id": "select_assignee_action"
+                        },
+                "label": {
+                            "type": "plain_text",
+                            "text": "Assignee",
+                            "emoji": True
+                        }
+            },
+            {
+                "type": "input",
+                "optional": True,
+                        "block_id": "datepicker_block",
+                        "element": {
+                            "type": "datepicker",
+                            "placeholder": {
+                                    "type": "plain_text",
+                                "text": "Select a planned date",
+                                        "emoji": True
                             },
-                    "label": {
-                                "type": "plain_text",
-                                "text": "Date",
-                                "emoji": True
-                            }
-                },
-                {
-                    "type": "input",
-                    "block_id": "extra_detail_block",
-                            "optional": True,
-                            "element": {
-                                "type": "plain_text_input",
-                                "multiline": True,
-                                "max_length": 200,
-                                "action_id": "extra_detail_action"
-                            },
-                    "label": {
-                                "type": "plain_text",
-                                "text": "Extra Detail",
-                                "emoji": True
-                            },
-                    "hint": {
-                                "type": "plain_text",
-                                "text": "Max limit is 200 characters"
-                            }
-                }
-            ]
-        })
-    
+                            "action_id": "datepicker-action"
+                        },
+                "label": {
+                            "type": "plain_text",
+                            "text": "Date",
+                            "emoji": True
+                        }
+            },
+            {
+                "type": "input",
+                "block_id": "extra_detail_block",
+                        "optional": True,
+                        "element": {
+                            "type": "plain_text_input",
+                            "multiline": True,
+                            "max_length": 200,
+                            "action_id": "extra_detail_action"
+                        },
+                "label": {
+                            "type": "plain_text",
+                            "text": "Extra Detail",
+                            "emoji": True
+                        },
+                "hint": {
+                            "type": "plain_text",
+                            "text": "Max limit is 200 characters"
+                        }
+            }
+        ]
+    })
+```
 
 Just like we did for _Global_ shortcuts, implement a shortcut handler for
-message shortcuts in the same way. There won't be any change except `callback
-id` which we configured for message shortcut:
+message shortcuts in the same way. There won't be any change except `callback id` which we configured for message shortcut:
 
-    
-    
-    @app.shortcut("raise-website-issue-cb")
-    def raise_issue_shortcut(ack, payload, client):
-        ack()
-    
-        client.views_open(
-            trigger_id=payload["trigger_id"],
-            view= raise_ticket_view()
-        )
-    
+```python
+@app.shortcut("raise-website-issue-cb")
+def raise_issue_shortcut(ack, payload, client):
+    ack()
+
+    client.views_open(
+        trigger_id=payload["trigger_id"],
+        view= raise_ticket_view()
+    )
+```
 
 Now run your python app, and click on the shortcut. You should be presented
 with a UI. **_Kudos to you_** 💎💎
 
 ## Implement view submission
 
-Let's go a step further, and process the data submitted by the form. As we
-discussed before that submitting a [slack modal view triggers `view()`
-method](https://pennow.tech/slack-app-open-modal-
-views/#Handling_job_submission) This method requires `callback_id` of the
-view/form. Just _keep in mind_ that these view's callbacks are different from
+Let's go a step further, and process the data submitted by the form. As we discussed before that submitting a [slack modal view triggers `view()` method](/blog/slack-app-open-modal-views/#Handling*job_submission).
+
+This method requires `callback_id` of the view/form. Just _keep in mind_ that these view's callbacks are different from
 callbacks we specified for shortcuts. view's `callback_id` can be retrieved
 from the JSON which we copied from Slack Builder Kit.
 
-    
-    
-    @app.view("ticket_create_view")
-    def ticket_submitted(ack, payload, body, say):
-        planned_date = payload['state']['values']['datepicker_block']['datepicker-action']['selected_date']
-        if validate_date(planned_date) is False:
-            ack({
-                "response_action": "errors",
-                "errors": {
-                    "datepicker_block": "Planned date can't be in past"
-                }
-            })
-        else:
-            ack()
-    
-            say(process_submission_request(payload), channel='#web-monitor')
-    
+```python hl=1,4-5,14
+@app.view("ticket_create_view")
+def ticket_submitted(ack, payload, body, say):
+    planned_date = payload['state']['values']['datepicker_block']['datepicker-action']['selected_date']
+    if validate_date(planned_date) is False:
+        ack({
+            "response_action": "errors",
+            "errors": {
+                "datepicker_block": "Planned date can't be in past"
+            }
+        })
+    else:
+        ack()
 
-Just like before, we used `view()` method to handle view submission (line 1)
-Then we verified that mentioned date isn't in past (line 4). If it's in past,
-we'd throw an error(line 5) which will be displayed on the view form.
-Otherwise, we move forward and parse the packet (line 14). and send the
-response back. Following is the parsing logic to fetch the required values
-from the payload:
+        say(process_submission_request(payload), channel='#web-monitor')
+```
 
-    
-    
-    def process_submission_request(payload):
-        values = payload['state']['values']
-    
-        # These details are retrieved from payload['blocks']
-        url_val = payload['blocks'][0]['fields'][0]['text']
-        url_status = payload['blocks'][0]['fields'][1]['text']
-        ticket_id = payload['blocks'][2]['elements'][1]['text']
-    
-        # These details are retrieved from payload['state']['values]
-        assignee_val = values['select_assignee_block']['select_assignee_action']['selected_option']['value']
-        assignee_text = values['select_assignee_block']['select_assignee_action']['selected_option']['text']['text']
-        planned_date = values['datepicker_block']['datepicker-action']['selected_date']
-        extra_detail = values['extra_detail_block']['extra_detail_action']['value']
-    
-        return store_ticket(url_val, url_status, ticket_id, assignee_text, assignee_val, planned_date, extra_detail)
-    
-    
+Just like before, we used `view()` method to handle view submission (line 1).
 
-This was just a simple get and store function. Pay attention to the last
-function. This is up to you to decide how you want to define this function.
-You can either store it in some database or pass it to some message queues or
-whatever you want. In our case, we just displayed these values back to the
-user as a confirmation message.
+Then we verified that mentioned date isn't in past (line 4). If it's in past, we'd throw an error(line 5) which will be displayed on the view form.
+
+Otherwise, we move forward and parse the packet (line 14). and send the response back.
+
+Following is the parsing logic to fetch the required values from the payload:
+
+```python
+def process_submission_request(payload):
+    values = payload['state']['values']
+
+    # These details are retrieved from payload['blocks']
+    url_val = payload['blocks'][0]['fields'][0]['text']
+    url_status = payload['blocks'][0]['fields'][1]['text']
+    ticket_id = payload['blocks'][2]['elements'][1]['text']
+
+    # These details are retrieved from payload['state']['values]
+    assignee_val = values['select_assignee_block']['select_assignee_action']['selected_option']['value']
+    assignee_text = values['select_assignee_block']['select_assignee_action']['selected_option']['text']['text']
+    planned_date = values['datepicker_block']['datepicker-action']['selected_date']
+    extra_detail = values['extra_detail_block']['extra_detail_action']['value']
+
+    return store_ticket(url_val, url_status, ticket_id, assignee_text, assignee_val, planned_date, extra_detail)
+```
+
+This was just a simple get and store function. Pay attention to the last function. This is up to you to decide how you want to define this function. You can either store it in some database or pass it to some message queues or whatever you want. In our case, we just displayed these values back to the user as a confirmation message.
 
 ## Implementation to store the ticket
 
-To design, let's again go back to the **Slack Builder Kit** and layout our
-confirmation dialogue: [caption id="attachment_1545" align="aligncenter"
-width="463"]![Ticket-raise-confirmation](https://pennow.tech/wp-
-content/uploads/2021/05/Ticket-raise-confirmation.png) Ticket raise
-confirmation[/caption] Copy the corresponding JSON file from the right side of
-the _Builder Kit_ window and store it inside the same function which was
-supposed to store the ticket: `store_ticket()`. I also filled the JSON message
-with these values.
+To design, let's again go back to the **Slack Builder Kit** and layout our confirmation dialogue:
+![Ticket-raise-confirmation](/Ticket-raise-confirmation.png)
+Copy the corresponding JSON file from the right side of the _Builder Kit_ window and store it inside the same function which was supposed to store the ticket: `store_ticket()`. I also filled the JSON message with these values.
 
-    
-    
-    def store_ticket(url_val, url_status, ticket_id, assignee_text, assignee_val, planned_date, extra_detail):
-        return ({
-            "attachments": [
-                {
-                    "color": "#4289b9",
-                    "blocks": [
-                        {
-                            "type": "header",
-                            "text": {
+```python
+def store_ticket(url_val, url_status, ticket_id, assignee_text, assignee_val, planned_date, extra_detail):
+    return ({
+        "attachments": [
+            {
+                "color": "#4289b9",
+                "blocks": [
+                    {
+                        "type": "header",
+                        "text": {
+                            "type": "plain_text",
+                            "text": "Ticket Raised Successfully",
+                            "emoji": True
+                        }
+                    },
+                    {
+                        "type": "context",
+                        "block_id": "ticket_id_block",
+                        "elements": [
+                            {
+                                "type": "mrkdwn",
+                                    "text": ":label: *Ticket ID: *"
+                            },
+                            {
+                                "type": "mrkdwn",
+                                "text": ticket_id
+                            }
+                        ]
+                    },
+                    {
+                        "type": "section",
+                        "fields": [
+                            {
+                                "type": "mrkdwn",
+                                "text": f"*Ticket:*\n{url_val}"
+                            },
+                            {
+                                "type": "mrkdwn",
+                                "text": f"{url_status}"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "section",
+                        "fields": [
+                            {
+                                "type": "mrkdwn",
+                                "text": f"*Planned Date:* :calendar: \n{planned_date}",
+                            },
+                            {
+                                "type": "mrkdwn",
+                                "text": f"*Assigne Name:*\n{assignee_text}({assignee_val})",
+                            }
+                        ]
+                    },
+                    {
+                        "type": "context",
+                        "elements": [
+                            {
                                 "type": "plain_text",
-                                "text": "Ticket Raised Successfully",
+                                "text": f"Extra Detail: :lower_left_fountain_pen: {extra_detail}",
                                 "emoji": True
                             }
-                        },
-                        {
-                            "type": "context",
-                            "block_id": "ticket_id_block",
-                            "elements": [
-                                {
-                                    "type": "mrkdwn",
-                                        "text": ":label: *Ticket ID: *"
-                                },
-                                {
-                                    "type": "mrkdwn",
-                                    "text": ticket_id
-                                }
-                            ]
-                        },
-                        {
-                            "type": "section",
-                            "fields": [
-                                {
-                                    "type": "mrkdwn",
-                                    "text": f"*Ticket:*\n{url_val}"
-                                },
-                                {
-                                    "type": "mrkdwn",
-                                    "text": f"{url_status}"
-                                }
-                            ]
-                        },
-                        {
-                            "type": "section",
-                            "fields": [
-                                {
-                                    "type": "mrkdwn",
-                                    "text": f"*Planned Date:* :calendar: \n{planned_date}",
-                                },
-                                {
-                                    "type": "mrkdwn",
-                                    "text": f"*Assigne Name:*\n{assignee_text}({assignee_val})",
-                                }
-                            ]
-                        },
-                        {
-                            "type": "context",
-                            "elements": [
-                                {
-                                    "type": "plain_text",
-                                    "text": f"Extra Detail: :lower_left_fountain_pen: {extra_detail}",
-                                    "emoji": True
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        })
-    
+                        ]
+                    }
+                ]
+            }
+        ]
+    })
+```
 
-Now everything is done. Run your program, and try to create a ticket from the
-message context menu. After filling in the required parameters, press the
-submit button and you should get the confirmation in your Slack window:
-[caption id="attachment_1546" align="aligncenter" width="841"]![Ticket-raise-
-confirmation-display](https://pennow.tech/wp-content/uploads/2021/05/Ticket-
-raise-confirmation-display.png) Ticket raise confirmation display[/caption]
+Now everything is done.
+
+Run your program, and try to create a ticket from the message context menu. After filling in the required parameters, press the submit button and you should get the confirmation in your Slack window:
+![Ticket-raise-confirmation-display](/Ticket-raise-confirmation-display.png)
+
 This way we implemented our _message shortcut_. Let's conclude it here.
-Source Code:
-[handling_message_shortcuts.py](https://github.com/pennowtech/slack-app-
-python-slack-bolt/blob/master/handling_message_shortcuts.py)
+
+**Source Code:** [handling_message_shortcuts.py](https://github.com/pennowtech/slack-app-python-slack-bolt/blob/master/handling_message_shortcuts.py)
 
 ## Practice at your end
 
-This implementation is not foolproof. It has the scope of a lot of
-improvements. Major improvement required here is to take care that the right
-message is selected to raise a ticket. As the context menu can be invoked from
-any shortcuts, so it might not have the required information which we need.
-The result of selecting any such message will be that your program will not
-work as expected. To implement logic to handle that. Another option is to
-store values in a database The third option could be to increment the ticket
-id every time a new ticket is raised. All of these are very simple to
-implement assignments.
+This implementation is not foolproof. It has the scope of a lot of improvements. Major improvement required here is to take care that the right message is selected to raise a ticket. As the context menu can be invoked from any shortcuts, so it might not have the required information which we need.
+
+The result of selecting any such message will be that your program will not work as expected. To implement logic to handle that.
+
+Another option is to store values in a database.
+
+The third option could be to increment the ticket id every time a new ticket is raised. All of these are very simple to implement assignments.
 
 ## Summary
 
 Today's discussion was quite interesting. We developed two full-fledged
 modules in the two-part discussion. All was too exciting and satisfying. Now,
-let's summarize what we did discuss today: We started our today's discussion
-with the implementation of the message shortcut. Here, we implemented a
+let's summarize what we did discuss today:
+
+We started our today's discussion with the implementation of the message shortcut. Here, we implemented a
 feature to raise a ticket whenever any issue is reported by our web monitor
 app. A message is also sent as a confirmation when the form is submitted. I'll
-say this article was full of fun🎳 . In the next article, we'll be discussing
+say this article was full of fun🎳 .
+
+In the next article, we'll be discussing
 how to pin our messages so that important messages could be easily accessible
 instead of getting lost in the flood of messages. Till then, enjoy your time👍
+
+---
 
 Title image credit: [Development Stock photos by
 Vecteezy](https://www.vecteezy.com/free-photos/development)
