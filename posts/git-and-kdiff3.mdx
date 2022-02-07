@@ -2,7 +2,7 @@
 author: Sukhdeep Singh
 categories:
   - Git
-date: Aug, 21
+date: 12 Aug, 21
 description: "KDiff3 can be used as a Git diff and merge tool. Just execute the follwing commands to add the required config into your gitconfig file."
 post_status: publish
 post_type: post
@@ -59,3 +59,21 @@ You should see the following lines into your `gitconfig` file.
 ```
 
 You can also add the above lines directly into your `.gitconfig` file instead of executing the mentioned commands.
+
+## Commands to merge/diff
+
+If you don't set _difftool_ or _mergetool_, you can still specify the tool explicitly.
+
+To see the difference between two commits:
+
+```shell
+$ git difftool [hash-1] [hash-2] --tool=kdiff3 --cc [filename]
+```
+
+To merge a branch with KDiff3:
+
+```shell
+$ git merge [branch_name] && git mergetool --tool=kdiff3
+```
+
+**Note:** Replace contents inside _square brackets_ with the actual content.

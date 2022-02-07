@@ -6,7 +6,7 @@ import {
 
 const MenuItems = [
   { title: 'Home', path: 'home' },
-  { title: 'Articles', path: 'articles' },
+  { title: 'Articles', path: 'blog' },
   { title: 'About Me', path: 'about-me' },
   { title: 'Contact', path: 'contact' },
 ];
