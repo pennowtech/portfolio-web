@@ -5,12 +5,11 @@ import matter from 'gray-matter';
 
 import { Element } from 'react-scroll';
 import algoliasearch from 'algoliasearch/lite';
-import { SELECTED_POST_QUERY, LOGIN_WP_USER } from '../queries/queries';
-import { SelectedPostsList, GRAPHQL_URL } from '../utils/consts';
+import { SELECTED_POST_QUERY } from '../queries/queries';
+import { SelectedPostsList } from '../utils/consts';
 import SelectedPosts from '../components/SelectedPosts';
 import { gqlClient, ssrCache } from '../utils/gqlclient';
 import IntroHighlight from '../components/Intro/IntroHighlight';
-import Login from '../components/Login';
 import HomeArticles from '../components/HomeArticles';
 import 'tailwindcss/tailwind.css';
 import ContactForm from '../components/ContactForm';
@@ -55,7 +54,8 @@ function Index({ posts, selectedposts }) {
 
       </Element>
       <Element id="Selected" className="element">
-        <SelectedPosts selectedposts={selectedposts} />
+        {selectedposts.some((post) => post.post !== null)
+        && <SelectedPosts selectedposts={selectedposts} />}
       </Element>
       <Element id="about-me" className="element min-h-[630px]">
         <IntroHighlight />
@@ -99,7 +99,7 @@ export const getStaticProps = async () => {
 
   return {
     props: {
-      posts,
+      posts: posts.slice(0, 6),
       selectedposts: selectedposts || [],
       // selectedposts: JSON.stringify(selectedposts) || [],
       urqlState: ssrCache.extractData(),
