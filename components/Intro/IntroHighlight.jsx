@@ -4,11 +4,12 @@ import React from 'react';
 import Link from 'next/link';
 import { GrReactjs, GrSystem } from 'react-icons/gr';
 import {
-  SiNextdotjs, SiCplusplus, SiQt, SiSolidity, SiRos, SiSocketdotio, SiDocker, SiKubernetes, SiApachespark, SiApachekafka, SiWireshark, SiGit, SiPytest, SiPostgresql, SiMaterialdesign, SiDesignernews, SiJest, SiGraphql, SiFastapi, SiLinux,
+  SiNextdotjs, SiCplusplus, SiQt, SiSolidity, SiRos, SiSocketdotio, SiDocker, SiKubernetes, SiApachespark, SiApachekafka, SiWireshark, SiGit, SiPytest, SiPostgresql, SiMaterialdesign, SiJest, SiGraphql, SiFastapi, SiLinux,
 } from 'react-icons/si';
+import { GiShipWheel } from 'react-icons/gi';
 import { IoLogoJavascript, IoMdBuild } from 'react-icons/io';
 import {
-  MdDesignServices, MdOutlineDesignServices, MdOutlineDeveloperMode, MdOutlineStickyNote2,
+  MdOutlineDesignServices, MdOutlineDeveloperMode, MdOutlineStickyNote2,
 } from 'react-icons/md';
 import Image from 'next/image';
 import {
@@ -16,7 +17,7 @@ import {
 } from 'react-icons/bs';
 import { FiDatabase } from 'react-icons/fi';
 import {
-  FaDatabase, FaDraftingCompass, FaNetworkWired, FaPython,
+  FaDraftingCompass, FaNetworkWired, FaPython,
 } from 'react-icons/fa';
 import PostTags from '../Post/PostTags';
 import TechCard from './TechCard';
@@ -218,7 +219,11 @@ const IntroHighlight = () => (
     </div>
     <div className="container mx-auto px-4 pb-24">
       <div className="items-center flex md:text-sm text-xs flex-wrap md:gap-12 gap-8">
-        <h2 className="w-full">Skills in short</h2>
+        <h3 className="text-3xl flex gap-4 font-semibold w-full">
+          <GiShipWheel />
+          Skills in short
+
+        </h3>
         <div className="text-center mb-2">
           <SiCplusplus className="md:text-7xl text-5xl mb-2" />
           C++ 11/17
