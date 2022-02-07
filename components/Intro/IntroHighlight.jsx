@@ -210,13 +210,13 @@ const IntroHighlight = () => (
         </div>
       </div>
     </div>
-    <Link href="/Sukhdeep Singh_CV_Architect.pdf">
+    {/* <Link href="/Sukhdeep Singh_CV_Architect.pdf">
       <a>
         <div className="button xl:w-48 w-40 text-center mx-auto">
           Complete CV
         </div>
       </a>
-    </Link>
+    </Link> */}
   </section>
 
 );

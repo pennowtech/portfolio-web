@@ -42,7 +42,6 @@ const Login = () => {
           if (token) {
             setToken(token);
             setLoggedUser(username);
-            console.warn(username, ' logged in');
             router.push(page);
           }
           // console.error('Failed to login');
