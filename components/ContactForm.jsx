@@ -16,7 +16,6 @@ function ContactForm() {
     const tempErrors = {};
     setError({ ...tempErrors });
     let isValid = true;
-    console.log('Verifying form data', data);
 
     if (data.firstname.length <= 0) {
       tempErrors.firstname = true;
@@ -36,7 +35,6 @@ function ContactForm() {
     }
 
     setError({ ...tempErrors });
-    console.log('errors', error);
     return isValid;
   };
 
@@ -49,13 +47,10 @@ function ContactForm() {
       email: email.trim(),
       message: message.trim(),
     };
-    console.log('Submitting form data', firstname);
 
     const isValidForm = handleValidation(data);
     if (!isValidForm) { return; }
     setSubmitBtnText('Sending...');
-
-    console.log('Submitting form data', data);
 
     fetch('/api/contactform', {
       method: 'POST',
@@ -65,10 +60,8 @@ function ContactForm() {
       },
       body: JSON.stringify(data),
     }).then((res) => {
-      console.log('Response received');
       setSubmitBtnText('Submit');
       if (res.status === 200) {
-        console.log('Response succeeded!');
         setEmailSentSuccess(true);
         setEmailSentFailed(false);
         setFirstName('');
@@ -76,7 +69,6 @@ function ContactForm() {
         setEmail('');
         setMessage('');
       } else {
-        console.error('Email sent failed!', res);
         setEmailSentSuccess(false);
         setEmailSentFailed(true);
       }
