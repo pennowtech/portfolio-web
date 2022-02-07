@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-unresolved
 import sendgrid from '@sendgrid/mail';
 
 sendgrid.setApiKey(process.env.SENDGRID_API_KEY);

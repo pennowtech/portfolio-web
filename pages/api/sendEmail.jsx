@@ -1,7 +1,6 @@
 import nodemailer from 'nodemailer';
 
 async function sendEmail(req, res) {
-  console.log(process.env.EMAIL_PASSWORD);
   const transporter = nodemailer.createTransport({
     port: 465,
     host: 'smtp.gmail.com',
@@ -28,7 +27,6 @@ async function sendEmail(req, res) {
   try {
     await transporter.sendMail(mailData);
   } catch (error) {
-    console.log(error);
     return res.status(error.statusCode || 500).json({ error: error.message });
   }
 
