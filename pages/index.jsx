@@ -60,7 +60,7 @@ function Index({ posts, selectedposts }) {
       <Element id="about-me" className="element min-h-[630px]">
         <IntroHighlight />
       </Element>
-      <Element id="articles" className="element">
+      <Element id="blog" className="element">
         <HomeArticles posts={posts} />
       </Element>
       <Element id="contact" className="element">
