@@ -21,12 +21,7 @@ import React, { useEffect, useState } from 'react';
 // };
 import { marked } from 'marked';
 
-import ReactHtmlParser, {
-  processNodes,
-  convertNodeToElement,
-  htmlparser2,
-} from 'react-html-parser';
-
+import parse from 'html-react-parser';
 import ReactMarkdownHeading from 'react-markdown-heading';
 
 function generateLinkMarkup(contentElement) {
@@ -80,7 +75,7 @@ const generateLinkMarkupv2 = (contentElement) => {
     return str;
   });
   // return `${htmlMarkup.join('')}</li></ul>`;
-  return ReactHtmlParser(`${htmlMarkup.join('')}</li></ul>`);
+  return parse(`${htmlMarkup.join('')}</li></ul>`);
 };
 
 function ToC({ content, props }) {
@@ -88,6 +83,7 @@ function ToC({ content, props }) {
   const [tocContent, setTocContent] = useState('');
   useEffect(() => {
     const finalMarkup = generateLinkMarkupv2(document.getElementById('post'));
+    console.log(finalMarkup);
     setTocContent(finalMarkup);
     console.log('ToC Rendered');
   }, [content]);
