@@ -15,7 +15,7 @@ const ImageWithFallback = (props) => {
   }, [src]);
 
   const imgUrl = `${BASE_URL}${imgSrc}`;
-  console.log(5454, 'hostname:', hostname, 'imgUrl: ', imgUrl);
+  // console.log(5454, 'hostname:', hostname, 'imgUrl: ', imgUrl);
 
   return (
     <Image
