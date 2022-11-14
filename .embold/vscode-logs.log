@@ -2213,3 +2213,7 @@
 2022-11-14 05:23:22 error: SQLITE_ERROR: no such table: issues
 2022-11-14 05:23:22 error: SQLITE_ERROR: no such table: issues
 2022-11-14 05:23:22 error: SQLITE_ERROR: no such table: issues
+2022-11-14 05:26:03 info: file:///d%3A/Work/Code/portfolio_web/.git/index.lock
+2022-11-14 05:26:03 error: SQLITE_ERROR: no such table: issues
+2022-11-14 05:26:04 info: file:///d%3A/Work/Code/portfolio_web/.git/index.lock
+2022-11-14 05:26:04 error: SQLITE_ERROR: no such table: issues
