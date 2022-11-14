@@ -12,6 +12,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      NODE_TLS_REJECT_UNAUTHORIZED: "0"
 
     strategy:
       matrix:
