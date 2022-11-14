@@ -12,7 +12,6 @@ const RecentArticles = () => {
 
   const posts = data?.posts?.nodes || [];
   posts.sort((a, b) => Date.parse(b.modified) - Date.parse(a.modified));
-  console.warn(1234, 'Fetching All Posts data...', posts);
 
   return (
     <div className="font-medium mx-auto px-2 py-1 md:px-4 whitespace-nowrap overflow-hidden">
@@ -24,7 +23,7 @@ const RecentArticles = () => {
               {post.title}
             </a>
           </Link>
-          <PostDate date={post.modified} readingTime={post.readingTime} />
+          <PostDate date={post.date} readingTime={post.readingTime} />
         </div>
       )) }
     </div>

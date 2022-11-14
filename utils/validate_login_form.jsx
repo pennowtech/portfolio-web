@@ -43,7 +43,8 @@ const validateAndSanitizeLoginForm = (data) => {
     }
   };
 
-  validateAndSanitize('email', 'Email', 10, 35, true, 'email');
+  // validateAndSanitize('email', 'Email', 10, 35, true, 'email');
+  validateAndSanitize('email', 'Email', 10, 35, true);
   validateAndSanitize('pwd', 'Password', 6, 35, true);
 
   return {

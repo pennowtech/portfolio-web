@@ -86,7 +86,6 @@ export const getStaticProps = async () => {
     };
   });
   posts.sort((a, b) => Date.parse(b.frontMatter.date) - Date.parse(a.frontMatter.date));
-  // posts.forEach((p) => console.log(Date.parse(p.frontMatter.date)));
 
   const unresolvedPromises = SelectedPostsList.map((postId) => gqlClient().query(
     SELECTED_POST_QUERY,
@@ -110,9 +109,8 @@ export const getStaticProps = async () => {
 
 // export default withUrqlClient(
 //   () => ({
-//     url: 'https://wordpress-561320-2383780.cloudwaysapps.com/graphql',
+//     url: 'https://pennow.tech/graphql',
 //   }),
 //   { ssr: false },
 // )(Index);
-
 export default Index;

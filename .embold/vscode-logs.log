@@ -1,0 +1,1213 @@
+2022-11-13 18:07:35 info: tempDirectory:c:\Users\to_su\.vscode\extensions\embold-vscode.embold-0.1.4\temp
+2022-11-13 18:07:35 info: Extraction complete for source: c:\Users\to_su\.vscode\extensions\embold-vscode.embold-0.1.4\resources\embold-scanner-archive.zip, destination: c:\Users\to_su\.vscode\extensions\embold-vscode.embold-0.1.4\temp
+2022-11-13 18:07:35 info: Congratulations, your extension "Embold" is now active!
+2022-11-13 18:20:08 info: file:///d%3A/Work/Code/portfolio_web/.mypy_cache/3.9/urllib/parse.data.json.4dc2e2f6d6893ce9
+2022-11-13 18:20:08 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:28:39 info: file:///d%3A/Work/Code/portfolio_web/.next/trace
+2022-11-13 18:28:39 info: file:///d%3A/Work/Code/portfolio_web/.next/server
+2022-11-13 18:28:39 info: file:///d%3A/Work/Code/portfolio_web/.next/static
+2022-11-13 18:28:39 info: file:///d%3A/Work/Code/portfolio_web/.next/build-manifest.json
+2022-11-13 18:28:39 info: file:///d%3A/Work/Code/portfolio_web/.next/react-loadable-manifest.json
+2022-11-13 18:28:39 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:28:39 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:28:39 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:28:39 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:28:39 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:29:17 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/0.pack_
+2022-11-13 18:29:17 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-13 18:29:17 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:29:17 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:31:29 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/1.pack_
+2022-11-13 18:31:29 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack
+2022-11-13 18:31:29 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:31:29 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:31:29 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/0.pack_
+2022-11-13 18:31:29 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-13 18:31:29 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:31:29 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:32:32 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/2.pack_
+2022-11-13 18:32:32 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/index.pack_
+2022-11-13 18:32:32 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:32:32 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:32:33 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/1.pack_
+2022-11-13 18:32:33 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/2.pack_
+2022-11-13 18:32:33 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-13 18:32:33 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:32:33 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:32:33 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:45:28 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/2.pack_
+2022-11-13 18:45:28 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/3.pack_
+2022-11-13 18:45:28 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-13 18:45:28 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:45:28 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:45:28 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:47:02 info: file:///d%3A/Work/Code/portfolio_web/.next/server
+2022-11-13 18:47:02 info: file:///d%3A/Work/Code/portfolio_web/.next/static
+2022-11-13 18:47:02 info: file:///d%3A/Work/Code/portfolio_web/.next/build-manifest.json
+2022-11-13 18:47:02 info: file:///d%3A/Work/Code/portfolio_web/.next/react-loadable-manifest.json
+2022-11-13 18:47:02 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:47:02 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:47:02 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:47:02 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:47:34 info: file:///d%3A/Work/Code/portfolio_web/.next/trace
+2022-11-13 18:47:34 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:50:40 info: file:///d%3A/Work/Code/portfolio_web/.next/server
+2022-11-13 18:50:40 info: file:///d%3A/Work/Code/portfolio_web/.next/static
+2022-11-13 18:50:40 info: file:///d%3A/Work/Code/portfolio_web/.next/build-manifest.json
+2022-11-13 18:50:40 info: file:///d%3A/Work/Code/portfolio_web/.next/react-loadable-manifest.json
+2022-11-13 18:50:40 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:50:40 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:50:40 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:50:40 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:51:19 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/2.pack_
+2022-11-13 18:51:19 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/3.pack_
+2022-11-13 18:51:19 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/4.pack_
+2022-11-13 18:51:19 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-13 18:51:19 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:51:19 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:51:19 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:51:19 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:52:51 info: file:///d%3A/Work/Code/portfolio_web/.next/trace
+2022-11-13 18:52:51 info: file:///d%3A/Work/Code/portfolio_web/.next/server
+2022-11-13 18:52:51 info: file:///d%3A/Work/Code/portfolio_web/.next/static
+2022-11-13 18:52:51 info: file:///d%3A/Work/Code/portfolio_web/.next/build-manifest.json
+2022-11-13 18:52:51 info: file:///d%3A/Work/Code/portfolio_web/.next/react-loadable-manifest.json
+2022-11-13 18:52:51 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:52:51 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:52:51 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:52:51 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:52:51 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:54:31 info: file:///d%3A/Work/Code/portfolio_web/.next/trace
+2022-11-13 18:54:31 info: file:///d%3A/Work/Code/portfolio_web/.next/server
+2022-11-13 18:54:31 info: file:///d%3A/Work/Code/portfolio_web/.next/static
+2022-11-13 18:54:31 info: file:///d%3A/Work/Code/portfolio_web/.next/build-manifest.json
+2022-11-13 18:54:31 info: file:///d%3A/Work/Code/portfolio_web/.next/react-loadable-manifest.json
+2022-11-13 18:54:31 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:54:31 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:54:31 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:54:31 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:54:31 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:54:45 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/index.pack
+2022-11-13 18:54:45 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:54:45 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/0.pack_
+2022-11-13 18:54:45 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/3.pack_
+2022-11-13 18:54:45 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/index.pack_
+2022-11-13 18:54:45 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:54:45 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:54:45 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:55:08 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/0.pack_
+2022-11-13 18:55:08 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/1.pack_
+2022-11-13 18:55:08 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/3.pack_
+2022-11-13 18:55:08 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/5.pack_
+2022-11-13 18:55:08 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-13 18:55:08 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:55:08 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:55:08 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:55:08 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:55:08 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:55:40 info: file:///d%3A/Work/Code/portfolio_web/.next/trace
+2022-11-13 18:55:40 info: file:///d%3A/Work/Code/portfolio_web/.next/server
+2022-11-13 18:55:40 info: file:///d%3A/Work/Code/portfolio_web/.next/static
+2022-11-13 18:55:40 info: file:///d%3A/Work/Code/portfolio_web/.next/build-manifest.json
+2022-11-13 18:55:40 info: file:///d%3A/Work/Code/portfolio_web/.next/react-loadable-manifest.json
+2022-11-13 18:55:40 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:55:40 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:55:40 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:55:40 error: SQLITE_ERROR: no such table: issues
+2022-11-13 18:55:40 error: SQLITE_ERROR: no such table: issues
+2022-11-13 19:08:07 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/3.pack_
+2022-11-13 19:08:07 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/6.pack_
+2022-11-13 19:08:07 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/1.pack_
+2022-11-13 19:08:07 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/4.pack_
+2022-11-13 19:08:07 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/index.pack_
+2022-11-13 19:08:07 error: SQLITE_ERROR: no such table: issues
+2022-11-13 19:08:07 error: SQLITE_ERROR: no such table: issues
+2022-11-13 19:08:07 error: SQLITE_ERROR: no such table: issues
+2022-11-13 19:08:07 error: SQLITE_ERROR: no such table: issues
+2022-11-13 19:08:07 error: SQLITE_ERROR: no such table: issues
+2022-11-13 19:12:00 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development-fallback/0.pack_
+2022-11-13 19:12:00 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development-fallback/index.pack_
+2022-11-13 19:12:00 error: SQLITE_ERROR: no such table: issues
+2022-11-13 19:12:00 error: SQLITE_ERROR: no such table: issues
+2022-11-13 19:12:58 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/6.pack_
+2022-11-13 19:12:58 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/7.pack_
+2022-11-13 19:12:58 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/4.pack_
+2022-11-13 19:12:58 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-13 19:12:58 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/index.pack_
+2022-11-13 19:12:58 error: SQLITE_ERROR: no such table: issues
+2022-11-13 19:12:58 error: SQLITE_ERROR: no such table: issues
+2022-11-13 19:12:58 error: SQLITE_ERROR: no such table: issues
+2022-11-13 19:12:58 error: SQLITE_ERROR: no such table: issues
+2022-11-13 19:12:58 error: SQLITE_ERROR: no such table: issues
+2022-11-13 19:15:09 info: file:///d%3A/Work/Code/portfolio_web/.next/trace
+2022-11-13 19:15:09 info: file:///d%3A/Work/Code/portfolio_web/.next/server
+2022-11-13 19:15:09 info: file:///d%3A/Work/Code/portfolio_web/.next/static
+2022-11-13 19:15:09 info: file:///d%3A/Work/Code/portfolio_web/.next/build-manifest.json
+2022-11-13 19:15:09 info: file:///d%3A/Work/Code/portfolio_web/.next/fallback-build-manifest.json
+2022-11-13 19:15:09 info: file:///d%3A/Work/Code/portfolio_web/.next/react-loadable-manifest.json
+2022-11-13 19:15:09 error: SQLITE_ERROR: no such table: issues
+2022-11-13 19:15:09 error: SQLITE_ERROR: no such table: issues
+2022-11-13 19:15:09 error: SQLITE_ERROR: no such table: issues
+2022-11-13 19:15:09 error: SQLITE_ERROR: no such table: issues
+2022-11-13 19:15:09 error: SQLITE_ERROR: no such table: issues
+2022-11-13 19:15:09 error: SQLITE_ERROR: no such table: issues
+2022-11-13 19:15:32 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/0.pack_
+2022-11-13 19:15:32 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-13 19:15:32 error: SQLITE_ERROR: no such table: issues
+2022-11-13 19:15:32 error: SQLITE_ERROR: no such table: issues
+2022-11-13 19:15:43 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/0.pack_
+2022-11-13 19:15:43 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/1.pack_
+2022-11-13 19:15:43 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-13 19:15:43 error: SQLITE_ERROR: no such table: issues
+2022-11-13 19:15:43 error: SQLITE_ERROR: no such table: issues
+2022-11-13 19:15:43 error: SQLITE_ERROR: no such table: issues
+2022-11-13 19:17:16 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/0.pack_
+2022-11-13 19:17:16 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/1.pack_
+2022-11-13 19:17:16 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/2.pack_
+2022-11-13 19:17:16 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-13 19:17:16 error: SQLITE_ERROR: no such table: issues
+2022-11-13 19:17:16 error: SQLITE_ERROR: no such table: issues
+2022-11-13 19:17:16 error: SQLITE_ERROR: no such table: issues
+2022-11-13 19:17:16 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:30:25 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/2.pack_
+2022-11-14 00:30:25 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/3.pack_
+2022-11-14 00:30:25 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 00:30:25 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:30:25 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:30:25 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:32:46 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/3.pack_
+2022-11-14 00:32:46 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/1.pack_
+2022-11-14 00:32:46 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/3.pack_
+2022-11-14 00:32:46 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 00:32:46 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/index.pack_
+2022-11-14 00:32:46 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:32:46 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:32:46 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:32:46 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:32:46 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:36:53 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/3.pack_
+2022-11-14 00:36:53 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 00:36:53 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:36:53 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:45:11 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/index.pack
+2022-11-14 00:45:11 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:45:11 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/0.pack_
+2022-11-14 00:45:11 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/3.pack_
+2022-11-14 00:45:11 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/4.pack_
+2022-11-14 00:45:11 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/5.pack_
+2022-11-14 00:45:11 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/index.pack_
+2022-11-14 00:45:11 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:45:11 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:45:11 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:45:11 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:45:11 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:45:13 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/0.pack_
+2022-11-14 00:45:13 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/3.pack_
+2022-11-14 00:45:13 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/4.pack_
+2022-11-14 00:45:13 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/5.pack_
+2022-11-14 00:45:13 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 00:45:13 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:45:13 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:45:13 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:45:13 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:45:13 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:56:39 info: file:///d%3A/Work/Code/portfolio_web/.next/trace
+2022-11-14 00:56:39 info: file:///d%3A/Work/Code/portfolio_web/.next/server
+2022-11-14 00:56:39 info: file:///d%3A/Work/Code/portfolio_web/.next/static
+2022-11-14 00:56:39 info: file:///d%3A/Work/Code/portfolio_web/.next/build-manifest.json
+2022-11-14 00:56:39 info: file:///d%3A/Work/Code/portfolio_web/.next/fallback-build-manifest.json
+2022-11-14 00:56:39 info: file:///d%3A/Work/Code/portfolio_web/.next/react-loadable-manifest.json
+2022-11-14 00:56:39 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:56:39 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:56:39 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:56:39 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:56:39 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:56:39 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:56:48 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/3.pack_
+2022-11-14 00:56:48 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/4.pack_
+2022-11-14 00:56:48 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/5.pack_
+2022-11-14 00:56:48 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/6.pack_
+2022-11-14 00:56:48 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/7.pack_
+2022-11-14 00:56:48 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 00:56:48 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:56:48 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:56:48 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:56:48 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:56:48 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:56:48 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:57:54 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/1.pack_
+2022-11-14 00:57:54 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/3.pack_
+2022-11-14 00:57:54 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/index.pack_
+2022-11-14 00:57:54 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:57:54 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:57:54 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:57:54 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/1.pack_
+2022-11-14 00:57:54 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/3.pack_
+2022-11-14 00:57:54 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/4.pack_
+2022-11-14 00:57:54 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/5.pack_
+2022-11-14 00:57:54 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/6.pack_
+2022-11-14 00:57:54 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/7.pack_
+2022-11-14 00:57:54 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 00:57:54 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:57:54 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:57:54 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:57:54 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:57:54 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:57:54 error: SQLITE_ERROR: no such table: issues
+2022-11-14 00:57:54 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:01:11 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/3.pack_
+2022-11-14 01:01:11 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/7.pack_
+2022-11-14 01:01:11 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/index.pack_
+2022-11-14 01:01:11 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:01:11 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:01:11 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:01:11 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/3.pack_
+2022-11-14 01:01:11 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/8.pack_
+2022-11-14 01:01:11 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 01:01:11 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:01:11 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:01:11 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:01:25 info: file:///d%3A/Work/Code/portfolio_web/.next/trace
+2022-11-14 01:01:25 info: file:///d%3A/Work/Code/portfolio_web/.next/server
+2022-11-14 01:01:25 info: file:///d%3A/Work/Code/portfolio_web/.next/static
+2022-11-14 01:01:25 info: file:///d%3A/Work/Code/portfolio_web/.next/build-manifest.json
+2022-11-14 01:01:25 info: file:///d%3A/Work/Code/portfolio_web/.next/react-loadable-manifest.json
+2022-11-14 01:01:25 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:01:25 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:01:25 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:01:25 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:01:25 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:01:29 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/8.pack
+2022-11-14 01:01:29 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/5.pack_
+2022-11-14 01:01:29 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/8.pack_
+2022-11-14 01:01:29 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack
+2022-11-14 01:01:29 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:01:29 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:01:29 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:01:29 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:01:29 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/9.pack_
+2022-11-14 01:01:29 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/10.pack_
+2022-11-14 01:01:29 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 01:01:29 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:01:29 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:01:29 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:02:16 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/3.pack_
+2022-11-14 01:02:16 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 01:02:16 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:02:16 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:04:01 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/7.pack_
+2022-11-14 01:04:01 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/8.pack_
+2022-11-14 01:04:01 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/9.pack_
+2022-11-14 01:04:01 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/1.pack_
+2022-11-14 01:04:01 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/8.pack_
+2022-11-14 01:04:01 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/9.pack_
+2022-11-14 01:04:01 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/index.pack_
+2022-11-14 01:04:01 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:04:01 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:04:01 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:04:01 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:04:01 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:04:01 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:04:01 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:05:04 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/8.pack_
+2022-11-14 01:05:04 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/11.pack_
+2022-11-14 01:05:04 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 01:05:04 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:05:04 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:05:04 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:11:06 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/8.pack_
+2022-11-14 01:11:06 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/11.pack_
+2022-11-14 01:11:06 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 01:11:06 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:11:06 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:11:06 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:13:24 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/5.pack_
+2022-11-14 01:13:24 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/11.pack_
+2022-11-14 01:13:24 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/12.pack_
+2022-11-14 01:13:24 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/13.pack_
+2022-11-14 01:13:24 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 01:13:24 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:13:24 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:13:24 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:13:24 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:13:24 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:13:25 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/1.pack_
+2022-11-14 01:13:25 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/5.pack_
+2022-11-14 01:13:25 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/7.pack_
+2022-11-14 01:13:25 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/10.pack_
+2022-11-14 01:13:25 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/index.pack_
+2022-11-14 01:13:25 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:13:25 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:13:25 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:13:25 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:13:25 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:16:15 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/7.pack_
+2022-11-14 01:16:15 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/8.pack_
+2022-11-14 01:16:15 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/11.pack_
+2022-11-14 01:16:15 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/12.pack_
+2022-11-14 01:16:15 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/index.pack_
+2022-11-14 01:16:15 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:16:15 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:16:15 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:16:15 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:16:15 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:16:19 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/8.pack_
+2022-11-14 01:16:19 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/11.pack_
+2022-11-14 01:16:19 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/12.pack_
+2022-11-14 01:16:19 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/14.pack_
+2022-11-14 01:16:19 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/15.pack_
+2022-11-14 01:16:19 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 01:16:19 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:16:19 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:16:19 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:16:19 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:16:19 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:16:19 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:17:59 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/13.pack_
+2022-11-14 01:17:59 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:18:00 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/0.pack_
+2022-11-14 01:18:00 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/14.pack_
+2022-11-14 01:18:00 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/16.pack_
+2022-11-14 01:18:00 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 01:18:00 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:18:00 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:18:00 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:18:00 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:23:01 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/2.pack_
+2022-11-14 01:23:01 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/4.pack_
+2022-11-14 01:23:01 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/5.pack_
+2022-11-14 01:23:01 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/3.pack_
+2022-11-14 01:23:01 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/13.pack_
+2022-11-14 01:23:01 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/14.pack_
+2022-11-14 01:23:01 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 01:23:01 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/index.pack_
+2022-11-14 01:23:01 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:23:01 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:23:01 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:23:01 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:23:01 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:23:01 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:23:01 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:23:01 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:26:17 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/5.pack_
+2022-11-14 01:26:17 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/11.pack_
+2022-11-14 01:26:17 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/15.pack_
+2022-11-14 01:26:17 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/16.pack_
+2022-11-14 01:26:17 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/index.pack_
+2022-11-14 01:26:17 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:26:17 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:26:17 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:26:17 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:26:17 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:26:17 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/0.pack_
+2022-11-14 01:26:17 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/2.pack_
+2022-11-14 01:26:17 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/6.pack_
+2022-11-14 01:26:17 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/7.pack_
+2022-11-14 01:26:17 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/9.pack_
+2022-11-14 01:26:17 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/10.pack_
+2022-11-14 01:26:17 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 01:26:17 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:26:17 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:26:17 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:26:17 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:26:17 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:26:17 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:26:17 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:27:46 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/2.pack_
+2022-11-14 01:27:46 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/7.pack_
+2022-11-14 01:27:46 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 01:27:46 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:27:46 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:27:46 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:36:09 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/6.pack_
+2022-11-14 01:36:09 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/7.pack_
+2022-11-14 01:36:09 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 01:36:09 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:36:09 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:36:09 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:51:43 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/2.pack_
+2022-11-14 01:51:43 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:58:03 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/2.pack_
+2022-11-14 01:58:03 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/16.pack_
+2022-11-14 01:58:03 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 01:58:03 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:58:03 error: SQLITE_ERROR: no such table: issues
+2022-11-14 01:58:03 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:05:11 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/2.pack_
+2022-11-14 02:05:11 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/4.pack_
+2022-11-14 02:05:11 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/5.pack_
+2022-11-14 02:05:11 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/7.pack_
+2022-11-14 02:05:11 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/16.pack_
+2022-11-14 02:05:11 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/17.pack_
+2022-11-14 02:05:11 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 02:05:11 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:05:11 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:05:11 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:05:11 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:05:11 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:05:11 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:05:11 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:08:08 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/17.pack_
+2022-11-14 02:08:08 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/18.pack_
+2022-11-14 02:08:08 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/19.pack_
+2022-11-14 02:08:08 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:08:08 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:08:08 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:24:08 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/20.pack_
+2022-11-14 02:24:08 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/trace
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/server
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/media
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/chunks
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/development
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/build-manifest.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/react-loadable-manifest.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.0b4466efa24e9846.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.0cd60dd3037dc136.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.0d5501d4969965c2.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.0f6042b5950548fd.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.0fd7bb189862d5be.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.1266767563c42dd1.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.1d1b43041dd7b4fe.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.23c0507ded2a5acc.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.24babcf1e34cc85c.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.2ba33e92497a0243.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.2beb55b954f7b3c0.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.2def059ac53ad067.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.2ef7e66118b22af9.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.31c61f32ad0d62f0.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.33bbded650a5b2db.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.3802339219073c3a.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.39d2352628df45d9.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.3ccab9ead9cb7a12.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.4001ecd5c9ed8e2d.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.4456499e8a4e7284.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.456b6207131578fa.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.475f63b096103f4a.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.4b9ee7d8c3344702.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.4e5647e7dc3eb26d.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.4eafe84d31c6f2d3.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.4eba9ded9367442d.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.4f8e3d7a57a2145e.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.51b927b5f51cecf0.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.5772f0b6d6df1589.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.58bafcfa64ed42d6.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.58c3f1452b5de2e6.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.5de04dfe1b89f018.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.5e855a310983bd99.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.640446ba41ceed38.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.73f439a3b78cace7.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.76fd1c4fd6a454e2.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.788186846ef68b76.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.7eb2742dd40cde3b.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.7effc1b640f3df87.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.7fb5246ec27e14a7.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.8000a21768e6d1b8.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.83fbcd9d74ee7208.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.89a9287840b157a6.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.8a38089c37b4e038.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.8d8d0b78c4248702.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.90c3e9f2fecc038a.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.928c6fc133972bc2.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.93b8be122556c03a.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.95eda22a0332c324.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.9725d2b55406cfbe.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.add68dc56f95e50a.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.b43ba4f58a3420d5.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.b6770469743e973c.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.b96fa1538523b2c0.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.c179115dc25085c6.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.c65c09774d5e36a4.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.c7b4667fb6f2a8d2.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.d2276824ed52b459.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.d59715876c83402d.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.d59d87cd74176477.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.dd17376e57af8df6.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.e744c13edeb3a1a3.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.e7c3011d627910af.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.e8cb37c82453b81a.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.edcb6454c82b1b84.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.f1389341fe366035.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.f6520c18b765863b.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/webpack.f706bbf26e4eb285.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/0b4466efa24e9846.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/0cd60dd3037dc136.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/0d5501d4969965c2.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/0f6042b5950548fd.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/0fd7bb189862d5be.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/1266767563c42dd1.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/1d1b43041dd7b4fe.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/23c0507ded2a5acc.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/24babcf1e34cc85c.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/2ba33e92497a0243.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/2beb55b954f7b3c0.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/2def059ac53ad067.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/2ef7e66118b22af9.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/31c61f32ad0d62f0.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/33bbded650a5b2db.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/3802339219073c3a.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/39d2352628df45d9.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/3ccab9ead9cb7a12.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/4001ecd5c9ed8e2d.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/4456499e8a4e7284.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/456b6207131578fa.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/475f63b096103f4a.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/4b9ee7d8c3344702.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/4e5647e7dc3eb26d.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/4eafe84d31c6f2d3.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/4eba9ded9367442d.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/4f8e3d7a57a2145e.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/51b927b5f51cecf0.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/5772f0b6d6df1589.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/58bafcfa64ed42d6.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/58c3f1452b5de2e6.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/5de04dfe1b89f018.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/5e855a310983bd99.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/640446ba41ceed38.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/73f439a3b78cace7.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/76fd1c4fd6a454e2.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/788186846ef68b76.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/7eb2742dd40cde3b.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/7effc1b640f3df87.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/7fb5246ec27e14a7.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/8000a21768e6d1b8.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/83fbcd9d74ee7208.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/89a9287840b157a6.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/8a38089c37b4e038.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/8d8d0b78c4248702.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/90c3e9f2fecc038a.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/928c6fc133972bc2.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/93b8be122556c03a.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/95eda22a0332c324.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/9725d2b55406cfbe.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/add68dc56f95e50a.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/b43ba4f58a3420d5.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/b6770469743e973c.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/b96fa1538523b2c0.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/c179115dc25085c6.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/c65c09774d5e36a4.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/c7b4667fb6f2a8d2.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/d2276824ed52b459.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/d59715876c83402d.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/d59d87cd74176477.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/dd17376e57af8df6.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/e744c13edeb3a1a3.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/e7c3011d627910af.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/e8cb37c82453b81a.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/edcb6454c82b1b84.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/f1389341fe366035.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/f6520c18b765863b.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/f706bbf26e4eb285.webpack.hot-update.json
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/404.1266767563c42dd1.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/404.2def059ac53ad067.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/404.2ef7e66118b22af9.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/404.31c61f32ad0d62f0.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/404.39d2352628df45d9.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/404.4001ecd5c9ed8e2d.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/404.4456499e8a4e7284.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/404.5e855a310983bd99.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/404.788186846ef68b76.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/404.7eb2742dd40cde3b.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/404.7fb5246ec27e14a7.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/404.89a9287840b157a6.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/404.8a38089c37b4e038.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/404.90c3e9f2fecc038a.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/404.e7c3011d627910af.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/404.f6520c18b765863b.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/_app.0b4466efa24e9846.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/blog.1266767563c42dd1.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/blog.2def059ac53ad067.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/blog.2ef7e66118b22af9.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/blog.31c61f32ad0d62f0.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/blog.39d2352628df45d9.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/blog.4001ecd5c9ed8e2d.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/blog.4456499e8a4e7284.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/blog.4b9ee7d8c3344702.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/blog.5e855a310983bd99.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/blog.788186846ef68b76.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/blog.7eb2742dd40cde3b.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/blog.7fb5246ec27e14a7.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/blog.89a9287840b157a6.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/blog.8a38089c37b4e038.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/blog.8d8d0b78c4248702.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/blog.90c3e9f2fecc038a.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/blog.9725d2b55406cfbe.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/blog.b6770469743e973c.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/blog.d59d87cd74176477.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/blog.e7c3011d627910af.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/blog.f1389341fe366035.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/blog.f6520c18b765863b.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/index.0b4466efa24e9846.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/index.475f63b096103f4a.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/index.93b8be122556c03a.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/index.d2276824ed52b459.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static/webpack/pages/login.edcb6454c82b1b84.hot-update.js
+2022-11-14 02:26:26 info: file:///d%3A/Work/Code/portfolio_web/.next/static
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:26 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:46 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/0.pack_
+2022-11-14 02:26:46 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/2.pack_
+2022-11-14 02:26:46 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/3.pack_
+2022-11-14 02:26:46 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/5.pack_
+2022-11-14 02:26:46 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/6.pack_
+2022-11-14 02:26:46 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/8.pack_
+2022-11-14 02:26:46 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/index.pack_
+2022-11-14 02:26:46 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:46 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:46 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:46 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:46 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:46 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:46 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:46 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/3.pack_
+2022-11-14 02:26:46 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/4.pack_
+2022-11-14 02:26:46 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/5.pack_
+2022-11-14 02:26:46 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/6.pack_
+2022-11-14 02:26:46 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/20.pack_
+2022-11-14 02:26:46 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/21.pack_
+2022-11-14 02:26:46 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 02:26:46 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:46 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:46 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:46 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:46 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:46 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:26:46 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:28:37 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/2.pack_
+2022-11-14 02:28:37 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:28:37 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/3.pack_
+2022-11-14 02:28:37 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/8.pack_
+2022-11-14 02:28:37 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/10.pack_
+2022-11-14 02:28:37 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/20.pack_
+2022-11-14 02:28:37 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/22.pack_
+2022-11-14 02:28:37 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/23.pack_
+2022-11-14 02:28:37 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 02:28:37 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:28:37 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:28:37 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:28:37 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:28:37 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:28:37 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:28:37 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:32:27 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/0.pack_
+2022-11-14 02:32:27 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/3.pack_
+2022-11-14 02:32:27 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/22.pack_
+2022-11-14 02:32:27 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/24.pack_
+2022-11-14 02:32:27 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 02:32:27 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:32:27 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:32:27 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:32:27 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:32:27 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:37:18 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/0.pack_
+2022-11-14 02:37:18 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/1.pack_
+2022-11-14 02:37:18 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/2.pack_
+2022-11-14 02:37:18 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/3.pack_
+2022-11-14 02:37:18 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/4.pack_
+2022-11-14 02:37:18 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/5.pack_
+2022-11-14 02:37:18 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 02:37:18 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:37:18 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:37:18 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:37:18 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:37:18 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:37:18 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:37:18 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:44:28 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/1.pack_
+2022-11-14 02:44:28 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/3.pack_
+2022-11-14 02:44:28 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/8.pack_
+2022-11-14 02:44:28 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/17.pack_
+2022-11-14 02:44:28 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/18.pack_
+2022-11-14 02:44:28 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:44:28 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:44:28 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:44:28 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:44:28 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:46:00 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/1.pack_
+2022-11-14 02:46:00 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/0.pack_
+2022-11-14 02:46:00 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/2.pack_
+2022-11-14 02:46:00 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/3.pack_
+2022-11-14 02:46:00 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/5.pack_
+2022-11-14 02:46:00 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/17.pack_
+2022-11-14 02:46:00 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/19.pack_
+2022-11-14 02:46:00 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/20.pack_
+2022-11-14 02:46:00 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 02:46:00 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:46:00 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:46:00 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:46:00 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:46:00 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:46:00 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:46:00 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:46:00 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:46:00 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:47:36 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/2.pack_
+2022-11-14 02:47:36 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/6.pack_
+2022-11-14 02:47:36 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/index.pack_
+2022-11-14 02:47:36 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:47:36 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:47:36 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:47:36 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/1.pack_
+2022-11-14 02:47:36 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/19.pack_
+2022-11-14 02:47:36 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/23.pack_
+2022-11-14 02:47:36 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 02:47:36 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:47:36 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:47:36 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:47:36 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:49:39 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/6.pack_
+2022-11-14 02:49:39 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:51:39 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/0.pack_
+2022-11-14 02:51:39 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/1.pack_
+2022-11-14 02:51:39 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/2.pack_
+2022-11-14 02:51:39 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/6.pack_
+2022-11-14 02:51:39 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/21.pack_
+2022-11-14 02:51:39 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 02:51:39 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:51:39 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:51:39 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:51:39 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:51:39 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:51:39 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:52:42 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/3.pack_
+2022-11-14 02:52:42 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/8.pack_
+2022-11-14 02:52:42 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/9.pack_
+2022-11-14 02:52:42 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/10.pack_
+2022-11-14 02:52:42 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/15.pack_
+2022-11-14 02:52:42 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/index.pack_
+2022-11-14 02:52:42 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:52:42 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:52:42 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:52:42 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:52:42 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:52:42 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:52:43 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/3.pack_
+2022-11-14 02:52:43 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/4.pack_
+2022-11-14 02:52:43 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/5.pack_
+2022-11-14 02:52:43 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/6.pack_
+2022-11-14 02:52:43 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/7.pack_
+2022-11-14 02:52:43 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/21.pack_
+2022-11-14 02:52:43 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 02:52:43 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:52:43 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:52:43 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:52:43 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:52:43 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:52:43 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:52:43 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:57:10 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/3.pack_
+2022-11-14 02:57:10 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/6.pack_
+2022-11-14 02:57:10 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/9.pack_
+2022-11-14 02:57:10 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/10.pack_
+2022-11-14 02:57:10 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/11.pack_
+2022-11-14 02:57:10 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/20.pack_
+2022-11-14 02:57:10 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack
+2022-11-14 02:57:10 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:57:10 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:57:10 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:57:10 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:57:10 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:57:10 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:57:10 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:57:11 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/13.pack_
+2022-11-14 02:57:11 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 02:57:11 error: SQLITE_ERROR: no such table: issues
+2022-11-14 02:57:11 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:02:59 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/0.pack_
+2022-11-14 03:02:59 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/5.pack_
+2022-11-14 03:02:59 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/6.pack_
+2022-11-14 03:02:59 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/9.pack_
+2022-11-14 03:02:59 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/12.pack_
+2022-11-14 03:02:59 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/16.pack_
+2022-11-14 03:02:59 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/17.pack_
+2022-11-14 03:02:59 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/18.pack_
+2022-11-14 03:02:59 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/20.pack_
+2022-11-14 03:02:59 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 03:02:59 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:02:59 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:02:59 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:02:59 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:02:59 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:02:59 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:02:59 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:02:59 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:02:59 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:02:59 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:08:16 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/0.pack_
+2022-11-14 03:08:16 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/1.pack_
+2022-11-14 03:08:16 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/2.pack_
+2022-11-14 03:08:16 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/6.pack_
+2022-11-14 03:08:16 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/13.pack_
+2022-11-14 03:08:16 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:08:16 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:08:16 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:08:16 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:08:16 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:08:19 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/0.pack_
+2022-11-14 03:08:19 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/8.pack_
+2022-11-14 03:08:19 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/19.pack_
+2022-11-14 03:08:19 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/20.pack_
+2022-11-14 03:08:19 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/22.pack_
+2022-11-14 03:08:19 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack
+2022-11-14 03:08:19 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:08:19 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:08:19 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:08:19 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:08:19 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:08:19 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:08:19 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/6.pack_
+2022-11-14 03:08:19 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/16.pack_
+2022-11-14 03:08:19 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 03:08:19 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:08:19 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:08:19 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:12:50 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/0.pack_
+2022-11-14 03:12:50 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/4.pack_
+2022-11-14 03:12:50 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/11.pack_
+2022-11-14 03:12:50 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/14.pack_
+2022-11-14 03:12:50 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/index.pack_
+2022-11-14 03:12:50 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:12:50 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:12:50 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:12:50 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:12:50 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:12:51 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/0.pack_
+2022-11-14 03:12:51 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/19.pack_
+2022-11-14 03:12:51 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/23.pack_
+2022-11-14 03:12:51 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 03:12:51 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:12:51 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:12:51 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:12:51 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:13:00 info: file:///d%3A/Work/Code/portfolio_web/public/the-dummies-guide-to-kafka-operations.png
+2022-11-14 03:13:00 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:14:05 info: file:///d%3A/Work/Code/portfolio_web/public/blank.jpg
+2022-11-14 03:14:05 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:14:36 info: file:///d%3A/Work/Code/portfolio_web/public/blank.png
+2022-11-14 03:14:36 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:16:00 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/6.pack_
+2022-11-14 03:16:00 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/15.pack_
+2022-11-14 03:16:00 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/18.pack_
+2022-11-14 03:16:00 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/index.pack_
+2022-11-14 03:16:00 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:16:00 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:16:00 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:16:00 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:16:01 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/2.pack_
+2022-11-14 03:16:01 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/4.pack_
+2022-11-14 03:16:01 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/5.pack_
+2022-11-14 03:16:01 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/19.pack_
+2022-11-14 03:16:01 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 03:16:01 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:16:01 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:16:01 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:16:01 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:16:01 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:17:42 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/2.pack_
+2022-11-14 03:17:42 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/7.pack_
+2022-11-14 03:17:42 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 03:17:42 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:17:42 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:17:42 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:20:25 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/2.pack_
+2022-11-14 03:20:25 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 03:20:25 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:20:25 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:29:51 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/0.pack_
+2022-11-14 03:29:51 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/4.pack_
+2022-11-14 03:29:51 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/15.pack_
+2022-11-14 03:29:51 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/18.pack_
+2022-11-14 03:29:51 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/19.pack_
+2022-11-14 03:29:51 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/index.pack_
+2022-11-14 03:29:51 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:29:51 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:29:51 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:29:51 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:29:51 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:29:51 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:29:52 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/0.pack_
+2022-11-14 03:29:52 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/2.pack_
+2022-11-14 03:29:52 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/7.pack_
+2022-11-14 03:29:52 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/9.pack_
+2022-11-14 03:29:52 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/15.pack_
+2022-11-14 03:29:52 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/16.pack_
+2022-11-14 03:29:52 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 03:29:52 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:29:52 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:29:52 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:29:52 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:29:52 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:29:52 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:29:52 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:31:17 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/0.pack_
+2022-11-14 03:31:17 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/15.pack_
+2022-11-14 03:31:17 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/20.pack_
+2022-11-14 03:31:17 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/index.pack_
+2022-11-14 03:31:17 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:31:17 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:31:17 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:31:17 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:31:18 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/2.pack_
+2022-11-14 03:31:18 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/10.pack_
+2022-11-14 03:31:18 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 03:31:18 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:31:18 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:31:18 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:40:41 info: file:///d%3A/Work/Code/portfolio_web/public/git-and-kdiff3.jpg
+2022-11-14 03:40:41 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:40:58 info: file:///d%3A/Work/Code/portfolio_web/public/apache-kafka-architecture-and-essential-components.jpg
+2022-11-14 03:40:58 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:40:58 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/2.pack_
+2022-11-14 03:40:58 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/10.pack_
+2022-11-14 03:40:58 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 03:40:58 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:40:58 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:40:58 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:41:09 info: file:///d%3A/Work/Code/portfolio_web/public/the-dummies-guide-to-kafka-operations.jpg
+2022-11-14 03:41:09 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:42:12 info: file:///d%3A/Work/Code/portfolio_web/public/learning-apache-kafka.jpg
+2022-11-14 03:42:12 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:42:30 info: file:///d%3A/Work/Code/portfolio_web/public/deciding-the-best-platform-for-your-web-projects-netlify-vs-heroku-vs-aws.jpg
+2022-11-14 03:42:30 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:53:20 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/1.pack_
+2022-11-14 03:53:20 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/10.pack_
+2022-11-14 03:53:20 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/11.pack_
+2022-11-14 03:53:20 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/19.pack_
+2022-11-14 03:53:20 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 03:53:20 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:53:20 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:53:20 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:53:20 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:53:20 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:54:35 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/4.pack_
+2022-11-14 03:54:35 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/5.pack_
+2022-11-14 03:54:35 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/6.pack_
+2022-11-14 03:54:35 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:54:35 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:54:35 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:54:36 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/0.pack_
+2022-11-14 03:54:36 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/10.pack_
+2022-11-14 03:54:36 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/13.pack_
+2022-11-14 03:54:36 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 03:54:36 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:54:36 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:54:36 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:54:36 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:57:19 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/0.pack_
+2022-11-14 03:57:19 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/4.pack_
+2022-11-14 03:57:19 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:57:19 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:58:59 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/0.pack_
+2022-11-14 03:58:59 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/1.pack_
+2022-11-14 03:58:59 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/2.pack_
+2022-11-14 03:58:59 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/0.pack_
+2022-11-14 03:58:59 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/1.pack_
+2022-11-14 03:58:59 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/3.pack_
+2022-11-14 03:58:59 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/4.pack_
+2022-11-14 03:58:59 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/5.pack_
+2022-11-14 03:58:59 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/8.pack_
+2022-11-14 03:58:59 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/10.pack_
+2022-11-14 03:58:59 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/15.pack_
+2022-11-14 03:58:59 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/20.pack_
+2022-11-14 03:58:59 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-development/index.pack_
+2022-11-14 03:58:59 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/server-development/index.pack_
+2022-11-14 03:58:59 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:58:59 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:58:59 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:58:59 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:58:59 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:58:59 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:58:59 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:58:59 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:58:59 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:58:59 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:58:59 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:58:59 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:58:59 error: SQLITE_ERROR: no such table: issues
+2022-11-14 03:58:59 error: SQLITE_ERROR: no such table: issues

@@ -27,7 +27,7 @@ export function FlatMDXData(postData) {
 export function FlatWPData(postData) {
   const post = {};
   post.title = postData?.title;
-  post.thumbnailUrl = postData?.featuredImage ? postData?.featuredImage.node.sourceUrl : `/${postData.slug}.jpg`;
+  post.thumbnailUrl = postData?.featuredImage ? postData?.featuredImage.node.sourceUrl : `/${postData.slug}.png`;
   post.categories = postData.categories.edges.map((cat) => {
     const catDict = {};
     catDict.name = cat.node.name;
@@ -35,7 +35,12 @@ export function FlatWPData(postData) {
     return catDict;
   });
   post.altText = postData.featuredImage?.node?.altText;
-  post.date = postData.modified;
+  if (new Date(postData.modified) > new Date('2022-11-13')) {
+    post.date = postData.date;
+  } else {
+    post.date = postData.modified;
+  }
+  // post.date = postData.modified;
   post.tags = postData.tags.edges.map((tag) => {
     const tagDict = {};
     tagDict.name = tag.node.name;

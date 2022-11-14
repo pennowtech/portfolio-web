@@ -11,8 +11,10 @@ module.exports = removeImports({
       },
     ];
   },
+  fs: false,
+  path: false,
   images: {
-    domains: ['www.nasa.gov', 'pennow.tech', 'pixabay.com', 'www.google.com', 'wordpress-561320-2383780.cloudwaysapps.com'],
+    domains: ['www.nasa.gov', 'pennow.tech', 'pixabay.com', 'www.google.com', 'pennow.tech'],
 
     loader: 'akamai',
     path: '',

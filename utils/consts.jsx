@@ -26,14 +26,15 @@ const SocialIconList = [
   { icon: <ImTwitter />, path: 'http://twitter.com', title: 'twitter' },
 ];
 
-const GRAPHQL_URL = 'https://wordpress-561320-2383780.cloudwaysapps.com/graphql';
+const GRAPHQL_URL = 'https://pennow.tech/graphql';
 const PER_PAGE_BLOGS = 5;
 
 const isDev = process.env.NODE_ENV === 'development';
+const REMOTE_BASE_URL = 'https://sukhdeep.online';
 // export const BASE_URL = isDev ? 'http://localhost:3000' : 'http://pennow.tech';
-export const BASE_URL = isDev ? 'http://localhost:3000' : 'https://sukhdeep.online';
+export const BASE_URL = isDev ? 'http://localhost:3000' : REMOTE_BASE_URL;
 
-export const SelectedPostsList = [476, 480, 486];
+export const SelectedPostsList = [14, 44, 12];
 // export const SelectedPostsList = [];
 export {
   MenuItems, SocialIconList, FooterMainMenuItems, FooterOtherMenuItems, GRAPHQL_URL, PER_PAGE_BLOGS,

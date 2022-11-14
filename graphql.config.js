@@ -2,11 +2,11 @@
 module.exports = {
   projects: {
     app: {
-      schema: ['https://wordpress-561320-2383780.cloudwaysapps.com/graphql'],
+      schema: ['https://pennow.tech/graphql'],
       extensions: {
         endpoints: {
           default: {
-            url: 'https://wordpress-561320-2383780.cloudwaysapps.com/graphql',
+            url: 'https://pennow.tech/graphql',
 
           },
         },
@@ -27,7 +27,7 @@ module.exports = {
         ],
         endpoints: {
           default: {
-            url: 'https://wordpress-561320-2383780.cloudwaysapps.com/graphql',
+            url: 'https://pennow.tech/graphql',
             headers: { Authorization: `Bearer ${process.env.API_TOKEN}` },
           },
         },

@@ -13,6 +13,7 @@ const Post = ({ post }) => {
   post = FlatWPData(post); // eslint-disable-line no-param-reassign
   const excerpt = htmlToText(post?.excerpt);
   const blogUrl = `/blog/${post.link}`;
+
   // const tags = post?.tags?.edges?.map((tag) => tag.node.name);
   return (
     <div className="border-b-2 border-slate-200 dark:border-slate-500">

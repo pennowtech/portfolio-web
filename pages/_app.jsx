@@ -30,8 +30,8 @@ const a = {
 mutation LoginUser {
   login( input: {
     clientMutationId: "uniqueId",
-    username: "sdsingh.developer@gmail.com",
-    password: "eTR8b5AHG7"
+    username: "pennow_tech",
+    password: "1satguru1"
   } ) {
     authToken
     user {
@@ -45,7 +45,7 @@ mutation LoginUser {
 function MyApp({ Component, pageProps }) {
   // const client = createClient({
   // // url: 'https://pennow.tech/graphql',
-  //   url: 'https://wordpress-561320-2383780.cloudwaysapps.com/graphql',
+  //   url: 'https://pennow.tech/graphql',
   //   exchanges: [devtoolsExchange, ...defaultExchanges],
   //   fetchOptions: () => {
   //     const token = getToken();

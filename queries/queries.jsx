@@ -52,7 +52,7 @@ export const PAGES_POSTS_QUERY = gql`
 
 export const FIRST_FIVE_POSTS = gql`
 query GET_POSTS {
-  posts(first: 3) {
+  posts(first: 5) {
     nodes {
       id
       modified
