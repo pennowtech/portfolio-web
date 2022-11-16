@@ -2217,3 +2217,728 @@
 2022-11-14 05:26:03 error: SQLITE_ERROR: no such table: issues
 2022-11-14 05:26:04 info: file:///d%3A/Work/Code/portfolio_web/.git/index.lock
 2022-11-14 05:26:04 error: SQLITE_ERROR: no such table: issues
+2022-11-14 05:51:35 info: file:///d%3A/Work/Code/portfolio_web/.git/index.lock
+2022-11-14 05:51:35 error: SQLITE_ERROR: no such table: issues
+2022-11-14 05:51:35 info: file:///d%3A/Work/Code/portfolio_web/.git/index.lock
+2022-11-14 05:51:35 error: SQLITE_ERROR: no such table: issues
+2022-11-14 06:00:47 info: file:///d%3A/Work/Code/portfolio_web/.git/index.lock
+2022-11-14 06:00:47 error: SQLITE_ERROR: no such table: issues
+2022-11-16 01:41:07 info: file:///d%3A/Work/Code/portfolio_web/.git/.gitstatus.ipOpMP
+2022-11-16 01:41:07 error: SQLITE_ERROR: no such table: issues
+2022-11-16 11:54:18 info: tempDirectory:c:\Users\to_su\.vscode\extensions\embold-vscode.embold-0.1.4\temp
+2022-11-16 11:54:18 info: Extraction complete for source: c:\Users\to_su\.vscode\extensions\embold-vscode.embold-0.1.4\resources\embold-scanner-archive.zip, destination: c:\Users\to_su\.vscode\extensions\embold-vscode.embold-0.1.4\temp
+2022-11-16 11:54:18 info: Congratulations, your extension "Embold" is now active!
+2022-11-16 11:55:54 info: file:///d%3A/Work/Code/portfolio_web/posts/rust_installation_and_environment_setup.msd
+2022-11-16 11:55:54 error: SQLITE_ERROR: no such table: issues
+2022-11-16 11:56:28 info: file:///d%3A/Work/Code/portfolio_web/posts/rust_installation_and_environment_setup.md
+2022-11-16 11:56:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:06:13 info: file:///d%3A/Work/Code/portfolio_web/.next
+2022-11-16 15:06:13 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:12:54 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-production/0.pack_
+2022-11-16 15:12:54 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-production/1.pack_
+2022-11-16 15:12:54 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-production/index.pack_
+2022-11-16 15:12:54 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:12:54 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:12:54 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:26 info: file:///d%3A/Work/Code/portfolio_web/.next/export
+2022-11-16 15:13:26 info: file:///d%3A/Work/Code/portfolio_web/.next/export-detail.json
+2022-11-16 15:13:26 info: file:///d%3A/Work/Code/portfolio_web/.next/server/pages/404.js
+2022-11-16 15:13:26 info: file:///d%3A/Work/Code/portfolio_web/.next/server/pages/Urql2.js
+2022-11-16 15:13:26 info: file:///d%3A/Work/Code/portfolio_web/.next/server/pages/login.js
+2022-11-16 15:13:26 info: file:///d%3A/Work/Code/portfolio_web/.next/server/pages/contact.js
+2022-11-16 15:13:26 info: file:///d%3A/Work/Code/portfolio_web/.next/server/pages/about-me.js
+2022-11-16 15:13:26 info: file:///d%3A/Work/Code/portfolio_web/.next/server/pages/create-post.js
+2022-11-16 15:13:26 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:26 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:26 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:26 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:26 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:26 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:26 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:26 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/blog
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/Qt.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/js.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/cpp.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/pic.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/404.html
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/Mija.rar
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/prism.js
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/blank.jpg
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/blog.html
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/login.jpg
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/logo2.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/react.jpg
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/Urql2.html
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/_next/data
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/index.html
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/laptop.jpg
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/login.html
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/nextjs.jpg
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/thumb2.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/vercel.svg
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/angular.jpg
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/blank-3.jpg
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/favicon.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/thumb2.jpeg
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/_next/static
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/blank-2.jpeg
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/contact.html
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/top-back.jpg
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/about-me.html
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/sddefault.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/top-back-2.jpg
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/top-back-3.jpg
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/top-back-4.jpg
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/top-back-4.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/Raise-ticket.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/create-post.html
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/pin_messages.gif
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/Kafka-Cluster.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/git-and-kdiff3.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/pub-sub-pattern.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/Slack-kit-builder.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/my-first-mdx-file.jpg
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/slack-app-creation.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/slack-message-sent.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/enable-slack-events.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/Install-To-Workspace.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/create-a-new-channel.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/permission-to-access.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/slack-slash-commands.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/Slack-global-Shortcut.gif
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/connet-your-slack-app.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/handling-slack-events.svg
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/learning-apache-kafka.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/oauth-and-permissions.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/slack-command-timeout.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/slack-create-shortcut.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/Slack-Message-Shortcut.gif
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/pinned-message-display.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/slack-formated-message.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/slash-command-creation.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/Configure-interactivity.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/Dialogue-window-preview.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/Global-shortcut-display.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/Slack-Actual-Modal-View.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/_next/_9lmez4aEj3DGramsXMb1
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/running-ngrok-webserver.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/slack-shortcuts-created.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/sending-message-to-slack.svg
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/slack-add-an-aouth-scope.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/webmonitor-list-response.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/Configure-interactivity-1.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/Shortcut-Sequence-Diagram.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/Ticket-raise-confirmation.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/reinstall-slack-workspace.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/slack-app-getting-started.svg
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/validation-error-handling.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/slack-app-open-modal-views.svg
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/Event-Flow-Sequence-Diagram.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/Kafka-Architecture-Detailed.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/Message-with-different-keys.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/Sukhdeep%20Singh_CV_Architect.pdf
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/apache-kafka-implementation.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/enable-slack-events-message.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/sending-reaction-from-slack.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/scheduling-messages-to-slack.svg
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/slack-publishing-ui-messages.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/slashc-command-creation-form.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/updated-sketch-employee-form.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/Slack-dialgue-window-response.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/builder-pattern-class-diagram.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/message-event-response-output.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/Slack-global-shortcut-creation.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/Web-monitoring-status-response.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/slash-command-sequence-diagram.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/employee-form-select-department.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/enable-slack-event-for-reaction.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/Simplistic-Architecture-of-Kafka.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/add-app-to-newly-created-channel.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/builder-pattern-sequence-diagram.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/slack-app-pin-and-unpin-messages.svg
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/slack-app-working-with-shortcuts.svg
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/webmonitor-job-creation-response.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/Ticket-raise-confirmation-display.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/website-monitor-job-creation-form.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/the-dummies-guide-to-kafka-operations.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/essential-skills-to-develop-slack-apps.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/slack-add-group-and-channel-read-scope.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/builder-design-pattern-explained-easily.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/monitoring-job-acknowledgement-response.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/Empty-slack-shortcuts-not-implementation.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/slack-app-working-with-message-shortcuts.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/Slack-interactivity-endpoint-configuration.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/slack-app-update-your-view-or-push-new-view.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/slack-handling-actions-from-slack-dialogues.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/webmonitor-job-creation-response-plain-text.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/1-Consumer-group-2-partitions-and-2-consumers.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/1-Consumer-group-2-partitions-and-3-consumers.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/1-Consumer-group-3-partitions-and-2-consumers.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/2-Consumer-groups-2-partitions-and-2-consumers.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/Partition-Replication-Message-Sequence-Diagram.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/apache-kafka-architecture-and-essential-components.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/1-Consumer-group-2-partitions-and-2-consumers-wrong-configuration2.png
+2022-11-16 15:13:28 info: file:///d%3A/Work/Code/portfolio_web/out/deciding-the-best-platform-for-your-web-projects-netlify-vs-heroku-vs-aws.png
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:13:28 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:19 info: file:///d%3A/Work/Code/portfolio_web/.next/trace
+2022-11-16 15:24:19 info: file:///d%3A/Work/Code/portfolio_web/.next/server
+2022-11-16 15:24:19 info: file:///d%3A/Work/Code/portfolio_web/.next/static
+2022-11-16 15:24:19 info: file:///d%3A/Work/Code/portfolio_web/.next/BUILD_ID
+2022-11-16 15:24:19 info: file:///d%3A/Work/Code/portfolio_web/.next/export-detail.json
+2022-11-16 15:24:19 info: file:///d%3A/Work/Code/portfolio_web/.next/export-marker.json
+2022-11-16 15:24:19 info: file:///d%3A/Work/Code/portfolio_web/.next/build-manifest.json
+2022-11-16 15:24:19 info: file:///d%3A/Work/Code/portfolio_web/.next/images-manifest.json
+2022-11-16 15:24:19 info: file:///d%3A/Work/Code/portfolio_web/.next/next-server.js.nft.json
+2022-11-16 15:24:19 info: file:///d%3A/Work/Code/portfolio_web/.next/prerender-manifest.json
+2022-11-16 15:24:19 info: file:///d%3A/Work/Code/portfolio_web/.next/required-server-files.json
+2022-11-16 15:24:19 info: file:///d%3A/Work/Code/portfolio_web/.next/react-loadable-manifest.json
+2022-11-16 15:24:19 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:19 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:19 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:19 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:19 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:19 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:19 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:19 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:19 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:19 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:19 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:19 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:26 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-production/0.pack_
+2022-11-16 15:24:26 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-production/1.pack_
+2022-11-16 15:24:26 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-production/2.pack_
+2022-11-16 15:24:26 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-production/3.pack_
+2022-11-16 15:24:26 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-production/index.pack_
+2022-11-16 15:24:26 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:26 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:26 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:26 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:26 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:48 info: file:///d%3A/Work/Code/portfolio_web/.next/export
+2022-11-16 15:24:48 info: file:///d%3A/Work/Code/portfolio_web/.next/export-detail.json
+2022-11-16 15:24:48 info: file:///d%3A/Work/Code/portfolio_web/.next/server/pages/404.js
+2022-11-16 15:24:48 info: file:///d%3A/Work/Code/portfolio_web/.next/server/pages/Urql2.js
+2022-11-16 15:24:48 info: file:///d%3A/Work/Code/portfolio_web/.next/server/pages/login.js
+2022-11-16 15:24:48 info: file:///d%3A/Work/Code/portfolio_web/.next/server/pages/contact.js
+2022-11-16 15:24:48 info: file:///d%3A/Work/Code/portfolio_web/.next/server/pages/about-me.js
+2022-11-16 15:24:48 info: file:///d%3A/Work/Code/portfolio_web/.next/server/pages/create-post.js
+2022-11-16 15:24:48 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:48 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:48 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:48 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:48 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:48 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:48 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:48 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/blog
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/Qt.png
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/js.png
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/cpp.png
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/pic.png
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/404.html
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/Mija.rar
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/prism.js
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/blank.jpg
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/blog.html
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/login.jpg
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/logo2.png
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/react.jpg
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/Urql2.html
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/_next/data
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/index.html
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/laptop.jpg
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/login.html
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/nextjs.jpg
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/thumb2.png
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/vercel.svg
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/angular.jpg
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/blank-3.jpg
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/favicon.png
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/thumb2.jpeg
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/_next/static
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/blank-2.jpeg
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/contact.html
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/top-back.jpg
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/about-me.html
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/sddefault.png
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/top-back-2.jpg
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/top-back-3.jpg
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/top-back-4.jpg
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/top-back-4.png
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/Raise-ticket.png
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/create-post.html
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/pin_messages.gif
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/Kafka-Cluster.png
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/git-and-kdiff3.png
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/pub-sub-pattern.png
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/Slack-kit-builder.png
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/my-first-mdx-file.jpg
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/slack-app-creation.png
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/slack-message-sent.png
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/enable-slack-events.png
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/Install-To-Workspace.png
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/create-a-new-channel.png
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/permission-to-access.png
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/slack-slash-commands.png
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/Slack-global-Shortcut.gif
+2022-11-16 15:24:49 info: file:///d%3A/Work/Code/portfolio_web/out/connet-your-slack-app.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/handling-slack-events.svg
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/learning-apache-kafka.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/oauth-and-permissions.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/slack-command-timeout.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/slack-create-shortcut.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/Slack-Message-Shortcut.gif
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/pinned-message-display.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/slack-formated-message.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/slash-command-creation.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/Configure-interactivity.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/Dialogue-window-preview.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/Global-shortcut-display.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/Slack-Actual-Modal-View.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/_next/SVAa17J6HvfsuFMkwllXd
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/running-ngrok-webserver.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/slack-shortcuts-created.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/sending-message-to-slack.svg
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/slack-add-an-aouth-scope.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/webmonitor-list-response.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/Configure-interactivity-1.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/Shortcut-Sequence-Diagram.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/Ticket-raise-confirmation.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/reinstall-slack-workspace.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/slack-app-getting-started.svg
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/validation-error-handling.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/slack-app-open-modal-views.svg
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/Event-Flow-Sequence-Diagram.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/Kafka-Architecture-Detailed.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/Message-with-different-keys.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/Sukhdeep%20Singh_CV_Architect.pdf
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/apache-kafka-implementation.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/enable-slack-events-message.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/sending-reaction-from-slack.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/scheduling-messages-to-slack.svg
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/slack-publishing-ui-messages.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/slashc-command-creation-form.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/updated-sketch-employee-form.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/Slack-dialgue-window-response.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/builder-pattern-class-diagram.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/message-event-response-output.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/Slack-global-shortcut-creation.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/Web-monitoring-status-response.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/slash-command-sequence-diagram.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/employee-form-select-department.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/enable-slack-event-for-reaction.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/Simplistic-Architecture-of-Kafka.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/add-app-to-newly-created-channel.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/builder-pattern-sequence-diagram.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/slack-app-pin-and-unpin-messages.svg
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/slack-app-working-with-shortcuts.svg
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/webmonitor-job-creation-response.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/Ticket-raise-confirmation-display.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/website-monitor-job-creation-form.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/the-dummies-guide-to-kafka-operations.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/essential-skills-to-develop-slack-apps.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/slack-add-group-and-channel-read-scope.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/builder-design-pattern-explained-easily.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/monitoring-job-acknowledgement-response.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/Empty-slack-shortcuts-not-implementation.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/slack-app-working-with-message-shortcuts.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/Slack-interactivity-endpoint-configuration.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/slack-app-update-your-view-or-push-new-view.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/slack-handling-actions-from-slack-dialogues.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/webmonitor-job-creation-response-plain-text.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/1-Consumer-group-2-partitions-and-2-consumers.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/1-Consumer-group-2-partitions-and-3-consumers.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/1-Consumer-group-3-partitions-and-2-consumers.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/2-Consumer-groups-2-partitions-and-2-consumers.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/Partition-Replication-Message-Sequence-Diagram.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/apache-kafka-architecture-and-essential-components.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/1-Consumer-group-2-partitions-and-2-consumers-wrong-configuration2.png
+2022-11-16 15:24:50 info: file:///d%3A/Work/Code/portfolio_web/out/deciding-the-best-platform-for-your-web-projects-netlify-vs-heroku-vs-aws.png
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:24:50 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:30 info: file:///d%3A/Work/Code/portfolio_web/.next/trace
+2022-11-16 15:34:30 info: file:///d%3A/Work/Code/portfolio_web/.next/server
+2022-11-16 15:34:30 info: file:///d%3A/Work/Code/portfolio_web/.next/static
+2022-11-16 15:34:30 info: file:///d%3A/Work/Code/portfolio_web/.next/BUILD_ID
+2022-11-16 15:34:30 info: file:///d%3A/Work/Code/portfolio_web/.next/export-detail.json
+2022-11-16 15:34:30 info: file:///d%3A/Work/Code/portfolio_web/.next/export-marker.json
+2022-11-16 15:34:30 info: file:///d%3A/Work/Code/portfolio_web/.next/build-manifest.json
+2022-11-16 15:34:30 info: file:///d%3A/Work/Code/portfolio_web/.next/images-manifest.json
+2022-11-16 15:34:30 info: file:///d%3A/Work/Code/portfolio_web/.next/next-server.js.nft.json
+2022-11-16 15:34:30 info: file:///d%3A/Work/Code/portfolio_web/.next/prerender-manifest.json
+2022-11-16 15:34:30 info: file:///d%3A/Work/Code/portfolio_web/.next/required-server-files.json
+2022-11-16 15:34:30 info: file:///d%3A/Work/Code/portfolio_web/.next/react-loadable-manifest.json
+2022-11-16 15:34:30 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:30 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:30 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:30 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:30 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:30 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:30 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:30 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:30 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:30 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:30 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:30 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:34 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-production/0.pack_
+2022-11-16 15:34:34 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-production/2.pack_
+2022-11-16 15:34:34 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-production/4.pack_
+2022-11-16 15:34:34 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-production/5.pack_
+2022-11-16 15:34:34 info: file:///d%3A/Work/Code/portfolio_web/.next/cache/webpack/client-production/index.pack_
+2022-11-16 15:34:34 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:34 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:34 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:34 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:34 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:58 info: file:///d%3A/Work/Code/portfolio_web/.next/export
+2022-11-16 15:34:58 info: file:///d%3A/Work/Code/portfolio_web/.next/export-detail.json
+2022-11-16 15:34:58 info: file:///d%3A/Work/Code/portfolio_web/.next/server/pages/404.js
+2022-11-16 15:34:58 info: file:///d%3A/Work/Code/portfolio_web/.next/server/pages/Urql2.js
+2022-11-16 15:34:58 info: file:///d%3A/Work/Code/portfolio_web/.next/server/pages/login.js
+2022-11-16 15:34:58 info: file:///d%3A/Work/Code/portfolio_web/.next/server/pages/contact.js
+2022-11-16 15:34:58 info: file:///d%3A/Work/Code/portfolio_web/.next/server/pages/about-me.js
+2022-11-16 15:34:58 info: file:///d%3A/Work/Code/portfolio_web/.next/server/pages/create-post.js
+2022-11-16 15:34:58 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:58 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:58 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:58 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:58 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:58 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:58 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:58 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:59 info: file:///d%3A/Work/Code/portfolio_web/out/blog
+2022-11-16 15:34:59 info: file:///d%3A/Work/Code/portfolio_web/out/404.html
+2022-11-16 15:34:59 info: file:///d%3A/Work/Code/portfolio_web/out/blog.html
+2022-11-16 15:34:59 info: file:///d%3A/Work/Code/portfolio_web/out/Urql2.html
+2022-11-16 15:34:59 info: file:///d%3A/Work/Code/portfolio_web/out/_next/data
+2022-11-16 15:34:59 info: file:///d%3A/Work/Code/portfolio_web/out/index.html
+2022-11-16 15:34:59 info: file:///d%3A/Work/Code/portfolio_web/out/login.html
+2022-11-16 15:34:59 info: file:///d%3A/Work/Code/portfolio_web/out/contact.html
+2022-11-16 15:34:59 info: file:///d%3A/Work/Code/portfolio_web/out/about-me.html
+2022-11-16 15:34:59 info: file:///d%3A/Work/Code/portfolio_web/out/create-post.html
+2022-11-16 15:34:59 info: file:///d%3A/Work/Code/portfolio_web/out/_next/UG1Dlmho_KiwT3sANpyLM
+2022-11-16 15:34:59 info: file:///d%3A/Work/Code/portfolio_web/out/_next/static/UG1Dlmho_KiwT3sANpyLM
+2022-11-16 15:34:59 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:59 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:59 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:59 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:59 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:59 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:59 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:59 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:59 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:59 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:59 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:34:59 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:45:36 info: file:///d%3A/Work/Code/portfolio_web/public/rust_installation_and_environment_setup.png.tmp
+2022-11-16 15:45:36 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:45:49 info: file:///d%3A/Work/Code/portfolio_web/.next/trace
+2022-11-16 15:45:49 info: file:///d%3A/Work/Code/portfolio_web/.next/server
+2022-11-16 15:45:49 info: file:///d%3A/Work/Code/portfolio_web/.next/static
+2022-11-16 15:45:49 info: file:///d%3A/Work/Code/portfolio_web/.next/BUILD_ID
+2022-11-16 15:45:49 info: file:///d%3A/Work/Code/portfolio_web/.next/export-detail.json
+2022-11-16 15:45:49 info: file:///d%3A/Work/Code/portfolio_web/.next/export-marker.json
+2022-11-16 15:45:49 info: file:///d%3A/Work/Code/portfolio_web/.next/build-manifest.json
+2022-11-16 15:45:49 info: file:///d%3A/Work/Code/portfolio_web/.next/images-manifest.json
+2022-11-16 15:45:49 info: file:///d%3A/Work/Code/portfolio_web/.next/next-server.js.nft.json
+2022-11-16 15:45:49 info: file:///d%3A/Work/Code/portfolio_web/.next/prerender-manifest.json
+2022-11-16 15:45:49 info: file:///d%3A/Work/Code/portfolio_web/.next/required-server-files.json
+2022-11-16 15:45:49 info: file:///d%3A/Work/Code/portfolio_web/.next/react-loadable-manifest.json
+2022-11-16 15:45:49 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:45:49 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:45:49 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:45:49 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:45:49 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:45:49 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:45:49 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:45:49 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:45:49 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:45:49 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:45:49 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:45:49 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:46:14 info: file:///d%3A/Work/Code/portfolio_web/.next/export
+2022-11-16 15:46:14 info: file:///d%3A/Work/Code/portfolio_web/.next/export-detail.json
+2022-11-16 15:46:14 info: file:///d%3A/Work/Code/portfolio_web/.next/server/pages/404.js
+2022-11-16 15:46:14 info: file:///d%3A/Work/Code/portfolio_web/.next/server/pages/Urql2.js
+2022-11-16 15:46:14 info: file:///d%3A/Work/Code/portfolio_web/.next/server/pages/login.js
+2022-11-16 15:46:14 info: file:///d%3A/Work/Code/portfolio_web/.next/server/pages/contact.js
+2022-11-16 15:46:14 info: file:///d%3A/Work/Code/portfolio_web/.next/server/pages/about-me.js
+2022-11-16 15:46:14 info: file:///d%3A/Work/Code/portfolio_web/.next/server/pages/create-post.js
+2022-11-16 15:46:14 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:46:14 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:46:14 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:46:14 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:46:14 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:46:14 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:46:14 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:46:14 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:46:15 info: file:///d%3A/Work/Code/portfolio_web/out/blog
+2022-11-16 15:46:15 info: file:///d%3A/Work/Code/portfolio_web/out/404.html
+2022-11-16 15:46:15 info: file:///d%3A/Work/Code/portfolio_web/out/blog.html
+2022-11-16 15:46:15 info: file:///d%3A/Work/Code/portfolio_web/out/Urql2.html
+2022-11-16 15:46:15 info: file:///d%3A/Work/Code/portfolio_web/out/_next/data
+2022-11-16 15:46:15 info: file:///d%3A/Work/Code/portfolio_web/out/index.html
+2022-11-16 15:46:15 info: file:///d%3A/Work/Code/portfolio_web/out/login.html
+2022-11-16 15:46:15 info: file:///d%3A/Work/Code/portfolio_web/out/contact.html
+2022-11-16 15:46:15 info: file:///d%3A/Work/Code/portfolio_web/out/about-me.html
+2022-11-16 15:46:15 info: file:///d%3A/Work/Code/portfolio_web/out/create-post.html
+2022-11-16 15:46:15 info: file:///d%3A/Work/Code/portfolio_web/out/_next/rN8sF91btDKN3NL5KZeI7
+2022-11-16 15:46:15 info: file:///d%3A/Work/Code/portfolio_web/out/_next/static/rN8sF91btDKN3NL5KZeI7
+2022-11-16 15:46:16 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:46:16 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:46:16 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:46:16 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:46:16 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:46:16 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:46:16 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:46:16 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:46:16 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:46:16 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:46:16 error: SQLITE_ERROR: no such table: issues
+2022-11-16 15:46:16 error: SQLITE_ERROR: no such table: issues

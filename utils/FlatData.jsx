@@ -35,7 +35,7 @@ export function FlatWPData(postData) {
     return catDict;
   });
   post.altText = postData.featuredImage?.node?.altText;
-  if (new Date(postData.modified) > new Date('2022-11-12')) {
+  if (new Date(postData.modified) > new Date('2022-11-13')) {
     post.date = postData.date;
   } else {
     post.date = postData.modified;

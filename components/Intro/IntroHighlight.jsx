@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { GrReactjs, GrSystem } from 'react-icons/gr';
 import {
-  SiNextdotjs, SiCplusplus, SiQt, SiSolidity, SiRos, SiSocketdotio, SiDocker, SiKubernetes, SiApachespark, SiApachekafka, SiWireshark, SiGit, SiPytest, SiPostgresql, SiMaterialdesign, SiJest, SiGraphql, SiFastapi, SiLinux,
+  SiNextdotjs, SiCplusplus, SiQt, SiSolidity, SiRos, SiSocketdotio, SiDocker, SiKubernetes, SiApachespark, SiApachekafka, SiWireshark, SiGit, SiPytest, SiPostgresql, SiMaterialdesign, SiJest, SiGraphql, SiFastapi, SiLinux, SiRust,
 } from 'react-icons/si';
 import { GiShipWheel } from 'react-icons/gi';
 import { IoLogoJavascript, IoMdBuild } from 'react-icons/io';
@@ -46,7 +46,7 @@ const IntroHighlight = () => (
                   </div>
                 </div>
                 <p className="mb-4">
-                  Extensively worked with C++11/14/17, Python, FastAPI, ReactJS.
+                  Extensively worked with C++11/14/17, Rust, Python, FastAPI, ReactJS, TypeScript.
                 </p>
               </div>
 
@@ -227,6 +227,10 @@ const IntroHighlight = () => (
         <div className="text-center mb-2">
           <SiCplusplus className="md:text-7xl text-5xl mb-2" />
           C++ 11/17
+        </div>
+        <div className="text-center mb-2">
+          <SiRust className="md:text-7xl text-5xl mb-2" />
+          Rust
         </div>
         <div className="text-center mb-2">
           <FaPython className="md:text-7xl text-5xl mb-2" />

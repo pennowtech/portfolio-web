@@ -1,0 +1,385 @@
+---
+author: Sukhdeep Singh
+categories:
+  - rust
+date: 15 Oct, 22
+description: "We will start our Rust discussion with environment setup. It's not just compiler setup or editor setup. But it's more than that such as code imporovement, faster linking, etc."
+post_status: publish
+post_type: post
+tags:
+  - Guide
+  - tutorials
+  - rust
+thumbnailUrl: /rust_installation_and_environment_setup.png
+title: Rust Installation and Environment Setup
+
+nextPostLink: the-dummies-guide-to-kafka-operations
+nextPostTitle: "The Dummies’ Guide To Kafka Operations"
+nextPostImg: /the-dummies-guide-to-kafka-operations.png
+prevPostLink: git-and-kdiff3
+prevPostTitle: "Setting up KDiff as diff editor for Git"
+prevPostImg: /git-and-kdiff3.png
+---
+
+Rust is known as a language built on the pillars of data safety, parallelism, and speed. It is used in a variety of softwares ranging from operating systems to databae, browser components to game engines, etc..
+
+[Stack overflow](https://insights.stackoverflow.com/survey/2021#section-most-loved-dreaded-and-wanted-programming-scripting-and-markup-languages) has also named it as the most loved language for the past six years continuously.
+
+Rust is fast, readable, and memory-efficient. Rust's main focus is memory safety. For this reason, Rust is great for programs involving memory usage, computer processors, or targeting bare metal.
+
+Ofcourse, these benefits come at a price. Rust demands a dedication to learn. It's learning curve is really steep. Even debugging is not as advanced as C++. However, once you learn it right, you will definitely enjoy working with this language.
+
+We will start our first discussion with environment setup for _Rust_.
+
+## Environment Setup
+
+To follow along with this article series, obviously we need a system with proper setup. A system where we can run and test our learning. My system of choice is Linux. But I'll also how to setup on Windows also.
+
+## Install Rust Compiler
+
+There are various ways to install Rust on your system, but we are going to focus on the recommended path: via `rustup`. It's a command line tool for managing Rust versions and associated tools.
+
+For _Linux_ or _Windows Subsystem for Linux_, it is a straightforward process. Just run the following command. It'll install the latest stable version of the Rust compiler.
+
+```shell
+$ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+This command will install the latest stable version of the _rust compiler_, _standard libraries_, and `cargo`. _Cargo_ is a package manager and build tool for Rust.
+
+If you're installing for windows, then first you need to install the C++ build tools for Visual Studio 2013 or later. Hence go to [visual studio](https://www.visualstudio.com/downloads/#build-tools-for-visualstudio-2019) website to install _Build Tools for Visual Studio_. Once Buildtools are installed, download the _exe_ file for your system from [rust](https://www.rust-lang.org/tools/install/) website and follow the instruction.
+
+Once installation is finished, check whether you have installed _Rust_ correctly. open a shell and enter this line:
+
+```shell
+$ rustc --version
+```
+
+## Install Code Editor
+
+For our learning, we'll be installing _Visual Studio Code_ as our editor of choice. It's available on Windows, Linux, and pretty much all distros.
+
+To install, go to [Visual Studio Code](https://code.visualstudio.com/download) website and download for your desired operating system. Installation is straight forward.
+
+Once installation is done, open the editor and go to _extensions_. Look for 'Rust Analyzer' and install it.
+
+## Install 'Cargo Watch'
+
+whenever any change is made to your program, you need to recompile it and run it. Sometimes, this looks very boring and frustrating task. Especially when changes made are very small and frequent. This is when `cargo watch` comes to our rescuse. It monitors the chages inside your source code and trigger commands every time a change is made.
+
+First let's install it:
+
+```shell
+cargo install cargo-watch
+```
+
+To use it, simply run the following command:
+
+```shell
+$cargo watch
+```
+
+It will run _cargo check_ after every code change. In other words, whenever any changes would be made, it will read your changes and will trigger the compilation process autmatically. This waz, you will not be required to _compile_ and _run_ your program every time.
+
+If you want to run cargo only when 'test' changes:
+
+```shell
+$cargo watch -x test
+```
+
+You can also chain multiple subcommands in a single command also with `-x` option:
+
+```shell
+$cargo watch -x check -x test -x run
+```
+
+This command will first execure `cargo check`. If this passes, then only it will execute `cargo test`. If that also passes, then finally it will run `cargo run` command.
+
+To pass any command line arguments to 'cargo run' command through 'watch':
+
+```shell
+$cargo watch -x 'run -- arg1 arg2'
+```
+
+## Test Setup
+
+We already tested our setup with `rustc --version` command. But, now let's test it by writing a simple program.
+
+Most common way to write a _Rust_ program is by running following `cargo` command.
+
+```shell
+$cargo new hello_world
+```
+
+We'll not be discussing any details on this command or even the program. Our target is to just test the setup programatically.
+
+After running the above command, a new directory will be created: **hello_world**. This directory contains a 'cargo.toml' file and a 'src' directory with a file called 'main.rs'.
+
+_cargo.toml_ file list all of your dependencies or libraries along with other information about your project.
+_src_ contains source code of your project.
+Now, let's open this folder in _VS Code_ editor that we installed earlier. Add following codee in `main.rs`:
+
+```rust
+fn main() {
+    println!("Hello, world!");
+}
+```
+
+### Build and Run
+
+By default, _Rust_ build your program for _debug_ mode. Hence, the above command should build your program under `target/debug` directory.
+
+However, if you want to build your program for _release_ mode, enter following command:
+
+```shell
+$ cargo build --release
+```
+
+This will create an executable in `target/release` instead of `target/debug`. In _release_ mode, _Rust_ turns on some optimization features. That makes the program to run faster in production mode.
+
+To run, your program:
+
+```shell
+$ cargo run
+```
+
+> ** debug vs release mode** > _debug_ program are faster to build and debug. Thus this is the preferred mode during _devlopment_. _release_ programs are intended to run in _production_ mode and slower to build.
+
+## Setting up linter: 'Clippy'
+
+_Clippy_ is a popular linting tool to write better _Rust_ programs. It catches common mistakes and ineffciencies in your code. It is advisable to run this tool regularly on your code.
+
+To set it up:
+
+```shell
+$rustup component add clippy
+```
+
+Once it's ready, you can run it on your project as:
+
+```shell
+$cargo clippy
+```
+
+You can also add it to your CI/CD pipelines by just adding a simple statement:
+
+```shell
+RUSTFLAGS="-Dwarnings" cargo clippy -- -D warnings
+```
+
+Noow, whenever clippy see something objectionable with your code, it will fail the build pipeline
+
+### Test 'clippy' setup
+
+Let's write a simple program, which looks perfectly fine on the first glance:
+
+```rust
+fn main()
+{
+    const PI: f32 = 3.14;
+    println!("PI:{}", PI);
+}
+```
+
+If you compile it, it compiles without any issue. It will also run fine. But do you know that there is some scope of improvement. To find that, just run the same program with `clippy`.
+
+```shell
+error: approximate value of `f{32, 64}::consts::PI` found
+ --> src/main.rs:8:21
+  |
+8 |     const PI: f32 = 3.14;
+  |                     ^^^^
+  |
+  = note : `#[deny(clippy::approx_constant)]` on by default
+  = help: consider using the constant directly
+```
+
+Here, `clippy` is suggesting you to use standard `PI` constant instead of declaring your own. There could be many such instances where `clippy` can be helpful.
+
+### Changing 'clippy' behavior
+
+Not all warnings require your attention. You can simple ignore them if you feel so. There are two ways to do so:
+
+1. **Through source code**
+   One is by specifying `#[allow(clippy::lint_name)]` attribute on the respective code section. `allow` means to suppress the given warning. You can use this attribute either at module level or function level.
+
+For example, if we want to suppress the `PI` constant warning we faced earllier, we can specify: `#![allow(clippy::approx_constant)]`
+
+Apart from `allow`, we can also use `warn` or `deny`. `warn` is to display the message as warning. While `deny` will throw an error.
+
+2. **Through command line**
+   Alternative way is to change the lint level through command line. This approach is helpful in case, you don't want to make any changes to the source code.
+
+```shell
+cargo clippy -- -A clippy::approx_constant
+```
+
+Here, we pass the command line arguments to clippy after double dash `--`.
+
+`W` means `warn` and `A` means `allow`.
+
+In addition, note that the source code based configuration has a precedence over the command line based.
+
+**Changing warning params through config file**
+Apart from above methods, some warnings can also be changed with the help of a _config_ file. To do this, create _clippy.toml_ at project-level, and add the required configuration.
+
+Configuration is in `key=value` format. For example, following will change the maximum number of arguments a function/method can have. Default was 7, but after following change it'll be 10.
+
+```toml
+too-many-arguments-threshold=10
+```
+
+> _clippy.toml_ or _.clippy.toml_ cannot be used to `allow/deny` lints.
+
+More details on _clippy_ can be referred from its [README](https://github.com/rust-lang/rust-clippy#readme) file.
+
+## Setting up Formatter: 'rustfmt'
+
+Who doesnt't know the importance of nicely formatted code. They are always easy to read and understand. It also helps you in better code reviews as reviewers don't have to pay attenttion to the nitty-gritty details of code format. That's why companies have so many guidelines and tools which make you write a properly formatted code.
+
+`rustfmt` is one such tool that helps you in this. It is the offcial Rust code formatter.
+
+Just like `clippy`, `rustfmt` is included in the set of default components installed by `rustup`. If missing, you can easily install it with
+
+```shell
+$rustup component add rustfmt
+```
+
+You can format your whole project with
+
+```shell
+cargo fmt
+```
+
+You can also add this in your _build_ pippelines:
+
+```shell
+cargo fmt -- --check
+```
+
+It will fail when a commit contains unformatted code, printing the difference to the console.
+
+You can tune `rustfmt` for a project with a configuration file, `rustfmt.toml`. Details can be found in rustfmt’s [README](https://github.com/rust-lang/rustfmt#readme).
+
+## Code Coverage Setup
+
+If you know the importance of unit testing, then I'm sure you also know the importance of _code coverage_. It help you to understand how much of your source is tested. It's a very useful metric that can help you assess the quality of your test suite.
+
+The easiest way to measure code coverage of a Rust project is via cargo `tarpaulin`, a cargo subcommand developed by _xd009642_.
+
+You can install `tarpaulin` with:
+
+```shell
+$cargo install cargo-tarpaulin
+```
+
+To check coverage on our project:
+
+```shell
+$cargo tarpaulin -v
+```
+
+Above command will test coverage for your application code, ignoring your test functions.
+
+`tarpaulin` can be used to upload code coverage metrics to popular services like [Codecov](https://codecov.io/) or [Coveralls](https://coveralls.io/)
+
+More instructions can be found in tarpaulin’s [README](https://github.com/xd009642/tarpaulin#readme).
+
+> At the time of writing tarpaulin only supports x86_64 CPU architectures running Linux.
+
+## CI Pipelines Setup
+
+If you believe in DRY (Don't Repeat Yourself) principle, then there are some ready-made build pipelines configuration to start up with. Ofcourse, you will require them to change them as per your environment. However, that is better than writing whole of the thing from scratch.
+
+Followiing are the links of a few config files for the most popular CI providers
+
+- [GitHub Actions](https://gist.github.com/LukeMathWalker/5ae1107432ce283310c3e601fac915f3)
+- [CircleCI](https://gist.github.com/LukeMathWalker/6153b07c4528ca1db416f24b09038fca)
+- [GitLab CI](https://gist.github.com/LukeMathWalker/d98fa8d0fc5394b347adf734ef0e85ec)
+
+These are just for reference. I'm not goind into details of any of these for the time being.
+
+## Faster linker setup
+
+Do you know you can improve the _rust_ build process speed especially during linking phase.
+
+You can replace the default linker with the following one depending on your operating system.
+
+- `lld` on Windows and Linux, a linker developed by the LLVM project;
+- `zld` on MacOS.
+
+> I didn't try any of these steps. But, if you try them or need my help then please let me know.
+
+### Installation
+
+To use them, first you have to install these on your machine:
+
+**On Windows**
+
+```shell
+$ cargo install -f cargo-binutils
+$ rustup component add llvm-tools-preview
+```
+
+**On Linux (Ubuntu):**
+
+```shell
+$sudo apt-get install lld clang
+```
+
+**On MacOS:**
+
+```shell
+$brew install michaeleisel/zld/zld
+```
+
+### Config change
+
+After installation, add following statements in configuration file to the project(_.cargo/config.toml_):
+
+**On Windows:**
+
+```toml
+[target.x86_64-pc-windows-msvc]
+rustflags = ["-C", "link-arg=-fuse-ld=lld"]
+[target.x86_64-pc-windows-gnu]
+rustflags = ["-C", "link-arg=-fuse-ld=lld"]
+```
+
+**On Linux:**
+
+```toml
+[target.x86_64-unknown-linux-gnu]
+rustflags = ["-C", "linker=clang", "-C", "link-arg=-fuse-ld=lld"]
+```
+
+**On Mac:**
+
+```toml
+[target.x86_64-apple-darwin]
+rustflags = ["-C", "link-arg=-fuse-ld=/usr/local/bin/zld"]
+[target.aarch64-apple-darwin]
+rustflags = ["-C", "link-arg=-fuse-ld=/usr/local/bin/zld"]
+```
+
+> There is ongoing work on the Rust compiler to use `lld` as the default linker.
+
+Then these steps won't be necessary to improve your compilation speed.
+
+### mold linker (Better alternative but new)
+
+`mold` is the newest linker in the sky, It claims to be faster than `lld`! But as it's the very new in the field, so it would be too early to decide on its usage. However, it's worth to look into.
+
+## Conclusion
+
+Let's try to summarize our activities:
+
+1. Installing Rust on your choice of OS
+2. Testing _Rust_ environment with the help of a small program
+3. Setting up _linter_ and _formatter_.
+4. An overview of populat _build pipeline configurations_
+5. Replacing default linker with a faster one
+
+Next, we'll be discussing how to write a simple program and various components of that.
+
+I hope this tutorial was able to help you install Rust on Ubuntu. If you have any feedback, queries or suggestions, feel free to reach out to us in the comments below.
