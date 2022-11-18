@@ -74,6 +74,8 @@ function Index({ posts, selectedposts }) {
 export const getStaticProps = async () => {
   // Read post
   const files = fs.readdirSync(path.join('posts'));
+  // const cppFiles = fs.readdirSync(path.join('posts/cpp'));
+  // files.push(...cppFiles);
   const posts = files.map((filename) => {
     const markdownWithMeta = fs.readFileSync(
       path.join('posts', filename),

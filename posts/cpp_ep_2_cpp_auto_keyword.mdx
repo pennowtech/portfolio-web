@@ -1,0 +1,211 @@
+---
+author: Sukhdeep Singh
+categories:
+  - cpp
+date: 18 Oct, 22
+description: "If you're going to skip this topic, thinking it looks a very basic topic. Then you might be wrong. Remember, this is not a beginner level discussion."
+post_status: publish
+post_type: post
+tags:
+  - Guide
+  - tutorials
+  - cpp
+thumbnailUrl: /cpp_ep_2_cpp_auto_keyword.png
+title: Declaring variable types with auto(Part - 2)
+
+nextPostLink: cpp_ep_2_cpp_auto_keyword
+nextPostTitle: "The Dummies’ Guide To Kafka Operations"
+nextPostImg: /cpp_ep_2_cpp_auto_keyword.png
+prevPostLink: cpp_ep_1_getting_started_cpp
+prevPostTitle: "Getting Started with Modern C++(Part - 1)"
+prevPostImg: /cpp_ep_1_getting_started_cpp.png
+---
+
+With modern C++, one can use `auto` keyword to declare variable types. Here, `auto` keyword will deduce the type of the variable on the basis of assignments.
+
+💡Before moving further, just note down that it cannot be used for types that are not moveable. Following is wrong:
+
+```cpp
+auto var = std::atomic<int>(23);
+```
+
+**Declaring fundamental data types:**
+
+```cpp
+auto var1 = 23;
+```
+
+`var1` will be deduced of type `int`. If you want to deduce it to `long long`:
+
+```cpp
+ auto var1 = 1'50'00'000LL;
+```
+
+```cpp
+auto var2 = 23.34;
+```
+
+`var2` will be deduced of type `double`
+
+```cpp
+auto var3 = "dummy";
+```
+
+`var3` will be of type `char const*` . If you want it to be of type `std::string`, declare it the following way:
+
+```cpp
+auto var3 = std::string("dummy")
+```
+
+Now, `var3` will be of type `std::string`.
+
+**Declaring a const:**
+To declare a _const_, you need to pass it explicitly:
+
+```cpp
+auto const var=3;
+```
+
+**Declaring a reference:**
+Just like const, you need to specify `&` explicitly to specify that you want to deduce the intended type as a reference:
+
+```cpp
+auto var1 = 4;
+auto& var = var1;
+```
+
+**Const reference:**
+As we know _const references_ are always immutable. It's my preferred choice for variables, which I don't want to modify.
+
+```cpp
+auto var1 = 4;
+const auto& var = var1;
+```
+
+💡If the const reference is bound to a temporary object, the lifetime of the temporary will be
+extended to the lifetime of the reference.
+
+```cpp
+auto func(const int& x, const int& y) {
+	const auto& prod = x * y; // x*y return a temporary
+...
+} // prod is destroyed as soon as function is returned
+```
+
+**Forwarding references:**
+_Forwarding references_ are also referred to as a _universal reference_. They can bind to objects and expressions of any value category. They're declared as `auto&&`
+
+Just like _const refs_, they extend the lifetime of a temporary object.
+
+> 💡However, these are different from **r-value references**. If you specify `&&` along with an _explicit_ type, then that is called as **r-value** references e.g. `std::string&& str`. But if you use `auto&&` and `T&&`, they are _universal_ references.
+> More on this will be discussed in coming chapters.
+
+**Declaring array**:
+
+```cpp
+auto var4 = {1, 2, 3, 4};
+```
+
+`var4` will be of type `std::initializer_list<int>`. To declare it as `std::vector`.
+
+**Declaring a standard container:**
+
+```cpp
+auto vec = std::vector<int>{1, 2, 3, 4};
+
+auto mp = std::map<int,float>();
+mp.emplace(1,3.14)
+```
+
+**Functions:**
+You can declare the return type of a function as `auto`. However, if you're using C++11 then you need to specify trailing return type:
+
+```cpp
+auto func() -> int{
+	return 4;
+}
+```
+
+With C++14, you don't need to specify trailing return type.
+
+```cpp
+auto func (int a, int b){
+	return a/b;
+}
+```
+
+Same way like _const/ref_, you can also specify function return type as:
+
+```cpp
+auto& func(){
+	...
+}
+```
+
+**lambdas:**
+
+_Named lambda functions_ can also be declared with `auto` keyword:
+
+```cpp
+auto func = [](int a){retutn a*2;}
+```
+
+With C++14, lambda function parameters can also be declared `auto`. These are known as _generic lamdas_.
+
+```cpp
+auto func = [](auto a) { return a;}
+```
+
+This is almost similar to writing as:
+
+```cpp
+struct lambda {
+	template <typename T>
+	auto operator ()(T a) const {
+		return a;
+	}
+};
+```
+
+**Classes:**
+
+```cpp
+auto ob = Point{23, 34};
+```
+
+💡Now if you're thinking that this is not an efficient way. As it will create a `Point` object first on the right hand side, and then assign it to left hand side. If you're using version before C++17, then you might be right.
+
+However, with C++17, _copy elision_ is guranteed. The above statement is exactly similar to writing it as: `Point ob{23, 34};`. Now, we can also use it for non-moveable or non-copyable types.
+
+> 🗊 _Copy elision_ is an optimization implemented by most compilers to prevent extra (potentially expensive) copies in certain situations. It makes returning by value or pass-by-value feasible in practice (restrictions apply).
+> **Reference:** [Copy elision and return value optimization](https://stackoverflow.com/a/12953129)
+
+### Advantages of using auto keyword 💰
+
+Many people are against using `auto` saying it reduces _readability_ of your code. I'm not going to get into any such debate. For me, it's an excellent choice if used judiciously. Following are some of my favorite points that encourages to use us `auto`.
+
+1. Obviously, topmost benefit is lesser typing. This is really helpful when working in such situations:
+
+```cpp
+std::map<int, int> mp;
+std::map<int, int>::iterator it = mp.begin();
+//vs
+auto it = mp.begin();
+```
+
+2. You'll always get the correct type of a variable.
+
+```cpp
+int var1 = vec.size();
+auto var2 = vec.size();
+```
+
+In first statement, type is implicitly converted from `size_t` to `int` because of our statement. In second statement, type of `var2` is automatically deduced to the correct type, which is `size_t`.
+
+## Summary 📝
+
+We discussed how to declare a variable with `auto`. The compiler will automatically find out what type you intended. We discussed different context where you can use `auto`. We also touched on _universal references_
+
+Although, this is my personal opinion. However, I'll suggest you to use `auto` when possible.
+
+Our next topic of discussion would be on **uniform initialization**. See you there 🙂

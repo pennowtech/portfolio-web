@@ -1,0 +1,76 @@
+---
+author: Sukhdeep Singh
+categories:
+  - cpp
+date: 17 Oct, 22
+description: "Even if this series is not expected to be a beginner level. But still let's pay our respect to good-old traditional Hello World program."
+post_status: publish
+post_type: post
+tags:
+  - Guide
+  - tutorials
+  - cpp
+thumbnailUrl: /cpp_ep_1_getting_started_cpp.png
+title: Getting Started with Modern C++(Part - 1)
+
+nextPostLink: cpp_ep_2_cpp_auto_keyword
+nextPostTitle: "Declaring variable types with auto"
+nextPostImg: /cpp_ep_2_cpp_auto_keyword.png
+prevPostLink: cpp_ep_0_complete_modern_cpp
+prevPostTitle: "Learn Complete Modern C++ (Part - 0)"
+prevPostImg: /cpp_ep_0_complete_modern_cpp.png
+---
+
+I know I told you that this is not a beginner level course. 💡 Hence, you might already know how to write a C++ program. However, let's respect our _Hello World_ program. 😀
+
+Let's wtite a bare minimal program. As you might have guessed, it's our good-old "Hello World" program.
+
+At this stage, we're not concerned much of the syntax. Just, let's write our first C++ program:
+
+```cpp
+#include <iostream>
+
+int main(){
+	//print Hello World on the console
+	std::cout<<"Hello World.\n";
+	return 0;
+}
+```
+
+- First statement is a directive to include any dependencies. We're including `iostream`, which is a part of the standard library. Here, we need it to print our statement on the console. `std::cout` is coming out from there.
+- second statement is a way of defining a function. Any C++ program must have defined a `main()` function. It's the entry point of your program.
+- third staement is a comment intended for a person, reading your code
+- `std::cout` statement prints the string `Hello World` on the console.
+- last statement is to _return_ any value from your function. But as this is the _main_ function invoked by system, so here it will be running _exit status_ of your program. `0` means program was successful.
+  **Note:** All statement needs to end with `;`
+
+## Build and Run ⚙️
+
+I hope your system is ready to compile and run any C++ program. If not, then you can refer to my previous article or video on the various options available with you.
+
+I'll be using `g++` compiler. There is not any particular reason to use it. Only thing is that I'm using it since start of my carrer.
+
+```shell
+$g++ main.cpp -o hello_world
+```
+
+Here, we're passing our `main.cpp` file as input. `-o` specifies the name of the executable/binary, which in our case is `hello_world`. If you don't specify it, then it will be creating your binary wiith the name of `a.out`.
+
+Let's run this program now:
+
+```cpp
+$./hello_world
+#Output
+Hello World
+```
+
+This was a very basic program to get us start with our C++ journey. But real life journey is not so simple. Hence, in next parts we would be discussing many fundamental and advanced constructs to develop our understanding about C++.
+
+## Resources 🗊
+
+If you're beginner in C++ world, then I'm pasting a few resources for you to explore more on this.
+
+- [How C++ Works: Understanding Compilation](https://www.toptal.com/c-plus-plus/c-plus-plus-understanding-compilation)
+- [What is the difference between g++ and gcc?](https://stackoverflow.com/questions/172587/what-is-the-difference-between-g-and-gcc)
+- [GCC vs. Clang/LLVM: An In-Depth Comparison of C/C++ Compilers](https://alibabatech.medium.com/gcc-vs-clang-llvm-an-in-depth-comparison-of-c-c-compilers-899ede2be378)
+- [Where Does GCC Look to Find its Header Files](https://commandlinefanatic.com/cgi-bin/showarticle.cgi?article=art026)
