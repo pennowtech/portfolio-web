@@ -38,6 +38,7 @@ const Post = ({ post }) => {
         </a>
       </Link>
       <div className="my-4">
+
         <PostDate date={post.date} readingTime={post.readingTime} />
         <PostExcerpt blogUrl={blogUrl} excerpt={excerpt} length={180} className="my-4 lg:my-8" />
         <PostTags tags={post.tags} />

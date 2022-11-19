@@ -21,6 +21,20 @@ span.comment.linenumber.react-syntax-highlighter-line-number {
   transition: transform 0.3s linear;
 } */
 
+.video-responsive {
+  overflow: hidden;
+  padding-bottom: 56.25%;
+  position: relative;
+  height: 0;
+}
+
+.video-responsive iframe {
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+}
 @layer components {
   #nprogress .bar {
     @apply dark:bg-slate-100 bg-slate-800;
