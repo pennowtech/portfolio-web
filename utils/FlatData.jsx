@@ -5,6 +5,9 @@ export function FlatMDXData(postData) {
   const post = {};
   post.title = frontMatter.title;
   post.thumbnailUrl = frontMatter.thumbnailUrl ? frontMatter.thumbnailUrl : '/blank.jpg';
+  post.backgroundUrl = frontMatter.backgroundUrl
+    ? frontMatter.backgroundUrl
+    : post.thumbnailUrl;
   post.categories = frontMatter.categories.map((cat) => {
     const catDict = {};
     catDict.name = cat;

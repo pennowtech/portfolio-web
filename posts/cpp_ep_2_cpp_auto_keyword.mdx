@@ -23,11 +23,11 @@ prevPostImg: /cpp_ep_1_getting_started_cpp.png
 
 With modern C++, one can use `auto` keyword to declare variable types. Here, `auto` keyword will deduce the type of the variable on the basis of assignments.
 
-💡Before moving further, just note down that it cannot be used for types that are not moveable. Following is wrong:
+## How to use `auto`
 
-```cpp
-auto var = std::atomic<int>(23);
-```
+This is not an exhaustive list to declare variables with `auto` keyword. However, we'll list some of the common usage patterns which we use mostly in our daily life. We keep on seeing many more usages as we'll discuss other topics in coming articles.
+
+### Declaring common data types
 
 **Declaring fundamental data types:**
 
@@ -66,7 +66,9 @@ To declare a _const_, you need to pass it explicitly:
 auto const var=3;
 ```
 
-**Declaring a reference:**
+### Declaring references
+
+**mutable reference:**
 Just like const, you need to specify `&` explicitly to specify that you want to deduce the intended type as a reference:
 
 ```cpp
@@ -74,7 +76,7 @@ auto var1 = 4;
 auto& var = var1;
 ```
 
-**Const reference:**
+**const reference:**
 As we know _const references_ are always immutable. It's my preferred choice for variables, which I don't want to modify.
 
 ```cpp
@@ -92,32 +94,37 @@ auto func(const int& x, const int& y) {
 } // prod is destroyed as soon as function is returned
 ```
 
-**Forwarding references:**
-_Forwarding references_ are also referred to as a _universal reference_. They can bind to objects and expressions of any value category. They're declared as `auto&&`
-
-Just like _const refs_, they extend the lifetime of a temporary object.
-
-> 💡However, these are different from **r-value references**. If you specify `&&` along with an _explicit_ type, then that is called as **r-value** references e.g. `std::string&& str`. But if you use `auto&&` and `T&&`, they are _universal_ references.
-> More on this will be discussed in coming chapters.
+### Standard containers
 
 **Declaring array**:
+
+```cpp
+auto var = std::array<int, 5>{1,2,3,4,5}
+```
+
+No such way as:
 
 ```cpp
 auto var4 = {1, 2, 3, 4};
 ```
 
-`var4` will be of type `std::initializer_list<int>`. To declare it as `std::vector`.
+Here, `var4` will be of type `std::initializer_list<int>`.
 
-**Declaring a standard container:**
+**Vectors:**
 
 ```cpp
 auto vec = std::vector<int>{1, 2, 3, 4};
+```
 
+**maps:**
+
+```cpp
 auto mp = std::map<int,float>();
 mp.emplace(1,3.14)
 ```
 
-**Functions:**
+### Functions
+
 You can declare the return type of a function as `auto`. However, if you're using C++11 then you need to specify trailing return type:
 
 ```cpp
@@ -142,7 +149,7 @@ auto& func(){
 }
 ```
 
-**lambdas:**
+### Lambdas functions
 
 _Named lambda functions_ can also be declared with `auto` keyword:
 
@@ -167,7 +174,7 @@ struct lambda {
 };
 ```
 
-**Classes:**
+### Classes
 
 ```cpp
 auto ob = Point{23, 34};
@@ -180,7 +187,30 @@ However, with C++17, _copy elision_ is guranteed. The above statement is exactly
 > 🗊 _Copy elision_ is an optimization implemented by most compilers to prevent extra (potentially expensive) copies in certain situations. It makes returning by value or pass-by-value feasible in practice (restrictions apply).
 > **Reference:** [Copy elision and return value optimization](https://stackoverflow.com/a/12953129)
 
-### Advantages of using auto keyword 💰
+### Universal references or forwarding references
+
+_Forwarding references_ are also referred to as a _universal reference_. They can bind to objects and expressions of any value category. They're declared as `auto&&`
+
+````cpp
+```cpp
+auto&& var = func();
+````
+
+Here, `func()` can return lvalue as well as rvalue reference. `var` doesn't care. It'll work for both. More details on it'll come in future videos/articles.
+Just like _const refs_, they extend the lifetime of a temporary object.
+
+> 💡However, these are different from **r-value references**. If you specify `&&` along with an _explicit_ type, then that is called as **r-value** references e.g. `std::string&& str`. But if you use `auto&&` and `T&&`, they are _universal_ references.
+> More on this will be discussed in coming chapters.
+
+## Limitation💡
+
+Before moving further, just note down that it cannot be used for types that are not moveable. Following is wrong:
+
+```cpp
+auto var = std::atomic<int>(23);
+```
+
+## Advantages of using auto keyword 💰
 
 Many people are against using `auto` saying it reduces _readability_ of your code. I'm not going to get into any such debate. For me, it's an excellent choice if used judiciously. Following are some of my favorite points that encourages to use us `auto`.
 
@@ -204,7 +234,7 @@ In first statement, type is implicitly converted from `size_t` to `int` because 
 
 ## Summary 📝
 
-We discussed how to declare a variable with `auto`. The compiler will automatically find out what type you intended. We discussed different context where you can use `auto`. We also touched on _universal references_
+We discussed how to declare various kinds of variables with `auto`. The compiler will automatically find out what type you intended. We discussed different context where you can use `auto`. We also touched on _universal references_. In coming videos/articles more such usages of `auto` will be discussed in their respective context.
 
 Although, this is my personal opinion. However, I'll suggest you to use `auto` when possible.
 

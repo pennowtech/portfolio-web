@@ -12,6 +12,9 @@
   transition: transform 0.3s linear;
 }
 
+span.comment.linenumber.react-syntax-highlighter-line-number {
+  opacity: 0.4;
+}
 /* #checkbox: checked + label .switch-ball {
   background-color: white;
   transform: translateX(24px);
