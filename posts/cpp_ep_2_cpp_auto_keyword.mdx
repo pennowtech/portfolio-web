@@ -195,10 +195,9 @@ However, with C++17, _copy elision_ is guranteed. The above statement is exactly
 
 _Forwarding references_ are also referred to as a _universal reference_. They can bind to objects and expressions of any value category. They're declared as `auto&&`
 
-````cpp
 ```cpp
 auto&& var = func();
-````
+```
 
 Here, `func()` can return lvalue as well as rvalue reference. `var` doesn't care. It'll work for both. More details on it'll come in future videos/articles.
 Just like _const refs_, they extend the lifetime of a temporary object.

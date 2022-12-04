@@ -13,7 +13,7 @@ const MDXComponents = {
 };
 const Article = ({ frontMatter, mdxSource }) => (
   <>
-    {/* <p>{frontMatter.description}</p> */}
+    { /* <p>{frontMatter.description}</p> */}
     <article
       id="post"
       refs="articleRef"

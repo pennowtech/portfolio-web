@@ -8823,3 +8823,82 @@
 2022-11-19 23:26:03 error: SQLITE_ERROR: no such table: issues
 2022-11-19 23:26:03 error: SQLITE_ERROR: no such table: issues
 2022-11-19 23:26:03 error: SQLITE_ERROR: no such table: issues
+2022-11-19 23:54:45 info: file:///d%3A/Work/Code/portfolio_web/.git/index.lock
+2022-11-19 23:54:45 error: SQLITE_ERROR: no such table: issues
+2022-11-19 23:54:46 info: file:///d%3A/Work/Code/portfolio_web/.git/index.lock
+2022-11-19 23:54:46 error: SQLITE_ERROR: no such table: issues
+2022-11-19 23:54:53 info: file:///d%3A/Work/Code/portfolio_web/.git/refs/remotes/origin/main.lock
+2022-11-19 23:54:53 error: SQLITE_ERROR: no such table: issues
+2022-11-19 23:54:54 info: file:///d%3A/Work/Code/portfolio_web/.git/.gitstatus.Aphhdk
+2022-11-19 23:54:54 error: SQLITE_ERROR: no such table: issues
+2022-12-03 00:50:07 info: file:///d%3A/Work/Code/portfolio_web/.next/trace
+2022-12-03 00:50:07 info: file:///d%3A/Work/Code/portfolio_web/.next/server
+2022-12-03 00:50:07 info: file:///d%3A/Work/Code/portfolio_web/.next/static
+2022-12-03 00:50:07 info: file:///d%3A/Work/Code/portfolio_web/.next/BUILD_ID
+2022-12-03 00:50:07 info: file:///d%3A/Work/Code/portfolio_web/.next/export-detail.json
+2022-12-03 00:50:07 info: file:///d%3A/Work/Code/portfolio_web/.next/export-marker.json
+2022-12-03 00:50:07 info: file:///d%3A/Work/Code/portfolio_web/.next/build-manifest.json
+2022-12-03 00:50:07 info: file:///d%3A/Work/Code/portfolio_web/.next/images-manifest.json
+2022-12-03 00:50:07 info: file:///d%3A/Work/Code/portfolio_web/.next/next-server.js.nft.json
+2022-12-03 00:50:07 info: file:///d%3A/Work/Code/portfolio_web/.next/prerender-manifest.json
+2022-12-03 00:50:07 info: file:///d%3A/Work/Code/portfolio_web/.next/required-server-files.json
+2022-12-03 00:50:07 info: file:///d%3A/Work/Code/portfolio_web/.next/react-loadable-manifest.json
+2022-12-03 00:50:07 error: SQLITE_ERROR: no such table: issues
+2022-12-03 00:50:07 error: SQLITE_ERROR: no such table: issues
+2022-12-03 00:50:07 error: SQLITE_ERROR: no such table: issues
+2022-12-03 00:50:07 error: SQLITE_ERROR: no such table: issues
+2022-12-03 00:50:07 error: SQLITE_ERROR: no such table: issues
+2022-12-03 00:50:07 error: SQLITE_ERROR: no such table: issues
+2022-12-03 00:50:07 error: SQLITE_ERROR: no such table: issues
+2022-12-03 00:50:07 error: SQLITE_ERROR: no such table: issues
+2022-12-03 00:50:07 error: SQLITE_ERROR: no such table: issues
+2022-12-03 00:50:07 error: SQLITE_ERROR: no such table: issues
+2022-12-03 00:50:07 error: SQLITE_ERROR: no such table: issues
+2022-12-03 00:50:07 error: SQLITE_ERROR: no such table: issues
+2022-12-03 00:51:18 info: file:///d%3A/Work/Code/portfolio_web/.next/export
+2022-12-03 00:51:18 info: file:///d%3A/Work/Code/portfolio_web/.next/export-detail.json
+2022-12-03 00:51:18 info: file:///d%3A/Work/Code/portfolio_web/.next/server/pages/404.js
+2022-12-03 00:51:18 info: file:///d%3A/Work/Code/portfolio_web/.next/server/pages/Urql2.js
+2022-12-03 00:51:18 info: file:///d%3A/Work/Code/portfolio_web/.next/server/pages/login.js
+2022-12-03 00:51:18 info: file:///d%3A/Work/Code/portfolio_web/.next/server/pages/contact.js
+2022-12-03 00:51:18 info: file:///d%3A/Work/Code/portfolio_web/.next/server/pages/about-me.js
+2022-12-03 00:51:18 info: file:///d%3A/Work/Code/portfolio_web/.next/server/pages/create-post.js
+2022-12-03 00:51:18 error: SQLITE_ERROR: no such table: issues
+2022-12-03 00:51:18 error: SQLITE_ERROR: no such table: issues
+2022-12-03 00:51:18 error: SQLITE_ERROR: no such table: issues
+2022-12-03 00:51:18 error: SQLITE_ERROR: no such table: issues
+2022-12-03 00:51:18 error: SQLITE_ERROR: no such table: issues
+2022-12-03 00:51:18 error: SQLITE_ERROR: no such table: issues
+2022-12-03 00:51:18 error: SQLITE_ERROR: no such table: issues
+2022-12-03 00:51:18 error: SQLITE_ERROR: no such table: issues
+2022-12-03 00:51:19 info: file:///d%3A/Work/Code/portfolio_web/out/blog
+2022-12-03 00:51:19 info: file:///d%3A/Work/Code/portfolio_web/out/404.html
+2022-12-03 00:51:19 info: file:///d%3A/Work/Code/portfolio_web/out/blog.html
+2022-12-03 00:51:19 info: file:///d%3A/Work/Code/portfolio_web/out/Urql2.html
+2022-12-03 00:51:19 info: file:///d%3A/Work/Code/portfolio_web/out/_next/data
+2022-12-03 00:51:19 info: file:///d%3A/Work/Code/portfolio_web/out/index.html
+2022-12-03 00:51:19 info: file:///d%3A/Work/Code/portfolio_web/out/login.html
+2022-12-03 00:51:19 info: file:///d%3A/Work/Code/portfolio_web/out/contact.html
+2022-12-03 00:51:19 info: file:///d%3A/Work/Code/portfolio_web/out/about-me.html
+2022-12-03 00:51:19 info: file:///d%3A/Work/Code/portfolio_web/out/create-post.html
+2022-12-03 00:51:19 info: file:///d%3A/Work/Code/portfolio_web/out/_next/7YP-MRWHImMOqieZTinT2
+2022-12-03 00:51:19 info: file:///d%3A/Work/Code/portfolio_web/out/_next/static/7YP-MRWHImMOqieZTinT2
+2022-12-03 00:51:19 error: SQLITE_ERROR: no such table: issues
+2022-12-03 00:51:19 error: SQLITE_ERROR: no such table: issues
+2022-12-03 00:51:19 error: SQLITE_ERROR: no such table: issues
+2022-12-03 00:51:19 error: SQLITE_ERROR: no such table: issues
+2022-12-03 00:51:19 error: SQLITE_ERROR: no such table: issues
+2022-12-03 00:51:19 error: SQLITE_ERROR: no such table: issues
+2022-12-03 00:51:19 error: SQLITE_ERROR: no such table: issues
+2022-12-03 00:51:19 error: SQLITE_ERROR: no such table: issues
+2022-12-03 00:51:19 error: SQLITE_ERROR: no such table: issues
+2022-12-03 00:51:19 error: SQLITE_ERROR: no such table: issues
+2022-12-03 00:51:19 error: SQLITE_ERROR: no such table: issues
+2022-12-03 00:51:19 error: SQLITE_ERROR: no such table: issues
+2022-12-03 15:01:57 info: file:///d%3A/Work/Code/portfolio_web/.git/.gitstatus.eJcmaC
+2022-12-03 15:01:57 error: SQLITE_ERROR: no such table: issues
+2022-12-04 08:18:03 info: tempDirectory:c:\Users\to_su\.vscode\extensions\embold-vscode.embold-0.1.4\temp
+2022-12-04 08:18:03 info: Extraction complete for source: c:\Users\to_su\.vscode\extensions\embold-vscode.embold-0.1.4\resources\embold-scanner-archive.zip, destination: c:\Users\to_su\.vscode\extensions\embold-vscode.embold-0.1.4\temp
+2022-12-04 08:18:03 info: Congratulations, your extension "Embold" is now active!
+2022-12-04 09:24:56 info: file:///d%3A/Work/Code/portfolio_web/.git/.gitstatus.EfKclP
+2022-12-04 09:24:56 error: SQLITE_ERROR: no such table: issues

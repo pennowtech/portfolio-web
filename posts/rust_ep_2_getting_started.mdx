@@ -1,0 +1,170 @@
+---
+author: Sukhdeep Singh
+categories:
+  - rust
+date: 22 Oct, 22
+description: "We start our discussion with an overview of basic constructs of a program. Then we'll see various ways to write comments for a program and documents. We'll also see various ways to compile or build our program."
+post_status: publish
+post_type: post
+tags:
+  - Guide
+  - tutorials
+  - rust
+thumbnailUrl: /rust_ep_2_getting_started.pn
+title: Getting started with Rust programming language
+
+nextPostLink: the-dummies-guide-to-kafka-operations
+nextPostTitle: "The Dummies' Guide To Kafka Operations"
+nextPostImg: /the-dummies-guide-to-kafka-operations.png
+prevPostLink: /rust_installation_and_environment_setup
+prevPostTitle: "Rust Installation and Environment Setup"
+prevPostImg: /rust_installation_and_environment_setup.png
+---
+
+We already saw how to [write a simple program in Rust](https://www.sukhdeep.online/blog/rust_installation_and_environment_setup#test-setup).
+In this section, we'll discuss that in a more detail such as what are the basic constructs, various ways to print the messages, debug prints, build process, etc.
+
+If you prefer to watch video, then that's also available on YouTube:
+
+<YouTube videoId="QxPVS145bl4" />
+
+## Write first program 🗊
+
+Let's start with writing a simple program. Let's name it as `hello.rs`.
+
+```rust
+fn main(){
+	println!("Hello World");
+}
+```
+
+A few interesting points:
+
+- we use `fn` to define a function or method. `main()` is the default entry point for our programs.
+- `main` accepts args also, which we'll leave for later discussion.
+- `{}` is called a code block. This is the space where code lives.
+- `println!` is Rust's equivalent of printf. The `!` means that it is a macro. A macro is like a function that writes code for you. Macros have a ! after them. We will learn about making macros later. For now, remember that ! means that it is a macro.
+- There are no separate declarations or header files as with C++.
+- A subset of the standard library is available without needing to be explicitly `imported/included`. The `println!` macro is included as part of that subset.
+
+## Compile and run program ⚙️
+
+`rustc` is provided by _Rust_ to compile the program.
+`$ rustc hello.rs`
+
+`rustc` will create a binary with the name as `hello` . Run it as any executable/binary file:
+
+```shell
+$ ./hello
+Hello World!
+```
+
+## Cargo overview
+
+Before moving further, let's first get a very basic overview of popular rust tool: `cargo`.
+
+Cargo is Rust's build system and package manager. It helps to manage Rust projects because it makes a lot of tasks easier. For example, Cargo takes care of building your code, downloading the libraries your code depends on, and building those libraries. We call libraries your code needs dependencies.
+
+More on this we'll discuss later.
+
+## Cargo to build and run program
+
+- To build the program, run `cargo build`.
+  - program is build under `target` directory. If you're using default mode, then it should be under `target/debug/` directory. Otherwise `target/release` directory.
+- To build and run it, `cargo run`.
+  - It should display `Hello World` at the console
+- When your project is finally ready for release, you can use `cargo build --release` to compile your project with optimizations.
+  - This will create an executable in `target/release` instead of `target/debug`.
+  - These optimizations make your Rust code run faster, but turning them on makes your program take longer to compile.
+- This is why there are two different profiles
+  - one for `development` when you want to be able to rebuild quickly and often, and
+  - one for building the final program you'll give to a user that won't be rebuilt and that we want to run as fast as possible
+
+## Comments
+
+Just like any popular programming language, Rust also supports _comments_.
+Rust supports three varieties of comments.
+
+### Line comments
+
+Line comments start with two slashes: `//`.
+
+```rust
+// declare a variable
+let var = 23;
+```
+
+Compiler ignore anything that is written after these slashes.
+
+### Block comments
+
+Block comments are always enclosed within a pair of `/*` and `*/` delimiter.
+Unlike line comments, they can span over multiple lines.
+
+```rust
+/* declare a comment
+on multiple lines*/
+let var = 23;
+```
+
+They can also exist within a statement.
+
+```rust
+let var = 23 /*+ 3 */ * 2
+```
+
+Here `+3` will be ignored by compiler.
+
+> 💡*Line comments* are always the preferred choice. But if you want to disable multiple statements together, then _block comments_ are the preferred choice.
+
+### Doc comments
+
+This is another type of comment that are useful to generate [documentation](https://doc.rust-lang.org/rust-by-example/meta/doc.html):
+They start with three slashes,`///`. You can also use _markdown_ text to format your message
+
+```rust
+/// Adds two numbers
+fn add ...
+```
+
+If you want to document the entire library, then start the comment with `//!`:
+
+```rust
+//! A library for all mathematical operation
+
+/// Adds two numbers
+fn add ...
+```
+
+To generate documentation, use:
+
+```shell
+$ cargo doc
+```
+
+## Second Iteration of our program 🏗️
+
+In the same program, modify `main` function as:
+
+```rust
+fn main() {
+  println!("Tomorrow is {}th!", 12);
+}
+```
+
+- `{}` in println! means "put the variable inside here". This prints `Tomorrow is 12th!.
+- Using `{}` in the `println!` statement is like using `%s` in `printf`. In fact, it is a bit more general than that because Rust will try to convert the variable to a string if it is not one already
+- The `println! `macro is safer than `printf` - the number of arguments is statically checked against the number of '_holes_' in the string and the arguments are type checked.
+
+## Summary 📝
+
+Let's try to summarize our activities:
+
+1. Writing our first program
+2. A glance at basic constructs of a program
+3. Various type of comments
+4. Build and running a rust program with `rustc` as well as `cargo`
+
+Next, we'll be discussing various ways to print a statement. Don't think it would be too basic. We already saw basic usage of `print` statment. Next, we'll be discussing advanced usage of the same.
+
+I hope this tutorial was able to help you get started with _Rust_. If you have any feedback, queries or suggestions, feel free to reach out to us in the comments below.
