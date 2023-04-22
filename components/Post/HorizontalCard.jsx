@@ -55,7 +55,6 @@ const HorizontalCard = ({ post }) => {
                 <PostTags tags={post.tags} />
               </div>
             </div>
-          </div>
         </div>
       </div>
     </div>
