@@ -2,7 +2,6 @@
 import React from 'react';
 
 import { PAGES_POSTS_QUERY } from '../../queries/queries';
-import { gqlAuthClient, gqlClient, ssrCache } from '../../utils/gqlclient';
 import PostsLayout from '../../components/PostsLayout';
 import { PER_PAGE_BLOGS } from '../../utils/consts';
 import PostList from '../../components/PostList';

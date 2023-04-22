@@ -1,19 +1,32 @@
 module.exports = {
-  darkMode: 'class',
-  content: [
-    './pages/**/*.{js,ts,jsx,tsx}',
-    './components/**/*.{js,ts,jsx,tsx}',
-  ],
-  theme: {
+    darkMode: 'class',
+    content: [
+        './pages/**/*.{js,ts,jsx,tsx}',
+        './components/**/*.{js,ts,jsx,tsx}',
+    ],
+    safelist: [
+        'bg-red-500',
+        'bg-orange-500',
+        'bg-yellow-500',
+        'bg-green-500',
+        'bg-stone-500',
+        'bg-cyan-500',
+        'bg-blue-500',
+        'bg-indigo-500',
+        'bg-violet-500',
+        'bg-purple-500',
+        'bg-pink-500',
+    ],
+    theme: {
 
-    extend: {
-      typography: (theme) => ({
+        extend: {
+            typography: (theme) => ({
 
-        DEFAULT: {
-          dark: {
-            css: {
-              color: 'red',
-            },
+                DEFAULT: {
+                    dark: {
+                        css: {
+                            color: 'red',
+                        },
           },
           css: {
             // color: theme('colors.gray.800'),
@@ -36,13 +49,17 @@ module.exports = {
         },
       }),
       fontFamily: {
-        Merriweather: ['Merriweather', 'serif'],
-        Lora: ['Lora', 'serif'],
-        Fira: ['Fira Code', 'monospace'],
-        Roboto: ['Roboto Condensed', 'sans-serif'],
-        Monda: ['Monda', 'sans-serif'],
-        Neuton: ['Neuton', 'serif'],
-        Offside: ['Offside', 'cursive'],
+          Merriweather: ['Merriweather', 'serif'],
+          Lora: ['Lora', 'serif'],
+          Fira: ['Fira Code', 'monospace'],
+          Roboto: ['Roboto Condensed', 'sans-serif'],
+          Monda: ['Monda', 'sans-serif'],
+          Neuton: ['Neuton', 'serif'],
+          Offside: ['Offside', 'cursive'],
+          Rajdhani: ['Rajdhani', 'sans-serif'],
+          Yantramanav: ['Yantramanav', 'sans-serif'],
+          Barlow: ['Barlow Condensed', 'sans-serif'],
+
       },
       container: {
         screens: {

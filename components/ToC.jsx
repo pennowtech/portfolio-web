@@ -85,7 +85,6 @@ function ToC({ content, props }) {
     const finalMarkup = generateLinkMarkupv2(document.getElementById('post'));
     console.log(finalMarkup);
     setTocContent(finalMarkup);
-    console.log('ToC Rendered');
   }, [content]);
   return (
     <div

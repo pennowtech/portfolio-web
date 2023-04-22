@@ -2,6 +2,12 @@ module.exports = {
   env: {
     browser: true,
     es2021: true,
+    commonjs: true,
+  },
+  resolve: {
+    alias: {
+      '@utils': path.resolve(__dirname, 'src/utils/'),
+    },
   },
   extends: [
     'eslint:recommended',
@@ -28,9 +34,10 @@ module.exports = {
     'react/jsx-props-no-spreading': 0,
     'jsx-a11y/anchor-is-valid': 0,
     'no-unused-vars': 0,
-    'no-console': ['error', { allow: ['warn', 'error'] }],
+    'no-console': ['error', {allow: ['warn', 'error']}],
     'jsx-a11y/interactive-supports-focus': 0,
     'react/prop-types': 0,
+    'linebreak-style': 0,
 
   },
   settings: {

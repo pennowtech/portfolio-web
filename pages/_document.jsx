@@ -13,7 +13,6 @@ class MyDocument extends Document {
           <Main />
           <NextScript />
           <Footer />
-
         </body>
       </Html>
     );
