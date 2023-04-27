@@ -96,7 +96,7 @@ export const getStaticProps = async () => {
     },
   ).toPromise());
   const postResult = await Promise.all(unresolvedPromises);
-  const selectedposts = postResult.map((value) => value.data);
+  const selectedposts = postResult.map((value) => value?.data);
 
   return {
     props: {
