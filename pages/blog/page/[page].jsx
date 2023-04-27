@@ -54,7 +54,7 @@ export async function getStaticProps({ params }) {
   }).toPromise();
   return {
     props: {
-      data: s.data,
+      data: s?.data,
       urqlState: ssrCache.extractData(),
     },
     /*

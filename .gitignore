@@ -40,3 +40,4 @@ playwright-report/
 
 *.orig
 *.bk
+.embold/vscode-logs.log

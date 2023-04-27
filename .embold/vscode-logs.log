@@ -8902,3 +8902,10 @@
 2022-12-04 08:18:03 info: Congratulations, your extension "Embold" is now active!
 2022-12-04 09:24:56 info: file:///d%3A/Work/Code/portfolio_web/.git/.gitstatus.EfKclP
 2022-12-04 09:24:56 error: SQLITE_ERROR: no such table: issues
+2022-12-04 09:25:00 info: file:///d%3A/Work/Code/portfolio_web/.git/index.lock
+2022-12-04 09:25:00 error: SQLITE_ERROR: no such table: issues
+2022-12-04 09:25:01 info: file:///d%3A/Work/Code/portfolio_web/.git/index.lock
+2022-12-04 09:25:01 error: SQLITE_ERROR: no such table: issues
+2023-04-28 00:18:28 info: tempDirectory:c:\Users\to_su\.vscode\extensions\embold-vscode.embold-0.1.4\temp
+2023-04-28 00:18:28 info: Extraction complete for source: c:\Users\to_su\.vscode\extensions\embold-vscode.embold-0.1.4\resources\embold-scanner-archive.zip, destination: c:\Users\to_su\.vscode\extensions\embold-vscode.embold-0.1.4\temp
+2023-04-28 00:18:28 info: Congratulations, your extension "Embold" is now active!
