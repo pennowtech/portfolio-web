@@ -21,7 +21,6 @@ const Post = ({ post }) => {
         <a href={blogUrl}>
           <div className="cursor-pointer">
             <div className="relative w-full h-52 md:h-64 lg:h-80">
-
               <ImageWithFallback
                 src={post?.thumbnailUrl}
                 fallbackSrc="/blank.jpg"
@@ -31,14 +30,12 @@ const Post = ({ post }) => {
                 className="object-cover w-full rounded-xl"
               />
               <PostCategories categories={post.categories} />
-
             </div>
             <h3 className="mt-4 mb-1 text-3xl text-semibold font-Neuton">{post.title}</h3>
           </div>
         </a>
       </Link>
       <div className="my-4">
-
         <PostDate date={post.date} readingTime={post.readingTime} />
         <PostExcerpt blogUrl={blogUrl} excerpt={excerpt} length={180} className="my-4 lg:my-8" />
         <PostTags tags={post.tags} />

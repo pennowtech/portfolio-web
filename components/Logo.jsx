@@ -13,11 +13,19 @@ const Logo = ({ position }) => (
         alt="logo"
         className="w-32 cursor-pointer"
       /> */}
-      <span className={`font-Merriweather italic text-3xl md:text-4xl font-bold ${position === 'footer' || 'text-orange-600'}`}>Pen</span>
-      <span className={`font-Monda italic text-3xl md:text-4xl font-semibold ${position === 'footer' || 'text-blue-600 dark:text-blue-500'}`}>Now</span>
+      <span
+        className={`font-YantraManav text-3xl md:text-4xl font-bold ${position === 'footer' || 'text-orange-600'}`}
+      >
+        Pen
+
+      </span>
+      <span
+        className={`font-Rajdhani text-3xl md:text-4xl font-semibold ${position === 'footer' || 'text-blue-600 dark:text-blue-500'}`}
+      >
+        Now
+      </span>
       <span className="font-Roboto pl-1 text-xl md:text-2xl text-underline font-bold">tech</span>
     </a>
-
   </Link>
 );
 

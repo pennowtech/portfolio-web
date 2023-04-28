@@ -65,8 +65,9 @@ const Footer = () => (
             (I usually respond in 1-2 business days, but it can be longer).
           </div>
           <div className="py-8 flex flex-row justify-center items-center gap-8 text-3xl ">
-            {SocialIconList.map((icon) => (
-              <IconLink key={icon.title} SocialIcon={icon} />
+            {SocialIconList.map((icon, idx) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <IconLink key={idx} SocialIcon={icon} />
             ))}
           </div>
 

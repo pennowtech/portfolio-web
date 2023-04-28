@@ -1,26 +1,17 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { useMutation, defaultExchanges, useQuery } from 'urql';
-import { withUrqlClient } from 'next-urql';
-import { devtoolsExchange } from '@urql/devtools';
-// import { getToken } from '@utils/token';
+/* eslint-disable max-len */
+import React, { useState, useEffect } from 'react';
 import matter from 'gray-matter';
-import readingTime from 'reading-time';
 import dynamic from 'next/dynamic';
 import '@uiw/react-markdown-editor/markdown-editor.css';
 import '@uiw/react-markdown-preview/markdown.css';
 import { useRouter } from 'next/router';
 import { isEmpty } from 'lodash';
-import axios from 'axios';
-import Link from 'next/link';
-import { CREATE_POST, LOGIN_WP_USER, FIND_POST_BY_TITLE } from '../queries/queries';
-import { GRAPHQL_URL } from '../utils/consts';
 import { DateForDateTime } from '../utils/date';
 import {
   setToken, getToken, getLoggedUser, deleteToken,
 } from '../utils/token';
 import HeaderMain from '../components/HeaderMain';
 import FullLayout from '../components/FullLayout';
-import { gqlAuthClient, gqlClient } from '../utils/gqlclient';
 
 const MDEditor = dynamic(
   () => import('@uiw/react-markdown-editor').then((mod) => mod.default),
@@ -75,49 +66,35 @@ const CreatePost = ({ posts }) => {
     setLoading(true);
     setErrorMessage('');
 
-    gqlAuthClient().mutation(CREATE_POST, {
-      // eslint-disable-next-line max-len
-      title: postInfo.title, content: postInfo.content, description: postInfo.description, slug: postInfo.filename, date: postInfo.date, tag: postInfo.tags, cat: postInfo.categories,
-    })
-      .toPromise()
-      .then((result) => {
-        setLoading(false);
-        if (result.error) {
-          console.error('SDSingh Error:', result.error.message);
-          if (result.error.message === '[GraphQL] Internal server error') {
-            deleteToken();
-            const errorMsg = (
-              <>
-                <p>{result.error.message}</p>
-                <p>
-                  Click to&nbsp;
-                  <Link href="/login/?page=create-post"><a>Login</a></Link>
-                  {' '}
-                  again
-                </p>
-              </>
-            );
-            setErrorMessage(errorMsg);
-          }
-        } else {
-          // eslint-disable-next-line no-console
-          console.log('Post created succesfully...');
-        }
-      });
-
-    // return axios({
-    //   data: postInfo,
-    //   method: 'POST',
-    //   url: '/api/createpost',
+    // gqlAuthClient().mutation(CREATE_POST, {
+    //   // eslint-disable-next-line max-len
+    //   title: postInfo.title, content: postInfo.content, description: postInfo.description,
+    //         slug: postInfo.filename, date: postInfo.date, tag: postInfo.tags, cat: postInfo.categories,
     // })
+    //   .toPromise()
     //   .then((result) => {
     //     setLoading(false);
-    //     console.log(1234, result?.data?.message);
-    //     return result?.data?.success;
-    //   })
-    //   .catch(() => {
-    //     setLoading(false);
-    //     return false;
+    //     if (result.error) {
+    //       console.error('SDSingh Error:', result.error.message);
+    //       if (result.error.message === '[GraphQL] Internal server error') {
+    //         deleteToken();
+    //         const errorMsg = (
+    //           <>
+    //             <p>{result.error.message}</p>
+    //             <p>
+    //               Click to&nbsp;
+    //               <Link href="/login/?page=create-post"><a>Login</a></Link>
+    //               {' '}
+    //               again
+    //             </p>
+    //           </>
+    //         );
+    //         setErrorMessage(errorMsg);
+    //       }
+    //     } else {
+    //       // eslint-disable-next-line no-console
+    //       console.log('Post created succesfully...');
+    //     }
     //   });
   };
 
@@ -156,31 +133,5 @@ const CreatePost = ({ posts }) => {
     </FullLayout>
   );
 };
-
-// export const getStaticProps2 = async () => {
-//   // Read post
-//   const files = fs.readdirSync(path.join('posts'));
-//   const posts = files.map((filename) => {
-//     const markdownWithMeta = fs.readFileSync(
-//       path.join('posts', filename),
-//       'utf-8',
-//     );
-//     const { data: frontMatter, content } = matter(markdownWithMeta);
-//     // const readTime = Math.ceil(readingTime(content).minutes);
-
-//     return {
-//       frontMatter,
-//       blog: filename.split('.')[0],
-//     };
-//   });
-//   console.log('create post');
-//   posts.sort((a, b) => Date.parse(b.frontMatter.date) - Date.parse(a.frontMatter.date));
-
-//   return {
-//     props: {
-//       posts,
-//     },
-//   };
-// };
 
 export default CreatePost;

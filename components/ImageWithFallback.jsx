@@ -1,9 +1,9 @@
 // https://stackoverflow.com/a/66953317
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, forwardRef } from 'react';
 import Image from 'next/image';
 import { BASE_URL } from '../utils/consts';
 
-const ImageWithFallback = (props) => {
+const ImageWithFallback = forwardRef((props, ref) => {
   let hostname = '';
   if (typeof window !== 'undefined') {
     hostname = window.location.origin;
@@ -14,7 +14,7 @@ const ImageWithFallback = (props) => {
     setImgSrc(src);
   }, [src]);
 
-  const imgUrl = `${BASE_URL}${imgSrc}`;
+  const imgUrl = imgSrc || `${BASE_URL}/${imgSrc}`;
   // console.log(5454, 'hostname:', hostname, 'imgUrl: ', imgUrl);
 
   return (
@@ -26,6 +26,6 @@ const ImageWithFallback = (props) => {
       }}
     />
   );
-};
+});
 
 export default ImageWithFallback;

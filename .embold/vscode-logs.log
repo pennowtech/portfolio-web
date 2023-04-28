@@ -8909,3 +8909,11 @@
 2023-04-28 00:18:28 info: tempDirectory:c:\Users\to_su\.vscode\extensions\embold-vscode.embold-0.1.4\temp
 2023-04-28 00:18:28 info: Extraction complete for source: c:\Users\to_su\.vscode\extensions\embold-vscode.embold-0.1.4\resources\embold-scanner-archive.zip, destination: c:\Users\to_su\.vscode\extensions\embold-vscode.embold-0.1.4\temp
 2023-04-28 00:18:28 info: Congratulations, your extension "Embold" is now active!
+2023-04-28 00:29:18 info: file:///d%3A/Work/Code/portfolio_web/.git/index.lock
+2023-04-28 00:29:18 error: SQLITE_ERROR: no such table: issues
+2023-04-28 00:30:17 info: file:///d%3A/Work/Code/portfolio_web/.git/index.lock
+2023-04-28 00:30:17 error: SQLITE_ERROR: no such table: issues
+2023-04-28 00:30:22 info: file:///d%3A/Work/Code/portfolio_web/.git/index.lock
+2023-04-28 00:30:22 error: SQLITE_ERROR: no such table: issues
+2023-04-28 00:46:11 info: file:///d%3A/Work/Code/portfolio_web/.git/.gitstatus.mmAMoi
+2023-04-28 00:46:11 error: SQLITE_ERROR: no such table: issues

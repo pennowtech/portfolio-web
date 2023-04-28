@@ -20,22 +20,12 @@ export default function HomeArticles({ posts }) {
           x="0"
           y="0"
         >
-          <polygon
-            className="text-slate-200 dark:text-slate-400  fill-current"
-            points="2560 0 2560 100 0 100"
-          />
+          <polygon className="text-slate-200 dark:text-slate-400  fill-current" points="2560 0 2560 100 0 100" />
         </svg>
       </div>
-      <h1 className="mt-4 mb-0 font-Offside underline underline-offset-2 mx-auto justify-center text-center">Articles</h1>
-
+      <h1 className="mt-4 mb-0 font-Rajdhani-500 underline underline-offset-2 mx-auto justify-center text-center">Articles</h1>
       <div className="container lg:mx-auto py-10 ">
-        {posts.map((post, index) => {
-          const postData = FlatMDXData(post);
-          return (
-            <HorizontalCard post={postData} key={postData.link} />
-          );
-        })}
-
+        {posts.map((post, index) => <HorizontalCard post={post} key={post.id} />)}
       </div>
       <div className="grid font-Monda justify-center">
         <div className="button focus:shadow-outline cursor-pointer">

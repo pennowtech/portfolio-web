@@ -1,43 +1,68 @@
 import React from 'react';
-
-import { serialize } from 'next-mdx-remote/serialize';
-import readingTime from 'reading-time';
-
+import emoji from 'remark-emoji';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 
-import fs from 'fs';
-import path from 'path';
-import matter from 'gray-matter';
-
+import { getPublishedBlogPosts, getSingleBlogPost, getPage } from '@utils/notion';
 import dynamic from 'next/dynamic';
-import emoji from 'remark-emoji';
-import HeaderMain from '../../components/HeaderMain';
-import PrevNextPosts from '../../components/Post/PrevNextPosts';
-import BlogTitleBar from '../../components/BlogTitleBar';
-import Article from '../../components/Article';
-import FullLayout from '../../components/FullLayout';
-// import ToC from "../../components/ToC";
-export const getStaticPaths = async () => {
-  const files = fs.readdirSync(path.join('posts'));
-  const paths = files.map((filename) => ({
-    params: {
-      blog: filename.replace('.mdx', ''),
-    },
-  }));
-  return {
-    paths,
-    fallback: false,
+import HeaderMain from '@components/HeaderMain';
+import PrevNextPosts from '@components/Post/PrevNextPosts';
+import BlogTitleBar from '@components/BlogTitleBar';
+import Article from '@components/Article';
+import FullLayout from '@components/FullLayout';
+import { serialize } from 'next-mdx-remote/serialize';
+
+/* import for this particular component should be done in following
+ way. otherwise you'll get:
+ Must use import to load ES Module: ...\mdast-util-from-markdown\index.js require()
+ of ES modules is not supported
+*/
+const ToC = dynamic(() => import('@components/ToC'), {
+  ssr: false,
+});
+
+const PostPage = ({ postMeta, markdown, compiledMDSource }) => {
+  // TODO: ToC content to fix.
+  const content = '';
+
+  const metaInfo = {
+    title: postMeta.title,
+    metaKeywords: postMeta.tags.map((tag) => tag.name),
+    metaDesc: postMeta.description,
   };
+  console.error(metaInfo);
+
+  // TODO: prev next post fix.
+  const postsNextPrevInfo = {
+    nextPostLink: '',
+    nextPostTitle: '',
+    nextPostImg: '',
+    prevPostLink: '',
+    prevPostTitle: '',
+    prevPostImg: '',
+  };
+  return (
+    <FullLayout metaInfo={metaInfo}>
+      <HeaderMain />
+      <BlogTitleBar postMeta={postMeta} />
+
+      <div className="w-full lg:max-w-[1167px] lg:mx-auto flex flex-col wide:flex-row flex-grow overflow-hidden  ">
+        <div className="w-full h-full flex-grow p-3 overflow-auto">
+          <Article mdxSource={compiledMDSource} />
+          <PrevNextPosts postsNextPrevInfo={postsNextPrevInfo} />
+        </div>
+        <div className="sidebar font-Roboto wide:min-w-[30%] max-w-[400px] flex-shrink flex-grow-0 mx-auto p-4">
+          <ToC content={markdown} />
+        </div>
+      </div>
+    </FullLayout>
+  );
 };
 
-export const getStaticProps = async ({ params: { blog } }) => {
-  const markdownWithMeta = fs.readFileSync(
-    path.join('posts', `${blog}.mdx`),
-    'utf-8',
-  );
+export const getStaticProps = async (context) => {
+  const { blog } = context.params;
 
-  const { data: frontMatter, content } = matter(markdownWithMeta);
+  const post = await getSingleBlogPost(blog);
 
   const options = {
     mdxOptions: {
@@ -46,82 +71,34 @@ export const getStaticProps = async ({ params: { blog } }) => {
       rehypePlugins: [
         rehypeSlug,
         [rehypeAutolinkHeadings, { behavior: 'before' }],
-        // [
-        //   rehypeAutolinkHeadings,
-        //   {
-        //     properties: {
-        //       className: ["pr-4"],
-        //     },
-        //   },
-        // ],
       ],
     },
   };
-
-  const mdxSource = await serialize(content, options);
-  // console.log(mdxSource)
-  //   const source = `---
-  // title: Test
-  // --------
-
-  // Some **mdx** text, with a component <Button text={year}/>
-  //   `;
-
-  //   const { content } = matter(source);
-  //   const mdxSource = await serialize(content, { scope: data });
+  const compiledMDSource = await serialize(post.markdown, options);
 
   return {
     props: {
-      frontMatter: {
-        readingTime: readingTime(content),
-        ...frontMatter,
-      },
-      mdxSource,
-      content,
-      slug: blog,
+      markdown: await serialize(post.markdown),
+      postMeta: post.postMeta,
+      compiledMDSource,
     },
   };
 };
-/* import for this particular component should be done in following
- way. otherwise you'll get:
- Must use import to load ES Module: ...\mdast-util-from-markdown\index.js require()
- of ES modules is not supported
-*/
-const ToC = dynamic(() => import('../../components/ToC'), {
-  ssr: false,
-});
-const PostPage = ({
-  frontMatter, mdxSource, content, slug,
-}) => {
-  const metaInfo = {
-    title: frontMatter.title,
-    metaKeywords: frontMatter.tags.join(','),
-    metaDesc: frontMatter.description,
-  };
 
-  const postsNextPrevInfo = {
-    nextPostLink: frontMatter.nextPostLink,
-    nextPostTitle: frontMatter.nextPostTitle,
-    nextPostImg: frontMatter.nextPostImg,
-    prevPostLink: frontMatter.prevPostLink,
-    prevPostTitle: frontMatter.prevPostTitle,
-    prevPostImg: frontMatter.prevPostImg,
-  };
-  return (
-    <FullLayout metaInfo={metaInfo}>
-      <HeaderMain />
-      <BlogTitleBar frontMatter={frontMatter} />
+export async function getStaticPaths() {
+  const posts = await getPublishedBlogPosts();
 
-      <div className="w-full lg:max-w-[1167px] lg:mx-auto flex flex-col wide:flex-row flex-grow overflow-hidden  ">
-        <div className="w-full h-full flex-grow p-3 overflow-auto">
-          <Article frontMatter={frontMatter} mdxSource={mdxSource} />
-          <PrevNextPosts postsNextPrevInfo={postsNextPrevInfo} />
-        </div>
-        <div className="sidebar font-Roboto wide:min-w-[30%] max-w-[400px] flex-shrink flex-grow-0 mx-auto p-4">
-          <ToC content={content} className="text-base" />
-        </div>
-      </div>
-    </FullLayout>
-  );
-};
+  // Because we are generating static paths, you will have to redeploy your site whenever
+  // you make a change in Notion.
+  const paths = posts.map((post) => ({
+    params: {
+      blog: post.slug,
+    },
+  }));
+  return {
+    paths,
+    fallback: false,
+  };
+}
+
 export default PostPage;
