@@ -12,7 +12,6 @@ const SidebarCategories = () => {
   let categories = data?.categories?.nodes || [];
   categories.sort((a, b) => Date.parse(b.count) - Date.parse(a.count));
   categories = categories.filter((cat) => !(cat.name === 'Uncategorized' || cat.count === null));
-  console.warn(1234, 'Fetching All Posts data...', categories);
 
   return (
     <div className="font-medium mx-auto px-2 py-1 md:px-4 whitespace-nowrap overflow-hidden">
