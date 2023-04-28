@@ -1,4 +1,5 @@
 /* eslint-disable react/destructuring-assignment */
+/*  eslint-disable no-undef */
 import React from 'react';
 import { GET_TOTAL_POSTS_COUNT, PAGES_POSTS_QUERY } from '../../../queries/queries';
 import { getPageOffset } from '../../../components/Pagination/PaginationUtils';

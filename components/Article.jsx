@@ -6,18 +6,18 @@ import YouTube from './YouTube';
 
 const data = { btn_text: 'Click Me' };
 const MDXComponents = {
-    YouTube,
-    code,
-    Image,
+  YouTube,
+  code,
+  Image,
 };
-const Article = ({mdxSource}) => (
-    <article
-        id="post"
-        refs="articleRef"
-        className="prose-a:text-[#0366d6] dark:prose-a:text-blue-300 text-lg leading-8 prose-hr:my-2"
-    >
-        <MDXRemote {...mdxSource} components={MDXComponents} scope={data}/>
-    </article>
+const Article = ({ mdxSource }) => (
+  <article
+    id="post"
+    refs="articleRef"
+    className="prose-a:text-[#0366d6] dark:prose-a:text-blue-300 text-lg leading-8 prose-hr:my-2"
+  >
+    <MDXRemote {...mdxSource} components={MDXComponents} scope={data} />
+  </article>
 );
 
 export default Article;

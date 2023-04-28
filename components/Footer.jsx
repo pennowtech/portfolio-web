@@ -61,14 +61,15 @@ const Footer = () => (
         <div className="w-full lg:w-6/12 px-4">
           <div className="md:mt-8 text-3xl font-semibold">Let&apos;s keep in touch!</div>
           <div className="text-lg mt-0 mb-2 text-blueGray-600">
-              Find me on any of these platforms.
-              (I usually respond in 1-2 business days, but it can be longer).
+            Find me on any of these platforms.
+            (I usually respond in 1-2 business days, but it can be longer).
           </div>
-            <div className="py-8 flex flex-row justify-center items-center gap-8 text-3xl ">
-                {SocialIconList.map((icon, idx) => (
-                    <IconLink key={idx} SocialIcon={icon}/>
-                ))}
-            </div>
+          <div className="py-8 flex flex-row justify-center items-center gap-8 text-3xl ">
+            {SocialIconList.map((icon, idx) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <IconLink key={idx} SocialIcon={icon} />
+            ))}
+          </div>
 
         </div>
         <div className="w-full text-left mt-8 md:mt-0 lg:w-6/12 md:px-4">

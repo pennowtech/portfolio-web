@@ -1,4 +1,5 @@
-import React, {useState, useEffect} from 'react';
+/* eslint-disable max-len */
+import React, { useState, useEffect } from 'react';
 import matter from 'gray-matter';
 import dynamic from 'next/dynamic';
 import '@uiw/react-markdown-editor/markdown-editor.css';
@@ -67,7 +68,8 @@ const CreatePost = ({ posts }) => {
 
     // gqlAuthClient().mutation(CREATE_POST, {
     //   // eslint-disable-next-line max-len
-    //   title: postInfo.title, content: postInfo.content, description: postInfo.description, slug: postInfo.filename, date: postInfo.date, tag: postInfo.tags, cat: postInfo.categories,
+    //   title: postInfo.title, content: postInfo.content, description: postInfo.description,
+    //         slug: postInfo.filename, date: postInfo.date, tag: postInfo.tags, cat: postInfo.categories,
     // })
     //   .toPromise()
     //   .then((result) => {
@@ -94,7 +96,6 @@ const CreatePost = ({ posts }) => {
     //       console.log('Post created succesfully...');
     //     }
     //   });
-
   };
 
   return (

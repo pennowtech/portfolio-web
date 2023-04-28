@@ -1,67 +1,71 @@
-import React, {useEffect, useRef} from "react";
-import Link from "next/link";
-import ImageWithFallback from "@components/ImageWithFallback";
+import React, { useEffect, useRef } from 'react';
+import Link from 'next/link';
+import ImageWithFallback from '@components/ImageWithFallback';
 
-import {Element} from "react-scroll";
-import {getPublishedBlogPosts} from "@utils/notion";
-import IntroHighlight from "../components/Intro/IntroHighlight";
-import HomeArticles from "../components/HomeArticles";
-import "tailwindcss/tailwind.css";
-import ContactForm from "../components/ContactForm";
-import FullLayout from "../components/FullLayout";
-import AboutSection from "../components/Intro/AboutSection";
-import HeaderMain from "../components/HeaderMain";
-import PostTags from "../components/Post/PostTags";
+import { Element } from 'react-scroll';
+import { getPublishedBlogPosts } from '@utils/notion';
+import IntroHighlight from '../components/Intro/IntroHighlight';
+import HomeArticles from '../components/HomeArticles';
+import 'tailwindcss/tailwind.css';
+import ContactForm from '../components/ContactForm';
+import FullLayout from '../components/FullLayout';
+import AboutSection from '../components/Intro/AboutSection';
+import HeaderMain from '../components/HeaderMain';
+import PostTags from '../components/Post/PostTags';
 
-const Index = ({posts}) => {
-    const metaInfo = {
-        title: "Writing down my learnings",
-        metaKeywords: "Reactjs, C++, cpp, Python, Data Science, Database",
-        metaDesc: "",
-    };
-    return (
-        <FullLayout metaInfo={metaInfo}>
-            <HeaderMain homepage/>
+const Index = ({ posts }) => {
+  const metaInfo = {
+    title: 'Writing down my learnings',
+    metaKeywords: 'Reactjs, C++, cpp, Python, Data Science, Database',
+    metaDesc: '',
+  };
+  return (
+    <FullLayout metaInfo={metaInfo}>
+      <HeaderMain homepage />
 
-            <Element id="home" className="element">
-                <AboutSection/>
-                <div className="px-4 container font-Rajdhani mx-auto text-base">
-                    <p className="text-pink-500 dark:text-green-400 font-semibold">This whole website is designed by me,
-                        from designing till development. </p>
-                    <PostTags
-                        limitedTags={false}
-                        tags={[
-                            {name: "ReactJS"},
-                            {name: "NodeJS"},
-                            {name: "Python"},
-                            {name: "PostgreSQL"},
-                            {name: "GraphQL"},
-                            {name: "Qt/QML"},
-                            {name: "REST API"},
-                            {name: "Axios"},
-                        ]}
+      <Element id="home" className="element">
+        <AboutSection />
+        <div className="px-4 container font-Rajdhani mx-auto text-base">
+          <p className="text-pink-500 dark:text-green-400 font-semibold">
+            This whole website is designed by me,
+            from designing till development.
+            {' '}
+
+          </p>
+          <PostTags
+            limitedTags={false}
+            tags={[
+              { name: 'ReactJS' },
+              { name: 'NodeJS' },
+              { name: 'Python' },
+              { name: 'PostgreSQL' },
+              { name: 'GraphQL' },
+              { name: 'Qt/QML' },
+              { name: 'REST API' },
+              { name: 'Axios' },
+            ]}
           />
         </div>
       </Element>
       <Element id="about-me" className="element min-h-[630px]">
-          <IntroHighlight/>
+        <IntroHighlight />
       </Element>
-            <Element id="blog" className="element">
-                <HomeArticles posts={posts}/>
-            </Element>
-            <Element id="contact" className="element">
-                <ContactForm/>
-            </Element>
-        </FullLayout>
-    );
+      <Element id="blog" className="element">
+        <HomeArticles posts={posts} />
+      </Element>
+      <Element id="contact" className="element">
+        <ContactForm />
+      </Element>
+    </FullLayout>
+  );
 };
 
 export const getStaticProps = async () => {
-    const response = await getPublishedBlogPosts();
+  const response = await getPublishedBlogPosts();
 
   return {
     props: {
-        posts: response,
+      posts: response,
     },
   };
 };
