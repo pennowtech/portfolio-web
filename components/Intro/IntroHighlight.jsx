@@ -194,6 +194,7 @@ const IntroHighlight = () => (
               ]}
             />
           </div>
+        </div>
       </div>
       <div className="flex flex-wrap md:justify-center justify-start md:text-sm text-xs gap-8 md:gap-12 items-center">
         <h3 className="flex items-center text-3xl font-semibold gap-4 w-full">

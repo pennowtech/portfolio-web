@@ -19,11 +19,14 @@ const AboutSection = () => (
           backgroundImage: "url('/top-back-4.jpg')",
         }}
       >
-          <span id="blackOverlay" className="w-full h-full absolute opacity-50 bg-black"/>
+        <span
+          id="blackOverlay"
+          className="w-full h-full absolute opacity-50 bg-black"
+        />
       </div>
       <div
-          className="top-auto bottom-0 left-0 right-0 w-full absolute pointer-events-none overflow-hidden h-24"
-          style={{transform: "translateZ(0)"}}
+        className="top-auto bottom-0 left-0 right-0 w-full absolute pointer-events-none overflow-hidden h-24"
+        style={{ transform: 'translateZ(0)' }}
       >
         <svg
           className="absolute bottom-0 overflow-hidden"
@@ -34,7 +37,10 @@ const AboutSection = () => (
           x="0"
           y="0"
         >
-            <polygon className="text-slate-50 dark:text-gray-600 fill-current" points="2560 0 2560 100 0 100"/>
+          <polygon
+            className="text-slate-50 dark:text-gray-600 fill-current"
+            points="2560 0 2560 100 0 100"
+          />
         </svg>
       </div>
     </section>
@@ -179,48 +185,63 @@ const AboutSection = () => (
                     Technology and Travel are my passion.
                 </div>
             </div>
-              <div className="py-10 border-t border-blueGray-200 text-center max-w-screen-md mx-auto">
-                  <div className="flex flex-wrap justify-center">
-                      <div className="w-full lg:w-10/12 px-4">
-                          <div className="mb-4 text-base font-Roboto leading-relaxed">
-                              <ul className="list-none text-left">
-                                  <li className="mb-4">
-                                      <i className="fas fa-handshake mr-2 text-base"/> Hey there! It's great to meet
-                                      you. I'm excited to tell you a bit about my
-                                      background as a Software Architect.
-                                  </li>
-                                  <li className="mb-4">
-                                      <GrStackOverflow className="inline-block mr-2"/>
-                                      I've over 15 years of experience in various technologies. A few of them includes
-                                      Medical devices, Automative, Satellite
-                                      communications, Embedded systems, Network programming, and Data analytics.
-                                  </li>
-                                  <li>
-                                      <i className="fas fa-briefcase mr-2 text-base"/> I'm experienced in all phases of
-                                      the SDLC and Agile modeling: design,
-                                      development, testing, and management.
-                                  </li>
-                                  <li>
-                                      <i className="fas fa-code mr-2 text-base"/> In addition to my vast experience in
-                                      Architecture & Design, I also have a strong
-                                      development background in C++, Python, and JavaScript.
-                                  </li>
-                                  <li>
-                                      <FaCodepen className="inline-block mr-2"/>
-                                      I'm passionate about implementing high-quality, scalable software solutions.
-                                  </li>
-                                  <li>
-                                      <i className="fas fa-plane mr-2 text-base"/> This website is all about my
-                                      technical and travelling life. Yes, I like
-                                      traveling a lot.
-                                  </li>
-                              </ul>
-                          </div>
+            <div className="py-10 border-t border-blueGray-200 text-center max-w-screen-md mx-auto">
+              <div className="flex flex-wrap justify-center">
+                <div className="w-full lg:w-10/12 px-4">
+                  <div className="mb-4 text-base font-Roboto leading-relaxed">
+                    <ul className="list-none text-left">
+                      <li className="mb-4">
+                        <i className="fas fa-handshake mr-2 text-base" />
+                        Hey
+                        there! It&apos;s great to meet you. I&apos;m excited to
+                        tell you a bit about my background as a Software
+                        Architect.
+                      </li>
+                      <li className="mb-4">
+                        <GrStackOverflow className="inline-block mr-2" />
+                        I&apos;ve over 15 years of experience in various
+                        technologies. A few of them includes Medical devices,
+                        Automative, Satellite communications, Embedded systems,
+                        Network programming, and Data analytics.
+                      </li>
+                      <li>
+                        <i className="fas fa-briefcase mr-2 text-base" />
+                        I&apos;m experienced in all phases of the SDLC and Agile
+                        modeling: design, development, testing, and management.
+                      </li>
+                      <li>
+                        <i className="fas fa-code mr-2 text-base" />
+                        In addition
+                        to my vast experience in Architecture & Design, I also
+                        have a strong development background in C++, Python, and
+                        JavaScript.
+                      </li>
+                      <li>
+                        <FaCodepen className="inline-block mr-2" />
+                        I&apos;m passionate about implementing high-quality,
+                        scalable software solutions.
+                      </li>
+                      <li>
+                        <i className="fas fa-plane mr-2 text-base" />
+                        {' '}
+                        This
+                        website is all about my technical and travelling life.
+                        Yes, I like traveling a lot.
+                      </li>
+                    </ul>
+                  </div>
 
-                          <ScrollLink activeClass="active" to="about-me" spy smooth offset={-100} duration={500}>
-                              <div className="button w-36 mx-auto">Show more</div>
-                          </ScrollLink>
-                      </div>
+                  <ScrollLink
+                    activeClass="active"
+                    to="about-me"
+                    spy
+                    smooth
+                    offset={-100}
+                    duration={500}
+                  >
+                    <div className="button w-36 mx-auto">Show more</div>
+                  </ScrollLink>
+                </div>
               </div>
             </div>
           </div>
