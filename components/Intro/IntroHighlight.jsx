@@ -28,14 +28,14 @@ const IntroHighlight = () => (
     <div className="container mx-auto">
       <h2 className="mt-4 mb-0 font-Monda  underline-offset-2 mx-auto justify-center text-center">Profile Highlights</h2>
       <div className="flex flex-wrap items-center">
-        <div className="w-10/12 md:w-4/12 md:px-4 mx-auto lg:text-base mt-16">
+        <div className="w-10/12 md:w-4/12 md:px-2 font-Monda mx-auto lg:text-base mt-6">
           <ProfileCard
-            text="I worked in a lot of technology sectors ranging from embedded systems, networking devices, satellite communications, automotive, and robotics. Designed and developed over 30 advanced applications from use cases and functional requirements. "
+            text="Whether you are looking to create a sleek new website, design a mobile application, or develop a robust software system for your business, I have the skills and expertise to bring your vision to life."
             thumbnailUrl="/blank-2.jpeg"
           />
         </div>
 
-        <div className="w-full text-base leading-8 md:w-7/12 p-4 md:mt-16">
+        <div className="w-full text-base leading-8 md:w-7/12 p-4 mt-6">
           <div className="flex flex-wrap">
             <div className="w-full md:w-6/12 px-4">
               <div className="relative flex flex-col min-w-0 mb-8">
@@ -43,9 +43,8 @@ const IntroHighlight = () => (
                   <SiCplusplus />
                   <div className="ml-4">Programming Languages</div>
                 </div>
-                <p className="mb-4 font-Yantramanav text-base">
-                  Extensively worked with C++11/14/17, Qt, Python, FastAPI, ReactJS, TypeScript. These days,
-                  exploring Rust.
+                <p className="mb-4 font-Yantramanav font-medium text-base">
+                  Extensively worked with C++11/14/17, Qt, Python, FastAPI, ReactJS, TypeScript. These days, exploring Rust.
                 </p>
               </div>
 
@@ -54,10 +53,8 @@ const IntroHighlight = () => (
                   <BsHddNetwork />
                   <div className="ml-4">Network Programming</div>
                 </div>
-                <p className="mb-4 font-Yantramanav">
-                  Worked with various networking protocols, like &nbsp;TCP, IPV4,
-                  IPv6, DHCP, SNMP, ARP, etc.
-
+                <p className="mb-4 font-Yantramanav font-medium text-base">
+                  Worked with various networking protocols, like &nbsp;TCP, IPV4, IPv6, DHCP, SNMP, ARP, etc.
                 </p>
               </div>
             </div>
@@ -67,7 +64,7 @@ const IntroHighlight = () => (
                   <BsTools />
                   <div className="ml-4">Performance Monitoring</div>
                 </div>
-                <p className="mb-4 font-Yantramanav text-base">
+                <p className="mb-4 font-Yantramanav font-medium text-base">
                   Experience with performance monitoring tools like iperf, strace, ltrace, gprof, valgrind, etc.
                 </p>
               </div>
@@ -77,9 +74,8 @@ const IntroHighlight = () => (
                   <GrSystem />
                   <div className="ml-4">System Programming</div>
                 </div>
-                <p className="mb-4 font-Yantramanav text-base">
-                  Implemented many solutions based on IPCs (Sockets, Pipes, Threads, Shared Memory, Mutex, and
-                  Semaphores).
+                <p className="mb-4 font-Yantramanav font-medium text-base">
+                  Implemented many solutions based on IPCs (Sockets, Pipes, Threads, Shared Memory, Mutex, and Semaphores).
                 </p>
               </div>
             </div>
@@ -144,18 +140,8 @@ const IntroHighlight = () => (
               <TechCard color="gray-700" className=" " icon={<SiNextdotjs />} text="NextJS" />
             </div>
             <div className="my-4 w-full lg:w-6/12 px-4 lg:mt-16">
-              <TechCard
-                color="yellow-500"
-                className="bg-yellow-500 text-yellow-500 mb-4"
-                icon={<IoLogoJavascript />}
-                text="JavaScript"
-              />
-              <TechCard
-                color="green-600"
-                className="bg-green-600  text-green-600 mb-4"
-                icon={<SiQt />}
-                text="Qt, QML"
-              />
+              <TechCard color="yellow-500" className="bg-yellow-500 text-yellow-500 mb-4" icon={<IoLogoJavascript />} text="JavaScript" />
+              <TechCard color="green-600" className="bg-green-600  text-green-600 mb-4" icon={<SiQt />} text="Qt, QML" />
             </div>
           </div>
         </div>
@@ -163,14 +149,13 @@ const IntroHighlight = () => (
         <div className="w-full md:w-7/12 px-12 md:px-4 ml-auto mr-auto">
           <h3 className="flex font-bold font-Rajdhani items-center">
             <FaDraftingCompass />
-            <div className="mb-2 ml-2 my-2 font-semibold leading-normal">User Interface Design</div>
+            <div className="mb-2 ml-2 my-2 font-semibold">User Interface Design</div>
           </h3>
-          <p className="mt-4  font-Yantramanav text-xl text-blueGray-600">
-            In order to create a great User Experience, implemented applications and solutions using a range of
-            technologies and programming
+          <p className="mt-4  font-Roboto text-base font-medium">
+            In order to create a great User Experience, implemented applications and solutions using a range of technologies and programming
             languages.
           </p>
-          <ul className="list-none mt-6  text-base items-center font-Yantramanav">
+          <ul className="list-none mt-6  text-base font-medium items-center font-Yantramanav">
             <li className="flex">
               <MdOutlineDeveloperMode />
               <div className="ml-4">Full-Stack Web Development</div>

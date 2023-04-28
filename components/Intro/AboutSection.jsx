@@ -53,7 +53,7 @@ const AboutSection = () => (
                 <div className="-mt-16">
                   <Image
                     alt="..."
-                    src="/pic.png"
+                    src="/Logo.png"
                     width={150}
                     height={150}
                     className="shadow-none rounded-full w-auto h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 bg-white dark:bg-slate-500"
