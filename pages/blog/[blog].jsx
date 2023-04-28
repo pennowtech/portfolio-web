@@ -51,7 +51,7 @@ const PostPage = ({ postMeta, markdown, compiledMDSource }) => {
           <Article mdxSource={compiledMDSource} />
           <PrevNextPosts postsNextPrevInfo={postsNextPrevInfo} />
         </div>
-        <div className="sidebar font-Roboto wide:min-w-[30%] max-w-[400px] flex-shrink flex-grow-0 mx-auto p-4">
+        <div className="sidebar font-Yantramanav  text-sm leading-6 wide:min-w-[30%] max-w-[400px] flex-shrink flex-grow-0 mx-auto p-4">
           <ToC content={markdown} />
         </div>
       </div>

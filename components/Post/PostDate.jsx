@@ -9,7 +9,7 @@ import { DateForDateTime, DateForDisplay } from '../../utils/date';
 const PostDate = ({ date, readingTime, author }) => {
   if (date === undefined) { return ''; }
   return (
-    <div className="m-0 overflow-hidden text-muted text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase font-Monda flex h-full items-center">
+    <div className="m-0 overflow-hidden text-muted text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase font-RobotoCond flex h-full items-center">
       {author
       && (
       <div className="inline-block">

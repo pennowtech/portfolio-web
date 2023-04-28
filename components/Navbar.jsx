@@ -15,7 +15,7 @@ const Navbar = ({ homepage }) => {
         {MenuItems.map((item) => (
           <NavBarItem key={item.title} menu={item} homepage={homepage} />
         ))}
-        <li className="bg-[#2952e3] text-white py-2 px-7 mx-4 rounded-full cursor-pointer hover:bg-[#2546bd]">
+        <li className="bg-[#2952e3] text-white px-4 mx-4 rounded-full cursor-pointer hover:bg-[#2546bd]">
           Login
         </li>
       </ul>
@@ -28,7 +28,7 @@ const Navbar = ({ homepage }) => {
         />
         )}
         {isMenuVisible && (
-        <ul className="z-10 fixed -top-0 -right-2 p-3 w-[70vw] h-screen shadow-2xl md:hidden list-none flex flex-col justify-start items-end rounded-md bg-slate-200 animate-slide-in transition">
+        <ul className="z-10 fixed -top-0 -right-2 p-3 w-[70vw] h-screen shadow-2xl md:hidden list-none flex flex-col justify-start font-Comic items-end rounded-md bg-slate-200 animate-slide-in transition">
           <li>
             <AiOutlineClose
               fontSize={28}
@@ -40,7 +40,7 @@ const Navbar = ({ homepage }) => {
             <NavBarItem
               key={item.title}
               menu={item}
-              classprops="my-2 text-lg"
+              classprops="text-base"
             />
           ))}
         </ul>

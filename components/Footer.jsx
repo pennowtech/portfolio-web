@@ -15,7 +15,7 @@ const IconLinkRoundSquare = ({ SocialIcon }) => (
 const IconLink = ({ SocialIcon }) => (
   <div className="cursor-pointer inline-block hover:-translate-y-2">
     <Link href={SocialIcon.path}>
-      <a>{SocialIcon.icon}</a>
+      <a target="_blank">{SocialIcon.icon}</a>
     </Link>
   </div>
 );
@@ -36,7 +36,7 @@ const OtherMenuLink = ({ menuItem }) => (
 );
 
 const Footer = () => (
-  <footer className="relative font-Monda  bg-slate-700 dark:bg-slate-800 p-4 prose-a:text-gray-400 text-gray-400 prose-a:hover:text-gray-400 dark:prose-a:text-gray-400 dark:prose-a:hover:text-gray-400 pt-8 pb-6 mt-20">
+  <footer className="relative font-RobotoCond  bg-slate-700 dark:bg-slate-800 p-4 prose-a:text-gray-400 text-gray-400 prose-a:hover:text-gray-400 dark:prose-a:text-gray-400 dark:prose-a:hover:text-gray-400 pt-8 pb-6 mt-20">
     <div
       className="bottom-auto top-0 left-0 right-0 w-full absolute pointer-events-none overflow-hidden -mt-20 h-20 "
       style={{ transform: 'translateZ(0)' }}
