@@ -11,8 +11,6 @@ module.exports = removeImports({
       },
     ];
   },
-  fs: false,
-  path: false,
   images: {
     domains: ['www.nasa.gov', 'pennow.tech', 'pixabay.com', 'www.google.com', 'pennow.tech'],
 
