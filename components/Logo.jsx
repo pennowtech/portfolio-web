@@ -14,13 +14,13 @@ const Logo = ({ position }) => (
         className="w-32 cursor-pointer"
       /> */}
       <span
-        className={`font-Rajdhani text-3xl md:text-4xl font-bold ${position === 'footer' || 'text-orange-600'}`}
+        className={`font-Rajdhani text-2xl md:text-4xl font-bold ${position === 'footer' || 'text-orange-600'}`}
       >
         Techish
 
       </span>
       <span
-        className={`font-Rajdhani text-3xl md:text-4xl font-semibold ${position === 'footer' || 'text-blue-600 dark:text-blue-500'}`}
+        className={`font-Rajdhani text-2xl md:text-4xl font-semibold ${position === 'footer' || 'text-blue-600 dark:text-blue-500'}`}
       >
         Deep
       </span>

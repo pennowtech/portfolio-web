@@ -110,13 +110,9 @@ const AboutSection = () => (
                 <i className="fas fa-map-marker-alt mr-2 text-lg" />
                 Germany
               </div>
-              <div className="mb-2 font-bold text-gray-500 dark:text-slate-200 mt-10">
+              <div className="mb-2 font-bold text-gray-500 dark:text-slate-200 mt-2">
                 <i className="fas fa-briefcase mr-2 text-lg" />
                 Senior Solution Architect
-              </div>
-              <div className="mb-2 font-Barlow text-gray-500 dark:text-slate-200">
-                <i className="fas fa-university mr-2 text-lg" />
-                Technology and Travel are my passion.
               </div>
             </div>
             <div className="py-10 border-t border-blueGray-200 text-center max-w-screen-md mx-auto">
