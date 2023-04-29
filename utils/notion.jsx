@@ -20,6 +20,33 @@ export const getNotionDatabase = async () => {
   return response.results;
 };
 
+const pageToPostTransformer = (page, isPrevNextPostIteration = false) => {
+  let imgUrl = page.cover?.type === 'file' ? page.cover?.file.url : page.cover?.external?.url;
+  imgUrl = imgUrl || '';
+
+  // eslint-disable-next-line max-len
+  // const description = page.properties.Description.rich_text[0] ? page.properties.Description.rich_text[0].plain_text : '';
+
+  return {
+    id: page.id,
+    thumbnailUrl: imgUrl,
+    title: page.properties.Name.title[0].plain_text,
+    tags: page.properties.Tags.multi_select,
+    categories: page.properties.category.select,
+    description: page.properties.Description.rich_text[0]?.plain_text ?? '',
+    date: dayjs(page.properties.Updated.last_edited_time).format('LL'),
+    slug: page.properties.Slug.formula.string,
+    infoPrevNextPost: {
+      nextPostLink: page.properties.NextPostLink.rich_text[0]?.plain_text ?? '',
+      nextPostTitle: page.properties.NextPostTitle.rich_text[0]?.plain_text ?? '',
+      nextPostImg: page.properties.NextPostImg.rich_text[0]?.plain_text ?? '',
+      prevPostLink: page.properties.PrevPostLink.rich_text[0]?.plain_text ?? '',
+      prevPostTitle: page.properties.PrevPostTitle.rich_text[0]?.plain_text ?? '',
+      prevPostImg: page.properties.PrevPostImg.rich_text[0]?.plain_text ?? '',
+    },
+  };
+};
+
 export const getPublishedBlogPosts = async () => {
   // list blog posts
   const response = await notion.databases.query({
@@ -92,27 +119,5 @@ export const getSingleBlogPost = async (slug) => {
   return {
     postMeta,
     markdown,
-  };
-};
-
-const pageToPostTransformer = (page) => {
-  let imgUrl = page.cover?.type === 'file'
-    ? page.cover?.file.url
-    : page.cover?.external?.url;
-  imgUrl = imgUrl || '';
-
-  const description = page.properties.Description.rich_text[0]
-    ? page.properties.Description.rich_text[0].plain_text
-    : '';
-
-  return {
-    id: page.id,
-    thumbnailUrl: imgUrl,
-    title: page.properties.Name.title[0].plain_text,
-    tags: page.properties.Tags.multi_select,
-    categories: page.properties.category.select,
-    description,
-    date: dayjs(page.properties.Updated.last_edited_time).format('LL'),
-    slug: page.properties.Slug.formula.string,
   };
 };

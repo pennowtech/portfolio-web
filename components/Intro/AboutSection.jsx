@@ -53,7 +53,7 @@ const AboutSection = () => (
                 <div className="-mt-16">
                   <Image
                     alt="..."
-                    src="/pic.png"
+                    src="/Logo.png"
                     width={150}
                     height={150}
                     className="shadow-none rounded-full w-auto h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 bg-white dark:bg-slate-500"
@@ -110,13 +110,9 @@ const AboutSection = () => (
                 <i className="fas fa-map-marker-alt mr-2 text-lg" />
                 Germany
               </div>
-              <div className="mb-2 font-bold text-gray-500 dark:text-slate-200 mt-10">
+              <div className="mb-2 font-bold text-gray-500 dark:text-slate-200 mt-2">
                 <i className="fas fa-briefcase mr-2 text-lg" />
                 Senior Solution Architect
-              </div>
-              <div className="mb-2 font-Barlow text-gray-500 dark:text-slate-200">
-                <i className="fas fa-university mr-2 text-lg" />
-                Technology and Travel are my passion.
               </div>
             </div>
             <div className="py-10 border-t border-blueGray-200 text-center max-w-screen-md mx-auto">
@@ -126,9 +122,8 @@ const AboutSection = () => (
                     <ul className="list-none text-left">
                       <li className="mb-4">
                         <i className="fas fa-handshake mr-2 text-base" />
-                        Hey
-                        there! It&apos;s great to meet you. I&apos;m excited to
-                        tell you a bit about my background as a Software
+                        Hey there! It&apos;s great to meet you. I&apos;m excited
+                        to tell you a bit about my background as a Software
                         Architect.
                       </li>
                       <li className="mb-4">
@@ -145,10 +140,9 @@ const AboutSection = () => (
                       </li>
                       <li>
                         <i className="fas fa-code mr-2 text-base" />
-                        In addition
-                        to my vast experience in Architecture & Design, I also
-                        have a strong development background in C++, Python, and
-                        JavaScript.
+                        In addition to my vast experience in Architecture &
+                        Design, I also have a strong development background in
+                        C++, Python, and JavaScript.
                       </li>
                       <li>
                         <FaCodepen className="inline-block mr-2" />
@@ -157,14 +151,11 @@ const AboutSection = () => (
                       </li>
                       <li>
                         <i className="fas fa-plane mr-2 text-base" />
-                        {' '}
-                        This
-                        website is all about my technical and travelling life.
-                        Yes, I like traveling a lot.
+                        This website is all about my technical and travelling
+                        life. Yes, I like traveling a lot.
                       </li>
                     </ul>
                   </div>
-
                   <ScrollLink
                     activeClass="active"
                     to="about-me"

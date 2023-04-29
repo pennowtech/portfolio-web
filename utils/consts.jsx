@@ -1,11 +1,10 @@
 import React from 'react';
 
 import {
-  ImYoutube, ImGithub, ImLinkedin, ImTwitter,
+  ImYoutube, ImGithub, ImInstagram, ImTwitter,
 } from 'react-icons/im';
 
 const MenuItems = [
-  { title: 'Home', path: '' },
   { title: 'Articles', path: 'blog' },
   { title: 'About Me', path: 'about-me' },
   { title: 'Contact', path: 'contact' },
@@ -20,10 +19,22 @@ const FooterOtherMenuItems = [
   { title: 'Privacy Policy', path: 'articles' },
 ];
 const SocialIconList = [
-  { icon: <ImYoutube />, path: '/', title: 'youtube' },
-  { icon: <ImGithub />, path: '/', title: 'github' },
-  { icon: <ImLinkedin />, path: '/', title: 'linkedin' },
-  { icon: <ImTwitter />, path: 'http://twitter.com', title: 'twitter' },
+  { icon: <ImYoutube />, path: 'http://youtube.com', title: 'youtube' },
+  {
+    icon: <ImGithub />,
+    path: 'https://github.com/techishdeep',
+    title: 'github',
+  },
+  {
+    icon: <ImInstagram />,
+    path: 'https://instagram.com/techishdeep',
+    title: 'linkedin',
+  },
+  {
+    icon: <ImTwitter />,
+    path: 'https://twitter.com/techishdeep',
+    title: 'twitter',
+  },
 ];
 
 const GRAPHQL_URL = 'https://pennow.tech/graphql';

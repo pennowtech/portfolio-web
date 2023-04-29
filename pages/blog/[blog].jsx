@@ -30,17 +30,9 @@ const PostPage = ({ postMeta, markdown, compiledMDSource }) => {
     metaKeywords: postMeta.tags.map((tag) => tag.name),
     metaDesc: postMeta.description,
   };
-  console.error(metaInfo);
+  console.error(334343, postMeta);
 
   // TODO: prev next post fix.
-  const postsNextPrevInfo = {
-    nextPostLink: '',
-    nextPostTitle: '',
-    nextPostImg: '',
-    prevPostLink: '',
-    prevPostTitle: '',
-    prevPostImg: '',
-  };
   return (
     <FullLayout metaInfo={metaInfo}>
       <HeaderMain />
@@ -49,9 +41,9 @@ const PostPage = ({ postMeta, markdown, compiledMDSource }) => {
       <div className="w-full lg:max-w-[1167px] lg:mx-auto flex flex-col wide:flex-row flex-grow overflow-hidden  ">
         <div className="w-full h-full flex-grow p-3 overflow-auto">
           <Article mdxSource={compiledMDSource} />
-          <PrevNextPosts postsNextPrevInfo={postsNextPrevInfo} />
+          <PrevNextPosts postsNextPrevInfo={postMeta.infoPrevNextPost} />
         </div>
-        <div className="sidebar font-Roboto wide:min-w-[30%] max-w-[400px] flex-shrink flex-grow-0 mx-auto p-4">
+        <div className="sidebar font-Yantramanav  text-sm leading-6 wide:min-w-[30%] max-w-[400px] flex-shrink flex-grow-0 mx-auto p-4">
           <ToC content={markdown} />
         </div>
       </div>

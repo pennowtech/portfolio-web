@@ -51,12 +51,15 @@ function MyApp({ Component, pageProps }) {
       </Script>
       <Head>
         <title>My Personal Blog</title>
-        <meta name="description" content="My personal Blog on modern software technologies" />
-        <link rel="icon" href="/favicon.png" />
+        <meta
+          name="description"
+          content="My personal Blog on modern software technologies"
+        />
+        <link rel="icon" href="/Logo.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Merriweather&family=Fira+Code:wght@400&family=Roboto+Condensed&family=Monda&family=Neuton:wght@700&family=Offside&family=Rajdhani:wght@300;500&family=Yantramanav:wght@300;500&family=Barlow+Condensed&display=swap"
+          href="https://fonts.googleapis.com/css2??family=Barlow:wght@400;700&family=Comic+Neue:wght@700&family=Inter:wght@400&family=Noto+Sans+JP:wght@400&family=Roboto+Slab:wght@400;700&family=Merriweather&family=Fira+Code:wght@400&family=Roboto+Condensed&family=Monda&family=Neuton:wght@700&family=Offside&family=Rajdhani:wght@300;500&family=Yantramanav:wght@400;500&family=Barlow+Condensed&display=swap"
           rel="stylesheet"
         />
         <link

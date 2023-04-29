@@ -14,7 +14,7 @@ const ProfileCard = ({ text, thumbnailUrl }) => (
             layout="intrinsic"
             className="object-cover w-full"
             width={700}
-            height={465}
+            height={365}
           />
 
           <div className="relative -mt-10 bg-slate-600 dark:bg-gray-800">
@@ -37,7 +37,7 @@ const ProfileCard = ({ text, thumbnailUrl }) => (
                 />
               </svg>
             </div>
-            <p className="px-6 py-2 my-2 font-Monda">{text}</p>
+            <p className="px-6 py-2 my-2">{text}</p>
 
           </div>
         </div>

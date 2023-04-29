@@ -89,7 +89,7 @@ function ToC({ content, props }) {
   return (
     <div
       id="name"
-      className="toc border-2 text-base leading-7 rounded-md py-4 overflow-hidden"
+      className="toc border-2 rounded-md py-4 overflow-hidden"
     >
       {tocContent}
     </div>
