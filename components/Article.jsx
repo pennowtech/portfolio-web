@@ -13,7 +13,6 @@ const MDXComponents = {
 const Article = ({ mdxSource }) => (
   <article
     id="post"
-    refs="articleRef"
     className="prose-a:text-[#0366d6] dark:prose-a:text-blue-300 text-base leading-7 prose-hr:my-2"
   >
     <MDXRemote {...mdxSource} components={MDXComponents} scope={data} />
