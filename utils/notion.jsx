@@ -121,3 +121,76 @@ export const getSingleBlogPost = async (slug) => {
     markdown,
   };
 };
+
+export const getSinglePage = async (slug) => {
+  const n2m = new NotionToMarkdown({ notionClient: notion });
+
+  try {
+    // list of blog posts
+    const response = await notion.databases.query({
+      database_id: databaseId,
+      filter: {
+        property: 'Slug',
+        formula: {
+          string: {
+            equals: slug, // slug
+          },
+        },
+      },
+      sorts: [
+        {
+          property: 'Updated',
+          direction: 'descending',
+        },
+      ],
+    });
+
+    if (!response.results[0]) {
+      throw new Error('No results available');
+    }
+
+    // grab page from notion
+    const page = response.results[0];
+    const blocks = await notion.blocks.children.list({ block_id: page.id });
+
+    const asyncTasks = blocks.results
+      .filter((result) => result.has_children)
+      .map(async (result) => {
+        const mdBlocks = await n2m.pageToMarkdown(result.id);
+        const markdown = n2m.toMarkdownString(mdBlocks);
+        const headingText = result[result.type].rich_text[0].plain_text;
+
+        const replacedWithFontAwesome = markdown.replace(
+          /&#x(.*?);/,
+          (a, b) => `<i className="fa fa-regular">&#x${b};</i>`,
+        );
+
+        switch (result.type) {
+          case 'heading_2':
+            if (['Profile Highlights'].includes(headingText)) {
+              return markdown;
+            }
+
+            return `## ${headingText}\n${markdown}`;
+          case 'heading_3':
+            if (['Programming', 'Tools'].includes(headingText)) {
+              return markdown;
+            }
+
+            return `### ${headingText}\n${markdown}`;
+          default:
+            return null;
+        }
+      });
+
+    const headingBlocks = await Promise.all(asyncTasks).then((results) => results.filter(Boolean));
+
+    return {
+      blocks,
+      headingBlocks,
+    };
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
