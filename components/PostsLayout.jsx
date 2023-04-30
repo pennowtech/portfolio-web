@@ -5,7 +5,10 @@ import Sidebar from './Sidebar';
 import HeaderMain from './HeaderMain';
 
 const PostsLayout = ({
-  pageTitle = 'Title', metaInfo, posts, ...props
+  pageTitle = 'Title',
+  metaInfo,
+  recentPosts,
+  ...props
 }) => {
   const { title, metaKeywords, metaDesc } = metaInfo;
   return (
@@ -21,14 +24,11 @@ const PostsLayout = ({
           <div className="container lg:mx-auto p-4 lg:py-12 ">
             <h1 className="mt-8">{pageTitle}</h1>
             <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-3 gap-8 overflow-hidden ">
-              <div className="col-span-2 mb-8">
-                {props.children}
-              </div>
-              <Sidebar className="lg:ml-8 lg:-mt-8" />
+              <div className="col-span-2 mb-8">{props.children}</div>
+              <Sidebar recentPosts={recentPosts} className="lg:ml-8 lg:-mt-8" />
             </div>
           </div>
         </div>
-
       </div>
     </>
   );

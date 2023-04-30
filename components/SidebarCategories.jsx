@@ -3,15 +3,14 @@ import Link from 'next/link';
 import { useQuery } from 'urql';
 import { CATEGORY_LIST } from '../queries/queries';
 
-const SidebarCategories = () => {
-  const [result, getPosts] = useQuery({ query: CATEGORY_LIST });
-  const { data, fetching, error } = result;
-  if (fetching) return <div>Fetching</div>;
-  if (error) return <div>{error}</div>;
+const { Client } = require('@notionhq/client');
 
-  let categories = data?.categories?.nodes || [];
-  categories.sort((a, b) => Date.parse(b.count) - Date.parse(a.count));
-  categories = categories.filter((cat) => !(cat.name === 'Uncategorized' || cat.count === null));
+const notion = new Client({
+  auth: 'secret_8uupssC8TcKmpNN3HhsWShJAb8jIol19lvng5dZWH1K',
+});
+
+const SidebarCategories = () => {
+  const categories = [];
 
   return (
     <div className="font-medium mx-auto px-2 py-1 md:px-4 whitespace-nowrap overflow-hidden">

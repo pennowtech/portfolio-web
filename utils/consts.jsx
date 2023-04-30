@@ -91,7 +91,7 @@ const skills = [
   { name: 'Linux', icon: SiLinux },
 ];
 
-const PER_PAGE_BLOGS = 5;
+const PER_PAGE_BLOGS = 3;
 
 const isDev = process.env.NODE_ENV === 'development';
 const REMOTE_BASE_URL = 'https://sukhdeep.online';

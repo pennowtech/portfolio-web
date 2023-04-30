@@ -59,7 +59,7 @@ const Index = ({ posts, headingBlocks }) => {
 };
 
 export const getStaticProps = async () => {
-  const response = await getPublishedBlogPosts();
+  const response = await getPublishedBlogPosts(5);
   const { blocks, headingBlocks } = await getSinglePage('About-Me');
   return {
     props: {

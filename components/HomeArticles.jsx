@@ -4,6 +4,11 @@ import Link from 'next/link';
 import { FlatMDXData } from '../utils/FlatData';
 import HorizontalCard from './Post/HorizontalCard';
 
+/**
+ * The main component.
+ *
+ * @visibleName The Best layout Ever 🐙
+ */
 export default function HomeArticles({ posts }) {
   return (
     <div className="relative px-2 bg-slate-200 dark:bg-slate-400 mt-8 pb-8">

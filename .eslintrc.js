@@ -31,6 +31,7 @@ module.exports = {
     'jsx-a11y/interactive-supports-focus': 0,
     'react/prop-types': 0,
     'linebreak-style': 0,
+    'max-len': [1, { code: 130 }],
   },
   settings: {
     'import/resolver': {
