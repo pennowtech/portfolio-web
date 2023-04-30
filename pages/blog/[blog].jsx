@@ -3,7 +3,7 @@ import emoji from 'remark-emoji';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 
-import { getPublishedBlogPosts, getSingleBlogPost, getPage } from '@utils/notion';
+import { getPublishedBlogPosts, getSingleBlogPost } from '@utils/notion';
 import dynamic from 'next/dynamic';
 import HeaderMain from '@components/HeaderMain';
 import PrevNextPosts from '@components/Post/PrevNextPosts';
@@ -30,7 +30,6 @@ const PostPage = ({ postMeta, markdown, compiledMDSource }) => {
     metaKeywords: postMeta.tags.map((tag) => tag.name),
     metaDesc: postMeta.description,
   };
-  console.error(334343, postMeta);
 
   // TODO: prev next post fix.
   return (

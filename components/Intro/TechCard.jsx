@@ -2,10 +2,10 @@ import React from 'react';
 import Image from 'next/image';
 
 const TechCard = ({
-  color, icon, className, text,
+  icon, className, text,
 }) => (
   <div className="h-auto">
-    <div className={`bg-${color} ${className} shadow-lg rounded-lg text-center px-8 py-4 mt-8">`}>
+    <div className={`${className} shadow-lg rounded-lg text-center py-3 mt-6">`}>
       {/* <Image
         alt="..."
         width={48}
@@ -13,11 +13,10 @@ const TechCard = ({
         className="shadow-md rounded-full max-w-full w-16 mx-auto p-2 bg-white"
         src={icon}
       /> */}
-      <div className={`text-${color} shadow-md rounded-full max-w-full w-9 h-9 mx-auto p-2 bg-white`}>
+      <div className="shadow-md rounded-full max-w-full w-6 h-6 mx-auto p-1 bg-white">
         {icon}
-
       </div>
-      <div className="text-lg text-white mt-4 font-semibold">
+      <div className=" text-white mt-2 font-semibold">
         {text}
       </div>
     </div>

@@ -1,4 +1,30 @@
 import React from 'react';
+import {
+  SiNextdotjs,
+  SiCplusplus,
+  SiQt,
+  SiSolidity,
+  SiRos,
+  SiSocketdotio,
+  SiDocker,
+  SiKubernetes,
+  SiApachespark,
+  SiApachekafka,
+  SiWireshark,
+  SiGit,
+  SiPytest,
+  SiPostgresql,
+  SiMaterialdesign,
+  SiJest,
+  SiGraphql,
+  SiFastapi,
+  SiLinux,
+  SiRust,
+} from 'react-icons/si';
+import { FaNetworkWired, FaPython } from 'react-icons/fa';
+import { GrReactjs } from 'react-icons/gr';
+import { IoLogoJavascript } from 'react-icons/io';
+import { MdOutlineDesignServices } from 'react-icons/md';
 
 import {
   ImYoutube, ImGithub, ImInstagram, ImTwitter,
@@ -37,7 +63,34 @@ const SocialIconList = [
   },
 ];
 
-const GRAPHQL_URL = 'https://pennow.tech/graphql';
+const skills = [
+  { name: 'C++ 11/17', icon: SiCplusplus },
+  { name: 'Rust', icon: SiRust },
+  { name: 'Python', icon: FaPython },
+  { name: 'FastAPI', icon: SiFastapi },
+  { name: 'Pytest', icon: SiPytest },
+  { name: 'Qt', icon: SiQt },
+  { name: 'Solidity', icon: SiSolidity },
+  { name: 'TCP/IP', icon: FaNetworkWired },
+  { name: 'Sockets', icon: SiSocketdotio },
+  { name: 'Wireshark', icon: SiWireshark },
+  { name: 'ROS', icon: SiRos },
+  { name: 'ReactJS', icon: GrReactjs },
+  { name: 'Next.JS', icon: SiNextdotjs },
+  { name: 'JS', icon: IoLogoJavascript },
+  { name: 'Jest', icon: SiJest },
+  { name: 'PostgreSQL', icon: SiPostgresql },
+  { name: 'GraphQL', icon: SiGraphql },
+  { name: 'Docker', icon: SiDocker },
+  { name: 'Kubernetes', icon: SiKubernetes },
+  { name: 'PySpark', icon: SiApachespark },
+  { name: 'Kafka', icon: SiApachekafka },
+  { name: 'Softw. Arch.', icon: MdOutlineDesignServices },
+  { name: 'UML', icon: SiMaterialdesign },
+  { name: 'Git', icon: SiGit },
+  { name: 'Linux', icon: SiLinux },
+];
+
 const PER_PAGE_BLOGS = 5;
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -48,5 +101,5 @@ export const BASE_URL = isDev ? 'http://localhost:3000' : REMOTE_BASE_URL;
 export const SelectedPostsList = [14, 44, 12];
 // export const SelectedPostsList = [];
 export {
-  MenuItems, SocialIconList, FooterMainMenuItems, FooterOtherMenuItems, GRAPHQL_URL, PER_PAGE_BLOGS,
+  MenuItems, SocialIconList, FooterMainMenuItems, FooterOtherMenuItems, skills, PER_PAGE_BLOGS,
 };

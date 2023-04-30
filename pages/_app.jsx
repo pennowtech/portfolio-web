@@ -10,6 +10,7 @@ import AlertTemplate from 'react-alert-template-basic';
 import nProgress from 'nprogress';
 import 'tailwindcss/tailwind.css';
 import '../styles/globals.css';
+import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 
 import { logPageView } from '@utils/ga';
 
@@ -57,7 +58,11 @@ function MyApp({ Component, pageProps }) {
         />
         <link rel="icon" href="/Logo.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="true"
+        />
         <link
           href="https://fonts.googleapis.com/css2??family=Barlow:wght@400;700&family=Comic+Neue:wght@700&family=Inter:wght@400&family=Noto+Sans+JP:wght@400&family=Roboto+Slab:wght@400;700&family=Merriweather&family=Fira+Code:wght@400&family=Roboto+Condensed&family=Monda&family=Neuton:wght@700&family=Offside&family=Rajdhani:wght@300;500&family=Yantramanav:wght@400;500&family=Barlow+Condensed&display=swap"
           rel="stylesheet"
@@ -70,17 +75,30 @@ function MyApp({ Component, pageProps }) {
         />
         <Script strategy="beforeInteractive" src="../utils/persistTheme.jsx" />
       </Head>
-      <div className="appjs w-full ">
-        <main className="main min-h-screen">
-          <ThemeProvider attribute="class">
-            {/* <Provider value={client}> */}
-            <AlertProvider template={AlertTemplate}>
-              <Component {...pageProps} />
-            </AlertProvider>
-            {/* </Provider> */}
-          </ThemeProvider>
-        </main>
-      </div>
+      {/* <Script
+        src="https://www.google.com/recaptcha/api.js?render=6LffScwlAAAAADpicS4xvbjFg3tSTnCVOTkaMrld"
+      /> */}
+      <GoogleReCaptchaProvider
+        reCaptchaKey={process.env.NEXT_PUBLIC_GOOGLE_CAPATCHA_SITE_KEY}
+        scriptProps={{
+          async: false, // optional, default to false,
+          defer: true, // optional, default to false
+          appendTo: 'body', // optional, default to "head", can be "head" or "body",
+          nonce: undefined,
+        }}
+      >
+        <div className="appjs w-full ">
+          <main className="main min-h-screen">
+            <ThemeProvider attribute="class">
+              {/* <Provider value={client}> */}
+              <AlertProvider template={AlertTemplate}>
+                <Component {...pageProps} />
+              </AlertProvider>
+              {/* </Provider> */}
+            </ThemeProvider>
+          </main>
+        </div>
+      </GoogleReCaptchaProvider>
     </>
   );
 }

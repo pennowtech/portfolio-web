@@ -36,7 +36,7 @@ const OtherMenuLink = ({ menuItem }) => (
 );
 
 const Footer = () => (
-  <footer className="relative font-RobotoCond  bg-slate-700 dark:bg-slate-800 p-4 prose-a:text-gray-400 text-gray-400 prose-a:hover:text-gray-400 dark:prose-a:text-gray-400 dark:prose-a:hover:text-gray-400 pt-8 pb-6 mt-20">
+  <footer className="relative font-RobotoCond  bg-slate-700 dark:bg-slate-800 p-4 prose-a:text-gray-400 text-gray-400 prose-a:hover:text-gray-400 dark:prose-a:text-gray-400 dark:prose-a:hover:text-gray-400 pt-8 pb-6 mt-6">
     <div
       className="bottom-auto top-0 left-0 right-0 w-full absolute pointer-events-none overflow-hidden -mt-20 h-20 "
       style={{ transform: 'translateZ(0)' }}

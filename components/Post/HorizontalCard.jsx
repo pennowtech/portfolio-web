@@ -9,9 +9,6 @@ import PostExcerpt from './PostExcerpt';
 
 const HorizontalCard = ({ post }) => {
   const myRef = useRef(null);
-  useEffect(() => {
-    console.warn(myRef.current);
-  }, []);
 
   return (
     <div className="max-w-[100%] block rounded-lg overflow-hidden shadow-sm  bg-slate-50  dark:bg-gray-700 mb-12">

@@ -1,9 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
-import ImageWithFallback from '@components/ImageWithFallback';
 
 import { Element } from 'react-scroll';
-import { getPublishedBlogPosts } from '@utils/notion';
+import { getPublishedBlogPosts, getSinglePage } from '@utils/notion';
 import IntroHighlight from '../components/Intro/IntroHighlight';
 import HomeArticles from '../components/HomeArticles';
 import 'tailwindcss/tailwind.css';
@@ -13,7 +12,7 @@ import AboutSection from '../components/Intro/AboutSection';
 import HeaderMain from '../components/HeaderMain';
 import PostTags from '../components/Post/PostTags';
 
-const Index = ({ posts }) => {
+const Index = ({ posts, headingBlocks }) => {
   const metaInfo = {
     title: 'Writing down my learnings',
     metaKeywords: 'Reactjs, C++, cpp, Python, Data Science, Database',
@@ -27,10 +26,9 @@ const Index = ({ posts }) => {
         <AboutSection />
         <div className="px-4 container font-Rajdhani mx-auto text-base">
           <p className="text-pink-500 dark:text-green-400 font-semibold">
-            This whole website is designed by me,
-            from designing till development.
+            This whole website is designed by me, from designing till
+            development.
             {' '}
-
           </p>
           <PostTags
             limitedTags={false}
@@ -48,7 +46,7 @@ const Index = ({ posts }) => {
         </div>
       </Element>
       <Element id="about-me" className="element min-h-[630px]">
-        <IntroHighlight />
+        <IntroHighlight headingBlocks={headingBlocks} />
       </Element>
       <Element id="blog" className="element">
         <HomeArticles posts={posts} />
@@ -62,10 +60,11 @@ const Index = ({ posts }) => {
 
 export const getStaticProps = async () => {
   const response = await getPublishedBlogPosts();
-
+  const { blocks, headingBlocks } = await getSinglePage('About-Me');
   return {
     props: {
       posts: response,
+      headingBlocks,
     },
   };
 };
