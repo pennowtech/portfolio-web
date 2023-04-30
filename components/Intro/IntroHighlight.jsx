@@ -38,6 +38,7 @@ const IntroHighlight = ({ headingBlocks }) => (
         <div className="w-full md:w-7/12 p-4 md:mt-6 ">
           <div className="grid md:flex md:flex-row items-center gap-4">
             {headingBlocks.slice(1, 3).map((heading, index) => (
+              // eslint-disable-next-line react/no-array-index-key
               <div key={index} className="w-full md:w-6/12">
                 <ReactMarkdown components={{ h3: H3Component }}>
                   {heading}
@@ -114,7 +115,7 @@ const IntroHighlight = ({ headingBlocks }) => (
           Skills in short
         </h3>
         {skills.map((skill, index) => (
-          <div key={index} className="text-center mb-2">
+          <div key={skill.name} className="text-center mb-2">
             <skill.icon className="md:text-5xl text-4xl mb-2" />
             {skill.name}
           </div>
