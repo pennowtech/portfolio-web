@@ -46,5 +46,8 @@ components/TableOfContents.jsx
 /.env
 /index.js
 /.idea/
-
+.embold/
 .vercel
+.embold/vscode-logs.log
+__mocks__/fileMock.js
+.pre-commit-config.yaml

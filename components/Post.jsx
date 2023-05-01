@@ -29,7 +29,7 @@ const Post = ({ post }) => {
               />
               <PostCategories categories={post.categories} />
             </div>
-            <h3 className="mt-4 mb-1 text-3xl text-semibold font-Neuton">
+            <h3 className="mt-4 mb-1 text-3xl ">
               {post.title}
             </h3>
           </div>

@@ -1,8 +1,7 @@
 /* eslint-disable react/destructuring-assignment */
-import React from 'react';
+import React, { useState } from 'react';
 
-import { getPublishedBlogPosts, getSinglePage } from '@utils/notion';
-import { PAGES_POSTS_QUERY } from '../../queries/queries';
+import { getPublishedBlogPosts } from '@utils/notion';
 import PostsLayout from '../../components/PostsLayout';
 import { PER_PAGE_BLOGS } from '../../utils/consts';
 import PostList from '../../components/PostList';
@@ -17,7 +16,11 @@ const Blog = ({ data }) => {
     metaKeywords: 'Reactjs, C++, cpp, Python, Data Science, Database',
     metaDesc: '',
   };
+  const [currentPage, setCurrentPage] = useState(1);
 
+  const onPageChange = (page) => {
+    setCurrentPage(page);
+  };
   const totalPages = totalPagesCount(data.length ?? 0);
 
   return (
@@ -27,7 +30,12 @@ const Blog = ({ data }) => {
       recentPosts={data.slice(1, 3)}
     >
       <PostList posts={data ?? []} />
-      <Pagination totalPages={totalPages} postName="blog" />
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        postName="blog"
+        onPageChange={onPageChange}
+      />
     </PostsLayout>
   );
 };

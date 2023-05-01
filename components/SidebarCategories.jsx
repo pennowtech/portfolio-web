@@ -9,8 +9,8 @@ const notion = new Client({
   auth: 'secret_8uupssC8TcKmpNN3HhsWShJAb8jIol19lvng5dZWH1K',
 });
 
-const SidebarCategories = () => {
-  const categories = [];
+const SidebarCategories = ({ categories }) => {
+  if (!categories || categories.len === 0) { return ''; }
 
   return (
     <div className="font-medium mx-auto px-2 py-1 md:px-4 whitespace-nowrap overflow-hidden">
