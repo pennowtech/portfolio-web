@@ -16,24 +16,24 @@ const Post = ({ post }) => {
   return (
     <div className="border-b-2 border-slate-200 dark:border-slate-500">
       <Link href={blogUrl}>
-        <a href={blogUrl}>
-          <div className="cursor-pointer">
-            <div className="relative w-full h-52 md:h-64 lg:h-80">
-              <ImageWithFallback
-                src={post?.thumbnailUrl}
-                fallbackSrc="/blank.jpg"
-                layout="fill"
-                alt={post?.title}
-                title={post.title}
-                className="object-cover w-full rounded-xl"
-              />
-              <PostCategories categories={post.categories} />
-            </div>
-            <h3 className="mt-4 mb-1 text-3xl ">
-              {post.title}
-            </h3>
+
+        <div className="cursor-pointer">
+          <div className="relative w-full h-52 md:h-64 lg:h-80">
+            <ImageWithFallback
+              src={post?.thumbnailUrl}
+              fallbackSrc="/blank.jpg"
+              layout="fill"
+              alt={post?.title}
+              title={post.title}
+              className="object-cover w-full rounded-xl"
+            />
+            <PostCategories categories={post.categories} />
           </div>
-        </a>
+          <h3 className="mt-4 mb-1 text-3xl ">
+            {post.title}
+          </h3>
+        </div>
+
       </Link>
       <div className="my-4">
         <PostDate date={post.date} readingTime={post.readingTime} />

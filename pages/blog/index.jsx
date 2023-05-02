@@ -10,7 +10,6 @@ import Pagination from '../../components/Pagination';
 const totalPagesCount = (totalPostsCount) => Math.ceil(totalPostsCount / PER_PAGE_BLOGS);
 
 const Blog = ({ data }) => {
-  console.warn(data);
   const metaInfo = {
     title: 'Writing down my learnings',
     metaKeywords: 'Reactjs, C++, cpp, Python, Data Science, Database',

@@ -7,18 +7,18 @@ module.exports = removeImports({
       {
         source: '/home',
         destination: '/',
-        permanent: true, // triggers 308
-      },
+        permanent: true // triggers 308
+      }
     ];
   },
   images: {
-    domains: ['www.nasa.gov', 'pennow.tech', 'pixabay.com', 'www.google.com', 'pennow.tech'],
+    domains: ['www.nasa.gov', 'images.unsplash.com', 'pixabay.com', 'www.google.com', 'pennow.tech'],
 
     loader: 'akamai',
-    path: '',
+    path: ''
   },
   reactStrictMode: true,
   serverRuntimeConfig: {
-    PROJECT_ROOT: __dirname,
-  },
+    PROJECT_ROOT: __dirname
+  }
 });

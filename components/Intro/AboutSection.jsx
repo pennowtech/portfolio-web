@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import React from 'react';
-import Image from 'next/image';
+import Image from "next/legacy/image";
 import { Link as ScrollLink } from 'react-scroll';
 import { FaCodepen, FaLaptopCode } from 'react-icons/fa';
 import { GrStackOverflow } from 'react-icons/gr';

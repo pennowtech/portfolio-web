@@ -10,7 +10,6 @@ import PrevNextPosts from '@components/Post/PrevNextPosts';
 import BlogTitleBar from '@components/BlogTitleBar';
 import Article from '@components/Article';
 import FullLayout from '@components/FullLayout';
-import { serialize } from 'next-mdx-remote/serialize';
 
 /* import for this particular component should be done in following
  way. otherwise you'll get:
@@ -18,7 +17,7 @@ import { serialize } from 'next-mdx-remote/serialize';
  of ES modules is not supported
 */
 const ToC = dynamic(() => import('@components/ToC'), {
-  ssr: false,
+  ssr: false
 });
 
 const PostPage = ({ postMeta, markdown, compiledMDSource }) => {
@@ -28,7 +27,7 @@ const PostPage = ({ postMeta, markdown, compiledMDSource }) => {
   const metaInfo = {
     title: postMeta.title,
     metaKeywords: postMeta.tags.map((tag) => tag.name),
-    metaDesc: postMeta.description,
+    metaDesc: postMeta.description
   };
 
   // TODO: prev next post fix.
@@ -37,12 +36,12 @@ const PostPage = ({ postMeta, markdown, compiledMDSource }) => {
       <HeaderMain />
       <BlogTitleBar postMeta={postMeta} />
 
-      <div className="w-full lg:max-w-[1167px] lg:mx-auto flex flex-col wide:flex-row flex-grow overflow-hidden  ">
-        <div className="w-full h-full flex-grow p-3 overflow-auto">
+      <div className='w-full lg:max-w-[1048px] lg:mx-auto flex flex-col wide:flex-row flex-grow overflow-hidden  '>
+        <div className='w-full h-full flex-grow p-3 overflow-auto'>
           <Article mdxSource={compiledMDSource} />
           <PrevNextPosts postsNextPrevInfo={postMeta.infoPrevNextPost} />
         </div>
-        <div className="sidebar font-Yantramanav  text-sm leading-6 wide:min-w-[30%] max-w-[400px] flex-shrink flex-grow-0 mx-auto p-4">
+        <div className='sidebar font-Yantramanav  text-sm leading-6 wide:min-w-[30%] max-w-[400px] flex-shrink flex-grow-0 mx-auto p-4'>
           <ToC content={markdown} />
         </div>
       </div>
@@ -59,20 +58,18 @@ export const getStaticProps = async (context) => {
     mdxOptions: {
       // remarkPlugins: [remarkToc],
       remarkPlugins: [emoji],
-      rehypePlugins: [
-        rehypeSlug,
-        [rehypeAutolinkHeadings, { behavior: 'before' }],
-      ],
-    },
+      rehypePlugins: [rehypeSlug, [rehypeAutolinkHeadings, { behavior: 'before' }]]
+    }
   };
-  const compiledMDSource = await serialize(post.markdown, options);
+  //const compiledMDSource = await serialize(post.markdown, options);
+  const compiledMDSource = post.markdown;
 
   return {
     props: {
-      markdown: await serialize(post.markdown),
+      markdown: post.markdown,
       postMeta: post.postMeta,
-      compiledMDSource,
-    },
+      compiledMDSource
+    }
   };
 };
 
@@ -83,12 +80,12 @@ export async function getStaticPaths() {
   // you make a change in Notion.
   const paths = posts.map((post) => ({
     params: {
-      blog: post.slug,
-    },
+      blog: post.slug
+    }
   }));
   return {
     paths,
-    fallback: false,
+    fallback: false
   };
 }
 

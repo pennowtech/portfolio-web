@@ -17,7 +17,6 @@ export const getNotionDatabase = async () => {
   const response = await notion.databases.retrieve({
     database_id: databaseId,
   });
-  console.log(response);
   return response.results;
 };
 
@@ -76,7 +75,6 @@ async function getData(response, postsCount, data) {
   });
 
   data = [...data, ...newResponse.results];
-  console.log(newResponse.has_more, data.length);
 
   if (newResponse.has_more && postsCount && data.length < postsCount) {
     return getData(newResponse, postsCount, data);

@@ -41,8 +41,8 @@ export default function HomeArticles({ posts }) {
       </div>
       <div className="grid font-Monda justify-center">
         <div className="button focus:shadow-outline cursor-pointer">
-          <Link href="/blog">
-            <a className="text-white">View all articles</a>
+          <Link href="/blog" className="text-white">
+            View all articles
           </Link>
         </div>
       </div>

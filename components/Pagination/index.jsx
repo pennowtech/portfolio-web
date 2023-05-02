@@ -18,7 +18,6 @@ const Pagination = ({
     return null;
   }
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
-  console.log(pages);
   // const currentPage = parseInt(router?.query?.page, 10) || 1;
 
   const paginationLinks = createPaginationLinks(currentPage, totalPages);
@@ -38,18 +37,19 @@ const Pagination = ({
 
         return typeof pageNo === 'number' ? (
           /* eslint-disable react/no-array-index-key */
-          <Link key={`id-${index}`} href={paginationLink}>
-            <a
-              className={cx(
-                'border rounded-full border-gray-300 px-4 py-2 font-Monda transition duration-500 ease-in-out hover:bg-gray-400 hover:text-white',
-                {
-                  'is-active bg-gray-500 text-white': pageNo === currentPage,
-                },
-              )}
-            >
-              {pageNo}
-            </a>
-          </Link>
+          (<Link
+            key={`id-${index}`}
+            href={paginationLink}
+            className={cx(
+              'border rounded-full border-gray-300 px-4 py-2 font-Monda transition duration-500 ease-in-out hover:bg-gray-400 hover:text-white',
+              {
+                'is-active bg-gray-500 text-white': pageNo === currentPage,
+              },
+            )}>
+
+            {pageNo}
+
+          </Link>)
         ) : (
           // If its "..."
           <span key={`id-${index}`} className="px-3 py-2">

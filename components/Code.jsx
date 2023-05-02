@@ -1,66 +1,79 @@
 import React from 'react';
 import { useTheme } from 'next-themes';
 // import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import SyntaxHighlighter from 'react-syntax-highlighter';
+//import SyntaxHighlighter from 'react-syntax-highlighter';
 // eslint-disable-next-line max-len
-import { a11yLight as lighttheme, a11yDark as darktheme } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
+//import { a11yLight as lighttheme, a11yDark as darktheme } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 // import { coldarkDark as darktheme } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 // import { atomOneLight as lighttheme } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 // import { a11yLight } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 
-const colorMode = 'dark';
+import ReactMarkdown from 'react-markdown';
+import Code from './Code';
 
-const convertLineStrToArray = (str) => {
-  if (str === undefined) return [];
+import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneLight as lighttheme, oneDark as darktheme } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import tsx from 'react-syntax-highlighter/dist/cjs/languages/prism/tsx';
+import python from 'react-syntax-highlighter/dist/cjs/languages/prism/python';
+import cpp from 'react-syntax-highlighter/dist/cjs/languages/prism/cpp';
+import bash from 'react-syntax-highlighter/dist/cjs/languages/prism/bash';
+import markdown from 'react-syntax-highlighter/dist/cjs/languages/prism/markdown';
+import json from 'react-syntax-highlighter/dist/cjs/languages/prism/json';
 
-  const lineArray = str.split(',').flatMap((s) => {
-    if (!s.includes('-')) return +s;
+SyntaxHighlighter.registerLanguage('tsx', tsx);
+SyntaxHighlighter.registerLanguage('python', python);
+SyntaxHighlighter.registerLanguage('cpp', cpp);
+SyntaxHighlighter.registerLanguage('shell', bash);
+SyntaxHighlighter.registerLanguage('markdown', markdown);
+SyntaxHighlighter.registerLanguage('json', json);
 
-    const [min, max] = s.split('-');
 
-    return Array.from({ length: max - min + 1 }, (_, n) => n + +min);
-  });
-  return lineArray;
-};
-
-function Code({
-  className, children, filename, hl, ...props
-}) {
   const { theme, setTheme } = useTheme();
   const codeTheme = theme === 'light' ? lighttheme : darktheme;
   const lineHighlight = theme === 'light' ? '#dfefffcc' : '#37415180';
 
-  const linesToHighlight = convertLineStrToArray(hl);
-  const codeText = children.trim();
+  const CodeComponents = {
+    code({ node, inline, className, ...props }) {
+      const hasLang = /language-(\w+)/.exec(className || '');
+      const hasMeta = node?.data?.meta;
 
-  const match = /language-(\w+)/.exec(className || '');
-  return match ? (
-    <SyntaxHighlighter
-      language={match[1]}
-      style={codeTheme}
-      // eslint-disable-next-line react/no-children-prop
-      children={codeText}
-      PreTag="div"
-      wrapLines
-      showLineNumbers
-      lineProps={(lineNumber) => {
-        const style = {
-          display: 'block',
-          width: '100%',
-        };
-        if (linesToHighlight.includes(lineNumber)) {
-          style.backgroundColor = lineHighlight;
-          style.borderLeft = '4px solid #3b82f6';
-          style.marginLeft = '-4px';
-          style.marginLeft = '-4px';
+      const applyHighlights = (applyHighlights) => {
+        if (hasMeta) {
+          const RE = /{([\d,-]+)}/;
+          const metadata = node.data.meta?.replace(/\s/g, '');
+          const strlineNumbers = RE?.test(metadata) ? RE?.exec(metadata)[1] : '0';
+          const highlightLines = rangeParser(strlineNumbers);
+          const highlight = highlightLines;
+          const data = highlight.includes(applyHighlights) ? 'highlight' : null;
+          data.backgroundColor = lineHighlight;
+          data.borderLeft = '4px solid #3b82f6';
+          data.marginLeft = '-4px';
+          data.marginLeft = '-4px';
+          return { data };
+        } else {
+          return {};
         }
-        return { style };
-      }}
-      {...props}
-    />
-  ) : (
-    <code className={className} {...props} />
-  );
-}
+      };
 
-export default Code;
+      return hasLang ? (
+        <SyntaxHighlighter
+          style={codeTheme}
+          language={hasLang[1]}
+          PreTag='div'
+          className='codeStyle'
+          showLineNumbers={true}
+          wrapLines
+          useInlineStyles={true}
+          lineProps={applyHighlights}
+        >
+          {props.children}
+        </SyntaxHighlighter>
+      ) : (
+        <code className={className} {...props} />
+      );
+    }
+  };
+
+
+export default CodeComponents;
+

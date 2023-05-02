@@ -1,9 +1,6 @@
 module.exports = {
   darkMode: 'class',
-  content: [
-    './pages/**/*.{js,ts,jsx,tsx}',
-    './components/**/*.{js,ts,jsx,tsx}',
-  ],
+  content: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
   safelist: [
     'bg-red-500',
     'bg-orange-500',
@@ -15,38 +12,36 @@ module.exports = {
     'bg-indigo-500',
     'bg-violet-500',
     'bg-purple-500',
-    'bg-pink-500',
+    'bg-pink-500'
   ],
   theme: {
-
     extend: {
       typography: (theme) => ({
-
         DEFAULT: {
           dark: {
             css: {
-              color: 'red',
-            },
+              color: 'red'
+            }
           },
           css: {
             // color: theme('colors.gray.800'),
             blockquote: {
               'p::before': {
-                content: 'none',
+                content: 'none'
               },
               'p::after': {
-                content: 'none',
-              },
-            },
-          },
+                content: 'none'
+              }
+            }
+          }
         },
         xl: {
           css: {
             h5: {
-              'margin-bottom': '5px',
-            },
-          },
-        },
+              'margin-bottom': '5px'
+            }
+          }
+        }
       }),
       fontFamily: {
         Merriweather: ['Merriweather', 'serif'],
@@ -63,25 +58,22 @@ module.exports = {
         Barlow: ['Barlow', 'sans-serif'],
         NatoJapan: ['Noto Sans JP', 'sans-serif'],
         Inter: ['Inter', 'sans-serif'],
-        Comic: ['Comic Neue', 'sans-serif'],
-
+        Comic: ['Comic Neue', 'sans-serif']
       },
       container: {
         screens: {
           sm: '100%',
           md: '100%',
           lg: '1024px',
-          xl: '1167px',
-        },
+          xl: '1200px'
+        }
       },
       screens: {
-        wide: '827px',
+        wide: '827px'
         // => @media (min-height: 800px) { ... }
-      },
-    },
+      }
+    }
   },
 
-  plugins: [
-    require('@tailwindcss/typography'),
-  ],
+  plugins: [require('@tailwindcss/typography')]
 };

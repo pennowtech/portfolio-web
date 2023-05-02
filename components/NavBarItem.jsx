@@ -22,15 +22,15 @@ const NavBarItem = ({ menu, classprops, homepage }) => {
           {menu.title}
         </ScrollLink>
       ) : (
-        <Link href={fullPath}>
-          <a
-            className={`cursor-pointer grow hover:bg-blue-600  dark:hover:border-b-4 dark:hover:border-orange-400 dark:hover:bg-slate-900 dark:hover:text-orange-400 px-3 hover:rounded-md  whitespace-nowrap overflow-hidden ${
-              classprops || ''
-            }`.trim()}
-          >
-            {menu.title}
-          </a>
-        </Link>
+        (<Link
+          href={fullPath}
+          className={`cursor-pointer grow hover:bg-blue-600  dark:hover:border-b-4 dark:hover:border-orange-400 dark:hover:bg-slate-900 dark:hover:text-orange-400 px-3 hover:rounded-md  whitespace-nowrap overflow-hidden ${
+            classprops || ''
+          }`.trim()}>
+
+          {menu.title}
+
+        </Link>)
       )}
     </li>
   );

@@ -9,6 +9,7 @@ npx lint-staged ||
 (
     echo '🔨❌ You have a problem in your code. Check linter 🔨❌
         Fix them and try commit again.';
+    false;
 )
 
 echo '🎉 No error found: committing this now.... ✨🚀🏄‍♂️🍻'

@@ -1,5 +1,5 @@
 import React from 'react';
-import Image from 'next/image';
+import Image from "next/legacy/image";
 import Link from 'next/link';
 import ImageWithFallback from '../ImageWithFallback';
 import PostTags from './PostTags';
@@ -14,17 +14,17 @@ const VerticalCard = ({ post }) => (
       <div className="relative rounded-lg">
         <div className="relative rounded-t-lg overflow-hidden">
           <Link href={`/blog/${post.link}`}>
-            <a>
-              <ImageWithFallback
-                fallbackSrc="/blank.jpg"
-                src={post.thumbnailUrl}
-                alt={post.title}
-                className="object-cover w-full"
-                width={700}
-                height={465}
-              />
-              <PostCategories categories={post.categories} />
-            </a>
+
+            <ImageWithFallback
+              fallbackSrc="/blank.jpg"
+              src={post.thumbnailUrl}
+              alt={post.title}
+              className="object-cover w-full"
+              width={700}
+              height={465}
+            />
+            <PostCategories categories={post.categories} />
+
           </Link>
 
           <div className="relative -mt-10 bg-slate-50 dark:bg-gray-700">
@@ -48,9 +48,9 @@ const VerticalCard = ({ post }) => (
               </svg>
             </div>
             <Link href={`/blog/${post.link}`}>
-              <a>
-                <h3 className="px-6 py-2 my-2 md:text-2xl text-semibold font-Neuton">{post.title}</h3>
-              </a>
+
+              <h3 className="px-6 py-2 my-2 md:text-2xl text-semibold font-Neuton">{post.title}</h3>
+
             </Link>
             <div className="px-6 py-2">
               <PostDate date={post.date} />

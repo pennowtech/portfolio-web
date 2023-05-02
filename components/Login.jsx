@@ -4,7 +4,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/jsx-no-comment-textnodes */
 import React, { useState } from 'react';
-import Image from 'next/image';
+import Image from "next/legacy/image";
 import { useMutation } from 'urql';
 import { LOGIN_WP_USER } from '../queries/queries';
 import { useRouter } from 'next/router';

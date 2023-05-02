@@ -4,9 +4,7 @@ import Head from 'next/head';
 import Script from 'next/script';
 import Router, { useRouter } from 'next/router';
 import { ThemeProvider } from 'next-themes';
-import { Provider as AlertProvider } from 'react-alert';
 
-import AlertTemplate from 'react-alert-template-basic';
 import nProgress from 'nprogress';
 import 'tailwindcss/tailwind.css';
 import '../styles/globals.css';
@@ -91,9 +89,7 @@ function MyApp({ Component, pageProps }) {
           <main className="main min-h-screen">
             <ThemeProvider attribute="class">
               {/* <Provider value={client}> */}
-              <AlertProvider template={AlertTemplate}>
                 <Component {...pageProps} />
-              </AlertProvider>
               {/* </Provider> */}
             </ThemeProvider>
           </main>

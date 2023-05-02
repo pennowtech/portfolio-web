@@ -5,7 +5,7 @@ import React from 'react';
 import { SiNextdotjs, SiQt } from 'react-icons/si';
 import { GrReactjs } from 'react-icons/gr';
 import { IoLogoJavascript } from 'react-icons/io';
-import Image from 'next/image';
+import Image from "next/legacy/image";
 import ReactMarkdown from 'react-markdown';
 import { skills } from '@utils/consts';
 import TechCard from './TechCard';

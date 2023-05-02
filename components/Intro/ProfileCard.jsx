@@ -1,5 +1,5 @@
 import React from 'react';
-import Image from 'next/image';
+import Image from "next/legacy/image";
 
 const ProfileCard = ({ text, thumbnailUrl }) => (
   <div className="max-w-sm rounded-lg overflow-hidden shadow-lg mb-6 block bg-slate-600  dark:bg-gray-800 text-white dark:text-slate-300">
