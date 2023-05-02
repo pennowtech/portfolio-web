@@ -1,7 +1,8 @@
 import React from 'react';
 
-const YouTube = ({ videoId }) => (
-  <div className="video-responsive">
+const YouTube = ({ videoId }) => {
+  console.log(videoId)
+  return(
     <iframe
       width={800}
       height={480}
@@ -10,7 +11,6 @@ const YouTube = ({ videoId }) => (
       src={`https://www.youtube.com/embed/${videoId}`}
       title="Embed youtube"
     />
-  </div>
-);
+);}
 
 export default YouTube;
