@@ -6,31 +6,15 @@
     "dev": "next dev",
     "build": "next build && next export",
     "start": "next start",
-    "precommit2": "npm run lint && npm test",
+    "precommit": "npm run lint && npm test",
     "lint": "next lint",
     "prepare": "husky install",
     "commit": "git-cz"
   },
-  "husky": {
-    "hooks": {
-      "prepare-commit-msg": "exec < /dev/tty && npx cz --hook || true"
-    }
-  },
   "config": {
     "commitizen": {
-      "path": "cz-emoji"
-    },
-    "cz-emoji": {
-      "skipQuestions": [
-        "scope",
-        "issues"
-      ]
+      "path": "@commitlint/cz-commitlint"
     }
-  },
-  "gitmoji": {
-    "autoAdd": true,
-    "emojiFormat": "code",
-    "scopePrompt": false
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -109,9 +93,7 @@
     "autoprefixer": "^10.4.14",
     "babel-jest": "^29.5.0",
     "commitizen": "^4.3.0",
-    "commitlint-config-gitmoji": "^2.3.1",
     "cross-env": "^7.0.3",
-    "cz-emoji": "^1.3.2-canary.2",
     "eslint": "^8.39.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-next": "^13.3.4",

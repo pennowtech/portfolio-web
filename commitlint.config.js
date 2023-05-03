@@ -17,14 +17,13 @@ module.exports = {
       ['build', 'chore', 'ci', 'docs', 'feat', 'fix', 'perf', 'refactor', 'revert', 'style', 'test']
     ]
   },
-  extends: ['gitmoji'],
   prompt: {
     questions: {
       type: {
         description: "Select the type of change that you're committing",
         enum: {
           feat: {
-            description: 'A new feature 2',
+            description: 'A new feature',
             title: 'Features',
             emoji: '✨'
           },
