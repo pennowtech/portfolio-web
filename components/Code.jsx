@@ -8,7 +8,6 @@ import { a11yLight, a11yDark } from 'react-syntax-highlighter/dist/cjs/styles/hl
 // import { a11yLight } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 
 function Code({ node, inline, className, ...props }) {
-
   const { theme, setTheme } = useTheme();
   const codeTheme = theme === 'light' ? a11yLight : a11yDark;
   const lineHighlight = theme === 'light' ? '#dfefffcc' : '#37415180';
@@ -29,9 +28,8 @@ function Code({ node, inline, className, ...props }) {
       data.marginLeft = '-4px';
       data.marginLeft = '-4px';
       return { data };
-    } else {
-      return {};
     }
+    return {};
   };
 
   return hasLang ? (
@@ -39,10 +37,10 @@ function Code({ node, inline, className, ...props }) {
       style={codeTheme}
       language={hasLang[1]}
       PreTag='div'
-      className='codeStyle text-base'
-      showLineNumbers={true}
+      className='codeStyle text-base font-medium'
+      showLineNumbers
       wrapLines
-      useInlineStyles={true}
+      useInlineStyles
       lineProps={applyHighlights}
     >
       {props.children}
@@ -52,4 +50,3 @@ function Code({ node, inline, className, ...props }) {
   );
 }
 export default Code;
-

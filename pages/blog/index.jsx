@@ -2,50 +2,40 @@
 import React, { useState } from 'react';
 
 import { getPublishedBlogPosts } from '@utils/notion';
+import { Pagination, paginate } from '@components/Pagination';
 import PostsLayout from '../../components/PostsLayout';
 import { PER_PAGE_BLOGS } from '../../utils/consts';
 import PostList from '../../components/PostList';
-import Pagination from '../../components/Pagination';
 
-const totalPagesCount = (totalPostsCount) => Math.ceil(totalPostsCount / PER_PAGE_BLOGS);
-
-const Blog = ({ data }) => {
+// eslint-disable-next-line react/no-multi-comp
+const Index = ({ data }) => {
   const metaInfo = {
     title: 'Writing down my learnings',
     metaKeywords: 'Reactjs, C++, cpp, Python, Data Science, Database',
-    metaDesc: '',
+    metaDesc: ''
   };
   const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = PER_PAGE_BLOGS;
 
   const onPageChange = (page) => {
     setCurrentPage(page);
   };
-  const totalPages = totalPagesCount(data.length ?? 0);
+  const paginatedPosts = paginate(data, currentPage, pageSize);
 
   return (
-    <PostsLayout
-      pageTitle="Articles"
-      metaInfo={metaInfo}
-      recentPosts={data.slice(1, 3)}
-    >
-      <PostList posts={data ?? []} />
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        postName="blog"
-        onPageChange={onPageChange}
-      />
+    <PostsLayout pageTitle='Articles' metaInfo={metaInfo} recentPosts={data.slice(1, 3)}>
+      <PostList posts={paginatedPosts ?? []} />
+      <Pagination items={data.length} currentPage={currentPage} pageSize={pageSize} onPageChange={onPageChange} />
     </PostsLayout>
   );
 };
-
-export async function getStaticProps() {
-  const response = await getPublishedBlogPosts();
+export const getStaticProps = async () => {
+  // const data = await getPublishedBlogPosts();
+  const res = await fetch('https://jsonplaceholder.typicode.com/todos');
+  const data = await res.json();
   return {
-    props: {
-      data: response,
-    },
+    props: { data }
   };
-}
+};
 
-export default Blog;
+export default Index;

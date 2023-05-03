@@ -41,6 +41,11 @@ const ContactForm = () => {
     async (e) => {
       e.preventDefault();
 
+      if (!executeRecaptcha) {
+        toast(' This form is not operational right now. Better contact me through twitter!!!', { type: 'warning' });
+        return;
+      }
+
       const errors = {};
       Object.keys(formData).forEach((key) => {
         if (!formData[key]) {
@@ -99,23 +104,21 @@ const ContactForm = () => {
 
   const { firstname, lastname, email, message } = formData;
 
-  if (!executeRecaptcha) {
-    return <div>Loading reCAPTCHA...</div>;
-  }
-
   if (recaptchaError) {
     return <div>Error loading reCAPTCHA!</div>;
   }
 
   return (
     <div className='relative container mx-auto py-4 md:mb-4 px-4 md:px-2'>
-      <h2 className='flex justify-center lg:text-3xl text-bold leading-normal mt-8'>Want to Contact me?</h2>
-      <div className='flex font-semibold items-center justify-center text-bold leading-normal mb-8'>
-        This form is not operational right now. Better contact me through
-        <Link href='http://linkedin.com/in/pennowtech' className='text-red-400 dark:text-pink-400 '>
-          &nbsp; linkedin
-        </Link>
-      </div>
+      <h2 className='flex justify-center lg:text-3xl leading-normal mt-8'>Want to Contact me?</h2>
+      {!executeRecaptcha && (
+        <div className='flex font-medium items-center justify-center leading-normal mb-8'>
+          This form is not operational right now. Better contact me through
+          <Link href='http://twitter.com/techishdeep' className='text-blue-400 dark:text-blue-400 '>
+            &nbsp;twitter
+          </Link>
+        </div>
+      )}
       <div className='flex justify-center'>
         <ToastContainer />
         <form className='w-full max-w-lg'>

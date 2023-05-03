@@ -1,8 +1,10 @@
-import React, { useEffect, useRef } from 'react';
-import Link from 'next/link';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { Element } from 'react-scroll';
 import { getPublishedBlogPosts, getSinglePage } from '@utils/notion';
+import Hero from '@components/Intro/Hero';
+
+import { WebSiteTags } from '@utils/consts';
 import IntroHighlight from '../components/Intro/IntroHighlight';
 import HomeArticles from '../components/HomeArticles';
 import 'tailwindcss/tailwind.css';
@@ -16,42 +18,27 @@ const Index = ({ posts, headingBlocks }) => {
   const metaInfo = {
     title: 'Writing down my learnings',
     metaKeywords: 'Reactjs, C++, cpp, Python, Data Science, Database',
-    metaDesc: '',
+    metaDesc: ''
   };
   return (
     <FullLayout metaInfo={metaInfo}>
       <HeaderMain homepage />
-
-      <Element id="home" className="element">
-        <AboutSection />
-        <div className="px-4 container font-Rajdhani mx-auto text-base">
-          <p className="text-pink-500 dark:text-green-400 font-semibold">
-            This whole website is designed by me, from designing till
-            development.
-            {' '}
+      <Element id='home' className='element'>
+        <AboutSection classProps='font-RobotoSlab text-base leading-8' />
+        <div className='px-4 container font-Rajdhani mx-auto text-base'>
+          <p className='text-pink-500 dark:text-green-400 font-semibold'>
+            This whole website is designed by me, from designing till development.{' '}
           </p>
-          <PostTags
-            limitedTags={false}
-            tags={[
-              { name: 'ReactJS' },
-              { name: 'NodeJS' },
-              { name: 'Python' },
-              { name: 'PostgreSQL' },
-              { name: 'GraphQL' },
-              { name: 'Qt/QML' },
-              { name: 'REST API' },
-              { name: 'Axios' },
-            ]}
-          />
+          <PostTags limitedTags={false} tags={WebSiteTags} />
         </div>
       </Element>
-      <Element id="about-me" className="element min-h-[630px]">
-        <IntroHighlight headingBlocks={headingBlocks} />
+      <Element id='about-me' className='element min-h-[630px]'>
+        <IntroHighlight classProps='font-RobotoSlab text-base leading-8' headingBlocks={headingBlocks} />
       </Element>
-      <Element id="blog" className="element">
-        <HomeArticles posts={posts} />
+      <Element id='blog' className='element'>
+        <HomeArticles posts={posts} showAsHorizontal={false} />
       </Element>
-      <Element id="contact" className="element">
+      <Element id='contact' className='element'>
         <ContactForm />
       </Element>
     </FullLayout>
@@ -59,13 +46,13 @@ const Index = ({ posts, headingBlocks }) => {
 };
 
 export const getStaticProps = async () => {
-  const response = await getPublishedBlogPosts(5);
+  const response = await getPublishedBlogPosts(6);
   const { blocks, headingBlocks } = await getSinglePage('About-Me');
   return {
     props: {
       posts: response,
-      headingBlocks,
-    },
+      headingBlocks
+    }
   };
 };
 

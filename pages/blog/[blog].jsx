@@ -1,4 +1,5 @@
 import React from 'react';
+
 import emoji from 'remark-emoji';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
@@ -41,7 +42,7 @@ const PostPage = ({ postMeta, markdown, compiledMDSource }) => {
           <Article mdxSource={compiledMDSource} />
           <PrevNextPosts postsNextPrevInfo={postMeta.infoPrevNextPost} />
         </div>
-        <div className='sidebar font-Yantramanav  text-sm leading-6 wide:min-w-[30%] max-w-[400px] flex-shrink flex-grow-0 mx-auto p-4'>
+        <div className='sidebar leading-7 text-base wide:min-w-[35%] max-w-[450px] flex-shrink flex-grow-0 mx-auto p-4'>
           <ToC content={markdown} />
         </div>
       </div>
@@ -61,7 +62,7 @@ export const getStaticProps = async (context) => {
       rehypePlugins: [rehypeSlug, [rehypeAutolinkHeadings, { behavior: 'before' }]]
     }
   };
-  //const compiledMDSource = await serialize(post.markdown, options);
+  // const compiledMDSource = await serialize(post.markdown, options);
   const compiledMDSource = post.markdown;
 
   return {

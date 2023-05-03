@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
 import React from 'react';
 import Document, { Html, Head, Main, NextScript } from 'next/document';
-import Footer from '../components/Footer';
 import Script from 'next/script';
+import Footer from '../components/Footer';
 
 class MyDocument extends Document {
   render() {
@@ -13,7 +13,7 @@ class MyDocument extends Document {
           <link rel='preconnect' href='https://fonts.googleapis.com' />
           <link rel='preconnect' href='https://fonts.gstatic.com' crossOrigin='true' />
           <link
-            href='https://fonts.googleapis.com/css2??family=Barlow:wght@500;700&family=Comic+Neue:wght@700&family=Inter:wght@500&family=Noto+Sans+JP:wght@500&family=Roboto+Slab:wght@400;700&family=Merriweather&family=Fira+Code:wght@500&family=Roboto+Condensed&family=Monda&family=Neuton:wght@700&family=Offside&family=Rajdhani:wght@300;500&family=Yantramanav:wght@400;500&family=Barlow+Condensed&display=swap'
+            href='https://fonts.googleapis.com/css2??family=Barlow:wght@500;700&family=Comic+Neue:wght@400;700&family=Inter:wght@500;700&family=Noto+Sans+JP:wght@500&family=Roboto+Slab:wght@400;700&family=Merriweather&family=Fira+Code:wght@500&family=Roboto+Condensed&family=Monda&family=Neuton:wght@700&family=Offside&family=Rajdhani:wght@300;500&family=Yantramanav:wght@400;500&family=Barlow+Condensed&display=swap'
             rel='stylesheet'
           />
           <link

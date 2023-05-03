@@ -24,13 +24,11 @@ import parse from 'html-react-parser';
 
 function generateLinkMarkup(contentElement) {
   const x = 'fdfdfd';
-  const headings = [
-    ...contentElement.querySelectorAll('h1, h2, h3, h4, h5, h6'),
-  ];
+  const headings = [...contentElement.querySelectorAll('h1, h2, h3, h4, h5, h6')];
   const parsedHeadings = headings.map((heading) => ({
     title: heading.innerText,
     depth: heading.nodeName.replace(/\D/g, ''),
-    id: heading.getAttribute('id'),
+    id: heading.getAttribute('id')
   }));
   const htmlMarkup = parsedHeadings.map((h) => {
     const indent = h.depth > 1 ? `"pl-${(h.depth - 1) * 4}"` : '';
@@ -40,20 +38,16 @@ function generateLinkMarkup(contentElement) {
   </li>
   `;
   });
-  const finalMarkup = `<ol className="list-decimal my-0">${htmlMarkup.join(
-    '',
-  )}</ol>`;
+  const finalMarkup = `<ol className="list-decimal my-0">${htmlMarkup.join('')}</ol>`;
   return finalMarkup;
 }
 
 const generateLinkMarkupv2 = (contentElement) => {
-  const headings = [
-    ...contentElement.querySelectorAll('h1, h2, h3, h4, h5, h6'),
-  ];
+  const headings = [...contentElement.querySelectorAll('h1, h2, h3, h4, h5, h6')];
   const parsedHeadings = headings.map((heading) => ({
     title: heading.innerText,
     depth: heading.nodeName.replace(/\D/g, ''),
-    id: heading.getAttribute('id'),
+    id: heading.getAttribute('id')
   }));
   let prev_depth = 1;
   const htmlMarkup = parsedHeadings.map((h) => {
@@ -83,14 +77,11 @@ function ToC({ content, props }) {
     setTocContent(finalMarkup);
   }, [content]);
   return (
-    <div
-      id="name"
-      className="toc border-2 rounded-md py-4 overflow-hidden"
-    >
+    <div id='name' className='border-2 pt-0 rounded-md py-4 overflow-hidden'>
+      <p className='mt-0 px-4 bg-slate-400 text-white font-semibold'>Content at a glance</p>
       {tocContent}
     </div>
   );
 }
-
 
 export default ToC;

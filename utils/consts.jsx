@@ -19,48 +19,57 @@ import {
   SiGraphql,
   SiFastapi,
   SiLinux,
-  SiRust,
+  SiRust
 } from 'react-icons/si';
 import { FaNetworkWired, FaPython } from 'react-icons/fa';
 import { GrReactjs } from 'react-icons/gr';
 import { IoLogoJavascript } from 'react-icons/io';
 import { MdOutlineDesignServices } from 'react-icons/md';
 
-import {
-  ImYoutube, ImGithub, ImInstagram, ImTwitter,
-} from 'react-icons/im';
+import { ImYoutube, ImGithub, ImInstagram, ImTwitter } from 'react-icons/im';
+
+const WebSiteTags = [
+  { name: 'ReactJS' },
+  { name: 'NodeJS' },
+  { name: 'Python' },
+  { name: 'PostgreSQL' },
+  { name: 'GraphQL' },
+  { name: 'Qt/QML' },
+  { name: 'REST API' },
+  { name: 'Axios' }
+];
 
 const MenuItems = [
   { title: 'Articles', path: 'blog' },
   { title: 'About Me', path: 'about-me' },
-  { title: 'Contact', path: 'contact' },
+  { title: 'Contact', path: 'contact' }
 ];
 const FooterMainMenuItems = [
   { title: 'About Me', path: 'about-me' },
   { title: 'Articles', path: 'articles' },
-  { title: 'Contact Me', path: 'contact' },
+  { title: 'Contact Me', path: 'contact' }
 ];
 const FooterOtherMenuItems = [
   { title: 'Terms & Conditions', path: 'about-me' },
-  { title: 'Privacy Policy', path: 'articles' },
+  { title: 'Privacy Policy', path: 'articles' }
 ];
 const SocialIconList = [
   { icon: <ImYoutube />, path: 'http://youtube.com', title: 'youtube' },
   {
     icon: <ImGithub />,
     path: 'https://github.com/techishdeep',
-    title: 'github',
+    title: 'github'
   },
   {
     icon: <ImInstagram />,
     path: 'https://instagram.com/techishdeep',
-    title: 'linkedin',
+    title: 'linkedin'
   },
   {
     icon: <ImTwitter />,
     path: 'https://twitter.com/techishdeep',
-    title: 'twitter',
-  },
+    title: 'twitter'
+  }
 ];
 
 const skills = [
@@ -88,7 +97,7 @@ const skills = [
   { name: 'Softw. Arch.', icon: MdOutlineDesignServices },
   { name: 'UML', icon: SiMaterialdesign },
   { name: 'Git', icon: SiGit },
-  { name: 'Linux', icon: SiLinux },
+  { name: 'Linux', icon: SiLinux }
 ];
 
 const PER_PAGE_BLOGS = 3;
@@ -100,6 +109,4 @@ export const BASE_URL = isDev ? 'http://localhost:3000' : REMOTE_BASE_URL;
 
 export const SelectedPostsList = [14, 44, 12];
 // export const SelectedPostsList = [];
-export {
-  MenuItems, SocialIconList, FooterMainMenuItems, FooterOtherMenuItems, skills, PER_PAGE_BLOGS,
-};
+export { WebSiteTags, MenuItems, SocialIconList, FooterMainMenuItems, FooterOtherMenuItems, skills, PER_PAGE_BLOGS };
