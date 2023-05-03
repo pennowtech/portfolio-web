@@ -24,6 +24,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@headlessui/react": "^1.7.14",
+    "@jsdevtools/rehype-toc": "^3.0.2",
     "@notionhq/client": "^2.2.4",
     "@tailwindcss/typography": "^0.5.9",
     "@uiw/react-markdown-editor": "^5.11.1",
