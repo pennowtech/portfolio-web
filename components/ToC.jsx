@@ -22,26 +22,6 @@ import React, { useEffect, useState } from 'react';
 
 import parse from 'html-react-parser';
 
-function generateLinkMarkup(contentElement) {
-  const x = 'fdfdfd';
-  const headings = [...contentElement.querySelectorAll('h1, h2, h3, h4, h5, h6')];
-  const parsedHeadings = headings.map((heading) => ({
-    title: heading.innerText,
-    depth: heading.nodeName.replace(/\D/g, ''),
-    id: heading.getAttribute('id')
-  }));
-  const htmlMarkup = parsedHeadings.map((h) => {
-    const indent = h.depth > 1 ? `"pl-${(h.depth - 1) * 4}"` : '';
-    return `
-  <li className="my-0 ${indent}">
-    <a href="#${h.id}">${h.title}</a>
-  </li>
-  `;
-  });
-  const finalMarkup = `<ol className="list-decimal my-0">${htmlMarkup.join('')}</ol>`;
-  return finalMarkup;
-}
-
 const generateLinkMarkupv2 = (contentElement) => {
   const headings = [...contentElement.querySelectorAll('h1, h2, h3, h4, h5, h6')];
   const parsedHeadings = headings.map((heading) => ({
@@ -69,7 +49,7 @@ const generateLinkMarkupv2 = (contentElement) => {
   return parse(`${htmlMarkup.join('')}</li></ul>`);
 };
 
-function ToC({ content, props }) {
+function ToC({ content }) {
   // const htmlFromMarkdown = marked(content, { sanitize: true });
   const [tocContent, setTocContent] = useState('');
   useEffect(() => {
@@ -77,8 +57,8 @@ function ToC({ content, props }) {
     setTocContent(finalMarkup);
   }, [content]);
   return (
-    <div id='name' className='border-2 pt-0 rounded-md py-4 overflow-hidden'>
-      <p className='mt-0 px-4 bg-slate-400 text-white font-semibold'>Content at a glance</p>
+    <div id='name' className='border-2 border-slate-400 pt-0 rounded-md py-4 overflow-hidden'>
+      <p className='my-0 px-4  bg-slate-400  text-white font-semibold'>Content at a glance</p>
       {tocContent}
     </div>
   );

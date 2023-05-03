@@ -12,4 +12,4 @@ npx lint-staged ||
     false;
 )
 
-echo '🎉 No error found: committing this now.... ✨🚀🏄‍♂️🍻'
+echo '🎉 No error found: Preparing to commit now.... ✨🚀🏄‍♂️🍻'
