@@ -6,7 +6,6 @@
     "dev": "next dev",
     "build": "next build && next export",
     "start": "next start",
-    "lint": "next lint",
     "prepare": "husky install",
     "commit": "git add . && git-cz"
   },
