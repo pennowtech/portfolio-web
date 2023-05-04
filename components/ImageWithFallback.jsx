@@ -1,6 +1,6 @@
 // https://stackoverflow.com/a/66953317
 import React, { useState, useEffect, forwardRef } from 'react';
-import Image from 'next/image';
+import Image from "next/legacy/image";
 import { BASE_URL } from '../utils/consts';
 
 const ImageWithFallback = forwardRef((props, ref) => {

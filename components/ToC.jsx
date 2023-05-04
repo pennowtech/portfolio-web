@@ -19,44 +19,15 @@ import React, { useEffect, useState } from 'react';
 //     ></div>
 //   );
 // };
-import { marked } from 'marked';
 
 import parse from 'html-react-parser';
-import ReactMarkdownHeading from 'react-markdown-heading';
-
-function generateLinkMarkup(contentElement) {
-  const x = 'fdfdfd';
-  const headings = [
-    ...contentElement.querySelectorAll('h1, h2, h3, h4, h5, h6'),
-  ];
-  const parsedHeadings = headings.map((heading) => ({
-    title: heading.innerText,
-    depth: heading.nodeName.replace(/\D/g, ''),
-    id: heading.getAttribute('id'),
-  }));
-  console.log(parsedHeadings);
-  const htmlMarkup = parsedHeadings.map((h) => {
-    const indent = h.depth > 1 ? `"pl-${(h.depth - 1) * 4}"` : '';
-    return `
-  <li className="my-0 ${indent}">
-    <a href="#${h.id}">${h.title}</a>
-  </li>
-  `;
-  });
-  const finalMarkup = `<ol className="list-decimal my-0">${htmlMarkup.join(
-    '',
-  )}</ol>`;
-  return finalMarkup;
-}
 
 const generateLinkMarkupv2 = (contentElement) => {
-  const headings = [
-    ...contentElement.querySelectorAll('h1, h2, h3, h4, h5, h6'),
-  ];
+  const headings = [...contentElement.querySelectorAll('h1, h2, h3, h4, h5, h6')];
   const parsedHeadings = headings.map((heading) => ({
     title: heading.innerText,
     depth: heading.nodeName.replace(/\D/g, ''),
-    id: heading.getAttribute('id'),
+    id: heading.getAttribute('id')
   }));
   let prev_depth = 1;
   const htmlMarkup = parsedHeadings.map((h) => {
@@ -78,38 +49,19 @@ const generateLinkMarkupv2 = (contentElement) => {
   return parse(`${htmlMarkup.join('')}</li></ul>`);
 };
 
-function ToC({ content, props }) {
+function ToC({ content }) {
   // const htmlFromMarkdown = marked(content, { sanitize: true });
   const [tocContent, setTocContent] = useState('');
   useEffect(() => {
     const finalMarkup = generateLinkMarkupv2(document.getElementById('post'));
-    console.log(finalMarkup);
     setTocContent(finalMarkup);
   }, [content]);
   return (
-    <div
-      id="name"
-      className="toc border-2 rounded-md py-4 overflow-hidden"
-    >
+    <div id='name' className='border-2 border-slate-400 pt-0 rounded-md py-4 overflow-hidden'>
+      <p className='my-0 px-4  bg-slate-400  text-white font-semibold'>Content at a glance</p>
       {tocContent}
     </div>
   );
 }
-
-const ToC3 = ({ content, props }) => {
-  const x = (
-    <div className="toc border-2 rounded-md py-4 overflow-hidden">
-      <ReactMarkdownHeading
-        markdown={content}
-        hyperlink
-        ulClassName="list-decimal my-0"
-        liClassName="my-0"
-        {...props}
-      />
-    </div>
-  );
-  console.log(x);
-  return x;
-};
 
 export default ToC;

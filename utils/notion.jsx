@@ -14,7 +14,7 @@ const notion = new Client({
 });
 
 export const getNotionDatabase = async () => {
-  const response = await notion.databases.query({
+  const response = await notion.databases.retrieve({
     database_id: databaseId,
   });
   return response.results;
@@ -47,9 +47,16 @@ const pageToPostTransformer = (page, isPrevNextPostIteration = false) => {
   };
 };
 
-export const getPublishedBlogPosts = async () => {
-  // list blog posts
-  const response = await notion.databases.query({
+/**
+ * This function retrieves data from a Notion database. will continue to make additional
+ * requests to the Notion API until either the desired number of entries is reached or there
+ * are no more entries left.
+ * @returns a Promise that resolves to an array of Notion database entries that meet the specified
+ * filter criteria, sorted by the "Posted on" property in descending order. The number of entries
+ * returned is determined by the `postsCount` parameter
+ */
+async function getData(response, postsCount, data) {
+  const newResponse = await notion.databases.query({
     database_id: databaseId,
     filter: {
       property: 'Published',
@@ -57,15 +64,41 @@ export const getPublishedBlogPosts = async () => {
         equals: true,
       },
     },
+    page_size: postsCount,
     sorts: [
       {
-        property: 'Updated',
+        property: 'Posted on',
         direction: 'descending',
       },
     ],
+    start_cursor: response.next_cursor,
   });
 
-  return response.results.map((res) => pageToPostTransformer(res));
+  data = [...data, ...newResponse.results];
+
+  if (newResponse.has_more && postsCount && data.length < postsCount) {
+    return getData(newResponse, postsCount, data);
+  }
+  return data;
+}
+
+/**
+ * This function retrieves a specified number of published blog posts from a Notion database and
+ * transforms them into a specific format.
+ * @param {number} postsCount maximum number of posts to retrieve. `0` means all.
+ * @returns The function `getPublishedBlogPosts` is returning an array of blog post objects that have
+ * been filtered and sorted based on certain criteria. Each post object is transformed using the
+ * `pageToPostTransformer` function before being added to the array.
+ */
+export const getPublishedBlogPosts = async (postsCount) => {
+  // list blog posts
+  const response = { has_more: true };
+  // eslint-disable-next-line prefer-const
+  let data = [];
+
+  const fetchedData = await getData(response, postsCount, data);
+
+  return fetchedData.map((res) => pageToPostTransformer(res));
 };
 
 export const getPage = async (pageId) => {

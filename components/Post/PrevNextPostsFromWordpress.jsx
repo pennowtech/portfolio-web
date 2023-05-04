@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import React from 'react';
 import { useQuery } from 'urql';
-import Image from 'next/image';
+import Image from "next/legacy/image";
 import { FaArrowCircleLeft, FaArrowCircleRight } from 'react-icons/fa';
 import { FIND_POST_BY_SLUG } from '../../queries/queries';
 
@@ -31,13 +31,15 @@ const PrevNextPostsFromWordpress = ({ curPostSlug, fromWordpress }) => {
           />
           <div className="absolute opacity-70 bg-zinc-900 h-full w-full" />
           <div className="absolute w-full h-full left-0 px-6 py-4">
-            <Link href={`/blog/${data.post.next.slug}`}>
-              <a className="flex h-full items-center text-white gap-4">
-                <FaArrowCircleLeft className="w-2/12 text-2xl" />
-                <div className="w-10/12 mb-3 text-md tracking-tight text-left">
-                  {data.post.next.title}
-                </div>
-              </a>
+            <Link
+              href={`/blog/${data.post.next.slug}`}
+              className="flex h-full items-center text-white gap-4">
+
+              <FaArrowCircleLeft className="w-2/12 text-2xl" />
+              <div className="w-10/12 mb-3 text-md tracking-tight text-left">
+                {data.post.next.title}
+              </div>
+
             </Link>
           </div>
         </div>
@@ -53,13 +55,15 @@ const PrevNextPostsFromWordpress = ({ curPostSlug, fromWordpress }) => {
           />
           <div className="absolute opacity-70 bg-zinc-900 h-full w-full" />
           <div className="absolute w-full h-full left-0 px-6 py-4">
-            <Link href={`/blog/${data.post.prev.slug}`}>
-              <a className="flex h-full items-center text-white gap-4">
-                <div className="w-10/12 mb-3 text-md tracking-tight text-left">
-                  {data.post.prev.title}
-                </div>
-                <FaArrowCircleRight className="w-2/12 text-2xl" />
-              </a>
+            <Link
+              href={`/blog/${data.post.prev.slug}`}
+              className="flex h-full items-center text-white gap-4">
+
+              <div className="w-10/12 mb-3 text-md tracking-tight text-left">
+                {data.post.prev.title}
+              </div>
+              <FaArrowCircleRight className="w-2/12 text-2xl" />
+
             </Link>
           </div>
         </div>
