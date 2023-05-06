@@ -2,9 +2,13 @@ import React from 'react';
 
 import { BsPencil } from 'react-icons/bs';
 import Image from 'next/legacy/image';
+import Link from 'next/link';
 import PostDate from './Post/PostDate';
 
 const BlogTitleBar = ({ postMeta }) => {
+  if (!postMeta) {
+    return null;
+  }
   const [month, year] = postMeta.date.split(',');
   const readingTime = Math.ceil(postMeta.readingTime.minutes);
 
@@ -28,9 +32,13 @@ const BlogTitleBar = ({ postMeta }) => {
         <div className='absolute w-full bottom-0 text-white justify-center leading-4 md:max-w-screen-lg xl:max-w-[1048px] items-center mx-auto'>
           <div className='my-4  text-sm md:text-base font-Comic  flex gap-x-4'>
             {postMeta.tags.map((tag, idx) => (
-              <div key={tag.id} className={`${bgColor[idx]}  rounded-full px-2 md:px-3`}>
+              <Link
+                href={`/tag/${tag.name}`}
+                key={tag.id}
+                className={`${bgColor[idx]} text-white rounded-full px-2 md:px-3`}
+              >
                 {tag.name}
-              </div>
+              </Link>
             ))}
           </div>
 

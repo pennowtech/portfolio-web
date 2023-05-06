@@ -35,7 +35,7 @@ const Index = ({ posts, headingBlocks }) => {
       <Element id='about-me' className='element min-h-[630px]'>
         <IntroHighlight classProps='font-RobotoSlab text-base leading-8' headingBlocks={headingBlocks} />
       </Element>
-      <Element id='blog' className='element'>
+      <Element id='page' className='element'>
         <HomeArticles posts={posts} showAsHorizontal={false} />
       </Element>
       <Element id='contact' className='element'>

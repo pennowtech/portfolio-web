@@ -40,7 +40,7 @@ export default function HomeArticles({ posts, showAsHorizontal = true }) {
       </div>
       <div className='grid font-Monda justify-center'>
         <div className='button focus:shadow-outline cursor-pointer'>
-          <Link href='/blog' className='text-white'>
+          <Link href='/page' className='text-white'>
             View all articles
           </Link>
         </div>

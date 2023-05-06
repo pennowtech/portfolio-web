@@ -40,7 +40,7 @@ const WebSiteTags = [
 ];
 
 const MenuItems = [
-  { title: 'Articles', path: 'blog' },
+  { title: 'Articles', path: 'page' },
   { title: 'About Me', path: 'about-me' },
   { title: 'Contact', path: 'contact' }
 ];
@@ -100,7 +100,8 @@ const skills = [
   { name: 'Linux', icon: SiLinux }
 ];
 
-const PER_PAGE_BLOGS = 3;
+const POSTS_PER_PAGE = 10;
+const RECENT_POSTS_COUNT = 5;
 
 const isDev = process.env.NODE_ENV === 'development';
 const REMOTE_BASE_URL = 'https://sukhdeep.online';
@@ -109,4 +110,13 @@ export const BASE_URL = isDev ? 'http://localhost:3000' : REMOTE_BASE_URL;
 
 export const SelectedPostsList = [14, 44, 12];
 // export const SelectedPostsList = [];
-export { WebSiteTags, MenuItems, SocialIconList, FooterMainMenuItems, FooterOtherMenuItems, skills, PER_PAGE_BLOGS };
+export {
+  WebSiteTags,
+  MenuItems,
+  SocialIconList,
+  FooterMainMenuItems,
+  FooterOtherMenuItems,
+  skills,
+  POSTS_PER_PAGE as PER_PAGE_BLOGS,
+  RECENT_POSTS_COUNT
+};

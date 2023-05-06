@@ -1,11 +1,13 @@
 import React from 'react';
 import RecentArticles from './RecentArticles';
-import SidebarCategories from './SidebarCategories';
+import SidebarTags from './SidebarTags';
+import Search from './Search';
 
-const Sidebar = ({ recentPosts, className }) => (
-  <div className={`font-Monda ${className}`}>
+const Sidebar = ({ recentPosts, tags, className }) => (
+  <div className={`font-RobotoCond text-base ${className}`}>
+    <Search />
     <RecentArticles recentPosts={recentPosts} />
-    <SidebarCategories />
+    <SidebarTags tags={tags} />
   </div>
 );
 
