@@ -17,7 +17,7 @@ export default function Tag({ tags, postsToShow, currentTag, recentPosts }) {
   return (
     <PostsLayout pageTitle={`Articles on ${currentTag}`} metaInfo={metaInfo} tags={tags} recentPosts={recentPosts}>
       {posts && <PostList posts={posts} />}
-      <Pagination totalPosts={postsToShow.length} postName={`tag/${currentTag}`} />
+      <Pagination totalPosts={postsToShow?.length} postName={`tag/${currentTag}`} />
     </PostsLayout>
   );
 }
