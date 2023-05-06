@@ -1,6 +1,11 @@
 module.exports = {
   darkMode: 'class',
-  content: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
+  content: [
+    './pages/**/*.{js,ts,jsx,tsx}',
+    './components/**/*.{js,ts,jsx,tsx}',
+    './node_modules/flowbite/**/*.js',
+    './node_modules/flowbite-react/**/*.js'
+  ],
   safelist: [
     'bg-red-500',
     'bg-orange-500',
@@ -58,7 +63,8 @@ module.exports = {
         Barlow: ['Barlow', 'sans-serif'],
         NatoJapan: ['Noto Sans JP', 'sans-serif'],
         Inter: ['Inter', 'sans-serif'],
-        Comic: ['Comic Neue', 'sans-serif']
+        Comic: ['Comic Neue', 'sans-serif'],
+        Gentium: ['Gentium Plus', 'sans-serif']
       },
       container: {
         screens: {
@@ -75,5 +81,5 @@ module.exports = {
     }
   },
 
-  plugins: [require('@tailwindcss/typography')]
+  plugins: [require('@tailwindcss/typography'), require('flowbite/plugin')]
 };

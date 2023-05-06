@@ -10,12 +10,12 @@ dayjs.extend(localizedFormat);
 const databaseId = process.env.NOTION_DATABASE_ID ?? '';
 
 const notion = new Client({
-  auth: process.env.NOTION_KEY,
+  auth: process.env.NOTION_KEY
 });
 
 export const getNotionDatabase = async () => {
   const response = await notion.databases.retrieve({
-    database_id: databaseId,
+    database_id: databaseId
   });
   return response.results;
 };
@@ -42,8 +42,8 @@ const pageToPostTransformer = (page, isPrevNextPostIteration = false) => {
       nextPostImg: page.properties.NextPostImg.rich_text[0]?.plain_text ?? '',
       prevPostLink: page.properties.PrevPostLink.rich_text[0]?.plain_text ?? '',
       prevPostTitle: page.properties.PrevPostTitle.rich_text[0]?.plain_text ?? '',
-      prevPostImg: page.properties.PrevPostImg.rich_text[0]?.plain_text ?? '',
-    },
+      prevPostImg: page.properties.PrevPostImg.rich_text[0]?.plain_text ?? ''
+    }
   };
 };
 
@@ -61,17 +61,17 @@ async function getData(response, postsCount, data) {
     filter: {
       property: 'Published',
       checkbox: {
-        equals: true,
-      },
+        equals: true
+      }
     },
     page_size: postsCount,
     sorts: [
       {
         property: 'Posted on',
-        direction: 'descending',
-      },
+        direction: 'descending'
+      }
     ],
-    start_cursor: response.next_cursor,
+    start_cursor: response.next_cursor
   });
 
   data = [...data, ...newResponse.results];
@@ -101,6 +101,21 @@ export const getPublishedBlogPosts = async (postsCount) => {
   return fetchedData.map((res) => pageToPostTransformer(res));
 };
 
+export const getAllTagsFromPosts = async (posts) => {
+  const taggedPosts = posts.filter((post) => post?.tags);
+
+  const tags = [...taggedPosts.map((p) => p.tags).flat()];
+  const tagObj = {};
+  tags.forEach((tag) => {
+    if (tag.name in tagObj) {
+      tagObj[tag.name] += 1;
+    } else {
+      tagObj[tag.name] = 1;
+    }
+  });
+  return tagObj;
+};
+
 export const getPage = async (pageId) => {
   const n2m = new NotionToMarkdown({ notionClient: notion });
   const response = await notion.pages.retrieve({ page_id: pageId });
@@ -112,7 +127,7 @@ export const getPage = async (pageId) => {
 
   return {
     post,
-    markdown,
+    markdown
   };
 };
 
@@ -125,16 +140,16 @@ export const getSingleBlogPost = async (slug) => {
       property: 'Slug',
       formula: {
         string: {
-          equals: slug, // slug
-        },
-      },
+          equals: slug // slug
+        }
+      }
     },
     sorts: [
       {
         property: 'Updated',
-        direction: 'descending',
-      },
-    ],
+        direction: 'descending'
+      }
+    ]
   });
 
   if (!response.results[0]) {
@@ -151,7 +166,7 @@ export const getSingleBlogPost = async (slug) => {
 
   return {
     postMeta,
-    markdown,
+    markdown
   };
 };
 
@@ -166,16 +181,16 @@ export const getSinglePage = async (slug) => {
         property: 'Slug',
         formula: {
           string: {
-            equals: slug, // slug
-          },
-        },
+            equals: slug // slug
+          }
+        }
       },
       sorts: [
         {
           property: 'Updated',
-          direction: 'descending',
-        },
-      ],
+          direction: 'descending'
+        }
+      ]
     });
 
     if (!response.results[0]) {
@@ -195,7 +210,7 @@ export const getSinglePage = async (slug) => {
 
         const replacedWithFontAwesome = markdown.replace(
           /&#x(.*?);/,
-          (a, b) => `<i className="fa fa-regular">&#x${b};</i>`,
+          (a, b) => `<i className="fa fa-regular">&#x${b};</i>`
         );
 
         switch (result.type) {
@@ -220,7 +235,7 @@ export const getSinglePage = async (slug) => {
 
     return {
       blocks,
-      headingBlocks,
+      headingBlocks
     };
   } catch (error) {
     console.error(error);
