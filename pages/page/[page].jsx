@@ -1,8 +1,7 @@
 /* eslint-disable react/destructuring-assignment */
-import React, { useState } from 'react';
+import React from 'react';
 
 import { getPublishedBlogPosts } from '@utils/notion';
-import { Pagination2, paginate } from '@components/Pagination2';
 import Pagination from '@components/Pagination';
 import PostsLayout from '../../components/PostsLayout';
 import { PER_PAGE_BLOGS, RECENT_POSTS_COUNT } from '../../utils/consts';

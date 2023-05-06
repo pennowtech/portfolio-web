@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { getPublishedBlogPosts, getAllTagsFromPosts } from '@utils/notion';
 import Pagination from '@components/Pagination';
 import PostsLayout from '../../../components/PostsLayout';
