@@ -2,19 +2,21 @@ import Link from 'next/link';
 import React from 'react';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 
+const articleHref = (slug) => `/blog/${slug.replace(/^\/+/, '')}`;
+
 const PrevNextPosts = ({ postsNextPrevInfo }) => {
   const previous = postsNextPrevInfo?.prevPostLink
     ? {
-        href: `/blog/${postsNextPrevInfo.prevPostLink}`,
-        title: postsNextPrevInfo.prevPostTitle,
+        href: articleHref(postsNextPrevInfo.prevPostLink),
+        title: postsNextPrevInfo.prevPostTitle || 'Read previous article',
         label: 'Previous article',
         icon: FaArrowLeft
       }
     : null;
   const next = postsNextPrevInfo?.nextPostLink
     ? {
-        href: `/blog/${postsNextPrevInfo.nextPostLink}`,
-        title: postsNextPrevInfo.nextPostTitle,
+        href: articleHref(postsNextPrevInfo.nextPostLink),
+        title: postsNextPrevInfo.nextPostTitle || 'Read next article',
         label: 'Next article',
         icon: FaArrowRight
       }

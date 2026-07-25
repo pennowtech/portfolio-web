@@ -2,6 +2,7 @@ import React from 'react';
 
 import { getPublishedBlogPosts } from '@utils/notion';
 import Pagination from '@components/Pagination';
+import { DUMMY_ARTICLE } from '@utils/dummyArticle';
 import PostsLayout from '../../components/PostsLayout';
 import { PER_PAGE_BLOGS, RECENT_POSTS_COUNT } from '../../utils/consts';
 import PostList from '../../components/PostList';
@@ -23,7 +24,9 @@ const Index = ({ postsToShow, recentPosts, totalPosts }) => {
 export const getStaticProps = async ({ params }) => {
   const pageNumber = params.page; // Get Current Page No.
 
-  const posts = await getPublishedBlogPosts();
+  const notionPosts = await getPublishedBlogPosts();
+  // TODO(dummy-content): Keep pagination consistent with the first article page.
+  const posts = [{ ...DUMMY_ARTICLE, thumbnailUrl: `/${DUMMY_ARTICLE.thumbnailUrl}` }, ...notionPosts];
   // const res = await fetch('https://jsonplaceholder.typicode.com/todos');
   // const data = await res.json();
 
@@ -41,7 +44,9 @@ export const getStaticProps = async ({ params }) => {
 };
 
 export async function getStaticPaths() {
-  const posts = await getPublishedBlogPosts();
+  const notionPosts = await getPublishedBlogPosts();
+  // TODO(dummy-content): Count the local fixture while generating pagination routes.
+  const posts = [DUMMY_ARTICLE, ...notionPosts];
 
   const totalPosts = posts.length;
   const totalPages = Math.ceil(totalPosts / PER_PAGE_BLOGS);

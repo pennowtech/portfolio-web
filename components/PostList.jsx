@@ -1,14 +1,12 @@
 import React from 'react';
 
-import Post from './Post';
+import VerticalCard from './Post/VerticalCard';
 
 const PostList = ({ posts }) => (
-  <>
+  <div className='grid grid-cols-1 gap-6 md:grid-cols-2 xl:gap-8'>
     {posts.map((post) => (
-      <article key={post.id} className='col-span-2 overflow-hidden mb-8'>
-        <Post post={post} />
-      </article>
+      <VerticalCard key={post.id} post={post} showExcerpt />
     ))}
-  </>
+  </div>
 );
 export default PostList;

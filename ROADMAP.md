@@ -79,8 +79,8 @@ Across all steps:
 | 2    | Profile hero          | Refine the background, profile card, statistics, introduction, and primary action across all viewports.                 | `Deferred`    |
 | 3    | Profile highlights    | Improve content hierarchy, cards, imagery, skill presentation, and responsive spacing.                                  | `Complete`    |
 | 4    | Article listing       | Refine cards, images, metadata, tags, and the one/two/three-column responsive article grid.                             | `Complete`    |
-| 5    | Article reading page  | Improve reading width, heading rhythm, code overflow, table of contents, and responsive navigation.                     | `In review`   |
-| 6    | Contact section       | Improve form hierarchy, mobile field stacking, touch targets, field states, feedback, and calls to action.              | `Not started` |
+| 5    | Article reading page  | Improve reading width, heading rhythm, code overflow, table of contents, and responsive navigation.                     | `Complete`    |
+| 6    | Contact section       | Improve form hierarchy, mobile field stacking, touch targets, field states, feedback, and calls to action.              | `Proposed`    |
 | 7    | Footer                | Improve link organization, alignment, social links, touch targets, and responsive stacking.                             | `Not started` |
 | 8    | Consistency pass      | Review spacing, accessibility, dark mode, and visual consistency at every target viewport.                              | `Not started` |
 
@@ -307,9 +307,9 @@ Status: `Complete`
 - Validation: sandboxed `next build --webpack` passes; empty Notion credentials use the existing fallback behavior.
 - Final visual acceptance: accepted by moving to Step 5.
 
-## Current Step: Article Reading Page
+## Step 5: Article Reading Page
 
-Status: `In review`
+Status: `Complete`
 
 ### Observed Issues
 
@@ -363,7 +363,7 @@ Status: `In review`
 - Preserved the dummy article content and route unchanged.
 - Validation: `npm run lint` passes with 10 pre-existing warnings and no errors.
 - Validation: sandboxed `next build --webpack` passes; unavailable Notion requests use the existing fallback behavior.
-- Final visual acceptance: awaiting review.
+- Final visual acceptance: accepted by moving to Step 6.
 
 ### Step 5 compatibility follow-up
 
@@ -374,6 +374,35 @@ Status: `In review`
 - Preserved the dummy article and its route unchanged.
 - Validation: `npm run lint` passes with no errors and only 9 unrelated pre-existing warnings.
 - Validation: `next build --webpack` completes successfully; Notion network requests use the existing fallback in the restricted build environment.
+
+### Article discovery follow-up
+
+- Updated `/page` and paginated article archives to use the responsive portfolio card system.
+- Limited homepage cards to 3 on phones, 4 on tablets, and 6 on wide desktop.
+- Presented categories as readable overlays on article images.
+- Added automatic previous/next article suggestions while preserving manually configured navigation.
+- Included the dummy article consistently in the homepage and paginated article collection.
+- Corrected custom Notion note rendering to prevent invalid paragraph nesting and hydration errors.
+- Validation: targeted lint and `next build --webpack` pass.
+
+## Current Step: Contact Section
+
+Status: `Proposed`
+
+### Initial technical finding
+
+- Production deploys to Vercel, which supports the existing `/api/contact` serverless route.
+- `next.config.js` currently forces production builds to `output: 'export'`, which disables that API route.
+- The contact flow also exposes the reCAPTCHA secret through a `NEXT_PUBLIC_` variable name and needs stronger server-side validation and error handling.
+
+### Proposed outcome
+
+- Restore the Vercel serverless contact endpoint by removing the incompatible static-export setting.
+- Keep the Notion key, contact database ID, and reCAPTCHA secret server-only.
+- Validate and normalize all submitted fields on the server before writing to Notion.
+- Return accurate status codes for validation, CAPTCHA, configuration, and upstream failures.
+- Add accessible field errors, submitting state, success feedback, and failure recovery.
+- Refine the form hierarchy and responsive layout while retaining restrained green actions and existing typography.
 
 ## Dummy Article Fixture
 
@@ -441,6 +470,8 @@ Complete this checklist after each implementation step:
 | 2026-07-25 | Step 5          | Move to the article-reading experience after committing the accepted article listing.         | Responsive reading-page proposal prepared.                                                 |
 | 2026-07-25 | Step 5          | Approve and implement the responsive article-reading proposal.                                | Implemented and moved to visual review.                                                    |
 | 2026-07-25 | Compatibility   | Remove Notion Markdown runtime errors and deprecated image usage; document setup fully.       | Markdown is normalized, images use the current API, and setup is documented in README.     |
+| 2026-07-25 | Article UX      | Complete article archives, responsive homepage limits, overlays, and automatic navigation.    | Article discovery and reading work accepted; moved to Step 6.                              |
+| 2026-07-25 | Step 6          | Address contact-form deployment reliability before visual refinement.                         | Vercel/API incompatibility identified and a contained implementation proposed.             |
 | 2026-07-25 | Content         | Use a removable dummy Markdown article rendered by the existing code.                         | Fixture added with `TODO(dummy-content)` markers.                                          |
 | 2026-07-25 | Full redesign   | The initial complete redesign changed too much at once and was rejected.                      | Reverted; incremental review process adopted.                                              |
 

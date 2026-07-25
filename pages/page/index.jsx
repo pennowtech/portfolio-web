@@ -2,6 +2,7 @@ import React from 'react';
 
 import { getPublishedBlogPosts } from '@utils/notion';
 import Pagination from '@components/Pagination';
+import { DUMMY_ARTICLE } from '@utils/dummyArticle';
 import PostsLayout from '../../components/PostsLayout';
 import { PER_PAGE_BLOGS, RECENT_POSTS_COUNT } from '../../utils/consts';
 import PostList from '../../components/PostList';
@@ -21,7 +22,9 @@ const Index = ({ postsToShow, totalPosts, recentPosts }) => {
   );
 };
 export const getStaticProps = async () => {
-  const posts = await getPublishedBlogPosts();
+  const notionPosts = await getPublishedBlogPosts();
+  // TODO(dummy-content): Keep the local fixture in the full listing until explicitly removed.
+  const posts = [{ ...DUMMY_ARTICLE, thumbnailUrl: `/${DUMMY_ARTICLE.thumbnailUrl}` }, ...notionPosts];
   // const res = await fetch('https://jsonplaceholder.typicode.com/todos');
   // const data = await res.json();
 

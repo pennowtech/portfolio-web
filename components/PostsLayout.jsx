@@ -18,29 +18,32 @@ const PostsLayout = ({ pageTitle, metaInfo, tags, recentPosts, ...props }) => {
       <FullLayout>
         <HeaderMain />
         {pageTitle && (
-          <div className='relative w-full h-[120px] md:h-[180px] overflow-hidden mb-8 left-0'>
+          <header className='relative isolate min-h-52 w-full overflow-hidden md:min-h-64'>
             <Image
               src='https://images.unsplash.com/photo-1681243303374-72d01f749dfa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=487&q=80'
               alt=''
               role='presentation'
               fill
               sizes='100vw'
-              className='w-full object-cover object-center opacity-93 dark:grayscale'
+              className='object-cover object-center dark:grayscale'
             />
-            <div className='absolute bg-gradient-to-b from-[#32323200] to-[#100f0fed] h-full w-full' />
-            <div className='absolute inset-x-0 bottom-0 text-white flex justify-center items-center '>
-              <div className='container '>
-                <div className='leading-4'>
-                  <h1 className='mb-2 font-Neuton text-3xl md:text-5xl pl-8 text-slate-50'>{pageTitle}</h1>
-                </div>
+            <div className='absolute inset-0 bg-gradient-to-b from-slate-950/20 via-slate-950/55 to-slate-950/90' />
+            <div className='relative mx-auto flex min-h-52 w-full max-w-[1180px] items-end px-4 pb-9 text-white md:min-h-64 md:px-6 md:pb-12 lg:px-8'>
+              <div>
+                <p className='mb-2 font-Monda text-xs font-semibold uppercase tracking-[0.16em] text-slate-200 md:text-sm'>
+                  Notes from the field
+                </p>
+                <h1 className='m-0 font-Neuton text-4xl font-semibold leading-tight text-white md:text-6xl'>
+                  {pageTitle}
+                </h1>
               </div>
             </div>
-          </div>
+          </header>
         )}{' '}
-        <div className='container lg:mx-auto p-4 lg:py-12 '>
-          <div className='grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-3 gap-8 overflow-hidden '>
-            <div className='col-span-2 mb-8'>{props.children}</div>
-            <Sidebar recentPosts={recentPosts} tags={tags} className='lg:ml-8 lg:-mt-8' />
+        <div className='mx-auto w-full max-w-[1180px] px-4 py-10 md:px-6 md:py-14 lg:px-8'>
+          <div className='grid min-w-0 grid-cols-1 gap-10 xl:grid-cols-[minmax(0,1fr)_17rem] xl:gap-12'>
+            <main className='min-w-0'>{props.children}</main>
+            <Sidebar recentPosts={recentPosts} tags={tags} />
           </div>
         </div>
       </FullLayout>

@@ -46,7 +46,7 @@ const Index = ({ posts }) => {
 };
 
 export const getStaticProps = async () => {
-  const response = await getPublishedBlogPosts(6);
+  const response = await getPublishedBlogPosts(5);
   return {
     props: {
       // TODO(dummy-content): Remove this prepend when the real article feed is ready.

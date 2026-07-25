@@ -55,11 +55,22 @@ export const getStaticProps = async (context) => {
   // TODO(dummy-content): Remove this branch with the local Markdown fixture.
   if (blog === DUMMY_ARTICLE_SLUG) {
     const markdown = await fs.readFile(path.join(process.cwd(), 'posts', `${DUMMY_ARTICLE_SLUG}.md`), 'utf8');
+    const [firstPublishedPost] = await getPublishedBlogPosts(1);
+    const postMeta = {
+      ...DUMMY_ARTICLE,
+      infoPrevNextPost: firstPublishedPost
+        ? {
+            prevPostLink: firstPublishedPost.slug,
+            prevPostTitle: firstPublishedPost.title,
+            prevPostImg: firstPublishedPost.thumbnailUrl
+          }
+        : {}
+    };
 
     return {
       props: {
         markdown,
-        postMeta: DUMMY_ARTICLE,
+        postMeta,
         compiledMDSource: markdown
       }
     };

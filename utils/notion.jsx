@@ -134,7 +134,7 @@ async function getData(response, postsCount, data) {
         equals: true
       }
     },
-    page_size: postsCount,
+    page_size: postsCount ? Math.min(postsCount, 100) : 100,
     sorts: [
       {
         property: 'Posted on',
@@ -146,10 +146,10 @@ async function getData(response, postsCount, data) {
 
   data = [...data, ...newResponse.results];
 
-  if (newResponse.has_more && postsCount && data.length < postsCount) {
+  if (newResponse.has_more && (!postsCount || data.length < postsCount)) {
     return getData(newResponse, postsCount, data);
   }
-  return data;
+  return postsCount ? data.slice(0, postsCount) : data;
 }
 
 /**
@@ -204,13 +204,30 @@ export const getPage = async (pageId) => {
 
 export const getSingleBlogPost = async (slug) => {
   const n2m = new NotionToMarkdown({ notionClient: notion });
-  const page = await findPageBySlug(slug);
+  const publishedPages = await getData({ next_cursor: undefined }, 0, []);
+  const pageIndex = publishedPages.findIndex((result) => getPageSlug(result).toLowerCase() === slug.toLowerCase());
+  const page = publishedPages[pageIndex];
 
   if (!page) throw new Error(`No Notion page found for slug "${slug}"`);
 
   const mdBlocks = await n2m.pageToMarkdown(page.id);
   const markdown = toMarkdownText(n2m.toMarkdownString(mdBlocks));
   const postMeta = pageToPostTransformer(page);
+  const olderPost = publishedPages[pageIndex + 1] ? pageToPostTransformer(publishedPages[pageIndex + 1]) : null;
+  const newerPost = pageIndex > 0 ? pageToPostTransformer(publishedPages[pageIndex - 1]) : null;
+
+  if (!postMeta.infoPrevNextPost.prevPostLink && olderPost) {
+    postMeta.infoPrevNextPost.prevPostLink = olderPost.slug;
+    postMeta.infoPrevNextPost.prevPostTitle = olderPost.title;
+    postMeta.infoPrevNextPost.prevPostImg = olderPost.thumbnailUrl;
+  }
+
+  if (!postMeta.infoPrevNextPost.nextPostLink && newerPost) {
+    postMeta.infoPrevNextPost.nextPostLink = newerPost.slug;
+    postMeta.infoPrevNextPost.nextPostTitle = newerPost.title;
+    postMeta.infoPrevNextPost.nextPostImg = newerPost.thumbnailUrl;
+  }
+
   postMeta.readingTime = readingTime(markdown);
 
   return {

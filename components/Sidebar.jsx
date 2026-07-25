@@ -4,11 +4,14 @@ import SidebarTags from './SidebarTags';
 import Search from './Search';
 
 const Sidebar = ({ recentPosts, tags, className }) => (
-  <div className={`font-RobotoCond text-base ${className}`}>
+  <aside
+    aria-label='Article discovery'
+    className={`min-w-0 border-t border-slate-200 pt-8 font-RobotoCond text-base dark:border-slate-500 xl:border-l xl:border-t-0 xl:pl-7 xl:pt-0 ${className || ''}`}
+  >
     <Search />
     <RecentArticles recentPosts={recentPosts} />
     <SidebarTags tags={tags} />
-  </div>
+  </aside>
 );
 
 export default Sidebar;

@@ -9,7 +9,8 @@ const Previous = ({ currentPage, postName }) => {
   return (
     <Link
       href={paginationLink}
-      className='rounded-full border-gray-300 px-4 py-2 mr-1 transition duration-500 ease-in-out hover:bg-gray-400 hover:text-white'
+      aria-label='Previous article page'
+      className='flex min-h-11 min-w-11 items-center justify-center rounded-lg border border-slate-300 px-3 py-2 transition hover:border-green-700 hover:text-green-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:border-slate-500 dark:hover:border-green-400 dark:hover:text-green-400'
     >
       <GrCaretPrevious className='inline-block' />
     </Link>

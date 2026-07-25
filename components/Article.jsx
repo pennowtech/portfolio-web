@@ -21,12 +21,12 @@ const OrangeComponent = ({ children }) => (
 );
 
 const NoteComponent = ({ heading, children }) => (
-  <aside className='my-8 overflow-hidden rounded-lg border border-orange-300 dark:border-orange-700'>
+  <span role='note' className='my-8 block overflow-hidden rounded-lg border border-orange-300 dark:border-orange-700'>
     <strong className='block bg-orange-700 px-4 py-2 text-orange-50'>📣 {heading}</strong>
     <span className='block bg-orange-50 px-4 py-3 text-orange-900 dark:bg-orange-950/30 dark:text-orange-100'>
       {children}
     </span>
-  </aside>
+  </span>
 );
 
 const TableComponent = ({ children }) => (

@@ -10,6 +10,8 @@ import VerticalCard from './Post/VerticalCard';
  * @visibleName The Best layout Ever 🐙
  */
 export default function HomeArticles({ posts, showAsHorizontal = true }) {
+  const homepagePosts = showAsHorizontal ? posts : posts.slice(0, 6);
+
   return (
     <section aria-labelledby='articles-title' className='relative py-14 md:py-20'>
       <div className='mx-auto w-full max-w-[1048px] px-4 lg:px-8'>
@@ -29,11 +31,16 @@ export default function HomeArticles({ posts, showAsHorizontal = true }) {
         <div
           className={showAsHorizontal ? 'grid gap-8' : 'grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3 xl:gap-8'}
         >
-          {posts.map((post) =>
+          {homepagePosts.map((post, index) =>
             showAsHorizontal ? (
               <HorizontalCard post={post} key={post.id} />
             ) : (
-              <VerticalCard post={post} showExcerpt key={post.id} />
+              <VerticalCard
+                post={post}
+                showExcerpt
+                key={post.id}
+                className={index >= 4 ? 'hidden xl:flex' : index >= 3 ? 'hidden md:flex' : ''}
+              />
             )
           )}
         </div>

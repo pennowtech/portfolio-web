@@ -6,7 +6,7 @@ const PostCategories = ({ categories, variant = 'default' }) => {
 
   if (variant === 'card') {
     return (
-      <span className='absolute left-3 top-3 rounded-full bg-slate-950/80 px-3 py-1 font-Monda text-xs font-semibold text-white backdrop-blur-sm'>
+      <span className='absolute bottom-3 left-3 z-10 rounded-full border border-white/40 bg-slate-950/80 px-3 py-1 font-Monda text-xs font-semibold text-white shadow-sm backdrop-blur-sm'>
         {categories.name}
       </span>
     );

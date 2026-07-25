@@ -6,8 +6,10 @@ import PostDate from './PostDate';
 import PostCategories from './PostCategories';
 import PostExcerpt from './PostExcerpt';
 
-const VerticalCard = ({ post, showExcerpt = false }) => (
-  <article className='group flex h-full min-w-0 flex-col overflow-hidden rounded-xl border border-slate-200 bg-white transition duration-200 hover:-translate-y-1 hover:border-slate-300 hover:shadow-md dark:border-slate-500 dark:bg-gray-700 dark:hover:border-slate-400'>
+const VerticalCard = ({ post, showExcerpt = false, className = '' }) => (
+  <article
+    className={`group h-full min-w-0 flex-col overflow-hidden rounded-xl border border-slate-200 bg-white transition duration-200 hover:-translate-y-1 hover:border-slate-300 hover:shadow-md dark:border-slate-500 dark:bg-gray-700 dark:hover:border-slate-400 ${className || 'flex'}`}
+  >
     <Link
       href={`/blog/${post.slug}`}
       aria-label={`Read ${post.title}`}
@@ -21,6 +23,10 @@ const VerticalCard = ({ post, showExcerpt = false }) => (
         layout='fill'
         objectFit='cover'
         sizes='(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 33vw'
+      />
+      <span
+        aria-hidden='true'
+        className='pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-950/75 to-transparent'
       />
       <PostCategories categories={post.categories} variant='card' />
     </Link>

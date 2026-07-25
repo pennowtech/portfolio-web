@@ -24,21 +24,21 @@ const Pagination = ({ totalPosts, postName }) => {
   const showPrev = parseInt(currentPage, 10) === 1;
 
   return (
-    <div className='flex justify-center my-8'>
+    <nav aria-label='Article pages' className='my-10 flex flex-wrap items-center justify-center gap-2 md:my-12'>
       {!showPrev && <Previous currentPage={currentPage} totalPages={totalPages} postName={postName} />}
 
       {paginationLinks.map((pageNo, index) => {
         const paginationLink = `/${postName}/${pageNo}/`;
 
         return typeof pageNo === 'number' ? (
-          /* eslint-disable react/no-array-index-key */
           <Link
-            key={`id-${index}`}
+            key={`page-${pageNo}`}
             href={paginationLink}
             className={cx(
-              'border rounded-full border-gray-300 px-4 py-2 font-Monda transition duration-500 ease-in-out hover:bg-gray-400 hover:text-white',
+              'flex min-h-11 min-w-11 items-center justify-center rounded-lg border border-slate-300 px-3 py-2 font-Monda transition hover:border-green-700 hover:text-green-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:border-slate-500 dark:hover:border-green-400 dark:hover:text-green-400',
               {
-                'is-active bg-gray-500 text-white': pageNo === currentPage
+                'is-active border-green-700 bg-green-700 text-white hover:text-white dark:border-green-600 dark:bg-green-600 dark:hover:text-white':
+                  pageNo === currentPage
               }
             )}
           >
@@ -46,13 +46,13 @@ const Pagination = ({ totalPosts, postName }) => {
           </Link>
         ) : (
           // If its "..."
-          <span key={`id-${index}`} className='px-3 py-2'>
+          <span key={`ellipsis-${index}`} className='px-2 py-2' aria-hidden='true'>
             {pageNo}
           </span>
         );
       })}
       {!showNext && <Next currentPage={currentPage} totalPages={totalPages} postName={postName} />}
-    </div>
+    </nav>
   );
 };
 
