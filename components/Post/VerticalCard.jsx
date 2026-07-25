@@ -8,57 +8,49 @@ import PostCategories from './PostCategories';
 import PostExcerpt from './PostExcerpt';
 
 const VerticalCard = ({ post, showExcerpt = false }) => (
-  <div className='max-w-sm rounded-lg overflow-hidden shadow-lg mb-6 block bg-slate-50  dark:bg-gray-700'>
-    <div className='grow rounded-lg  '>
-      <div className='relative rounded-lg'>
-        <div className='relative rounded-t-lg overflow-hidden'>
-          <Link href={`/blog/${post.slug}`}>
-            <ImageWithFallback
-              fallbackSrc='/blank.jpg'
-              src={post.thumbnailUrl}
-              alt={post.title}
-              className='object-cover w-full'
-              width={700}
-              height={365}
-            />
-            <PostCategories categories={post.categories} />
-          </Link>
+  <article className='group flex h-full min-w-0 flex-col overflow-hidden rounded-xl border border-slate-200 bg-white transition duration-200 hover:-translate-y-1 hover:border-slate-300 hover:shadow-md dark:border-slate-500 dark:bg-gray-700 dark:hover:border-slate-400'>
+    <Link
+      href={`/blog/${post.slug}`}
+      aria-label={`Read ${post.title}`}
+      className='relative block aspect-[16/9] overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-green-600'
+    >
+      <ImageWithFallback
+        fallbackSrc='/blank.jpg'
+        src={post.thumbnailUrl}
+        alt={post.title}
+        className='object-cover transition duration-300 group-hover:scale-[1.03]'
+        layout='fill'
+        objectFit='cover'
+        sizes='(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 33vw'
+      />
+      <PostCategories categories={post.categories} variant='card' />
+    </Link>
 
-          <div className='relative -mt-10 bg-slate-50 dark:bg-gray-700'>
-            <div
-              className='bottom-auto top-0 left-0 right-0 w-full absolute pointer-events-none overflow-hidden -mt-20 h-20 '
-              style={{ transform: 'translateZ(0)' }}
-            >
-              <svg
-                className='absolute bottom-0 overflow-hidden'
-                xmlns='http://www.w3.org/2000/svg'
-                preserveAspectRatio='none'
-                version='1.1'
-                viewBox='0 0 2560 100'
-                x='0'
-                y='0'
-              >
-                <polygon className='text-slate-50 dark:text-gray-700  fill-current' points='2560 0 2560 100 0 100' />
-              </svg>
-            </div>
-            <Link href={`/blog/${post.slug}`}>
-              <h3 className='font-Neuton leading-7 px-6 py-2 my-2 text-semibold'>{post.title}</h3>
-              <PostExcerpt
-                className='px-6 py-2 text-base leading-8 lg:mb-4'
-                excerpt={post.description}
-                blogUrl={post.slug}
-                length={100}
-                showReadNow={false}
-              />
-            </Link>
-            <div className='px-6 py-2'>
-              <PostDate date={post.date} />
-              <PostTags tags={post.tags} />
-            </div>
-          </div>
-        </div>
+    <div className='flex flex-1 flex-col p-5'>
+      <Link
+        href={`/blog/${post.slug}`}
+        className='rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600'
+      >
+        <h3 className='mb-3 mt-0 line-clamp-2 font-Neuton text-2xl font-semibold leading-tight transition group-hover:text-green-800 dark:group-hover:text-green-400'>
+          {post.title}
+        </h3>
+      </Link>
+
+      {showExcerpt && (
+        <PostExcerpt
+          className='mb-5 line-clamp-3 text-base leading-relaxed text-slate-600 dark:text-slate-200'
+          excerpt={post.description}
+          blogUrl={post.slug}
+          length={140}
+          showReadNow={false}
+        />
+      )}
+
+      <div className='mt-auto border-t border-slate-200 pt-4 dark:border-slate-500'>
+        <PostDate date={post.date} readingTime={post.readingTime?.minutes ?? post.readingTime} variant='card' />
+        <PostTags tags={post.tags} variant='card' />
       </div>
     </div>
-  </div>
+  </article>
 );
 export default VerticalCard;

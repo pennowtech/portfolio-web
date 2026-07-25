@@ -78,7 +78,7 @@ Across all steps:
 | 1    | Header and navigation | Improve alignment, navigation states, touch targets, and phone/tablet navigation while retaining the existing identity. | `Complete`    |
 | 2    | Profile hero          | Refine the background, profile card, statistics, introduction, and primary action across all viewports.                 | `Deferred`    |
 | 3    | Profile highlights    | Improve content hierarchy, cards, imagery, skill presentation, and responsive spacing.                                  | `Complete`    |
-| 4    | Article listing       | Refine cards, images, metadata, tags, and the one/two/three-column responsive article grid.                             | `Not started` |
+| 4    | Article listing       | Refine cards, images, metadata, tags, and the one/two/three-column responsive article grid.                             | `Complete`    |
 | 5    | Article reading page  | Improve reading width, heading rhythm, code overflow, table of contents, and responsive navigation.                     | `Not started` |
 | 6    | Contact section       | Improve form hierarchy, mobile field stacking, touch targets, field states, feedback, and calls to action.              | `Not started` |
 | 7    | Footer                | Improve link organization, alignment, social links, touch targets, and responsive stacking.                             | `Not started` |
@@ -190,7 +190,7 @@ Status: `Deferred`
 - Validation: sandboxed `next build --webpack` passes. Notion requests are unavailable in the sandbox, and the existing fallback behavior allows static generation to complete.
 - Final visual acceptance: not accepted; further iteration deferred at the user's request.
 
-## Current Step: Profile Highlights
+## Step 3: Profile Highlights
 
 Status: `Complete`
 
@@ -251,6 +251,62 @@ Status: `Complete`
 - Validation: sandboxed `next build --webpack` passes; unavailable Notion requests use the existing fallback behavior.
 - Final visual acceptance: accepted by moving to Step 4.
 
+## Current Step: Article Listing
+
+Status: `Complete`
+
+### Observed Issues
+
+- The section background and repeated angled divider add visual weight that competes with the article content.
+- Cards use heavy shadows, multiple nested wrappers, and another angled divider, creating a busy stacked-card appearance.
+- Card heights vary with titles, excerpts, metadata, and tags, making the grid uneven.
+- The grid changes to two columns at tablet width and three columns at 1024 px without controlling card content density.
+- Category badges use a fixed bright red treatment regardless of the article category or surrounding palette.
+- Metadata has very low contrast, and tags can become visually dominant.
+- The entire title/excerpt area is linked while tags contain separate links, making the interaction structure harder to understand.
+- The “View all articles” action uses a clickable wrapper around a link rather than one clear interactive element.
+
+### Proposed Outcome
+
+- Use a calm section background and let article imagery and typography provide the visual interest.
+- Create clean, equal-height article cards with one image, a restrained category label, title, concise excerpt, metadata, and limited tags.
+- Use subtle borders and hover movement instead of heavy shadows and decorative dividers.
+- Keep the established green treatment for the primary “View all articles” action.
+- Use one column on phones, two columns on tablets, and three columns only on wider desktop screens.
+- Maintain a stable image ratio and clamp long titles/excerpts so card rows remain aligned.
+- Improve date and reading-time contrast while keeping metadata visually secondary.
+- Keep tags compact, keyboard accessible, and visually quieter than the article title.
+- Make the article title/image link and tag links semantically clear without nested or competing interactions.
+- Preserve both light and dark themes and the existing article data.
+
+### Explicitly Unchanged
+
+- Header, profile hero, and Profile Highlights.
+- Individual article reading pages.
+- Pagination and tag archive pages.
+- Article content, font families, and data sources.
+
+### Approved Scope
+
+- Implement the proposed responsive article-listing redesign.
+- Keep the “View all articles” action green, replacing the proposed blue action treatment.
+- Keep the dummy article fixture until its removal is explicitly requested.
+
+### Implementation
+
+- Files changed: `components/HomeArticles.jsx`, `components/Post/VerticalCard.jsx`, `components/Post/PostCategories.jsx`, `components/Post/PostDate.jsx`, and `components/Post/PostTags.jsx`.
+- Removed the section and card dividers, nested wrappers, heavy shadows, and fixed red category treatment from the homepage listing.
+- Added equal-height bordered cards with a stable 16:9 image, clamped titles and excerpts, restrained metadata, and compact outlined tags.
+- Kept image/title links and tag links semantically separate.
+- Added one phone column, two tablet columns, and three columns at wide desktop widths.
+- Retained green for the “View all articles” action.
+- Added card-only variants for shared category, date, and tag components so individual article pages remain visually unchanged.
+- Preserved the dummy article fixture without modification.
+- Added a Git-ignored `.env.local` with placeholders for `NOTION_KEY`, `NOTION_DATABASE_ID`, and the optional contact-form database ID.
+- Validation: `npm run lint` passes with 13 pre-existing warnings and no errors.
+- Validation: sandboxed `next build --webpack` passes; empty Notion credentials use the existing fallback behavior.
+- Final visual acceptance: accepted by moving to Step 5.
+
 ## Dummy Article Fixture
 
 The temporary article exists to make design work reviewable without relying on Notion.
@@ -309,6 +365,11 @@ Complete this checklist after each implementation step:
 | 2026-07-25 | Step 3 voice    | The initial fallback copy sounded overly formal and generic.                                  | Rewritten in a direct, conversational, professional tone.                                  |
 | 2026-07-25 | Step 3 content  | The revised copy explained architecture rather than highlighting the actual profile.          | Replaced with concrete career, domain, technology, delivery, and working-style highlights. |
 | 2026-07-25 | Step 3 outcome  | Accept the revised career-focused highlights and move to the next roadmap step.               | Step 3 marked complete.                                                                    |
+| 2026-07-25 | Step 4          | Move to the article-listing improvement after committing the accepted work.                   | Responsive article-card proposal prepared.                                                 |
+| 2026-07-25 | Step 4 styling  | Keep the established green action color instead of replacing it with blue.                    | Green retained for the primary article-listing action.                                     |
+| 2026-07-25 | Dummy content   | Keep the dummy article until its removal is explicitly requested.                             | Fixture preserved unchanged.                                                               |
+| 2026-07-25 | Notion          | Add a safe local place for the Notion key and explain its use.                                | Git-ignored `.env.local` created with required placeholders.                               |
+| 2026-07-25 | Step 4 outcome  | Accept the article-listing implementation and move to the next roadmap step.                  | Step 4 marked complete.                                                                    |
 | 2026-07-25 | Content         | Use a removable dummy Markdown article rendered by the existing code.                         | Fixture added with `TODO(dummy-content)` markers.                                          |
 | 2026-07-25 | Full redesign   | The initial complete redesign changed too much at once and was rejected.                      | Reverted; incremental review process adopted.                                              |
 

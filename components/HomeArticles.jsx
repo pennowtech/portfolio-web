@@ -1,7 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
 
-import { FlatMDXData } from '../utils/FlatData';
 import HorizontalCard from './Post/HorizontalCard';
 import VerticalCard from './Post/VerticalCard';
 
@@ -12,39 +11,42 @@ import VerticalCard from './Post/VerticalCard';
  */
 export default function HomeArticles({ posts, showAsHorizontal = true }) {
   return (
-    <div className='relative px-2 bg-slate-200 dark:bg-slate-400 mt-8 pb-8'>
-      <div
-        className='bottom-auto top-0 left-0 right-0 w-full absolute pointer-events-none overflow-hidden -mt-20 h-20 '
-        style={{ transform: 'translateZ(0)' }}
-      >
-        <svg
-          className='absolute bottom-0 overflow-hidden'
-          xmlns='http://www.w3.org/2000/svg'
-          preserveAspectRatio='none'
-          version='1.1'
-          viewBox='0 0 2560 100'
-          x='0'
-          y='0'
+    <section aria-labelledby='articles-title' className='relative py-14 md:py-20'>
+      <div className='mx-auto w-full max-w-[1048px] px-4 lg:px-8'>
+        <header className='mx-auto mb-10 max-w-2xl text-center md:mb-12'>
+          <p className='mb-2 font-Monda text-sm font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-300'>
+            Notes from the field
+          </p>
+          <h2 id='articles-title' className='mb-3 font-Neuton text-4xl font-semibold leading-tight md:text-5xl'>
+            Articles
+          </h2>
+          <p className='mb-0 text-slate-600 dark:text-slate-200'>
+            Practical writing on software architecture, engineering decisions, and lessons gathered while building real
+            systems.
+          </p>
+        </header>
+
+        <div
+          className={showAsHorizontal ? 'grid gap-8' : 'grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3 xl:gap-8'}
         >
-          <polygon className='text-slate-200 dark:text-slate-400  fill-current' points='2560 0 2560 100 0 100' />
-        </svg>
-      </div>
-      <h2 className='mt-4 mb-0 underline underline-offset-2 mx-auto justify-center text-center'>Articles</h2>
-      <div className='container lg:mx-auto pt-10 grid md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-8'>
-        {posts.map(
-          (post) =>
-            (showAsHorizontal && <HorizontalCard post={post} key={post.id} />) || (
+          {posts.map((post) =>
+            showAsHorizontal ? (
+              <HorizontalCard post={post} key={post.id} />
+            ) : (
               <VerticalCard post={post} showExcerpt key={post.id} />
             )
-        )}
-      </div>
-      <div className='grid font-Monda justify-center'>
-        <div className='button focus:shadow-outline cursor-pointer'>
-          <Link href='/page' className='text-white'>
+          )}
+        </div>
+
+        <div className='mt-10 flex justify-center md:mt-12'>
+          <Link
+            href='/page'
+            className='flex min-h-11 items-center justify-center rounded-lg bg-green-700 px-6 py-3 font-Monda font-bold text-white shadow-sm transition hover:bg-green-600 hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 focus-visible:ring-offset-2 dark:bg-green-600 dark:hover:bg-green-500 dark:focus-visible:ring-offset-gray-600'
+          >
             View all articles
           </Link>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

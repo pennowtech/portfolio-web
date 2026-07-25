@@ -1,13 +1,29 @@
 import React from 'react';
-import { BiDotsVerticalRounded, BiTimer, BiUserCircle, BiCalendar } from 'react-icons/bi';
-import { BsCalendar3 } from 'react-icons/bs';
-import { FiUser } from 'react-icons/fi';
+import { BiCalendar, BiDotsVerticalRounded, BiTimer, BiUserCircle } from 'react-icons/bi';
 import { DateForDateTime, DateForDisplay } from '../../utils/date';
 
-const PostDate = ({ date, readingTime, author }) => {
+const PostDate = ({ date, readingTime, author, variant = 'default' }) => {
   if (date === undefined) {
     return '';
   }
+
+  if (variant === 'card') {
+    return (
+      <div className='flex flex-wrap items-center gap-x-3 gap-y-1 font-Monda text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-300'>
+        <span className='flex items-center gap-1.5'>
+          <BiCalendar aria-hidden='true' className='text-base' />
+          <time dateTime={DateForDateTime(date)}>{DateForDisplay(date)}</time>
+        </span>
+        {readingTime && (
+          <span className='flex items-center gap-1.5'>
+            <BiTimer aria-hidden='true' className='text-base' />
+            {`${Math.ceil(readingTime)} min read`}
+          </span>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className='m-0 overflow-hidden text-muted text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase flex h-full items-center'>
       {author && (
