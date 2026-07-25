@@ -8,7 +8,7 @@ import PostExcerpt from './PostExcerpt';
 
 const VerticalCard = ({ post, showExcerpt = false, className = '' }) => (
   <article
-    className={`group h-full min-w-0 flex-col overflow-hidden rounded-xl border border-slate-200 bg-white transition duration-200 hover:-translate-y-1 hover:border-slate-300 hover:shadow-md dark:border-slate-500 dark:bg-gray-700 dark:hover:border-slate-400 ${className || 'flex'}`}
+    className={`not-prose group h-full min-w-0 flex-col overflow-hidden rounded-xl border border-slate-200 bg-white transition duration-200 hover:-translate-y-1 hover:border-slate-300 hover:shadow-md dark:border-slate-500 dark:bg-gray-700 dark:hover:border-slate-400 ${className || 'flex'}`}
   >
     <Link
       href={`/blog/${post.slug}`}
@@ -19,7 +19,7 @@ const VerticalCard = ({ post, showExcerpt = false, className = '' }) => (
         fallbackSrc='/blank.jpg'
         src={post.thumbnailUrl}
         alt={post.title}
-        className='object-cover transition duration-300 group-hover:scale-[1.03]'
+        className='m-0 object-cover object-top transition duration-300 group-hover:scale-[1.03]'
         layout='fill'
         objectFit='cover'
         sizes='(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 33vw'

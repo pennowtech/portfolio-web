@@ -124,7 +124,7 @@ const IntroHighlight = ({ classProps = '' }) => {
           <ContentBlock>{contentBlocks[4]}</ContentBlock>
         </div>
 
-        <div className='pt-12 lg:pt-16'>
+        <div id='skills' className='scroll-mt-24 pt-12 lg:pt-16'>
           <div className='mb-9 max-w-2xl'>
             <h3 className='mb-3 font-Neuton text-3xl font-semibold md:text-4xl'>Technical toolkit</h3>
             <p className='mb-0 text-slate-600 dark:text-slate-200'>

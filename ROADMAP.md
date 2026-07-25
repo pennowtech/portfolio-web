@@ -80,9 +80,10 @@ Across all steps:
 | 3    | Profile highlights    | Improve content hierarchy, cards, imagery, skill presentation, and responsive spacing.                                  | `Complete`    |
 | 4    | Article listing       | Refine cards, images, metadata, tags, and the one/two/three-column responsive article grid.                             | `Complete`    |
 | 5    | Article reading page  | Improve reading width, heading rhythm, code overflow, table of contents, and responsive navigation.                     | `Complete`    |
-| 6    | Contact section       | Improve form hierarchy, mobile field stacking, touch targets, field states, feedback, and calls to action.              | `In review`   |
-| 7    | Footer                | Improve link organization, alignment, social links, touch targets, and responsive stacking.                             | `Not started` |
-| 8    | Consistency pass      | Review spacing, accessibility, dark mode, and visual consistency at every target viewport.                              | `Not started` |
+| 6    | Contact section       | Improve form hierarchy, mobile field stacking, touch targets, field states, feedback, and calls to action.              | `Complete`    |
+| 7    | Footer                | Improve link organization, alignment, social links, touch targets, and responsive stacking.                             | `Complete`    |
+| 8    | Featured projects     | Present three representative products with tailored artwork, concise context, technology, and appropriate access.       | `In review`   |
+| 9    | Consistency pass      | Review spacing, accessibility, dark mode, and visual consistency at every target viewport.                              | `Not started` |
 
 ## Step 1: Header and Navigation
 
@@ -385,9 +386,9 @@ Status: `Complete`
 - Corrected custom Notion note rendering to prevent invalid paragraph nesting and hydration errors.
 - Validation: targeted lint and `next build --webpack` pass.
 
-## Current Step: Contact Section
+## Step 6: Contact Section
 
-Status: `In review`
+Status: `Complete`
 
 ### Initial technical finding
 
@@ -418,7 +419,71 @@ Status: `In review`
 - Validation: `npm run lint` passes with 8 unrelated pre-existing warnings and no errors.
 - Validation: `next build --webpack` passes and reports `/api/contact` as a dynamic server route without the former
   static-export warning.
-- Final visual and configured end-to-end acceptance: awaiting review.
+- Final visual and configured end-to-end acceptance: accepted after successful Notion contact submission.
+
+## Step 7: Footer
+
+Status: `Complete`
+
+### Observed issues
+
+- The footer is rendered from `_document`, outside the hydrated application tree.
+- Internal destinations use relative paths, so links can resolve incorrectly from nested article routes.
+- The Articles link points to `/articles`, while the working archive route is `/page`.
+- Terms and Privacy labels lead to unrelated pages that do not contain those documents.
+- The Instagram account is labeled as LinkedIn, and the YouTube link points to the generic YouTube homepage.
+- Social links lack descriptive accessible labels and complete external-link protection.
+- The current two-column layout compresses awkwardly on phones and tablets.
+- Footer identity still says `PenNow.tech` rather than consistently representing the portfolio.
+
+### Proposed outcome
+
+- Move the footer into the hydrated application layout so it behaves consistently on every route.
+- Use absolute internal routes for Home, About, Articles, and Contact.
+- Show only genuine destinations; remove placeholder policy and generic social links until real URLs exist.
+- Give every social action a descriptive label, visible keyboard focus, and an appropriate external-link relationship.
+- Use a restrained responsive layout: portfolio identity and summary, useful navigation, then verified social links.
+- Stack content clearly on phones, use balanced columns on tablets/desktops, and retain the existing dark footer identity.
+- Use the current portfolio name and owner in the copyright line.
+- Preserve existing typography and green interaction accents without introducing another decorative color system.
+
+### Implementation
+
+- Moved the footer from `_document` into the themed and hydrated application layout.
+- Replaced relative and nonexistent internal destinations with working absolute routes.
+- Removed placeholder policy links and the generic YouTube destination.
+- Corrected Instagram and X/Twitter labels and destinations.
+- Added descriptive social labels, secure external-link relationships, 44px targets, and keyboard-visible focus.
+- Rebuilt the footer as a restrained responsive grid that stacks cleanly on phones and balances on tablets/desktops.
+- Updated the identity and copyright to TechishDeep and Sukhdeep Singh.
+- Corrected the malformed Google Fonts URL discovered in the adjacent document layout.
+- Expanded the ordered header navigation to Home, About, Skills, Articles, and Contact while preserving the desktop
+  placement and left-side responsive drawer.
+- Added alternating neutral backgrounds between homepage sections in both light and dark themes.
+- Validation: `npm run lint` passes with 5 unrelated pre-existing warnings and no errors.
+- Validation: `next build --webpack` passes with the contact API preserved as a dynamic server route.
+- Final visual acceptance: accepted with requested navigation and section-background refinements.
+
+## Current Step: Featured Projects
+
+Status: `In review`
+
+### Implementation
+
+- Reviewed connected public and private GitHub repository metadata and project documentation.
+- Selected Rusty CAN Studio, Lingora, and Shelfie to represent embedded/network tooling, AI-native cross-platform
+  architecture, and mature offline-first product engineering.
+- Generated and optimized a dedicated 16:9 editorial illustration for each project.
+- Added a responsive one/two/three-column project-card section between Profile Highlights and Articles.
+- Refined the final hierarchy into one full-width flagship project followed by two balanced supporting projects.
+- Added concise flagship capability highlights so the section communicates engineering depth at a glance.
+- Added concise problem-focused descriptions, technology labels, and accessible imagery.
+- Linked public repositories securely and presented Shelfie as private work without an inaccessible public action.
+- Added Projects to the ordered desktop navigation and phone/tablet drawer.
+- Preserved the alternating neutral section backgrounds after inserting the new section.
+- Validation: targeted lint passes with no errors or warnings.
+- Validation: `next build --webpack` passes with all three local project images included.
+- Final visual acceptance: awaiting review.
 
 ## Dummy Article Fixture
 

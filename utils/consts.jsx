@@ -26,7 +26,7 @@ import { GrReactjs } from 'react-icons/gr';
 import { IoLogoJavascript } from 'react-icons/io';
 import { MdOutlineDesignServices } from 'react-icons/md';
 
-import { ImYoutube, ImGithub, ImInstagram, ImTwitter } from 'react-icons/im';
+import { ImGithub, ImInstagram, ImTwitter } from 'react-icons/im';
 
 const WebSiteTags = [
   { name: 'ReactJS' },
@@ -40,35 +40,34 @@ const WebSiteTags = [
 ];
 
 const MenuItems = [
+  { title: 'Home', path: 'home' },
+  { title: 'About', path: 'about-me' },
+  { title: 'Skills', path: 'skills' },
+  { title: 'Projects', path: 'projects' },
   { title: 'Articles', path: 'page' },
-  { title: 'About Me', path: 'about-me' },
   { title: 'Contact', path: 'contact' }
 ];
 const FooterMainMenuItems = [
-  { title: 'About Me', path: 'about-me' },
-  { title: 'Articles', path: 'articles' },
-  { title: 'Contact Me', path: 'contact' }
-];
-const FooterOtherMenuItems = [
-  { title: 'Terms & Conditions', path: 'about-me' },
-  { title: 'Privacy Policy', path: 'articles' }
+  { title: 'Home', path: '/' },
+  { title: 'About', path: '/about-me' },
+  { title: 'Articles', path: '/page' },
+  { title: 'Contact', path: '/contact' }
 ];
 const SocialIconList = [
-  { icon: <ImYoutube />, path: 'http://youtube.com', title: 'youtube' },
   {
     icon: <ImGithub />,
     path: 'https://github.com/techishdeep',
-    title: 'github'
+    title: 'GitHub'
   },
   {
     icon: <ImInstagram />,
     path: 'https://instagram.com/techishdeep',
-    title: 'linkedin'
+    title: 'Instagram'
   },
   {
     icon: <ImTwitter />,
-    path: 'https://twitter.com/techishdeep',
-    title: 'twitter'
+    path: 'https://x.com/techishdeep',
+    title: 'X / Twitter'
   }
 ];
 
@@ -115,7 +114,6 @@ export {
   MenuItems,
   SocialIconList,
   FooterMainMenuItems,
-  FooterOtherMenuItems,
   skills,
   POSTS_PER_PAGE as PER_PAGE_BLOGS,
   RECENT_POSTS_COUNT

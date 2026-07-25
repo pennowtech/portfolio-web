@@ -1,10 +1,9 @@
 import React from 'react';
 import { Link as ScrollLink } from 'react-scroll';
 import Link from 'next/link';
-import { BASE_URL } from '../utils/consts';
 
 const NavBarItem = ({ menu, classprops, homepage, onNavigate }) => {
-  const fullPath = `${BASE_URL}/${menu.path}`;
+  const fullPath = `/#${menu.path}`;
   const linkClasses = `flex min-h-11 w-full items-center rounded-md px-3 py-2 transition-colors duration-200
     hover:bg-blue-600 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500
     dark:hover:bg-slate-900 dark:hover:text-orange-400 ${classprops || ''}`.trim();

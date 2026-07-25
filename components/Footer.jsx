@@ -1,94 +1,76 @@
-/* eslint-disable react/no-multi-comp */
 import React from 'react';
-
 import Link from 'next/link';
-import { SocialIconList, FooterMainMenuItems, FooterOtherMenuItems } from '../utils/consts';
-
-const IconLinkRoundSquare = ({ SocialIcon }) => (
-  <button
-    className='cursor-pointer  bg-slate-200 shadow-lg h-12 w-12 items-center justify-center align-center rounded-full outline-none focus:outline-none pl-2'
-    type='button'
-  >
-    <Link href={SocialIcon.path}>{SocialIcon.icon}</Link>
-  </button>
-);
-
-const IconLink = ({ SocialIcon }) => (
-  <div className='cursor-pointer inline-block hover:-translate-y-2'>
-    <Link href={SocialIcon.path} target='_blank'>
-      {SocialIcon.icon}
-    </Link>
-  </div>
-);
-const MainMenuLink = ({ menuItem }) => (
-  <li key={menuItem.title} className='pb-2 cursor-pointer whitespace-nowrap overflow-hidden'>
-    <Link href={menuItem.path}>{menuItem.title}</Link>
-  </li>
-);
-
-const OtherMenuLink = ({ menuItem }) => (
-  <li key={menuItem.title} className='pb-2 block cursor-pointer whitespace-nowrap overflow-hidden'>
-    <Link href={menuItem.path}>{menuItem.title}</Link>
-  </li>
-);
+import { FooterMainMenuItems, SocialIconList } from '../utils/consts';
 
 const Footer = () => (
-  <footer className='relative font-RobotoCond  bg-slate-700 dark:bg-slate-800 p-4 prose-a:text-gray-400 text-gray-400 prose-a:hover:text-gray-400 dark:prose-a:text-gray-400 dark:prose-a:hover:text-gray-400 pt-8 pb-6 mt-6'>
-    <div
-      className='bottom-auto top-0 left-0 right-0 w-full absolute pointer-events-none overflow-hidden -mt-20 h-20 '
-      style={{ transform: 'translateZ(0)' }}
-    >
-      <svg
-        className='absolute bottom-0 overflow-hidden'
-        xmlns='http://www.w3.org/2000/svg'
-        preserveAspectRatio='none'
-        version='1.1'
-        viewBox='0 0 2560 100'
-        x='0'
-        y='0'
-      >
-        <polygon className='text-slate-700 dark:text-slate-800  fill-current' points='2560 0 2560 100 0 100' />
-      </svg>
-    </div>
-    <div className='container w-full lg:max-w-[1048px] lg:mx-auto md:px-4'>
-      <div className='flex flex-wrap text-center lg:text-left'>
-        <div className='w-full lg:w-6/12 px-4'>
-          <div className='md:mt-8 text-3xl font-semibold'>Let&apos;s keep in touch!</div>
-          <div className='text-lg mt-0 mb-2 text-blueGray-600'>
-            Find me on any of these platforms. (I usually respond in 1-2 business days, but it can be longer).
-          </div>
-          <div className='py-8 flex flex-row justify-center items-center gap-8 text-3xl '>
-            {SocialIconList.map((icon) => (
-              <IconLink key={icon.title} SocialIcon={icon} />
-            ))}
-          </div>
+  <footer className='not-prose border-t border-slate-600 bg-slate-800 font-RobotoCond text-slate-300'>
+    <div className='mx-auto w-full max-w-[1048px] px-4 py-10 md:px-6 md:py-12 lg:px-8'>
+      <div className='grid gap-10 md:grid-cols-2 md:gap-12 lg:grid-cols-[1.4fr_0.7fr_0.9fr]'>
+        <div>
+          <Link
+            href='/'
+            className='inline-flex rounded-sm font-Neuton text-3xl font-semibold text-white transition hover:text-green-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-400'
+          >
+            TechishDeep
+          </Link>
+          <p className='mb-0 mt-3 max-w-md text-base leading-relaxed text-slate-300'>
+            Practical perspectives on software architecture, systems engineering, and building dependable products.
+          </p>
+          <Link
+            href='/contact'
+            className='mt-5 inline-flex min-h-11 items-center justify-center rounded-lg bg-green-700 px-5 py-2.5 font-Monda text-sm font-bold text-white transition hover:bg-green-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-800'
+          >
+            Start a conversation
+          </Link>
         </div>
-        <div className='w-full text-left mt-8 md:mt-0 lg:w-6/12 md:px-4'>
-          <div className='flex  items-top mb-6'>
-            <div className='w-full lg:w-4/12 px-4 ml-auto'>
-              <span className='block uppercase  text-sm font-semibold mb-2'>Useful Links</span>
-              <ul className='list-none  text-sm'>
-                {FooterMainMenuItems.map((menuItem) => (
-                  <MainMenuLink key={menuItem.path} menuItem={menuItem} />
-                ))}
-              </ul>
-            </div>
-            <div className='w-full lg:w-6/12 px-4'>
-              <span className='block uppercase  text-sm font-semibold mb-2'>Other Resources</span>
-              <ul className='list-none  text-sm'>
-                {FooterOtherMenuItems.map((menuItem) => (
-                  <OtherMenuLink key={menuItem.path} menuItem={menuItem} />
-                ))}
-              </ul>
-            </div>
-          </div>
+
+        <nav aria-labelledby='footer-navigation-title'>
+          <h2
+            id='footer-navigation-title'
+            className='mb-4 font-Monda text-sm font-semibold uppercase tracking-[0.14em] text-white'
+          >
+            Explore
+          </h2>
+          <ul className='m-0 grid list-none gap-2 p-0'>
+            {FooterMainMenuItems.map((menuItem) => (
+              <li key={menuItem.path}>
+                <Link
+                  href={menuItem.path}
+                  className='inline-flex min-h-11 items-center rounded-sm text-base text-slate-300 transition hover:text-green-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-400'
+                >
+                  {menuItem.title}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <div>
+          <h2 className='mb-4 font-Monda text-sm font-semibold uppercase tracking-[0.14em] text-white'>Connect</h2>
+          <ul className='m-0 flex list-none flex-wrap gap-3 p-0'>
+            {SocialIconList.map((social) => (
+              <li key={social.title}>
+                <Link
+                  href={social.path}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  aria-label={`Visit ${social.title}`}
+                  title={social.title}
+                  className='flex size-11 items-center justify-center rounded-lg border border-slate-600 text-xl text-slate-200 transition hover:border-green-500 hover:text-green-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-400'
+                >
+                  {social.icon}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <p className='mb-0 mt-4 text-sm leading-relaxed text-slate-400'>
+            Usually responding within one or two business days.
+          </p>
         </div>
       </div>
-      <hr className='my-6 border-blueGray-300' />
-      <div className='flex flex-wrap items-center md:justify-between justify-center'>
-        <div className='w-full md:w-4/12 px-4 mx-auto text-center'>
-          <div className='text-sm text-blueGray-500 font-semibold py-1'>Copyright © {new Date().getFullYear()} PenNow.tech.</div>
-        </div>
+
+      <div className='mt-10 border-t border-slate-600 pt-6 text-center text-sm text-slate-400 md:text-left'>
+        <p className='m-0'>© {new Date().getFullYear()} Sukhdeep Singh. All rights reserved.</p>
       </div>
     </div>
   </footer>

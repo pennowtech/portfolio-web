@@ -7,6 +7,7 @@ import Hero from '@components/Intro/Hero';
 import { WebSiteTags } from '@utils/consts';
 import { DUMMY_ARTICLE } from '@utils/dummyArticle';
 import IntroHighlight from '../components/Intro/IntroHighlight';
+import FeaturedProjects from '../components/FeaturedProjects';
 import HomeArticles from '../components/HomeArticles';
 import ContactForm from '../components/ContactForm';
 import FullLayout from '../components/FullLayout';
@@ -23,22 +24,25 @@ const Index = ({ posts }) => {
   return (
     <FullLayout metaInfo={metaInfo}>
       <HeaderMain homepage />
-      <Element id='home' className='element'>
+      <Element id='home' className='element bg-white dark:bg-gray-600'>
         <AboutSection classProps='font-RobotoSlab text-base leading-8' />
-        <div className='px-4 container font-Rajdhani mx-auto text-base'>
+        <div className='container mx-auto px-4 pb-12 font-Rajdhani text-base md:pb-16'>
           <p className='text-pink-500 dark:text-green-400 font-semibold'>
             This whole website is designed by me, from designing till development.{' '}
           </p>
           <PostTags limitedTags={false} tags={WebSiteTags} />
         </div>
       </Element>
-      <Element id='about-me' className='element min-h-[630px]'>
+      <Element id='about-me' className='element min-h-[630px] bg-slate-50 dark:bg-slate-700/35'>
         <IntroHighlight classProps='font-RobotoSlab text-base leading-8' />
       </Element>
-      <Element id='page' className='element'>
+      <Element id='projects' className='element bg-white dark:bg-gray-600'>
+        <FeaturedProjects />
+      </Element>
+      <Element id='page' className='element bg-slate-50 dark:bg-slate-700/35'>
         <HomeArticles posts={posts} showAsHorizontal={false} />
       </Element>
-      <Element id='contact' className='element'>
+      <Element id='contact' className='element bg-white dark:bg-gray-600'>
         <ContactForm />
       </Element>
     </FullLayout>

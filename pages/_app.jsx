@@ -10,6 +10,7 @@ import '../styles/globals.css';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 
 import { logPageView } from '@utils/ga';
+import Footer from '@components/Footer';
 
 nProgress.configure({ showSpinner: false });
 Router.events.on('routeChangeStart', () => nProgress.start());
@@ -63,15 +64,14 @@ function MyApp({ Component, pageProps }) {
           nonce: undefined
         }}
       >
-        <div className='appjs w-full '>
-          <main className='main min-h-screen'>
-            <ThemeProvider attribute='class'>
-              {/* <Provider value={client}> */}
+        <ThemeProvider attribute='class'>
+          <div className='appjs flex min-h-screen w-full flex-col'>
+            <main className='main flex-1'>
               <Component {...pageProps} />
-              {/* </Provider> */}
-            </ThemeProvider>
-          </main>
-        </div>
+            </main>
+            <Footer />
+          </div>
+        </ThemeProvider>
       </GoogleReCaptchaProvider>
     </>
   );
