@@ -1,4 +1,3 @@
-/* eslint-disable react/destructuring-assignment */
 import React from 'react';
 
 import { getPublishedBlogPosts } from '@utils/notion';
@@ -7,7 +6,6 @@ import PostsLayout from '../../components/PostsLayout';
 import { PER_PAGE_BLOGS, RECENT_POSTS_COUNT } from '../../utils/consts';
 import PostList from '../../components/PostList';
 
-// eslint-disable-next-line react/no-multi-comp
 const Index = ({ postsToShow, totalPosts, recentPosts }) => {
   const metaInfo = {
     title: 'Writing down my learnings',
@@ -36,8 +34,7 @@ export const getStaticProps = async () => {
       postsToShow,
       totalPosts,
       recentPosts: posts.slice(0, RECENT_POSTS_COUNT)
-    },
-    revalidate: 1
+    }
   };
 };
 

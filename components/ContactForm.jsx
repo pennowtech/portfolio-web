@@ -1,9 +1,7 @@
-/* eslint-disable react/no-multi-comp */
-/* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState, useCallback } from 'react';
 import Link from 'next/link';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.min.css';
+import 'react-toastify/dist/ReactToastify.css';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { BiPaperPlane } from 'react-icons/bi';
 

@@ -27,7 +27,7 @@ const Search = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('-----', formData);
+    console.warn('Search submitted:', formData);
   };
 
   return (

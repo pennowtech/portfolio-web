@@ -1,29 +1,18 @@
-// https://stackoverflow.com/a/70047180
-const removeImports = require('next-remove-imports')();
+const { PHASE_DEVELOPMENT_SERVER } = require('next/constants');
 
-module.exports = removeImports({
-  async redirects() {
-    return [
-      {
-        source: '/home',
-        destination: '/',
-        permanent: true // triggers 308
-      }
-    ];
-  },
+module.exports = (phase) => ({
+  ...(phase === PHASE_DEVELOPMENT_SERVER ? {} : { output: 'export' }),
   images: {
-    domains: ['www.nasa.gov', 'images.unsplash.com', 'pixabay.com', 'www.google.com', 'pennow.tech'],
-
+    remotePatterns: [
+      new URL('https://www.nasa.gov/**'),
+      new URL('https://images.unsplash.com/**'),
+      new URL('https://pixabay.com/**'),
+      new URL('https://www.google.com/**'),
+      new URL('https://pennow.tech/**'),
+      new URL('https://tuk-cdn.s3.amazonaws.com/**')
+    ],
     loader: 'akamai',
     path: ''
   },
-  eslint: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has ESLint errors.
-    ignoreDuringBuilds: true
-  },
-  reactStrictMode: true,
-  serverRuntimeConfig: {
-    PROJECT_ROOT: __dirname
-  }
+  reactStrictMode: true
 });

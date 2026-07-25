@@ -20,9 +20,9 @@ const Hero = () => (
             <h1 className='text-4xl lg:text-5xl mb-8'>Sukhdeep Singh</h1>
             <p className=' uppercase font-semibold  font-Inter-700 text-2xl mb-4'>Senior Solution Architect</p>
             <p className='text-gray-800 mb-8'>
-              COMBINING SCIENCE WITH BEAUTY. L'Oreal Paris offerincare products is developed and rigorously tested with leading
-              scientists. Indulge yourself in a luxurious and sensorial skincare experience. Cutting-edge innovations, proven by
-              Science.
+              COMBINING SCIENCE WITH BEAUTY. L&apos;Oreal Paris offerincare products is developed and rigorously tested
+              with leading scientists. Indulge yourself in a luxurious and sensorial skincare experience. Cutting-edge
+              innovations, proven by Science.
             </p>
             <div className='bg-white lg:mt-16 py-4 px-4 flex flex-col sm:flex-row justify-start sm:justify-between items-start sm:items-center shadow-lg rounded-lg'>
               <div className='sm:flex items-center py-2'>

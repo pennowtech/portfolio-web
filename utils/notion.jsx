@@ -13,18 +13,35 @@ const notion = new Client({
   auth: process.env.NOTION_KEY
 });
 
+let dataSourceIdPromise;
+
+const getDataSourceId = async () => {
+  if (!dataSourceIdPromise) {
+    dataSourceIdPromise = notion.databases
+      .retrieve({ database_id: databaseId })
+      .then((database) => database.data_sources?.[0]?.id)
+      .then((dataSourceId) => {
+        if (!dataSourceId) {
+          throw new Error(`No data source found for Notion database ${databaseId}`);
+        }
+        return dataSourceId;
+      });
+  }
+
+  return dataSourceIdPromise;
+};
+
 export const getNotionDatabase = async () => {
   const response = await notion.databases.retrieve({
     database_id: databaseId
   });
-  return response.results;
+  return response.data_sources;
 };
 
 const pageToPostTransformer = (page, isPrevNextPostIteration = false) => {
   let imgUrl = page.cover?.type === 'file' ? page.cover?.file.url : page.cover?.external?.url;
   imgUrl = imgUrl || '';
 
-  // eslint-disable-next-line max-len
   // const description = page.properties.Description.rich_text[0] ? page.properties.Description.rich_text[0].plain_text : '';
 
   return {
@@ -56,8 +73,8 @@ const pageToPostTransformer = (page, isPrevNextPostIteration = false) => {
  * returned is determined by the `postsCount` parameter
  */
 async function getData(response, postsCount, data) {
-  const newResponse = await notion.databases.query({
-    database_id: databaseId,
+  const newResponse = await notion.dataSources.query({
+    data_source_id: await getDataSourceId(),
     filter: {
       property: 'Published',
       checkbox: {
@@ -91,14 +108,15 @@ async function getData(response, postsCount, data) {
  * `pageToPostTransformer` function before being added to the array.
  */
 export const getPublishedBlogPosts = async (postsCount) => {
-  // list blog posts
-  const response = { has_more: true };
-  // eslint-disable-next-line prefer-const
-  let data = [];
+  try {
+    const response = { has_more: true };
+    const fetchedData = await getData(response, postsCount, []);
 
-  const fetchedData = await getData(response, postsCount, data);
-
-  return fetchedData.map((res) => pageToPostTransformer(res));
+    return fetchedData.map((res) => pageToPostTransformer(res));
+  } catch (error) {
+    console.warn(`Unable to load published Notion posts: ${error.message}`);
+    return [];
+  }
 };
 
 export const getAllTagsFromPosts = async (posts) => {
@@ -134,8 +152,8 @@ export const getPage = async (pageId) => {
 export const getSingleBlogPost = async (slug) => {
   const n2m = new NotionToMarkdown({ notionClient: notion });
   // list of blog posts
-  const response = await notion.databases.query({
-    database_id: databaseId,
+  const response = await notion.dataSources.query({
+    data_source_id: await getDataSourceId(),
     filter: {
       property: 'Slug',
       formula: {
@@ -175,8 +193,8 @@ export const getSinglePage = async (slug) => {
 
   try {
     // list of blog posts
-    const response = await notion.databases.query({
-      database_id: databaseId,
+    const response = await notion.dataSources.query({
+      data_source_id: await getDataSourceId(),
       filter: {
         property: 'Slug',
         formula: {
@@ -239,6 +257,9 @@ export const getSinglePage = async (slug) => {
     };
   } catch (error) {
     console.error(error);
-    return null;
+    return {
+      blocks: [],
+      headingBlocks: []
+    };
   }
 };

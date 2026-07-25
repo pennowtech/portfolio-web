@@ -44,8 +44,7 @@ export async function getStaticProps({ params }) {
       totalPosts,
       tags,
       recentPosts: posts.slice(0, RECENT_POSTS_COUNT)
-    },
-    revalidate: 1
+    }
   };
 }
 
@@ -56,6 +55,6 @@ export async function getStaticPaths() {
   const paths = Object.keys(tags).map((tag) => ({ params: { tag, page: (tags[tag] / PER_PAGE_BLOGS).toString() } }));
   return {
     paths,
-    fallback: true
+    fallback: false
   };
 }

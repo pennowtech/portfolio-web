@@ -1,7 +1,6 @@
 /* @import url("https://fonts.googleapis.com/css2?family=Merriweather&family=Fira+Code:wght@400&family=Roboto+Condensed&family=Monda&family=Neuton:wght@700&family=Offside&display=swap"); */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@config "../tailwind.config.js";
+@import 'tailwindcss';
 
 /* h2 {
   @apply text-3xl md:text-7xl font-Neuton my-80 md:my-4 text-green-600;
@@ -39,7 +38,7 @@ span.comment.linenumber.react-syntax-highlighter-line-number {
   #nprogress .bar {
     @apply dark:bg-slate-100 bg-slate-800;
   }
-  .prose :where(ul > li):not(:where([class~="not-prose"] *))::marker {
+  .prose :where(ul > li):not(:where([class~='not-prose'] *))::marker {
     @apply dark:text-slate-300;
   }
   .sidebar a {
@@ -60,12 +59,12 @@ span.comment.linenumber.react-syntax-highlighter-line-number {
     @apply bg-orange-500;
   }
   .message.warning i::before {
-    content: "";
+    content: '';
   }
   .message i:before {
-    font-family: "Font Awesome 5 Free";
+    font-family: 'Font Awesome 5 Free';
     font-weight: 900;
-    content: "";
+    content: '';
     font-style: normal;
     padding: 0.5em 0.75em;
     width: 2.5em;
@@ -82,12 +81,11 @@ span.comment.linenumber.react-syntax-highlighter-line-number {
     /* background-color: #b0f8ea; */
   }
   .read-extra {
-    @apply break-words relative py-4 px-2 border-2 rounded-xl border-pink-500
-    overflow-wrap break-word;
+    @apply break-words relative py-4 px-2 border-2 rounded-xl border-pink-500;
   }
 
   .read-extra:before {
-    content: "Refer";
+    content: 'Refer';
     background: #ff828c;
   }
 
@@ -108,7 +106,7 @@ span.comment.linenumber.react-syntax-highlighter-line-number {
   }
 
   .read-extra:after {
-    content: "";
+    content: '';
     font-family: Font awesome\5 Free;
     font-weight: 900;
   }

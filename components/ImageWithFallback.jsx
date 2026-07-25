@@ -1,6 +1,6 @@
 // https://stackoverflow.com/a/66953317
 import React, { useState, useEffect, forwardRef } from 'react';
-import Image from "next/legacy/image";
+import Image from 'next/legacy/image';
 import { BASE_URL } from '../utils/consts';
 
 const ImageWithFallback = forwardRef((props, ref) => {
@@ -8,7 +8,7 @@ const ImageWithFallback = forwardRef((props, ref) => {
   if (typeof window !== 'undefined') {
     hostname = window.location.origin;
   }
-  const { src, fallbackSrc, ...rest } = props;
+  const { src, fallbackSrc, alt = '', ...rest } = props;
   const [imgSrc, setImgSrc] = useState(src);
   useEffect(() => {
     setImgSrc(src);
@@ -20,6 +20,7 @@ const ImageWithFallback = forwardRef((props, ref) => {
   return (
     <Image
       {...rest}
+      alt={alt}
       src={imgUrl}
       onError={() => {
         setImgSrc(fallbackSrc);
@@ -27,5 +28,7 @@ const ImageWithFallback = forwardRef((props, ref) => {
     />
   );
 });
+
+ImageWithFallback.displayName = 'ImageWithFallback';
 
 export default ImageWithFallback;

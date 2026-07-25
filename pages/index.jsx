@@ -7,7 +7,6 @@ import Hero from '@components/Intro/Hero';
 import { WebSiteTags } from '@utils/consts';
 import IntroHighlight from '../components/Intro/IntroHighlight';
 import HomeArticles from '../components/HomeArticles';
-import 'tailwindcss/tailwind.css';
 import ContactForm from '../components/ContactForm';
 import FullLayout from '../components/FullLayout';
 import AboutSection from '../components/Intro/AboutSection';

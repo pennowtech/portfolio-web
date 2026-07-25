@@ -1,0 +1,159 @@
+{
+  "version": "2.0.0",
+  "taskSidebar": {
+    "layout": "both",
+    "statusbarTheme": "dark"
+  },
+  "tasks": [
+    {
+      "label": "Setup: Install dependencies",
+      "type": "shell",
+      "command": "npm ci",
+      "problemMatcher": [],
+      "options": {
+        "taskSidebar": {
+          "icon": "$(package)",
+          "color": "colors.yellow",
+          "groupIcon": "$(settings-gear)",
+          "groupColor": "colors.blue"
+        }
+      }
+    },
+    {
+      "label": "Develop: Start dev server",
+      "type": "npm",
+      "script": "dev",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "group": "development",
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "options": {
+        "taskSidebar": {
+          "icon": "$(browser)",
+          "color": "colors.green",
+          "groupIcon": "$(play)",
+          "groupColor": "colors.green"
+        }
+      }
+    },
+    {
+      "label": "Quality: Lint",
+      "type": "npm",
+      "script": "lint",
+      "problemMatcher": ["$eslint-stylish"],
+      "options": {
+        "taskSidebar": {
+          "icon": "$(bug)",
+          "color": "colors.orange",
+          "groupIcon": "$(beaker)",
+          "groupColor": "colors.purple"
+        }
+      }
+    },
+    {
+      "label": "Quality: Check formatting",
+      "type": "process",
+      "command": "npx",
+      "args": ["prettier", "--check", "."],
+      "problemMatcher": [],
+      "options": {
+        "taskSidebar": {
+          "icon": "$(check-all)",
+          "color": "colors.blue"
+        }
+      }
+    },
+    {
+      "label": "Quality: Fix formatting",
+      "type": "process",
+      "command": "npx",
+      "args": ["prettier", "--write", "."],
+      "problemMatcher": [],
+      "options": {
+        "statusbar": {
+          "hide": true
+        },
+        "taskSidebar": {
+          "icon": "$(wand)",
+          "color": "colors.yellow"
+        }
+      }
+    },
+    {
+      "label": "Quality: Verify",
+      "dependsOrder": "sequence",
+      "dependsOn": ["Quality: Lint", "Quality: Check formatting", "Build: Production export"],
+      "problemMatcher": [],
+      "options": {
+        "taskSidebar": {
+          "icon": "$(verified)",
+          "color": "colors.success"
+        }
+      }
+    },
+    {
+      "label": "Build: Production export",
+      "type": "npm",
+      "script": "build",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "options": {
+        "taskSidebar": {
+          "icon": "$(tools)",
+          "color": "colors.green",
+          "groupIcon": "$(package)",
+          "groupColor": "colors.yellow"
+        }
+      }
+    },
+    {
+      "label": "Serve: Start production server",
+      "type": "npm",
+      "script": "start",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "group": "production",
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "options": {
+        "taskSidebar": {
+          "icon": "$(server)",
+          "color": "colors.green",
+          "groupIcon": "$(server)",
+          "groupColor": "colors.orange"
+        }
+      }
+    },
+    {
+      "label": "Git: Guided commit",
+      "type": "npm",
+      "script": "commit",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "focus": true
+      },
+      "options": {
+        "taskSidebar": {
+          "icon": "$(git-commit)",
+          "color": "colors.blue",
+          "groupIcon": "$(source-control)",
+          "groupColor": "colors.blue"
+        }
+      }
+    }
+  ]
+}
