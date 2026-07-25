@@ -1,34 +1,34 @@
 import React from 'react';
-
 import Head from 'next/head';
 
-const FullLayout = ({
-  title, metaKeywords, metaDesc, ...props
-}) => (
-  <>
-    <Head>
-      <title>{title}</title>
-      <meta name="description" content={metaDesc} />
-      <meta name="keywords" content={metaKeywords} />
-    </Head>
-    <div className="flex flex-col">
-      <div
-        id="content"
-        className="flex-grow mx-auto w-full"
-      >
-        {props.children}
+const defaultMeta = {
+  title: 'Sukhdeep Singh | Technical Architect',
+  metaDesc:
+    'Technical Architect sharing practical work and writing on software architecture, embedded systems, distributed platforms, and engineering.',
+  metaKeywords: 'Technical Architect, Software Architecture, Embedded Systems, Rust, C++, Python'
+};
+
+const FullLayout = ({ metaInfo = {}, title, metaKeywords, metaDesc, children }) => {
+  const metadata = {
+    ...defaultMeta,
+    ...metaInfo,
+    ...(title ? { title } : {}),
+    ...(metaKeywords ? { metaKeywords } : {}),
+    ...(metaDesc ? { metaDesc } : {})
+  };
+
+  return (
+    <>
+      <Head>
+        <title>{metadata.title}</title>
+        <meta name='description' content={metadata.metaDesc} />
+        {metadata.metaKeywords && <meta name='keywords' content={metadata.metaKeywords} />}
+      </Head>
+      <div id='content' className='mx-auto flex w-full flex-grow flex-col'>
+        {children}
       </div>
-
-    </div>
-  </>
-);
-
-FullLayout.defaultProps = {
-  metaInfo: {
-    title: 'Default Title',
-    metaKeywords: 'Default metaKeywords',
-    metaDesc: 'Default metaDesc',
-  },
+    </>
+  );
 };
 
 export default FullLayout;

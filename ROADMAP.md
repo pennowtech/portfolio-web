@@ -72,18 +72,18 @@ Across all steps:
 
 ## Roadmap
 
-| Step | Area                  | Intended outcome                                                                                                        | Status        |
-| ---- | --------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------- |
-| 0    | Dummy article         | Provide reliable local article content rendered through the existing Markdown pipeline.                                 | `In review`   |
-| 1    | Header and navigation | Improve alignment, navigation states, touch targets, and phone/tablet navigation while retaining the existing identity. | `Complete`    |
-| 2    | Profile hero          | Refine the background, profile card, statistics, introduction, and primary action across all viewports.                 | `Deferred`    |
-| 3    | Profile highlights    | Improve content hierarchy, cards, imagery, skill presentation, and responsive spacing.                                  | `Complete`    |
-| 4    | Article listing       | Refine cards, images, metadata, tags, and the one/two/three-column responsive article grid.                             | `Complete`    |
-| 5    | Article reading page  | Improve reading width, heading rhythm, code overflow, table of contents, and responsive navigation.                     | `Complete`    |
-| 6    | Contact section       | Improve form hierarchy, mobile field stacking, touch targets, field states, feedback, and calls to action.              | `Complete`    |
-| 7    | Footer                | Improve link organization, alignment, social links, touch targets, and responsive stacking.                             | `Complete`    |
-| 8    | Featured projects     | Present three representative products with tailored artwork, concise context, technology, and appropriate access.       | `In review`   |
-| 9    | Consistency pass      | Review spacing, accessibility, dark mode, and visual consistency at every target viewport.                              | `Not started` |
+| Step | Area                  | Intended outcome                                                                                                        | Status      |
+| ---- | --------------------- | ----------------------------------------------------------------------------------------------------------------------- | ----------- |
+| 0    | Dummy article         | Provide reliable local article content rendered through the existing Markdown pipeline.                                 | `In review` |
+| 1    | Header and navigation | Improve alignment, navigation states, touch targets, and phone/tablet navigation while retaining the existing identity. | `Complete`  |
+| 2    | Profile hero          | Refine the background, profile card, statistics, introduction, and primary action across all viewports.                 | `Deferred`  |
+| 3    | Profile highlights    | Improve content hierarchy, cards, imagery, skill presentation, and responsive spacing.                                  | `Complete`  |
+| 4    | Article listing       | Refine cards, images, metadata, tags, and the one/two/three-column responsive article grid.                             | `Complete`  |
+| 5    | Article reading page  | Improve reading width, heading rhythm, code overflow, table of contents, and responsive navigation.                     | `Complete`  |
+| 6    | Contact section       | Improve form hierarchy, mobile field stacking, touch targets, field states, feedback, and calls to action.              | `Complete`  |
+| 7    | Footer                | Improve link organization, alignment, social links, touch targets, and responsive stacking.                             | `Complete`  |
+| 8    | Featured projects     | Present three representative products with tailored artwork, concise context, technology, and appropriate access.       | `Complete`  |
+| 9    | Consistency pass      | Review spacing, accessibility, dark mode, and visual consistency at every target viewport.                              | `In review` |
 
 ## Step 1: Header and Navigation
 
@@ -464,9 +464,9 @@ Status: `Complete`
 - Validation: `next build --webpack` passes with the contact API preserved as a dynamic server route.
 - Final visual acceptance: accepted with requested navigation and section-background refinements.
 
-## Current Step: Featured Projects
+## Step 8: Featured Projects
 
-Status: `In review`
+Status: `Complete`
 
 ### Implementation
 
@@ -483,7 +483,29 @@ Status: `In review`
 - Preserved the alternating neutral section backgrounds after inserting the new section.
 - Validation: targeted lint passes with no errors or warnings.
 - Validation: `next build --webpack` passes with all three local project images included.
-- Final visual acceptance: awaiting review.
+- Final visual acceptance: accepted by moving to the consistency pass.
+
+## Current Step: Consistency Pass
+
+Status: `In review`
+
+### Implementation
+
+- Removed global article typography classes from the document body so prose spacing no longer leaks into project,
+  article, navigation, and utility layouts.
+- Corrected shared metadata handling and added meaningful page-specific titles, descriptions, and keywords across
+  the homepage, About, Contact, archives, tag pages, and the not-found page.
+- Removed duplicate article-archive metadata and obsolete default titles.
+- Replaced the source-imported theme bootstrap with a stable public script that runs before hydration.
+- Rebuilt the not-found page without remote decorative images and removed the deprecated image-related lint
+  exceptions.
+- Made the article sidebar conditional so routes without recent posts or tags no longer reserve an empty column.
+- Cleaned pagination and selected-post components to remove the remaining lint warnings and unsafe width classes.
+- Confirmed generated navigation targets and theme-bootstrap inclusion across statically generated pages.
+- Validation: `npm run lint` passes with no errors or warnings.
+- Validation: `next build --webpack` passes and generates all expected routes.
+- Validation: `git diff --check` passes.
+- Remaining review: visually confirm representative phone, tablet, and desktop viewports in both themes.
 
 ## Dummy Article Fixture
 
@@ -555,6 +577,8 @@ Complete this checklist after each implementation step:
 | 2026-07-25 | Step 6          | Address contact-form deployment reliability before visual refinement.                         | Vercel/API incompatibility identified and a contained implementation proposed.             |
 | 2026-07-25 | Content         | Use a removable dummy Markdown article rendered by the existing code.                         | Fixture added with `TODO(dummy-content)` markers.                                          |
 | 2026-07-25 | Full redesign   | The initial complete redesign changed too much at once and was rejected.                      | Reverted; incremental review process adopted.                                              |
+| 2026-07-25 | Step 8 outcome  | Move forward after the featured-project implementation and follow-up layout repair.           | Step 8 marked complete; consistency pass started.                                          |
+| 2026-07-25 | Step 9          | Complete a final metadata, warning, accessibility, and layout-consistency pass.               | Zero-warning lint and production build pass; awaiting visual viewport review.              |
 
 ## Update Template
 

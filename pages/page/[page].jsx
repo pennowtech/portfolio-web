@@ -9,9 +9,10 @@ import PostList from '../../components/PostList';
 
 const Index = ({ postsToShow, recentPosts, totalPosts }) => {
   const metaInfo = {
-    title: 'Writing down my learnings',
-    metaKeywords: 'Reactjs, C++, cpp, Python, Data Science, Database',
-    metaDesc: ''
+    title: 'Software Architecture and Engineering Articles | TechishDeep',
+    metaKeywords: 'Software Architecture, Embedded Systems, Rust, C++, Python, Distributed Systems',
+    metaDesc:
+      'Practical articles on software architecture, embedded systems, distributed platforms, programming, and engineering decisions.'
   };
 
   return (

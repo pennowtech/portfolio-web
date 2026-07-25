@@ -7,9 +7,9 @@ import PostList from '../../../components/PostList';
 
 export default function Tag({ tags, postsToShow, currentTag, recentPosts }) {
   const metaInfo = {
-    title: 'Writing down my learnings',
-    metaKeywords: 'Reactjs, C++, cpp, Python, Data Science, Database',
-    metaDesc: ''
+    title: `${currentTag} articles | TechishDeep`,
+    metaKeywords: `${currentTag}, Software Architecture, Engineering`,
+    metaDesc: `Browse TechishDeep articles filed under ${currentTag}.`
   };
 
   const startIndex = 0; // index page is always zero.

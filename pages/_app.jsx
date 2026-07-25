@@ -49,8 +49,11 @@ function MyApp({ Component, pageProps }) {
                 `}
       </Script>
       <Head>
-        <title>My Personal Blog</title>
-        <meta name='description' content='My personal Blog on modern software technologies' />
+        <title>Sukhdeep Singh | Technical Architect</title>
+        <meta
+          name='description'
+          content='Technical Architect sharing practical work and writing on software architecture, embedded systems, distributed platforms, and engineering.'
+        />
       </Head>
       {/* <Script
         src="https://www.google.com/recaptcha/api.js?render=6LffScwlAAAAADpicS4xvbjFg3tSTnCVOTkaMrld"

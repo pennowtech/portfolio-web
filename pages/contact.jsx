@@ -3,11 +3,11 @@ import FullLayout from '../components/FullLayout';
 import HeaderMain from '../components/HeaderMain';
 import ContactForm from '../components/ContactForm';
 
-const contact = () => {
+const Contact = () => {
   const metaInfo = {
-    title: 'Contact Us',
-    metaKeywords: '',
-    metaDesc: '',
+    title: 'Contact Sukhdeep Singh | Technical Architect',
+    metaKeywords: 'Contact Technical Architect, Software Architecture Consulting',
+    metaDesc: 'Contact Sukhdeep Singh to discuss software architecture, systems engineering, or technical leadership.'
   };
   return (
     <FullLayout metaInfo={metaInfo}>
@@ -17,4 +17,4 @@ const contact = () => {
   );
 };
 
-export default contact;
+export default Contact;

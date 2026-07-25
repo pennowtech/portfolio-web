@@ -17,9 +17,10 @@ import PostTags from '../components/Post/PostTags';
 
 const Index = ({ posts }) => {
   const metaInfo = {
-    title: 'Writing down my learnings',
-    metaKeywords: 'Reactjs, C++, cpp, Python, Data Science, Database',
-    metaDesc: ''
+    title: 'Sukhdeep Singh | Technical Architect and Systems Engineer',
+    metaKeywords: 'Technical Architect, Software Architecture, Embedded Systems, Rust, C++, Python, Microservices',
+    metaDesc:
+      'Portfolio of Sukhdeep Singh, a Technical Architect with 18+ years of experience across embedded systems, networking, distributed platforms, and software engineering.'
   };
   return (
     <FullLayout metaInfo={metaInfo}>

@@ -20,9 +20,9 @@ class MyDocument extends Document {
             integrity='sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm'
             crossOrigin='anonymous'
           />
-          <Script strategy='beforeInteractive' src='/utils/persistTheme.jsx' />
+          <Script strategy='beforeInteractive' src='/persist-theme.js' />
         </Head>
-        <body className='body max-w-[100%] shadow-sm font-RobotoSlab font-weight-500 text-lg leading-7 2xl:text-xl xl:leading-8 2xl:leading-9  dark:bg-gray-600 bg-white-100 dark:text-slate-50 dark:selection:bg-slate-300 dark:selection:text-slate-600  selection:bg-slate-800 selection:text-slate-50 prose dark:prose-invert prose-base  prose-a:no-underline prose-pre:p-0  md:prose-pre:p-0 lg:prose-pre:p-0 prose-pre:border  prose-pre:bg-inherit dark:prose-ul:marker:bg-white '>
+        <body className='body max-w-full bg-white font-RobotoSlab text-lg font-medium leading-7 text-slate-900 shadow-sm selection:bg-slate-800 selection:text-slate-50 dark:bg-gray-600 dark:text-slate-50 dark:selection:bg-slate-300 dark:selection:text-slate-600 xl:leading-8 2xl:text-xl 2xl:leading-9'>
           <Main />
           <NextScript />
         </body>
