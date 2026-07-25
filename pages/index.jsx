@@ -6,8 +6,8 @@ import Hero from '@components/Intro/Hero';
 
 import { WebSiteTags } from '@utils/consts';
 import { DUMMY_ARTICLE } from '@utils/dummyArticle';
+import FeaturedProjects from '@components/FeaturedProjects';
 import IntroHighlight from '../components/Intro/IntroHighlight';
-import FeaturedProjects from '../components/FeaturedProjects';
 import HomeArticles from '../components/HomeArticles';
 import ContactForm from '../components/ContactForm';
 import FullLayout from '../components/FullLayout';
