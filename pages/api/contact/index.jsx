@@ -2,103 +2,127 @@ import { Client, LogLevel } from '@notionhq/client';
 
 const notion = new Client({
   auth: process.env.NOTION_KEY,
-  logLevel: LogLevel.WARN // Set logLevel to warn or error for better performance
+  logLevel: LogLevel.WARN
 });
 
-// Create a cache of successful CAPTCHA tokens with a TTL of 10 minutes
-const captchaCache = new Map();
-const captchaTTL = 10 * 60 * 1000; // 10 minutes in milliseconds
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const MAX_NAME_LENGTH = 80;
+const MAX_MESSAGE_LENGTH = 4000;
 
-const verifyRecaptcha = async (token) => {
-  if (captchaCache.has(token)) {
-    return true;
+let contactDataSourceIdPromise;
+
+const getContactDataSourceId = async () => {
+  if (!contactDataSourceIdPromise) {
+    contactDataSourceIdPromise = notion.databases
+      .retrieve({ database_id: process.env.NOTION_CONTACT_FORM_DATABASE_ID })
+      .then((database) => database.data_sources?.[0]?.id)
+      .then((dataSourceId) => {
+        if (!dataSourceId) throw new Error('The contact database does not contain a data source.');
+        return dataSourceId;
+      });
   }
 
-  const secretKey = process.env.NEXT_PUBLIC_GOOGLE_CAPATCHA_SECRET_KEY;
+  return contactDataSourceIdPromise;
+};
 
+const validateSubmission = (body) => {
+  const submission = {
+    token: typeof body?.token === 'string' ? body.token : '',
+    firstname: typeof body?.firstname === 'string' ? body.firstname.trim() : '',
+    lastname: typeof body?.lastname === 'string' ? body.lastname.trim() : '',
+    email: typeof body?.email === 'string' ? body.email.trim().toLowerCase() : '',
+    message: typeof body?.message === 'string' ? body.message.trim() : ''
+  };
+  const errors = {};
+
+  if (!submission.firstname) errors.firstname = 'Enter your first name.';
+  else if (submission.firstname.length > MAX_NAME_LENGTH) errors.firstname = 'First name is too long.';
+
+  if (!submission.lastname) errors.lastname = 'Enter your last name.';
+  else if (submission.lastname.length > MAX_NAME_LENGTH) errors.lastname = 'Last name is too long.';
+
+  if (!submission.email) errors.email = 'Enter your email address.';
+  else if (!EMAIL_PATTERN.test(submission.email)) errors.email = 'Enter a valid email address.';
+
+  if (!submission.message) errors.message = 'Tell me briefly what you would like to discuss.';
+  else if (submission.message.length > MAX_MESSAGE_LENGTH) {
+    errors.message = `Keep the message under ${MAX_MESSAGE_LENGTH.toLocaleString()} characters.`;
+  }
+
+  if (!submission.token) errors.form = 'Spam protection could not verify this submission.';
+
+  return { submission, errors };
+};
+
+const verifyRecaptcha = async (token) => {
+  const secretKey = process.env.GOOGLE_RECAPTCHA_SECRET_KEY;
+  if (!secretKey) throw new Error('GOOGLE_RECAPTCHA_SECRET_KEY is not configured.');
+
+  const body = new URLSearchParams({
+    secret: secretKey,
+    response: token
+  });
   const response = await fetch('https://www.google.com/recaptcha/api/siteverify', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
     },
-    body: `secret=${secretKey}&response=${token}`
+    body
   });
 
-  const result = await response.json();
+  if (!response.ok) throw new Error(`reCAPTCHA verification returned ${response.status}.`);
 
-  if (result.success && result.score >= 0.5) {
-    captchaCache.set(token, true);
-    setTimeout(() => {
-      captchaCache.delete(token);
-    }, captchaTTL);
-    return true;
-  }
-  return false;
+  const result = await response.json();
+  return result.success && result.score >= 0.5 && result.action === 'contact_form';
 };
 
 export default async function handler(req, res) {
+  res.setHeader('Allow', 'POST');
   if (req.method !== 'POST') {
-    return res.status(405).json({ message: `${req.method} requests are not allowed` });
+    return res.status(405).json({ message: 'Only POST requests are allowed.' });
+  }
+
+  if (!process.env.NOTION_KEY || !process.env.NOTION_CONTACT_FORM_DATABASE_ID) {
+    return res.status(503).json({ message: 'The contact form is not configured yet.' });
+  }
+
+  const { submission, errors } = validateSubmission(req.body);
+  if (Object.keys(errors).length) {
+    return res.status(400).json({ message: 'Please check the highlighted fields.', errors });
   }
 
   try {
-    const { token, firstname, lastname, email, message } = JSON.parse(req.body);
-
-    // Verify the Recaptcha token
-    const isVerified = await verifyRecaptcha(token);
-
+    const isVerified = await verifyRecaptcha(submission.token);
     if (!isVerified) {
-      return res.status(500).json({ msg: 'Recapatcha failed!!!' });
+      return res.status(403).json({ message: 'Spam protection rejected this submission. Please try again.' });
     }
 
-    // Create a new Notion page with the contact form submission
-    const entry = {
+    await notion.pages.create({
       parent: {
-        database_id: `${process.env.NOTION_CONTACT_FORM_DATABASE_ID}`
+        data_source_id: await getContactDataSourceId()
       },
       properties: {
         FirstName: {
-          title: [
-            {
-              text: {
-                content: firstname
-              }
-            }
-          ]
+          title: [{ text: { content: submission.firstname } }]
         },
         LastName: {
-          rich_text: [
-            {
-              text: {
-                content: lastname
-              }
-            }
-          ]
+          rich_text: [{ text: { content: submission.lastname } }]
         },
         Email: {
-          email
+          email: submission.email
         },
         Message: {
-          rich_text: [
-            {
-              text: {
-                content: message
-              }
-            }
-          ]
+          rich_text: [{ text: { content: submission.message } }]
         },
         Status: {
-          type: 'status',
-          status: {
-            name: 'New'
-          }
+          status: { name: 'New' }
         }
       }
-    };
+    });
 
-    const response = await notion.pages.create(entry);
-    return res.status(201).json({ msg: 'Success' });
+    return res.status(201).json({ message: 'Thanks—your message has been sent.' });
   } catch (error) {
-    return res.status(500).json({ msg: 'There was an error' });
+    console.error('Contact submission failed:', error.message);
+    return res.status(502).json({ message: 'The message could not be sent right now. Please try again later.' });
   }
 }

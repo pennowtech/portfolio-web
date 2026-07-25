@@ -1,7 +1,4 @@
-const { PHASE_DEVELOPMENT_SERVER } = require('next/constants');
-
-module.exports = (phase) => ({
-  ...(phase === PHASE_DEVELOPMENT_SERVER ? {} : { output: 'export' }),
+module.exports = {
   images: {
     remotePatterns: [
       new URL('https://www.nasa.gov/**'),
@@ -18,4 +15,4 @@ module.exports = (phase) => ({
     unoptimized: true
   },
   reactStrictMode: true
-});
+};

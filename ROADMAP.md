@@ -80,7 +80,7 @@ Across all steps:
 | 3    | Profile highlights    | Improve content hierarchy, cards, imagery, skill presentation, and responsive spacing.                                  | `Complete`    |
 | 4    | Article listing       | Refine cards, images, metadata, tags, and the one/two/three-column responsive article grid.                             | `Complete`    |
 | 5    | Article reading page  | Improve reading width, heading rhythm, code overflow, table of contents, and responsive navigation.                     | `Complete`    |
-| 6    | Contact section       | Improve form hierarchy, mobile field stacking, touch targets, field states, feedback, and calls to action.              | `Proposed`    |
+| 6    | Contact section       | Improve form hierarchy, mobile field stacking, touch targets, field states, feedback, and calls to action.              | `In review`   |
 | 7    | Footer                | Improve link organization, alignment, social links, touch targets, and responsive stacking.                             | `Not started` |
 | 8    | Consistency pass      | Review spacing, accessibility, dark mode, and visual consistency at every target viewport.                              | `Not started` |
 
@@ -387,7 +387,7 @@ Status: `Complete`
 
 ## Current Step: Contact Section
 
-Status: `Proposed`
+Status: `In review`
 
 ### Initial technical finding
 
@@ -403,6 +403,22 @@ Status: `Proposed`
 - Return accurate status codes for validation, CAPTCHA, configuration, and upstream failures.
 - Add accessible field errors, submitting state, success feedback, and failure recovery.
 - Refine the form hierarchy and responsive layout while retaining restrained green actions and existing typography.
+
+### Implementation
+
+- Removed production static-export mode so Vercel preserves the `/api/contact` serverless route.
+- Renamed the reCAPTCHA variables to distinguish the public site key from the server-only secret.
+- Removed CAPTCHA token caching because Google tokens are single-use and expire quickly.
+- Added action and score verification, server-side field validation, accurate response codes, and safe upstream errors.
+- Updated Notion contact writes to resolve and use the current data-source parent.
+- Rebuilt the form with native submit behavior, accessible labels and errors, disabled/submitting state, inline success or
+  failure feedback, and responsive phone/tablet layout.
+- Added complete Notion contact-database and reCAPTCHA setup instructions to `README.md`.
+- Changed the production start command from static `out` serving to `next start`.
+- Validation: `npm run lint` passes with 8 unrelated pre-existing warnings and no errors.
+- Validation: `next build --webpack` passes and reports `/api/contact` as a dynamic server route without the former
+  static-export warning.
+- Final visual and configured end-to-end acceptance: awaiting review.
 
 ## Dummy Article Fixture
 

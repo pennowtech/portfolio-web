@@ -55,7 +55,7 @@ function MyApp({ Component, pageProps }) {
         src="https://www.google.com/recaptcha/api.js?render=6LffScwlAAAAADpicS4xvbjFg3tSTnCVOTkaMrld"
       /> */}
       <GoogleReCaptchaProvider
-        reCaptchaKey={process.env.NEXT_PUBLIC_GOOGLE_CAPATCHA_SITE_KEY}
+        reCaptchaKey={process.env.NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY}
         scriptProps={{
           async: false, // optional, default to false,
           defer: true, // optional, default to false

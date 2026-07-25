@@ -1,170 +1,243 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import Link from 'next/link';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { BiPaperPlane } from 'react-icons/bi';
 
-const InputField = ({ id, type, label, value, onChange }) => (
-  <>
-    <label className='block uppercase tracking-wide text-xs font-bold mb-2' htmlFor={id}>
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const InputField = ({ id, type, label, value, onChange, error, autoComplete, disabled }) => (
+  <div>
+    <label className='mb-2 block font-Monda text-sm font-semibold' htmlFor={id}>
       {label}
     </label>
     <input
-      className='appearance-none block w-full bg-gray-100 dark:bg-gray-300 text-gray-700 dark:border-gray-800 rounded-lg py-3 px-4 leading-tight focus:outline-none border-secondary border-4 focus:bg-white border-gray-300 focus:border-gray-400'
+      className='min-h-12 w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-green-700 focus:ring-2 focus:ring-green-700/20 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-500 dark:bg-gray-700 dark:text-slate-50 dark:placeholder:text-slate-400 dark:focus:border-green-400 dark:focus:ring-green-400/20'
       id={id}
       name={id}
       type={type}
-      placeholder={label}
+      autoComplete={autoComplete}
       value={value}
       onChange={onChange}
+      disabled={disabled}
+      required
+      aria-invalid={Boolean(error)}
+      aria-describedby={error ? `${id}-error` : undefined}
     />
-  </>
+    {error && (
+      <p id={`${id}-error`} className='mb-0 mt-2 text-sm text-red-700 dark:text-red-300'>
+        {error}
+      </p>
+    )}
+  </div>
 );
 
-const ErrorMessage = ({ message }) => <p className='text-red-500 dark:text-red-300 text-xs italic'>{message}</p>;
+const validateForm = (formData) => {
+  const errors = {};
+  if (!formData.firstname.trim()) errors.firstname = 'Enter your first name.';
+  if (!formData.lastname.trim()) errors.lastname = 'Enter your last name.';
+  if (!formData.email.trim()) errors.email = 'Enter your email address.';
+  else if (!EMAIL_PATTERN.test(formData.email.trim())) errors.email = 'Enter a valid email address.';
+  if (!formData.message.trim()) errors.message = 'Tell me briefly what you would like to discuss.';
+  return errors;
+};
 
 const ContactForm = () => {
-  const { executeRecaptcha, recaptchaLoaded, recaptchaError } = useGoogleReCaptcha();
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const [formData, setFormData] = useState({
     firstname: '',
     lastname: '',
     email: '',
     message: ''
   });
-  const [submitBtnText, setSubmitBtnText] = useState('Submit');
-  const [error, setError] = useState({});
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [status, setStatus] = useState(null);
 
   const handleSubmit = useCallback(
-    async (e) => {
-      e.preventDefault();
+    async (event) => {
+      event.preventDefault();
+      const validationErrors = validateForm(formData);
 
-      if (!executeRecaptcha) {
-        toast(' This form is not operational right now. Better contact me through twitter!!!', { type: 'warning' });
+      if (Object.keys(validationErrors).length) {
+        setErrors(validationErrors);
+        setStatus({ type: 'error', message: 'Please check the highlighted fields.' });
         return;
       }
 
-      const errors = {};
-      Object.keys(formData).forEach((key) => {
-        if (!formData[key]) {
-          errors[key] = `${key} cannot be blank`;
-        } else if (key === 'email' && !/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(formData[key])) {
-          errors[key] = `${key} is probably not a valid email!`;
-        }
-      });
+      if (!executeRecaptcha) {
+        setStatus({
+          type: 'error',
+          message: 'Spam protection is still loading. Please wait a moment and try again.'
+        });
+        return;
+      }
 
-      if (Object.keys(errors).length > 0) {
-        setError(errors);
-        toast('Please re-check your inputs.', { type: 'error' });
-      } else {
-        try {
-          const token = await executeRecaptcha();
-          if (!token) {
-            toast('Failed to Send as executeRecaptcha failed!!!', {
-              type: 'error'
-            });
-            return;
-          }
-          const res = await fetch('/api/contact', {
-            method: 'POST',
-            body: JSON.stringify({ token, ...formData })
-          });
-          if (res.status === 201) {
-            toast('Thank you for contacting me!', { type: 'success' });
-            setFormData({
-              firstname: '',
-              lastname: '',
-              email: '',
-              message: ''
-            });
-          } else {
-            toast('Please re-check your inputs.', { type: 'error' });
-          }
-        } catch (exception) {
-          console.warn(exception);
-          toast('Failed to Send!!!', { type: 'error' });
+      setIsSubmitting(true);
+      setStatus(null);
+
+      try {
+        const token = await executeRecaptcha('contact_form');
+        const response = await fetch('/api/contact', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ token, ...formData })
+        });
+        const result = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+          if (result.errors) setErrors(result.errors);
+          throw new Error(result.message || 'The message could not be sent.');
         }
+
+        setFormData({
+          firstname: '',
+          lastname: '',
+          email: '',
+          message: ''
+        });
+        setErrors({});
+        setStatus({ type: 'success', message: result.message || 'Thanks—your message has been sent.' });
+      } catch (error) {
+        setStatus({ type: 'error', message: error.message });
+      } finally {
+        setIsSubmitting(false);
       }
     },
     [executeRecaptcha, formData]
   );
 
-  const handleChange = useCallback(
-    (e) => {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        [e.target.name]: e.target.value
-      }));
-      setError((prevError) => ({ ...prevError, [e.target.name]: null }));
-    },
-    [setFormData, setError]
-  );
-
-  const { firstname, lastname, email, message } = formData;
-
-  if (recaptchaError) {
-    return <div>Error loading reCAPTCHA!</div>;
-  }
+  const handleChange = useCallback((event) => {
+    const { name, value } = event.target;
+    setFormData((current) => ({ ...current, [name]: value }));
+    setErrors((current) => ({ ...current, [name]: undefined }));
+    setStatus(null);
+  }, []);
 
   return (
-    <div className='relative container mx-auto py-4 md:mb-4 px-4 md:px-2'>
-      <h2 className='flex justify-center lg:text-3xl leading-normal mt-8'>Want to Contact me?</h2>
-      {!executeRecaptcha && (
-        <div className='flex font-medium items-center justify-center leading-normal mb-8'>
-          This form is not operational right now. Better contact me through
-          <Link href='http://twitter.com/techishdeep' className='text-blue-400 dark:text-blue-400 '>
-            &nbsp;twitter
-          </Link>
-        </div>
-      )}
-      <div className='flex justify-center'>
-        <ToastContainer />
-        <form className='w-full max-w-lg'>
-          <div className='flex flex-wrap -mx-3 mb-6'>
-            <div className='w-full md:w-1/2 px-3 mb-6 md:mb-0'>
-              <InputField id='firstname' type='text' label='First Name' value={firstname} onChange={handleChange} />
-              {error.firstname && <ErrorMessage message={error.firstname} />}
-            </div>
-            <div className='w-full md:w-1/2 px-3'>
-              <InputField id='lastname' type='text' label='Last Name' value={lastname} onChange={handleChange} />
-              {error.lastname && <ErrorMessage message={error.lastname} />}
-            </div>
-          </div>
-          <div className='px-3 -mx-3 mb-6'>
-            <InputField id='email' type='email' label='Enter Email' value={email} onChange={handleChange} />
-            {error.email && <ErrorMessage message={error.email} />}
-          </div>
-          <div className='flex flex-wrap -mx-3 mb-6'>
-            <div className='w-full px-3'>
-              <label htmlFor='message' className='block uppercase tracking-wide text-xs font-bold mb-2'>
-                Message
-              </label>
-              <textarea
-                className='no-resize appearance-none block w-full bg-gray-100 dark:bg-gray-300 text-gray-700 dark:border-gray-800 border-4  rounded-lg  py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white border-gray-300 focus:border-gray-400 h-48 resize-none'
-                id='message'
-                name='message'
-                placeholder='Hey, I would like to get in touch with you'
-                onChange={handleChange}
-              />
-              {error?.message && <ErrorMessage message={error.message} />}
-            </div>
-          </div>
-          <div className='justify-center md:items-center'>
-            <div
-              className='text-center button focus:shadow-outline  '
-              type='submit'
-              role='button'
-              onClick={handleSubmit}
-              onKeyPress={handleSubmit}
+    <section aria-labelledby='contact-title' className='relative py-14 md:py-20'>
+      <div className='mx-auto grid w-full max-w-[1048px] gap-10 px-4 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16 lg:px-8'>
+        <div className='self-start lg:sticky lg:top-28'>
+          <p className='mb-2 font-Monda text-sm font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-300'>
+            Start a conversation
+          </p>
+          <h2 id='contact-title' className='mb-4 font-Neuton text-4xl font-semibold leading-tight md:text-5xl'>
+            Have a system challenge worth discussing?
+          </h2>
+          <p className='mb-5 leading-relaxed text-slate-600 dark:text-slate-200'>
+            Share a little context about the product, platform, or engineering problem. A concise message is enough to
+            get the conversation started.
+          </p>
+          <p className='mb-0 text-sm text-slate-500 dark:text-slate-300'>
+            If the form is unavailable, reach out through{' '}
+            <Link
+              href='https://x.com/techishdeep'
+              className='font-semibold text-green-700 underline underline-offset-4 hover:text-green-600 dark:text-green-400'
             >
-              {submitBtnText}
-              <BiPaperPlane className='ml-2 inline-block' />
-            </div>
-            <div className='md:w-2/3' />
+              X / Twitter
+            </Link>
+            .
+          </p>
+        </div>
+
+        <form
+          className='rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-500 dark:bg-gray-700 md:p-8'
+          onSubmit={handleSubmit}
+          noValidate
+        >
+          <div className='grid gap-6 sm:grid-cols-2'>
+            <InputField
+              id='firstname'
+              type='text'
+              label='First name'
+              autoComplete='given-name'
+              value={formData.firstname}
+              onChange={handleChange}
+              error={errors.firstname}
+              disabled={isSubmitting}
+            />
+            <InputField
+              id='lastname'
+              type='text'
+              label='Last name'
+              autoComplete='family-name'
+              value={formData.lastname}
+              onChange={handleChange}
+              error={errors.lastname}
+              disabled={isSubmitting}
+            />
           </div>
+
+          <div className='mt-6'>
+            <InputField
+              id='email'
+              type='email'
+              label='Email address'
+              autoComplete='email'
+              value={formData.email}
+              onChange={handleChange}
+              error={errors.email}
+              disabled={isSubmitting}
+            />
+          </div>
+
+          <div className='mt-6'>
+            <label className='mb-2 block font-Monda text-sm font-semibold' htmlFor='message'>
+              Message
+            </label>
+            <textarea
+              className='min-h-44 w-full resize-y rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-green-700 focus:ring-2 focus:ring-green-700/20 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-500 dark:bg-gray-700 dark:text-slate-50 dark:placeholder:text-slate-400 dark:focus:border-green-400 dark:focus:ring-green-400/20'
+              id='message'
+              name='message'
+              placeholder='A short overview of the challenge, context, or opportunity…'
+              value={formData.message}
+              onChange={handleChange}
+              disabled={isSubmitting}
+              maxLength={4000}
+              required
+              aria-invalid={Boolean(errors.message)}
+              aria-describedby={errors.message ? 'message-error' : 'message-help'}
+            />
+            <div className='mt-2 flex items-start justify-between gap-4 text-sm'>
+              {errors.message ? (
+                <p id='message-error' className='m-0 text-red-700 dark:text-red-300'>
+                  {errors.message}
+                </p>
+              ) : (
+                <p id='message-help' className='m-0 text-slate-500 dark:text-slate-300'>
+                  Please avoid including confidential information.
+                </p>
+              )}
+              <span className='shrink-0 text-slate-400'>{formData.message.length}/4000</span>
+            </div>
+          </div>
+
+          {status && (
+            <div
+              role={status.type === 'error' ? 'alert' : 'status'}
+              aria-live='polite'
+              className={`mt-6 rounded-lg border px-4 py-3 text-sm ${
+                status.type === 'success'
+                  ? 'border-green-300 bg-green-50 text-green-900 dark:border-green-700 dark:bg-green-950/30 dark:text-green-100'
+                  : 'border-red-300 bg-red-50 text-red-900 dark:border-red-700 dark:bg-red-950/30 dark:text-red-100'
+              }`}
+            >
+              {status.message}
+            </div>
+          )}
+
+          <button
+            type='submit'
+            disabled={isSubmitting}
+            className='mt-6 flex min-h-12 w-full items-center justify-center rounded-lg bg-green-700 px-6 py-3 font-Monda font-bold text-white shadow-sm transition hover:bg-green-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-green-600 dark:hover:bg-green-500 dark:focus-visible:ring-offset-gray-700 sm:w-auto'
+          >
+            {isSubmitting ? 'Sending…' : 'Send message'}
+            <BiPaperPlane aria-hidden='true' className='ml-2 text-lg' />
+          </button>
         </form>
       </div>
-    </div>
+    </section>
   );
 };
 

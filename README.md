@@ -63,6 +63,10 @@ NOTION_DATABASE_ID=d566a3d6865d4435a2945829eb4c9bd8
 
 # Optional: only required when the contact form writes to a separate Notion database.
 NOTION_CONTACT_FORM_DATABASE_ID=
+
+# Google reCAPTCHA v3 keys used by the contact form.
+NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY=
+GOOGLE_RECAPTCHA_SECRET_KEY=
 ```
 
 Do not add quotes or spaces around the values. Restart the development server after changing environment variables:
@@ -73,12 +77,20 @@ npm run dev
 
 For production, configure the same variables in the hosting provider's environment-variable or secret settings. Do not upload `.env.local`.
 
+#### Contact form configuration
+
+The contact form runs through the server-side `/api/contact` route and stores verified messages in a dedicated Notion
+database. Follow the complete [Portfolio Contact Form: Notion and reCAPTCHA Setup](docs/CONTACT_FORM_SETUP.md) guide to
+create the database, configure reCAPTCHA, set local and Vercel environment variables, test submissions, and troubleshoot
+the integration.
+
 ### 5. Troubleshooting
 
 - `API token is invalid` or `unauthorized`: copy the installation access token again and confirm `NOTION_KEY` contains no quotes or spaces.
 - `Database not found` or `object_not_found`: add the connection to the database and verify that `NOTION_DATABASE_ID` comes from the database link rather than a containing page.
 - No articles appear: restart the Next.js process, confirm the database properties match the fields expected in `utils/notion.jsx`, and ensure articles are marked as published.
-- Contact submissions fail: grant insert-content capability and set `NOTION_CONTACT_FORM_DATABASE_ID`.
+- Contact submissions fail: grant insert-content capability, verify the five contact environment variables, and confirm
+  the database property names and types match the table above.
 
 ## Original project notes
 
