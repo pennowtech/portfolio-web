@@ -14,7 +14,7 @@ function Code({ node, inline, className, ...props }) {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === 'dark';
   const codeTheme = isDark ? a11yDark : a11yLight;
-  const lineHighlight = isDark ? '#37415180' : '#dfefffcc';
+  const lineHighlight = isDark ? '#14532d66' : '#dcfce7cc';
 
   const language = /language-(\w+)/.exec(className || '')?.[1];
   const metadata = node?.data?.meta?.replace(/\s/g, '') ?? '';

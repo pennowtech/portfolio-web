@@ -65,18 +65,6 @@ const AboutSection = ({ classProps = '' }) => (
     <div className='relative z-10 mx-auto -mt-28 w-full max-w-[1048px] px-4 md:-mt-36 lg:px-8'>
       <article className='overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl dark:border-slate-500 dark:bg-gray-600'>
         <div className='px-5 md:px-8'>
-          <div className='flex justify-center'>
-            <div className='-mt-16 size-32 overflow-hidden rounded-full border-4 border-white bg-white shadow-lg dark:border-gray-600 dark:bg-slate-500 md:-mt-20 md:size-40'>
-              <Image
-                alt='TechishDeep profile mark'
-                src='/Logo.png'
-                width={160}
-                height={160}
-                className='h-full w-full object-cover'
-              />
-            </div>
-          </div>
-
           <header className='mx-auto mt-4 max-w-3xl text-center md:mt-5'>
             <p className='mb-2 font-Monda text-sm font-bold uppercase tracking-[0.16em] text-orange-600 dark:text-orange-400'>
               Technical Architect
@@ -145,7 +133,7 @@ const AboutSection = ({ classProps = '' }) => (
             role='button'
             tabIndex={0}
             onKeyDown={handleKeyboardActivation}
-            className='flex min-h-11 cursor-pointer items-center justify-center rounded-lg bg-blue-700 px-6 py-3 font-Monda font-bold text-white shadow transition hover:bg-blue-800 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 dark:bg-blue-600 dark:hover:bg-blue-500 dark:focus-visible:ring-offset-gray-600'
+            className='flex min-h-11 cursor-pointer items-center justify-center rounded-lg bg-green-700 px-6 py-3 font-Monda font-bold text-white shadow transition hover:bg-green-800 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 focus-visible:ring-offset-2 dark:bg-green-600 dark:hover:bg-green-500 dark:focus-visible:ring-green-400 dark:focus-visible:ring-offset-gray-600'
           >
             Get in touch
           </ScrollLink>
@@ -158,7 +146,7 @@ const AboutSection = ({ classProps = '' }) => (
             role='button'
             tabIndex={0}
             onKeyDown={handleKeyboardActivation}
-            className='flex min-h-11 cursor-pointer items-center justify-center rounded-lg border-2 border-orange-500 px-6 py-3 font-Monda font-bold text-slate-800 transition hover:bg-orange-500 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 dark:text-slate-100 dark:focus-visible:ring-offset-gray-600'
+            className='flex min-h-11 cursor-pointer items-center justify-center rounded-lg border-2 border-orange-500 px-6 py-3 font-Monda font-bold text-slate-800 transition hover:bg-orange-500 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 focus-visible:ring-offset-2 dark:text-slate-100 dark:focus-visible:ring-green-400 dark:focus-visible:ring-offset-gray-600'
           >
             View full profile
           </ScrollLink>

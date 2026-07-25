@@ -12,7 +12,7 @@ const SidebarCategories = ({ categories }) => {
       {Object.keys(categories).map((category) => (
         <div key={category} className='text-base py-2 flex h-full items-center justify-between'>
           <Link href={`/category/${category}`}>{category}</Link>
-          <div className='ml-2 px-2 py-1 rounded-full text-slate-200 bg-blue-500 text-xs '>{categories[category]}</div>
+          <div className='ml-2 rounded-full bg-green-700 px-2 py-1 text-xs text-white'>{categories[category]}</div>
         </div>
       ))}
     </div>

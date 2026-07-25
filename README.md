@@ -1,4 +1,4 @@
-# TechishDeep portfolio
+# ArchitectAtWork portfolio
 
 ## Connect the site to Notion
 
@@ -10,7 +10,7 @@ Keep the connection token private: it belongs in `.env.local`, which is already 
 1. Sign in to the [Notion Developer portal](https://www.notion.so/profile/integrations).
 2. Under **Build**, open **Internal connections**.
 3. Select **Create a new connection**.
-4. Give it a recognizable name, such as `TechishDeep Portfolio`.
+4. Give it a recognizable name, such as `ArchitectAtWork Portfolio`.
 5. Select the workspace containing the portfolio database.
 6. In **Configuration**, enable **Read content**. Enable content insertion only if the connection will also save contact-form submissions.
 7. Copy the **Installation access token** from the Configuration tab. This value is the `NOTION_KEY`.

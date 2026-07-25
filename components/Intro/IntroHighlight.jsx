@@ -23,6 +23,21 @@ Complex challenges are approached with curiosity, resourcefulness, and a calm fo
 
 const skillGroups = [
   {
+    title: 'Architecture',
+    names: [
+      'Microservices Architecture',
+      'Domain-Driven Design',
+      'Network Architecture',
+      'System Design',
+      'Distributed Systems',
+      'Legacy Modernization'
+    ]
+  },
+  {
+    title: 'Architecture Modelling',
+    names: ['ArchiMate', 'UML', 'C4 Model', 'Architecture Decision Records']
+  },
+  {
     title: 'Languages',
     names: ['C++ 11/17', 'Rust', 'Python', 'JavaScript', 'Solidity']
   },
@@ -31,12 +46,16 @@ const skillGroups = [
     names: ['Qt', 'ReactJS', 'Next.JS', 'FastAPI', 'Pytest', 'Jest', 'Material Design']
   },
   {
-    title: 'Systems & architecture',
-    names: ['TCP/IP', 'Sockets', 'Wireshark', 'ROS', 'Softw. Arch.', 'UML', 'Linux']
+    title: 'Systems & networking',
+    names: ['TCP/IP', 'Sockets', 'Wireshark', 'Linux']
   },
   {
     title: 'Data & platforms',
     names: ['PostgreSQL', 'GraphQL', 'Docker', 'Kubernetes', 'PySpark', 'Kafka', 'Git']
+  },
+  {
+    title: 'Middleware',
+    names: ['MQTT', 'gRPC', 'D-Bus', 'ROS']
   }
 ];
 

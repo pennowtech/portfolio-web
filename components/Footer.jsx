@@ -1,20 +1,17 @@
 import React from 'react';
 import Link from 'next/link';
 import { FooterMainMenuItems, SocialIconList } from '../utils/consts';
+import Logo from './Logo';
 
 const Footer = () => (
   <footer className='not-prose border-t border-slate-600 bg-slate-800 font-RobotoCond text-slate-300'>
     <div className='mx-auto w-full max-w-[1048px] px-4 py-10 md:px-6 md:py-12 lg:px-8'>
       <div className='grid gap-10 md:grid-cols-2 md:gap-12 lg:grid-cols-[1.4fr_0.7fr_0.9fr]'>
         <div>
-          <Link
-            href='/'
-            className='inline-flex rounded-sm font-Neuton text-3xl font-semibold text-white transition hover:text-green-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-400'
-          >
-            TechishDeep
-          </Link>
+          <Logo position='footer' />
           <p className='mb-0 mt-3 max-w-md text-base leading-relaxed text-slate-300'>
-            Practical perspectives on software architecture, systems engineering, and building dependable products.
+            Architecture grounded in engineering—through practical systems, dependable software, and work built for the
+            real world.
           </p>
           <Link
             href='/contact'

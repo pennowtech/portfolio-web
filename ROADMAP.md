@@ -83,7 +83,9 @@ Across all steps:
 | 6    | Contact section       | Improve form hierarchy, mobile field stacking, touch targets, field states, feedback, and calls to action.              | `Complete`  |
 | 7    | Footer                | Improve link organization, alignment, social links, touch targets, and responsive stacking.                             | `Complete`  |
 | 8    | Featured projects     | Present three representative products with tailored artwork, concise context, technology, and appropriate access.       | `Complete`  |
-| 9    | Consistency pass      | Review spacing, accessibility, dark mode, and visual consistency at every target viewport.                              | `In review` |
+| 9    | Consistency pass      | Review spacing, accessibility, dark mode, and visual consistency at every target viewport.                              | `Complete`  |
+| 10   | Personal identity     | Introduce a distinctive, scalable logo and personal wordmark across the portfolio.                                      | `Complete`  |
+| 11   | Architecture skills   | Add focused architecture capabilities and modelling practices to the technical toolkit.                                 | `In review` |
 
 ## Step 1: Header and Navigation
 
@@ -485,9 +487,9 @@ Status: `Complete`
 - Validation: `next build --webpack` passes with all three local project images included.
 - Final visual acceptance: accepted by moving to the consistency pass.
 
-## Current Step: Consistency Pass
+## Step 9: Consistency Pass
 
-Status: `In review`
+Status: `Complete`
 
 ### Implementation
 
@@ -506,6 +508,46 @@ Status: `In review`
 - Validation: `next build --webpack` passes and generates all expected routes.
 - Validation: `git diff --check` passes.
 - Remaining review: visually confirm representative phone, tablet, and desktop viewports in both themes.
+
+## Step 10: Personal Identity
+
+Status: `Complete`
+
+### Implementation
+
+- Created the ArchitectAtWork mark as a native SVG for crisp rendering at favicon, header, and footer sizes.
+- Combined structural `A` and `W` strokes to connect architectural thinking with practical work.
+- Used graphite as the foundation and forest green for the active `W`; no blue or decorative icon background was
+  introduced.
+- Replaced the alias-led header treatment with the `ArchitectAtWork` wordmark and the primary slogan “Architecture
+  grounded in engineering.”
+- Added a compact responsive lockup that preserves navigation and theme-control space on phones and tablets.
+- Applied the same identity to the footer and SVG favicon.
+- Replaced all remaining blue interface actions, navigation states, badges, focus rings, and highlighted-code
+  backgrounds with the established green palette.
+- Updated public metadata and setup documentation from TechishDeep to ArchitectAtWork.
+- Added `BRAND.md` with the primary slogan, ten supporting slogans, and palette guidance.
+- Preserved the old raster logo assets in case they are needed during review.
+- Validation: `npm run lint` passes with no errors or warnings.
+- Validation: `npm run build` passes with the production Webpack configuration.
+- Final visual acceptance: accepted by moving to the Architecture skills expansion.
+
+## Current Step: Architecture Skills
+
+Status: `In review`
+
+### Implementation
+
+- Added a dedicated Architecture group containing Microservices Architecture, Domain-Driven Design, Network
+  Architecture, System Design, Distributed Systems, and Legacy Modernization.
+- Added an Architecture Modelling group containing ArchiMate, UML, C4 Model, and Architecture Decision Records.
+- Placed both architecture groups before Languages so the toolkit leads with architecture capability.
+- Added a Middleware group containing MQTT, gRPC, D-Bus, and ROS, positioned at the end of the toolkit.
+- Added a restrained, relevant icon for every new skill using the existing skills icon system.
+- Renamed the previous mixed group to Systems & Networking and removed duplicated architecture and ROS entries from
+  it.
+- Preserved the existing responsive two/three/four-column skills layout.
+- Final visual acceptance: awaiting review.
 
 ## Dummy Article Fixture
 

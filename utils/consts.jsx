@@ -19,12 +19,23 @@ import {
   SiGraphql,
   SiFastapi,
   SiLinux,
+  SiMqtt,
   SiRust
 } from 'react-icons/si';
 import { FaNetworkWired, FaPython } from 'react-icons/fa';
 import { GrReactjs } from 'react-icons/gr';
 import { IoLogoJavascript } from 'react-icons/io';
-import { MdOutlineDesignServices } from 'react-icons/md';
+import {
+  MdAccountTree,
+  MdArchitecture,
+  MdDescription,
+  MdDomain,
+  MdGridView,
+  MdHistory,
+  MdOutlineDesignServices,
+  MdSettingsEthernet,
+  MdSyncAlt
+} from 'react-icons/md';
 
 import { ImGithub, ImInstagram, ImTwitter } from 'react-icons/im';
 
@@ -83,6 +94,9 @@ const skills = [
   { name: 'Sockets', icon: SiSocketdotio },
   { name: 'Wireshark', icon: SiWireshark },
   { name: 'ROS', icon: SiRos },
+  { name: 'MQTT', icon: SiMqtt },
+  { name: 'gRPC', icon: MdSyncAlt },
+  { name: 'D-Bus', icon: MdSettingsEthernet },
   { name: 'ReactJS', icon: GrReactjs },
   { name: 'Next.JS', icon: SiNextdotjs },
   { name: 'JS', icon: IoLogoJavascript },
@@ -93,8 +107,16 @@ const skills = [
   { name: 'Kubernetes', icon: SiKubernetes },
   { name: 'PySpark', icon: SiApachespark },
   { name: 'Kafka', icon: SiApachekafka },
-  { name: 'Softw. Arch.', icon: MdOutlineDesignServices },
+  { name: 'Microservices Architecture', icon: MdAccountTree },
+  { name: 'Domain-Driven Design', icon: MdDomain },
+  { name: 'Network Architecture', icon: FaNetworkWired },
+  { name: 'System Design', icon: MdOutlineDesignServices },
+  { name: 'Distributed Systems', icon: MdGridView },
+  { name: 'Legacy Modernization', icon: MdHistory },
+  { name: 'ArchiMate', icon: MdArchitecture },
   { name: 'UML', icon: SiMaterialdesign },
+  { name: 'C4 Model', icon: MdGridView },
+  { name: 'Architecture Decision Records', icon: MdDescription },
   { name: 'Git', icon: SiGit },
   { name: 'Linux', icon: SiLinux }
 ];

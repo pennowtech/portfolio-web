@@ -49,7 +49,7 @@ function MyApp({ Component, pageProps }) {
                 `}
       </Script>
       <Head>
-        <title>Sukhdeep Singh | Technical Architect</title>
+        <title>ArchitectAtWork | Sukhdeep Singh, Technical Architect</title>
         <meta
           name='description'
           content='Technical Architect sharing practical work and writing on software architecture, embedded systems, distributed platforms, and engineering.'

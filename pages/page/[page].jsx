@@ -9,7 +9,7 @@ import PostList from '../../components/PostList';
 
 const Index = ({ postsToShow, recentPosts, totalPosts }) => {
   const metaInfo = {
-    title: 'Software Architecture and Engineering Articles | TechishDeep',
+    title: 'Software Architecture and Engineering Articles | ArchitectAtWork',
     metaKeywords: 'Software Architecture, Embedded Systems, Rust, C++, Python, Distributed Systems',
     metaDesc:
       'Practical articles on software architecture, embedded systems, distributed platforms, programming, and engineering decisions.'
