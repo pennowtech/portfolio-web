@@ -3,34 +3,39 @@ import { Link as ScrollLink } from 'react-scroll';
 import Link from 'next/link';
 import { BASE_URL } from '../utils/consts';
 
-const NavBarItem = ({ menu, classprops, homepage }) => {
+const NavBarItem = ({ menu, classprops, homepage, onNavigate }) => {
   const fullPath = `${BASE_URL}/${menu.path}`;
+  const linkClasses = `flex min-h-11 w-full items-center rounded-md px-3 py-2 transition-colors duration-200
+    hover:bg-blue-600 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500
+    dark:hover:bg-slate-900 dark:hover:text-orange-400 ${classprops || ''}`.trim();
+
   return (
-    <li className="md:border-0 border-b-2 border-slate-100 w-full prose-a:hover:text-white inline-block">
+    <li className='w-full list-none xl:w-auto'>
       {homepage ? (
         <ScrollLink
-          activeClass="active"
+          activeClass='bg-blue-600 text-white dark:bg-slate-900 dark:text-orange-400'
           to={menu.path}
           spy
           smooth
           offset={-100}
           duration={500}
-          className={`cursor-pointer grow hover:bg-blue-600  dark:hover:border-b-4 dark:hover:border-orange-400 dark:hover:bg-slate-900 dark:hover:text-orange-400 px-3 hover:rounded-md  whitespace-nowrap overflow-hidden ${
-            classprops || ''
-          }`.trim()}
+          role='link'
+          tabIndex={0}
+          onClick={onNavigate}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              event.currentTarget.click();
+            }
+          }}
+          className={`${linkClasses} cursor-pointer whitespace-nowrap`}
         >
           {menu.title}
         </ScrollLink>
       ) : (
-        (<Link
-          href={fullPath}
-          className={`cursor-pointer grow hover:bg-blue-600  dark:hover:border-b-4 dark:hover:border-orange-400 dark:hover:bg-slate-900 dark:hover:text-orange-400 px-3 hover:rounded-md  whitespace-nowrap overflow-hidden ${
-            classprops || ''
-          }`.trim()}>
-
+        <Link href={fullPath} onClick={onNavigate} className={`${linkClasses} whitespace-nowrap`}>
           {menu.title}
-
-        </Link>)
+        </Link>
       )}
     </li>
   );

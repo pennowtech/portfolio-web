@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { AiOutlineBars, AiOutlineClose } from 'react-icons/ai';
 
 import { MenuItems } from '../utils/consts';
@@ -8,36 +8,109 @@ import NavBarItem from './NavBarItem';
 
 const Navbar = ({ homepage, classprops }) => {
   const [isMenuVisible, setMenuVisible] = useState(false);
+  const drawerRef = useRef(null);
+  const menuButtonRef = useRef(null);
 
-  // Memoizing the NavBarItems to prevent re-renders on state updates
-  const memoizedNavItems = useMemo(
+  const desktopNavItems = useMemo(
     () => MenuItems.map((item) => <NavBarItem key={item.title} menu={item} homepage={homepage} />),
     [homepage]
   );
 
+  const closeMenu = () => {
+    setMenuVisible(false);
+  };
+
+  useEffect(() => {
+    if (!isMenuVisible) return undefined;
+
+    const previousOverflow = document.body.style.overflow;
+    const drawer = drawerRef.current;
+    const menuButton = menuButtonRef.current;
+    const focusableElements = drawer?.querySelectorAll(
+      'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    );
+    const firstFocusable = focusableElements?.[0];
+    const lastFocusable = focusableElements?.[focusableElements.length - 1];
+
+    document.body.style.overflow = 'hidden';
+    firstFocusable?.focus();
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        closeMenu();
+        return;
+      }
+
+      if (event.key !== 'Tab' || !firstFocusable || !lastFocusable) return;
+      if (event.shiftKey && document.activeElement === firstFocusable) {
+        event.preventDefault();
+        lastFocusable.focus();
+      } else if (!event.shiftKey && document.activeElement === lastFocusable) {
+        event.preventDefault();
+        firstFocusable.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', handleKeyDown);
+      menuButton?.focus();
+    };
+  }, [isMenuVisible]);
+
   return (
-    <nav className={`${classprops} inline-block pl-8`}>
-      <ul className='hidden list-none md:flex flex-row m-0 items-center flex-initial'>
-        {memoizedNavItems}
-        <li className='bg-[#2952e3] text-white px-4 mx-4 rounded-full cursor-pointer hover:bg-[#2546bd]'>Login</li>
-      </ul>
-      <div className='md:hidden w-full flex justify-end'>
-        {!isMenuVisible && (
-          <AiOutlineBars fontSize={28} className='cursor-pointer' onClick={() => setMenuVisible(true)} />
-        )}
-        {isMenuVisible && (
-          <ul className='z-10 fixed -top-0 -right-2 p-3 w-[70vw] h-screen shadow-2xl md:hidden list-none flex flex-col justify-start items-end rounded-md bg-slate-200 animate-slide-in transition'>
-            <li>
-              <AiOutlineClose
-                fontSize={28}
-                className='m-2 md:hidden cursor-pointer'
-                onClick={() => setMenuVisible(false)}
-              />
-            </li>
-            {memoizedNavItems}
-          </ul>
-        )}
-      </div>
+    <nav aria-label='Primary navigation' className={`${classprops} flex items-center`}>
+      <ul className='m-0 hidden list-none flex-row items-center gap-1 p-0 xl:flex'>{desktopNavItems}</ul>
+
+      <button
+        ref={menuButtonRef}
+        type='button'
+        aria-label='Open navigation menu'
+        aria-expanded={isMenuVisible}
+        aria-controls='mobile-navigation'
+        className='ml-3 flex size-11 items-center justify-center rounded-md transition-colors hover:bg-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 dark:hover:bg-slate-700 xl:hidden'
+        onClick={() => setMenuVisible(true)}
+      >
+        <AiOutlineBars aria-hidden='true' fontSize={28} />
+      </button>
+
+      {isMenuVisible && (
+        <div className='fixed inset-0 z-[60] xl:hidden'>
+          <button
+            type='button'
+            aria-label='Close navigation menu'
+            className='absolute inset-0 h-full w-full cursor-default bg-slate-950/50 backdrop-blur-[1px]'
+            onClick={closeMenu}
+          />
+          <aside
+            id='mobile-navigation'
+            ref={drawerRef}
+            role='dialog'
+            aria-modal='true'
+            aria-label='Navigation menu'
+            className='relative flex h-dvh w-[min(82vw,22rem)] flex-col bg-slate-100 p-4 text-slate-900 shadow-2xl dark:bg-slate-800 dark:text-slate-100'
+          >
+            <div className='mb-5 flex items-center justify-between border-b border-slate-300 pb-3 dark:border-slate-600'>
+              <span className='font-Rajdhani text-xl font-bold'>Menu</span>
+              <button
+                type='button'
+                aria-label='Close navigation menu'
+                className='flex size-11 items-center justify-center rounded-md transition-colors hover:bg-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 dark:hover:bg-slate-700'
+                onClick={closeMenu}
+              >
+                <AiOutlineClose aria-hidden='true' fontSize={28} />
+              </button>
+            </div>
+            <ul className='m-0 flex list-none flex-col gap-2 p-0'>
+              {MenuItems.map((item) => (
+                <NavBarItem key={item.title} menu={item} homepage={homepage} onNavigate={closeMenu} />
+              ))}
+            </ul>
+          </aside>
+        </div>
+      )}
     </nav>
   );
 };

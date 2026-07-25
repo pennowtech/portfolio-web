@@ -1,103 +1,169 @@
-/* eslint-disable react/no-multi-comp */
-/* eslint-disable max-len */
 import React from 'react';
-
-import { SiNextdotjs, SiQt } from 'react-icons/si';
-import { GrReactjs } from 'react-icons/gr';
-import { IoLogoJavascript } from 'react-icons/io';
 import Image from 'next/legacy/image';
 import ReactMarkdown from 'react-markdown';
 import { skills } from '@utils/consts';
-import TechCard from './TechCard';
-import ProfileCard from './ProfileCard';
 
-const H3Component = ({ children }) => <h3 className='text-base lg:text-lg my-2'>{children}</h3>;
-const H2Component = ({ children }) => <h2 className='my-2'>{children}</h2>;
-const ULComponent = ({ children }) => <ul className='px-2 list-none '>{children}</ul>;
+const fallbackBlocks = [
+  `## 18+ years across demanding domains
 
-const IntroHighlight = ({ classProps, headingBlocks }) => (
-  <section className={`${classProps} mt-12 md:mt-10 pb-6 relative`}>
-    <div className='container mx-auto'>
-      <h2 className='mt-4 mb-0 font-Monda  underline-offset-2 mx-auto justify-center text-center'>Profile Highlights</h2>
-      <div className='grid md:flex md:flex-row items-center'>
-        <div className='w-full md:w-4/12 px-4 mx-auto mt-6 lg:text-lg font-Monda'>
-          <ProfileCard
-            text='Whether you are looking to create a sleek new website, design a mobile application, or develop a robust software system for your business, I have the skills and expertise to bring your vision to life.'
-            thumbnailUrl='/blank-2.jpeg'
-          />
-        </div>
+Experience stretches across medical devices, high-frequency trading, autonomous driving, microservices, embedded systems, and network programming. It is an unusual mix, but that variety makes it easier to spot patterns, ask sharper questions, and adapt proven ideas to new problems.`,
+  `### Still hands-on
 
-        <div className='w-full md:w-7/12 p-4 md:mt-6 '>
-          <ul className='grid md:flex md:flex-row items-center gap-4'>
-            {headingBlocks.slice(1, 3).map((heading, index) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <li key={index} className='list-none w-full md:w-6/12'>
-                <ReactMarkdown components={{ h3: H3Component }}>{heading}</ReactMarkdown>
-              </li>
-            ))}
-          </ul>
-          <ReactMarkdown components={{ h2: H2Component }}>{headingBlocks[0]}</ReactMarkdown>
-          <hr className='my-2' />
-        </div>
-      </div>
+Architecture has never meant stepping away from implementation. Strong working knowledge of C, modern C++, MATLAB, Rust, and Python keeps technical decisions realistic—especially for embedded, performance-sensitive, and systems-level software.`,
+  `### From the wire to the platform
 
-      <div className='grid md:flex md:flex-row items-center gap-4'>
-        <div className='w-full md:w-7/12 px-6'>
-          <div className='md:pr-12 relative'>
-            <ReactMarkdown components={{ h2: H2Component, ul: ULComponent }}>{headingBlocks[3]}</ReactMarkdown>
-          </div>
-          <hr className='hidden md:block md:my-2' />
-        </div>
+The technical range runs from TCP/IP, SOME/IP, DHCP, SNMP, IPv4/6, CAN, and proprietary protocols to FastAPI, Actix Web, gRPC, PostgreSQL, MongoDB, Redis, Docker, Kubernetes, Ansible, and Argo CD.`,
+  `## More than design documents
 
-        <div className='w-full md:w-4/12 px-4 pt-4 md:pt-0'>
-          <div className='shadow-xl relative h-48 lg:h-56 transform -rotate-x-1 rotate-y-2 rotate-2'>
-            <Image layout='fill' src='/blank.jpg' className='rounded-lg' />
-          </div>
-          <hr className='block md:hidden md:my-2' />
-        </div>
-      </div>
+The work covers the full path from algorithm development and model-based software to vehicle dynamics, system testing, integration, and delivery. Experience with both Agile and V-model development helps bridge fast-moving teams and rigorously controlled engineering environments.`,
+  `## Practical, positive, and solution-focused
 
-      <div className='grid gap-4 md:flex md:flex-row md:items-center px-6'>
-        <div className='w-full md:w-4/12 p-4'>
-          <div className='flex gap-4 flex-row md:items-center lg:text-lg'>
-            <div className='w-1/2 md:w-6/12'>
-              <TechCard className='bg-cyan-600 text-cyan-600 mb-4' icon={<GrReactjs />} text='ReactJS' />
-              <TechCard className='bg-gray-700 text-gray-100' icon={<SiNextdotjs />} text='NextJS' />
-            </div>
-            <div className='w-1/2 md:w-6/12 mt-8 md:mt-16'>
-              <TechCard className='bg-yellow-500 text-yellow-500 mb-4' icon={<IoLogoJavascript />} text='JavaScript' />
-              <TechCard className='bg-green-600 text-green-600 mb-4' icon={<SiQt />} text='Qt, QML' />
-            </div>
-          </div>
-        </div>
+Complex challenges are approached with curiosity, resourcefulness, and a calm focus on finding a workable solution. The goal is not simply to propose an architecture, but to help teams turn it into software that is robust, understandable, and ready to evolve.`
+];
 
-        <div className='w-full md:w-7/12 ml-auto mr-auto'>
-          <ReactMarkdown components={{ h2: H2Component, ul: ULComponent }}>{headingBlocks[4]}</ReactMarkdown>
-          <hr className='my-2' />
-        </div>
-      </div>
+const skillGroups = [
+  {
+    title: 'Languages',
+    names: ['C++ 11/17', 'Rust', 'Python', 'JavaScript', 'Solidity']
+  },
+  {
+    title: 'Frameworks & testing',
+    names: ['Qt', 'ReactJS', 'Next.JS', 'FastAPI', 'Pytest', 'Jest', 'Material Design']
+  },
+  {
+    title: 'Systems & architecture',
+    names: ['TCP/IP', 'Sockets', 'Wireshark', 'ROS', 'Softw. Arch.', 'UML', 'Linux']
+  },
+  {
+    title: 'Data & platforms',
+    names: ['PostgreSQL', 'GraphQL', 'Docker', 'Kubernetes', 'PySpark', 'Kafka', 'Git']
+  }
+];
 
-      <div className='flex flex-wrap md:justify-center md:text-sm text-xs gap-8 md:gap-12  justify-center items-center px-6'>
-        <h3 className='mt-6 flex items-center text-3xl font-semibold gap-4 w-full'>
-          <i className='fas fa-ship' />
-          Skills in short
-        </h3>
-        {skills.map((skill, index) => (
-          <div key={skill.name} className='text-center mb-2'>
-            <skill.icon className='md:text-5xl text-4xl mb-2' />
-            {skill.name}
-          </div>
-        ))}
-      </div>
-    </div>
-    {/* <Link href="/Sukhdeep Singh_CV_Architect.pdf">
-      <a>
-        <div className="button xl:w-48 w-40 text-center mx-auto">
-          Complete CV
-        </div>
-      </a>
-    </Link> */}
-  </section>
+const normalizedName = (name) => {
+  if (name === 'JS') return 'JavaScript';
+  if (name === 'Materialdesign') return 'Material Design';
+  return name;
+};
+
+const groupedSkills = skillGroups.map((group) => ({
+  ...group,
+  items: group.names.map((name) => skills.find((skill) => normalizedName(skill.name) === name)).filter(Boolean)
+}));
+
+const MarkdownHeading2 = ({ children }) => (
+  <h3 className='mb-3 mt-0 font-Neuton text-2xl font-semibold leading-tight md:text-3xl'>{children}</h3>
 );
+
+const MarkdownHeading3 = ({ children }) => (
+  <h4 className='mb-2 mt-0 font-Monda text-lg font-semibold leading-snug'>{children}</h4>
+);
+
+const MarkdownParagraph = ({ children }) => (
+  <p className='mb-0 leading-relaxed text-slate-700 dark:text-slate-100'>{children}</p>
+);
+
+const MarkdownList = ({ children }) => (
+  <ul className='mb-0 mt-3 space-y-2 pl-5 text-slate-700 marker:text-current dark:text-slate-100'>{children}</ul>
+);
+
+const markdownComponents = {
+  h2: MarkdownHeading2,
+  h3: MarkdownHeading3,
+  p: MarkdownParagraph,
+  ul: MarkdownList
+};
+
+const ContentBlock = ({ children, className = '' }) => (
+  <div className={`border-l-2 border-slate-300 pl-5 dark:border-slate-400 ${className}`}>
+    <ReactMarkdown components={markdownComponents}>{children}</ReactMarkdown>
+  </div>
+);
+
+const IntroHighlight = ({ classProps = '', headingBlocks = [] }) => {
+  const contentBlocks =
+    Array.isArray(headingBlocks) && headingBlocks.length
+      ? [...fallbackBlocks.map((fallback, index) => headingBlocks[index] || fallback)]
+      : fallbackBlocks;
+
+  return (
+    <section aria-labelledby='profile-highlights-title' className={`${classProps} relative py-14 md:py-20`}>
+      <div className='mx-auto w-full max-w-[1048px] px-4 lg:px-8'>
+        <header className='mx-auto mb-12 max-w-3xl text-center md:mb-16'>
+          <p className='mb-2 font-Monda text-sm font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-300'>
+            Experience in practice
+          </p>
+          <h2
+            id='profile-highlights-title'
+            className='mb-4 font-Neuton text-4xl font-semibold leading-tight md:text-5xl'
+          >
+            Profile Highlights
+          </h2>
+          <p className='mx-auto mb-0 max-w-2xl text-slate-600 dark:text-slate-200'>
+            A career shaped by complex systems, hands-on development, and the kind of technical variety that keeps the
+            work interesting.
+          </p>
+        </header>
+
+        <div className='grid items-center gap-8 border-b border-slate-200 pb-12 dark:border-slate-400 md:gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:pb-16'>
+          <div className='relative aspect-[4/3] w-full overflow-hidden rounded-xl'>
+            <Image
+              src='/blank-2.jpeg'
+              alt='Software development workspace with source code displayed on a laptop'
+              layout='fill'
+              objectFit='cover'
+              sizes='(max-width: 1023px) 100vw, 42vw'
+            />
+          </div>
+          <div className='space-y-8'>
+            <ContentBlock>{contentBlocks[0]}</ContentBlock>
+            <ContentBlock>{contentBlocks[1]}</ContentBlock>
+            <ContentBlock>{contentBlocks[2]}</ContentBlock>
+          </div>
+        </div>
+
+        <div className='grid gap-8 border-b border-slate-200 py-12 dark:border-slate-400 md:gap-10 lg:grid-cols-2 lg:py-16'>
+          <ContentBlock>{contentBlocks[3]}</ContentBlock>
+          <ContentBlock>{contentBlocks[4]}</ContentBlock>
+        </div>
+
+        <div className='pt-12 lg:pt-16'>
+          <div className='mb-9 max-w-2xl'>
+            <h3 className='mb-3 font-Neuton text-3xl font-semibold md:text-4xl'>Technical toolkit</h3>
+            <p className='mb-0 text-slate-600 dark:text-slate-200'>
+              Languages, platforms, and engineering tools used across real products and very different technical
+              environments.
+            </p>
+          </div>
+
+          <div className='divide-y divide-slate-200 dark:divide-slate-400'>
+            {groupedSkills.map((group) => (
+              <section
+                key={group.title}
+                aria-labelledby={`skill-group-${group.title.replaceAll(' ', '-').replace('&', 'and').toLowerCase()}`}
+                className='grid gap-4 py-6 first:pt-0 md:grid-cols-[12rem_1fr] md:gap-8'
+              >
+                <h4
+                  id={`skill-group-${group.title.replaceAll(' ', '-').replace('&', 'and').toLowerCase()}`}
+                  className='m-0 font-Monda text-base font-semibold'
+                >
+                  {group.title}
+                </h4>
+                <ul className='m-0 grid list-none grid-cols-2 gap-x-5 gap-y-5 p-0 sm:grid-cols-3 lg:grid-cols-4'>
+                  {group.items.map((skill) => (
+                    <li key={skill.name} className='flex min-w-0 items-center gap-2.5 text-sm sm:text-base'>
+                      <skill.icon aria-hidden='true' className='shrink-0 text-lg' />
+                      <span className='min-w-0 leading-tight'>{normalizedName(skill.name)}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
 
 export default IntroHighlight;

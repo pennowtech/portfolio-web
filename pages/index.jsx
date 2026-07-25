@@ -5,6 +5,7 @@ import { getPublishedBlogPosts, getSinglePage } from '@utils/notion';
 import Hero from '@components/Intro/Hero';
 
 import { WebSiteTags } from '@utils/consts';
+import { DUMMY_ARTICLE } from '@utils/dummyArticle';
 import IntroHighlight from '../components/Intro/IntroHighlight';
 import HomeArticles from '../components/HomeArticles';
 import ContactForm from '../components/ContactForm';
@@ -49,7 +50,8 @@ export const getStaticProps = async () => {
   const { blocks, headingBlocks } = await getSinglePage('About-Me');
   return {
     props: {
-      posts: response,
+      // TODO(dummy-content): Remove this prepend when the real article feed is ready.
+      posts: [{ ...DUMMY_ARTICLE, thumbnailUrl: `/${DUMMY_ARTICLE.thumbnailUrl}` }, ...response],
       headingBlocks
     }
   };

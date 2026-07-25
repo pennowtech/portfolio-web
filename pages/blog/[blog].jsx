@@ -1,4 +1,6 @@
 import React from 'react';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 
 import emoji from 'remark-emoji';
 import rehypeSlug from 'rehype-slug';
@@ -11,6 +13,7 @@ import PrevNextPosts from '@components/Post/PrevNextPosts';
 import BlogTitleBar from '@components/BlogTitleBar';
 import Article from '@components/Article';
 import FullLayout from '@components/FullLayout';
+import { DUMMY_ARTICLE, DUMMY_ARTICLE_SLUG } from '@utils/dummyArticle';
 
 /* import for this particular component should be done in following
  way. otherwise you'll get:
@@ -53,6 +56,19 @@ const PostPage = ({ postMeta, markdown, compiledMDSource }) => {
 export const getStaticProps = async (context) => {
   const { blog } = context.params;
 
+  // TODO(dummy-content): Remove this branch with the local Markdown fixture.
+  if (blog === DUMMY_ARTICLE_SLUG) {
+    const markdown = await fs.readFile(path.join(process.cwd(), 'posts', `${DUMMY_ARTICLE_SLUG}.md`), 'utf8');
+
+    return {
+      props: {
+        markdown,
+        postMeta: DUMMY_ARTICLE,
+        compiledMDSource: markdown
+      }
+    };
+  }
+
   const post = await getSingleBlogPost(blog);
 
   const options = {
@@ -84,6 +100,9 @@ export async function getStaticPaths() {
       blog: post.slug
     }
   }));
+
+  // TODO(dummy-content): Remove this path with the local Markdown fixture.
+  paths.push({ params: { blog: DUMMY_ARTICLE_SLUG } });
   return {
     paths,
     fallback: false
