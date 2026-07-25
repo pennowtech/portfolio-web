@@ -1,5 +1,5 @@
 import React from 'react';
-import Image from 'next/legacy/image';
+import Image from 'next/image';
 import { Link as ScrollLink } from 'react-scroll';
 import { FaCode, FaCubes, FaLightbulb, FaMicrochip, FaNetworkWired } from 'react-icons/fa';
 

@@ -1,9 +1,9 @@
 import React from 'react';
-import Image from 'next/legacy/image';
+import Image from 'next/image';
 import ReactMarkdown from 'react-markdown';
 import { skills } from '@utils/consts';
 
-const fallbackBlocks = [
+const profileBlocks = [
   `## 18+ years across demanding domains
 
 Experience stretches across medical devices, high-frequency trading, autonomous driving, microservices, embedded systems, and network programming. It is an unusual mix, but that variety makes it easier to spot patterns, ask sharper questions, and adapt proven ideas to new problems.`,
@@ -80,11 +80,8 @@ const ContentBlock = ({ children, className = '' }) => (
   </div>
 );
 
-const IntroHighlight = ({ classProps = '', headingBlocks = [] }) => {
-  const contentBlocks =
-    Array.isArray(headingBlocks) && headingBlocks.length
-      ? [...fallbackBlocks.map((fallback, index) => headingBlocks[index] || fallback)]
-      : fallbackBlocks;
+const IntroHighlight = ({ classProps = '' }) => {
+  const contentBlocks = profileBlocks;
 
   return (
     <section aria-labelledby='profile-highlights-title' className={`${classProps} relative py-14 md:py-20`}>
@@ -110,8 +107,8 @@ const IntroHighlight = ({ classProps = '', headingBlocks = [] }) => {
             <Image
               src='/blank-2.jpeg'
               alt='Software development workspace with source code displayed on a laptop'
-              layout='fill'
-              objectFit='cover'
+              fill
+              className='object-cover'
               sizes='(max-width: 1023px) 100vw, 42vw'
             />
           </div>

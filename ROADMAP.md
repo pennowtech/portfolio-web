@@ -79,7 +79,7 @@ Across all steps:
 | 2    | Profile hero          | Refine the background, profile card, statistics, introduction, and primary action across all viewports.                 | `Deferred`    |
 | 3    | Profile highlights    | Improve content hierarchy, cards, imagery, skill presentation, and responsive spacing.                                  | `Complete`    |
 | 4    | Article listing       | Refine cards, images, metadata, tags, and the one/two/three-column responsive article grid.                             | `Complete`    |
-| 5    | Article reading page  | Improve reading width, heading rhythm, code overflow, table of contents, and responsive navigation.                     | `Not started` |
+| 5    | Article reading page  | Improve reading width, heading rhythm, code overflow, table of contents, and responsive navigation.                     | `In review`   |
 | 6    | Contact section       | Improve form hierarchy, mobile field stacking, touch targets, field states, feedback, and calls to action.              | `Not started` |
 | 7    | Footer                | Improve link organization, alignment, social links, touch targets, and responsive stacking.                             | `Not started` |
 | 8    | Consistency pass      | Review spacing, accessibility, dark mode, and visual consistency at every target viewport.                              | `Not started` |
@@ -251,7 +251,7 @@ Status: `Complete`
 - Validation: sandboxed `next build --webpack` passes; unavailable Notion requests use the existing fallback behavior.
 - Final visual acceptance: accepted by moving to Step 4.
 
-## Current Step: Article Listing
+## Step 4: Article Listing
 
 Status: `Complete`
 
@@ -306,6 +306,74 @@ Status: `Complete`
 - Validation: `npm run lint` passes with 13 pre-existing warnings and no errors.
 - Validation: sandboxed `next build --webpack` passes; empty Notion credentials use the existing fallback behavior.
 - Final visual acceptance: accepted by moving to Step 5.
+
+## Current Step: Article Reading Page
+
+Status: `In review`
+
+### Observed Issues
+
+- The page uses nested scrolling and `overflow-hidden`, which can make long articles awkward on phones and tablets.
+- Article content has no deliberately controlled reading width or complete Markdown rhythm for headings, paragraphs, lists, tables, and media.
+- The table of contents is generated from fragile HTML strings, is client-only, and appears after the full article on narrow screens.
+- The desktop table of contents can consume at least 35% of the layout, leaving the main reading column cramped.
+- Heading links do not account consistently for the sticky header when scrolling.
+- Code blocks can become wider than the viewport, and highlighted-line handling contains an unsafe null mutation.
+- The title hero assumes a specific date and reading-time shape and always prepends `/` to image URLs.
+- Previous/next cards use non-descriptive image text, heavy overlays, and inconsistent title alignment.
+- The current dummy article has no previous/next data, so that area must remain optional.
+
+### Proposed Outcome
+
+- Establish a comfortable reading column with controlled line length and responsive outer spacing.
+- Remove nested page scrolling and allow the document to follow normal browser scrolling.
+- Refine Markdown typography for headings, paragraphs, lists, quotes, inline code, code blocks, tables, links, and media.
+- Keep code blocks horizontally scrollable inside the viewport and correct line-highlight handling.
+- Build the table of contents from rendered headings without string-generated HTML.
+- Present the table of contents as a compact disclosure on phones/tablets and a sticky supporting panel on wide desktops.
+- Apply sticky-header scroll offsets to linked headings and visible keyboard focus to heading links.
+- Make the title area resilient to local or remote images and missing date, author, tags, or reading-time data.
+- Simplify previous/next navigation into accessible, responsive links that remain optional.
+- Preserve the dummy article and use it as the review fixture.
+- Preserve the existing typography, green/orange accents, and light/dark themes without introducing excessive blue.
+
+### Explicitly Unchanged
+
+- Header, profile sections, and article listing.
+- Article source data and the dummy article content.
+- Contact form and footer.
+- Pagination and tag archive pages.
+
+### Approved Scope
+
+- Implement the proposed responsive article-reading experience.
+- Preserve the dummy article as the review fixture.
+
+### Implementation
+
+- Files changed: `pages/blog/[blog].jsx`, `components/BlogTitleBar.jsx`, `components/Article.jsx`, `components/Code.jsx`, `components/ToC.jsx`, `components/Post/PostDate.jsx`, and `components/Post/PrevNextPosts.jsx`.
+- Replaced nested scrolling with a normal responsive page flow and a controlled reading column.
+- Rebuilt the title hero to tolerate local or remote images and optional tags, author, date, and reading-time values.
+- Added deliberate Markdown rhythm for headings, paragraphs, lists, quotes, links, tables, media, inline code, and code blocks.
+- Added sticky-header offsets and keyboard-visible focus states to heading links.
+- Replaced HTML-string table-of-contents generation with structured links read from rendered headings.
+- Added a compact phone/tablet contents disclosure and a sticky wide-desktop contents panel.
+- Kept code blocks within the viewport with horizontal scrolling and fixed unsafe line-range highlighting.
+- Simplified optional previous/next navigation into accessible responsive links without decorative image overlays.
+- Preserved the dummy article content and route unchanged.
+- Validation: `npm run lint` passes with 10 pre-existing warnings and no errors.
+- Validation: sandboxed `next build --webpack` passes; unavailable Notion requests use the existing fallback behavior.
+- Final visual acceptance: awaiting review.
+
+### Step 5 compatibility follow-up
+
+- Documented the complete Notion connection, database-access, ID, and `.env.local` setup in `README.md`.
+- Normalized `notion-to-md` output to a Markdown string before string processing, reading-time calculation, and React rendering.
+- Removed the unsafe `markdown.replace` path that received an object with current `notion-to-md` versions.
+- Migrated all active `next/legacy/image` usage to `next/image`, including the shared fallback-image component.
+- Preserved the dummy article and its route unchanged.
+- Validation: `npm run lint` passes with no errors and only 9 unrelated pre-existing warnings.
+- Validation: `next build --webpack` completes successfully; Notion network requests use the existing fallback in the restricted build environment.
 
 ## Dummy Article Fixture
 
@@ -370,6 +438,9 @@ Complete this checklist after each implementation step:
 | 2026-07-25 | Dummy content   | Keep the dummy article until its removal is explicitly requested.                             | Fixture preserved unchanged.                                                               |
 | 2026-07-25 | Notion          | Add a safe local place for the Notion key and explain its use.                                | Git-ignored `.env.local` created with required placeholders.                               |
 | 2026-07-25 | Step 4 outcome  | Accept the article-listing implementation and move to the next roadmap step.                  | Step 4 marked complete.                                                                    |
+| 2026-07-25 | Step 5          | Move to the article-reading experience after committing the accepted article listing.         | Responsive reading-page proposal prepared.                                                 |
+| 2026-07-25 | Step 5          | Approve and implement the responsive article-reading proposal.                                | Implemented and moved to visual review.                                                    |
+| 2026-07-25 | Compatibility   | Remove Notion Markdown runtime errors and deprecated image usage; document setup fully.       | Markdown is normalized, images use the current API, and setup is documented in README.     |
 | 2026-07-25 | Content         | Use a removable dummy Markdown article rendered by the existing code.                         | Fixture added with `TODO(dummy-content)` markers.                                          |
 | 2026-07-25 | Full redesign   | The initial complete redesign changed too much at once and was rejected.                      | Reverted; incremental review process adopted.                                              |
 

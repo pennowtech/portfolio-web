@@ -1,6 +1,90 @@
+# TechishDeep portfolio
+
+## Connect the site to Notion
+
+The portfolio reads its articles and About Me content from a Notion database through an internal Notion connection.
+Keep the connection token private: it belongs in `.env.local`, which is already ignored by Git.
+
+### 1. Create an internal Notion connection
+
+1. Sign in to the [Notion Developer portal](https://www.notion.so/profile/integrations).
+2. Under **Build**, open **Internal connections**.
+3. Select **Create a new connection**.
+4. Give it a recognizable name, such as `TechishDeep Portfolio`.
+5. Select the workspace containing the portfolio database.
+6. In **Configuration**, enable **Read content**. Enable content insertion only if the connection will also save contact-form submissions.
+7. Copy the **Installation access token** from the Configuration tab. This value is the `NOTION_KEY`.
+
+Never place the token directly in source code, commit it, or share it in an issue or chat. If it is exposed, refresh it from the connection's Configuration tab.
+
+Official references:
+
+- [Notion internal connections](https://developers.notion.com/guides/get-started/internal-connections)
+- [Notion developer quickstart](https://developers.notion.com/guides/get-started/quick-start)
+
+### 2. Give the connection access to the database
+
+A newly created connection cannot read any pages or databases until access is granted.
+
+1. Open the articles database in Notion.
+2. Select the `•••` menu in the upper-right corner.
+3. Select **Connections** → **Add connection**.
+4. Find the connection created above and confirm access.
+
+Access can also be granted from the connection's **Content access** tab in the Developer portal.
+
+### 3. Find the database ID
+
+1. Open the original articles database as a full page.
+2. Select `•••` → **Copy link**.
+3. In a URL shaped like:
+
+   ```text
+   https://app.notion.com/p/d566a3d6865d4435a2945829eb4c9bd8?v=...
+   ```
+
+   the database ID is:
+
+   ```text
+   d566a3d6865d4435a2945829eb4c9bd8
+   ```
+
+4. Ignore the `v` query parameter; it identifies a database view, not the database.
+
+See [Notion's database API reference](https://developers.notion.com/reference/retrieve-database) for the official ID format.
+
+### 4. Store the values locally
+
+Open `.env.local` in the project root and add:
+
+```dotenv
+NOTION_KEY=ntn_your_private_installation_token
+NOTION_DATABASE_ID=d566a3d6865d4435a2945829eb4c9bd8
+
+# Optional: only required when the contact form writes to a separate Notion database.
+NOTION_CONTACT_FORM_DATABASE_ID=
+```
+
+Do not add quotes or spaces around the values. Restart the development server after changing environment variables:
+
+```shell
+npm run dev
+```
+
+For production, configure the same variables in the hosting provider's environment-variable or secret settings. Do not upload `.env.local`.
+
+### 5. Troubleshooting
+
+- `API token is invalid` or `unauthorized`: copy the installation access token again and confirm `NOTION_KEY` contains no quotes or spaces.
+- `Database not found` or `object_not_found`: add the connection to the database and verify that `NOTION_DATABASE_ID` comes from the database link rather than a containing page.
+- No articles appear: restart the Next.js process, confirm the database properties match the fields expected in `utils/notion.jsx`, and ensure articles are marked as published.
+- Contact submissions fail: grant insert-content capability and set `NOTION_CONTACT_FORM_DATABASE_ID`.
+
+## Original project notes
+
 Definitely NextJS has positioned itself as the best React framework at present.
 
-The purpose of this post is to show how easy and intuitive it can be to make a navbar in NextJS with the help of TailwindCSS. 
+The purpose of this post is to show how easy and intuitive it can be to make a navbar in NextJS with the help of TailwindCSS.
 
 # Setup and configuration
 
@@ -10,8 +94,6 @@ So, the first thing that we need is install NextJS and tailwindcss. Information 
 $ npx create-next-app blog_demo
 $ npm install -D tailwindcss postcss autoprefixer
 ```
-
-
 
 postcss is the tool that tailwind is going to use to purge unwanted css classes. This helps to drastically reduce the final css of the css
 
@@ -31,15 +113,12 @@ If we open postcss.config.js, then you can see two plugins specified: tailwindcs
 
 ```js
 module.exports = {
-  content: [
-    "./pages/**/*.{js,ts,jsx,tsx}",
-    "./components/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
   theme: {
-    extend: {},
+    extend: {}
   },
-  plugins: [],
-}
+  plugins: []
+};
 ```
 
 content entry specifies where to look for tailwindcss utilities classes. As obviously we'll be using them inside of js/jsx file, we specified those entries.
@@ -54,38 +133,30 @@ content entry specifies where to look for tailwindcss utilities classes. As obvi
      @tailwind utilities;
      ```
 
-  -   Another by specifying in `pages/index.js`. I'll use this approach:
+- Another by specifying in `pages/index.js`. I'll use this approach:
 
-      ```js
-      import 'tailwindcss/tailwind.css'
-      ```
+  ```js
+  import 'tailwindcss/tailwind.css';
+  ```
 
 Before running, let's remove the boiler plate code from inside the `index.js`. Add only following statements inside the `index.js`:
 
 ```js
-import 'tailwindcss/tailwind.css'
+import 'tailwindcss/tailwind.css';
 
 export default function Home() {
-    return (
-        <h1 className="text-3xl font-bold underline items-center text-green-500">
-          Hello world!
-        </h1>
-      )
+  return <h1 className='text-3xl font-bold underline items-center text-green-500'>Hello world!</h1>;
 }
 ```
 
-We can rewrite this function as ***arrow function***, which looks more modern:
+We can rewrite this function as _**arrow function**_, which looks more modern:
 
 ```js
-import 'tailwindcss/tailwind.css'
+import 'tailwindcss/tailwind.css';
 
 const Home = () => {
-    return (
-        <h1 className="text-3xl font-bold underline items-center text-green-500">
-          Hello world!
-        </h1>
-      )
-}
+  return <h1 className='text-3xl font-bold underline items-center text-green-500'>Hello world!</h1>;
+};
 
 export default Home;
 ```
@@ -104,28 +175,26 @@ export default Home;
 
 ## Adding Website title and favicon
 
-`<Head>` tag allows you ti insert data into the HTML `head` tag. You can say it's analogous to HTML `<head>` tag. 
+`<Head>` tag allows you ti insert data into the HTML `head` tag. You can say it's analogous to HTML `<head>` tag.
 
 Let's set the page title and the meta tags with its help:
 
 ```js
 import Head from 'next/head';
-import 'tailwindcss/tailwind.css'
+import 'tailwindcss/tailwind.css';
 
 const Home = () => {
-    return (
-        <div>
-            <Head>
-                <title>My Personal Blog</title>
-                <meta name='description' content='My personal Blog on modern software technologies' />
-                <link rel='icon' href='/favicon.ico' />
-            </Head>
-            <h1 className="text-3xl font-bold underline items-center text-green-500">
-                Hello world!
-            </h1>
-        </div>
-    )
-}
+  return (
+    <div>
+      <Head>
+        <title>My Personal Blog</title>
+        <meta name='description' content='My personal Blog on modern software technologies' />
+        <link rel='icon' href='/favicon.ico' />
+      </Head>
+      <h1 className='text-3xl font-bold underline items-center text-green-500'>Hello world!</h1>
+    </div>
+  );
+};
 
 export default Home;
 ```
@@ -144,11 +213,9 @@ You should find your package inside:
 
 This is the package, where whole of our application is stored. Open `.next\server\pages\index.html` and you should see the same page as above.
 
-
-
 ## Setting up Main app
 
-Inside the *./pages/_app.js* file, we’ll remove the default `../styles/global.css` import statement and import the `Head` component from `next/head`. This component injects elements to the `<head>` section of pages:
+Inside the _./pages/\_app.js_ file, we’ll remove the default `../styles/global.css` import statement and import the `Head` component from `next/head`. This component injects elements to the `<head>` section of pages:
 
 **import** Head from 'next/head'
 
@@ -157,115 +224,112 @@ Next, let’s replace what we have in the `MyApp` component with this:
 ```jsx
 import Head from 'next/head';
 
-
 function MyApp({ Component, pageProps }) {
-    return (
-        <>
-            <Head>
-                <title>My Personal Blog</title>
-                <meta name='description' content='My personal Blog on modern software technologies' />
-                <link rel='icon' href='/favicon.ico' />
-            </Head>
-            <div className="container md:max-w-screen-lg xl:max-w-[1167px] mx-auto ">
-                <main className='min-h-screenshadow-sm '>
-                    <Component {...pageProps} />
-                </main>
-            </div>
-        </>
-    )
+  return (
+    <>
+      <Head>
+        <title>My Personal Blog</title>
+        <meta name='description' content='My personal Blog on modern software technologies' />
+        <link rel='icon' href='/favicon.ico' />
+      </Head>
+      <div className='container md:max-w-screen-lg xl:max-w-[1167px] mx-auto '>
+        <main className='min-h-screenshadow-sm '>
+          <Component {...pageProps} />
+        </main>
+      </div>
+    </>
+  );
 }
 
-export default MyApp
-
+export default MyApp;
 ```
 
-In the above code, weve given our app the title *Next and MDX Blog*. The `<Component {...pageProps} />` tag represents the content for all our different pages, and we’ve wrapped it in a div with the class `"container"`.
+In the above code, weve given our app the title _Next and MDX Blog_. The `<Component {...pageProps} />` tag represents the content for all our different pages, and we’ve wrapped it in a div with the class `"container"`.
 
 If needed, we can also add custom css inside `Head` section:
 
 ```html
-<link href="https://cdn.jsdelivr.net/npm/min.css" rel="stylesheet"  integrity="sha384VSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossOrigin="anonymous" />
+<link
+  href="https://cdn.jsdelivr.net/npm/min.css"
+  rel="stylesheet"
+  integrity="sha384VSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+  crossorigin="anonymous"
+/>
 ```
 
-
-
-----
-
-
-
-
+---
 
 # Creating Navbar component
 
 We’ll need a navbar for our blog. Let's create a new component to show responsive navigation bar. Let's name it as `Navbar`:
 
-*Remember that all our components will be stored inside `components` directory.*
+_Remember that all our components will be stored inside `components` directory._
 
-First let's create a new directory `components` in our root folder. In the *components* folder, create a new file `Navbar.jsx` and add following content:
+First let's create a new directory `components` in our root folder. In the _components_ folder, create a new file `Navbar.jsx` and add following content:
 
 ```jsx
-import { HiMenuAlt4 } from 'react-icons/hi'
-import { AiOutlineClose } from 'react-icons/ai'
-import { Link } from "react-scroll";
+import { HiMenuAlt4 } from 'react-icons/hi';
+import { AiOutlineClose } from 'react-icons/ai';
+import { Link } from 'react-scroll';
 import Image from 'next/image';
 import { useState } from 'react';
 
-import logo from '../public/logo.png'
+import logo from '../public/logo.png';
 
-const MenuItems = ["Link1", "Link2", "Link3", "Link4"];
+const MenuItems = ['Link1', 'Link2', 'Link3', 'Link4'];
 
 const NavBarItem = ({ title, classprops }) => (
-  <li className='border-b md:border-0 w-full py-2'><Link
-    activeClass="active"
-    to={title}
-    spy={true}
-    smooth={true}
-    offset={-10}
-    duration={500}
-    className={`cursor-pointer hover:bg-blue-600 text-black hover:text-white px-3 py-2 rounded-md text-sm font-medium ${classprops || ''}`.trim()}
-  >
-    {title}
-  </Link>
+  <li className='border-b md:border-0 w-full py-2'>
+    <Link
+      activeClass='active'
+      to={title}
+      spy={true}
+      smooth={true}
+      offset={-10}
+      duration={500}
+      className={`cursor-pointer hover:bg-blue-600 text-black hover:text-white px-3 py-2 rounded-md text-sm font-medium ${classprops || ''}`.trim()}
+    >
+      {title}
+    </Link>
   </li>
 );
 
 export const Navbar = () => {
-  const [isMenuVisible, setMenuVisible] = useState(false)
+  const [isMenuVisible, setMenuVisible] = useState(false);
   return (
-    <nav className="bg-slate-50 sticky top-0 z-50 w-full flex justify-between items-center p-4">
-      <div className="md:flex-[0.5] flex-initial justify-center items-center">
-        <Image src={logo} alt="logo" className="w-32 cursor-pointer" ></Image>
+    <nav className='bg-slate-50 sticky top-0 z-50 w-full flex justify-between items-center p-4'>
+      <div className='md:flex-[0.5] flex-initial justify-center items-center'>
+        <Image src={logo} alt='logo' className='w-32 cursor-pointer'></Image>
       </div>
-      <ul className="md:flex hidden list-none flex-row justify-between items-center flex-initial">
+      <ul className='md:flex hidden list-none flex-row justify-between items-center flex-initial'>
         {MenuItems.map((item, index) => (
           <NavBarItem key={item + index} title={item} />
         ))}
-        <li className="bg-[#2952e3] text-white py-2 px-7 mx-4 rounded-full cursor-pointer hover:bg-[#2546bd]">
-          Login
-        </li>
+        <li className='bg-[#2952e3] text-white py-2 px-7 mx-4 rounded-full cursor-pointer hover:bg-[#2546bd]'>Login</li>
       </ul>
-      <div className="flex relative">
+      <div className='flex relative'>
         {!isMenuVisible && (
-          <HiMenuAlt4 fontSize={28} className="md:hidden cursor-pointer" onClick={() => setMenuVisible(true)} />
+          <HiMenuAlt4 fontSize={28} className='md:hidden cursor-pointer' onClick={() => setMenuVisible(true)} />
         )}
         {isMenuVisible && (
-          <ul
-            className="z-10 fixed -top-0 -right-2 p-3 w-[70vw] h-screen shadow-2xl md:hidden list-none flex flex-col justify-start items-end rounded-md blue-glassmorphism animate-slide-in transition"
-          >
-            <li ><AiOutlineClose fontSize={28} className="m-2 md:hidden cursor-pointer" onClick={() => setMenuVisible(false)} /></li>
-            {MenuItems.map(
-              (item, index) => <NavBarItem key={item + index} title={item} classprops="my-2 text-lg" />,
-            )}
+          <ul className='z-10 fixed -top-0 -right-2 p-3 w-[70vw] h-screen shadow-2xl md:hidden list-none flex flex-col justify-start items-end rounded-md blue-glassmorphism animate-slide-in transition'>
+            <li>
+              <AiOutlineClose
+                fontSize={28}
+                className='m-2 md:hidden cursor-pointer'
+                onClick={() => setMenuVisible(false)}
+              />
+            </li>
+            {MenuItems.map((item, index) => (
+              <NavBarItem key={item + index} title={item} classprops='my-2 text-lg' />
+            ))}
           </ul>
         )}
       </div>
     </nav>
   );
 };
-
 ```
-
-
 
 Install react-icons:
 
@@ -273,9 +337,9 @@ Install react-icons:
 $ npm install react-icons --save
 ```
 
-In our *./components/Nav.jsx* file, we started by importing the `Link` component from `'next/link'`. We’ll use this to enable client-side transitions between routes. This means that Next.js will prefetch whichever page we have in the `<Link>` tag as soon as it shows on our current page, so that when we click on the Bio link, we immediately get to see the bio page without having to wait for our application to fetch it again from the server. I’ve used the link with the text *“Ebenezer Don”* to point to our app’s base URL. You can use whatever text you want in yours.
+In our _./components/Nav.jsx_ file, we started by importing the `Link` component from `'next/link'`. We’ll use this to enable client-side transitions between routes. This means that Next.js will prefetch whichever page we have in the `<Link>` tag as soon as it shows on our current page, so that when we click on the Bio link, we immediately get to see the bio page without having to wait for our application to fetch it again from the server. I’ve used the link with the text _“Ebenezer Don”_ to point to our app’s base URL. You can use whatever text you want in yours.
 
-Next, we’ll import the `Nav` component inside the *./pages/_app.js* file and place it in the container div, just before the `<main>` tag:
+Next, we’ll import the `Nav` component inside the _./pages/\_app.js_ file and place it in the container div, just before the `<main>` tag:
 
 ```jsx
 import { Navbar } from '../components/Navbar';
@@ -290,26 +354,24 @@ import { Navbar } from '../components/Navbar';
 ...
 ```
 
-
-
 # Create Blog component
 
 For our blog component, let's create a new file named `MainBlog.jsx` inside the `components` and paste the following code inside it:
 
 ```jsx
-import Link from "next/link";
+import Link from 'next/link';
 
 export const BlogMain = () => {
   return (
-    <div className="mt-3">
-      <p className="display-4 text-center">Blogs</p>
-      <p className="text-center">A central place for my thoughts and learning</p>
-      <Link href="/blogs" passHref>
-        <p className="cursor-pointer ms-5 pointer lead my-auto">More Blogs</p>
+    <div className='mt-3'>
+      <p className='display-4 text-center'>Blogs</p>
+      <p className='text-center'>A central place for my thoughts and learning</p>
+      <Link href='/blogs' passHref>
+        <p className='cursor-pointer ms-5 pointer lead my-auto'>More Blogs</p>
       </Link>
     </div>
-  )
-}
+  );
+};
 ```
 
 You can change the text and page content to whatever you want. You should see something that looks similar to this:
@@ -318,16 +380,16 @@ You can change the text and page content to whatever you want. You should see so
 
 ## Adding MDX files for our posts
 
-In our root directory, let’s create a new folder named *posts*. We’ll use the *posts* folder to house our MDX files. Here’s a [link](https://github.com/ebenezerdon/mdx-files-nextjs-blog) to a GitHub repo that contains the MDX files we’ll need for our app. You’ll see a *posts* folder inside the repository, and inside the *posts* folder you should see the following files:
+In our root directory, let’s create a new folder named _posts_. We’ll use the _posts_ folder to house our MDX files. Here’s a [link](https://github.com/ebenezerdon/mdx-files-nextjs-blog) to a GitHub repo that contains the MDX files we’ll need for our app. You’ll see a _posts_ folder inside the repository, and inside the _posts_ folder you should see the following files:
 
-- *functions-for-beginners.mdx*
-- *solidjs-for-beginners.mdx*
-- *tailwind-setup.mdx*
-- *variables-in-python.mdx*
+- _functions-for-beginners.mdx_
+- _solidjs-for-beginners.mdx_
+- _tailwind-setup.mdx_
+- _variables-in-python.mdx_
 
-You can clone the repository or download the MDX files, then create a *posts* folder in the root directory of your app and paste the files there. All of them have similar content, so let’s use the *functions-for-beginners.mdx* file to explain what we’re doing in our MDX posts.
+You can clone the repository or download the MDX files, then create a _posts_ folder in the root directory of your app and paste the files there. All of them have similar content, so let’s use the _functions-for-beginners.mdx_ file to explain what we’re doing in our MDX posts.
 
-Here’s what our *./posts/functions-for-beginners.mdx* file looks like:
+Here’s what our _./posts/functions-for-beginners.mdx_ file looks like:
 
 ```markdown
 ---
@@ -337,6 +399,7 @@ description: Learn how to create and use functions
 thumbnailUrl: '/javascript-functions-thumbnail.jpeg'
 tags: ['functions', 'javascript']
 ---
+
 <div>
   This is a blog post about <strong>functions</strong>. <br/>
   We'll learn what functions are, how to write functions, and how to use them.
@@ -357,35 +420,31 @@ We just used a `###` subheading in our blog post.
 
 Firstly, we’re using the YAML syntax to write our file’s **front matter** which will allow us to store the post’s **metadata**. These are the key-value pairs wrapped in three hyphens (—) at the top of our Markdown file. We’ll be able to access this information later in our app, when we’re processing the Markdown file for our post page.
 
-Inside our front matter, we have a `thumbnailUrl` property for our blog post. Here’s a [link](https://github.com/ebenezerdon/images-next-mdx-tutorial) to the images for this tutorial. You can clone or download them onto your *./public* directory.
+Inside our front matter, we have a `thumbnailUrl` property for our blog post. Here’s a [link](https://github.com/ebenezerdon/images-next-mdx-tutorial) to the images for this tutorial. You can clone or download them onto your _./public_ directory.
 
 Next, you can see that with MDX, we can use HTML tags like the `<div>` tag in our Markdown file.
 
-There’s also the `<SyntaxHighlighter>` component which we’re using to wrap our code block. This is from an npm package named *react-syntax-highlighter*, which enables syntax highlighting for our code. When setting up MDX later in our app, you’ll see how we’re making this component available to our Markdown files. We did the same thing with the `<Button>` component on the last line of our file. Now that we have our MDX files, we can add content to our blog’s homepage. But before we do, let’s create the `<Button/>` component that we’re using in the MDX files.
+There’s also the `<SyntaxHighlighter>` component which we’re using to wrap our code block. This is from an npm package named _react-syntax-highlighter_, which enables syntax highlighting for our code. When setting up MDX later in our app, you’ll see how we’re making this component available to our Markdown files. We did the same thing with the `<Button>` component on the last line of our file. Now that we have our MDX files, we can add content to our blog’s homepage. But before we do, let’s create the `<Button/>` component that we’re using in the MDX files.
 
 ## Building our blog’s homepage
 
-To add content to our blog’s homepage, we’ll be working with the *./pages/index.js* file.
+To add content to our blog’s homepage, we’ll be working with the _./pages/index.js_ file.
 
 ### Fetching data with the getStaticProps method
 
-In Next.js, we can use a `getStaticProps` method to fetch data at build time. This means that when we build our app, Next.js is going to run the `getStaticProps` method, take the data from it, pass it to our component as props, and then use that to generate the page. Let’s go over to our *./pages/index.js* file and remove the content of our JSX code so that our file looks like this:
+In Next.js, we can use a `getStaticProps` method to fetch data at build time. This means that when we build our app, Next.js is going to run the `getStaticProps` method, take the data from it, pass it to our component as props, and then use that to generate the page. Let’s go over to our _./pages/index.js_ file and remove the content of our JSX code so that our file looks like this:
 
 ```js
-import 'tailwindcss/tailwind.css'
+import 'tailwindcss/tailwind.css';
 
 const Home = () => {
-  return (
-    <div>
-
-    </div>
-  )
-}
+  return <div></div>;
+};
 
 export default Home;
 ```
 
-Next, let’s add a `getStaticProps` method to our *./pages/index.js* file. We’ll do this after the `Home()` function:
+Next, let’s add a `getStaticProps` method to our _./pages/index.js_ file. We’ll do this after the `Home()` function:
 
 ```js
 ...
@@ -408,11 +467,9 @@ export const getStaticProps = async () => {
 ...
 ```
 
+In our `getStaticProps` function, we started by getting all the filenames inside the _./posts_ directory using the Node.js `fs.readdirSync()` method. We went on to create a `posts` variable for housing all our post data. We used the `map` method to map our filenames and then the Node.js `fs.readFileSync()` method to get the data in our individual files. On the next line, we’re using an npm package named _‘gray-matter’_ to get our post’s front matter. Our `map` method returns the front matter and post slug, while the `geStaticProps` function returns the post data as props. These props will then be made available to our `Home` component.
 
-
-In our `getStaticProps` function, we started by getting all the filenames inside the *./posts* directory using the Node.js `fs.readdirSync()` method. We went on to create a `posts` variable for housing all our post data. We used the `map` method to map our filenames and then the Node.js `fs.readFileSync()` method to get the data in our individual files. On the next line, we’re using an npm package named *‘gray-matter’* to get our post’s front matter. Our `map` method returns the front matter and post slug, while the `geStaticProps` function returns the post data as props. These props will then be made available to our `Home` component.
-
-Before we use our props to add content to our home page, let’s run the following command to install *gray-matter*:
+Before we use our props to add content to our home page, let’s run the following command to install _gray-matter_:
 
 ```shell
 $ npm install gray-matter --save
@@ -421,9 +478,9 @@ $ npm install gray-matter --save
 Next, we’ll import `fs` from `'fs'`, `path` from `'path'`, and `matter` from `'gray-matter'`:
 
 ```js
-import fs from 'fs'
-import path from 'path'
-import matter from 'gray-matter'
+import fs from 'fs';
+import path from 'path';
+import matter from 'gray-matter';
 ```
 
 We’ll also need to import `Link` from `'next/link'`. The `<Link/>` tag is the Next.js way of handling routing.
@@ -434,15 +491,7 @@ We’ll also need to import `Link` from `'next/link'`. The `<Link/>` tag is the 
 import Link from 'next/link'
 ```
 
-
-
 Now that we have our data and imports ready, let’s add content to our homepage. We’ll update our `Home` component to this:
-
-
-
-
-
-
 
 In our `Home` component, we’ve used the posts prop to populate our page with the post data. We’re using `tailwindcss` styling, and you can see how we’re getting the post `title`, `description`, and `date` from the `frontMatter`. When we restart our dev server and open up our app in the browser, we should see a page that looks like this:
 
@@ -454,30 +503,30 @@ Now that we have our homepage ready, let’s work on the single post page. For t
 
 ### Generating dynamic URLs in Next.js
 
-To generate our posts URLs, let’s create a new folder named *blog* inside our *./pages* directory. Inside our *./pages/blog* directory, we’ll create a new file named *[blog].js*. Notice that our file name is wrapped in square brackets ([]). This is how Next.js will know that we want it to be a dynamic route.
+To generate our posts URLs, let’s create a new folder named _blog_ inside our _./pages_ directory. Inside our _./pages/blog_ directory, we’ll create a new file named _[blog].js_. Notice that our file name is wrapped in square brackets ([]). This is how Next.js will know that we want it to be a dynamic route.
 
-Next.js has a `getStaticPaths()` method for generating our list of paths at build time. Let’s create one inside our *[blog].js* file:
+Next.js has a `getStaticPaths()` method for generating our list of paths at build time. Let’s create one inside our _[blog].js_ file:
 
 ```jsx
 export const getStaticPaths = async () => {
-  const files = fs.readdirSync(path.join('posts'))
-  const paths = files.map(filename => ({
+  const files = fs.readdirSync(path.join('posts'));
+  const paths = files.map((filename) => ({
     params: {
       blog: filename.replace('.mdx', '')
     }
-  }))
+  }));
   return {
     paths,
     fallback: false
-  }
-}
+  };
+};
 ```
 
-Notice that we’re using the Node.js `fs.readdirSync()` method again to get all the file names in our *posts* folder. We want to use the file names, without their *.mdx* extensions as our posts slugs.
+Notice that we’re using the Node.js `fs.readdirSync()` method again to get all the file names in our _posts_ folder. We want to use the file names, without their _.mdx_ extensions as our posts slugs.
 
 > **Note:** variable inside `blog: filename.replace('.mdx', '')` should be same as what you specify for `[blog].js`. That means it should be `blog` at both places. Otherwise, you will get an error.
 
-When a user clicks on a post, we want to redirect them to `our-url/blog/the-post-slug`. So for the file *functions-for-beginners.mdx*, its slug will be *functions-for-beginners*, and the URL will be http://localhost:3000/blog/functions-for-beginners.
+When a user clicks on a post, we want to redirect them to `our-url/blog/the-post-slug`. So for the file _functions-for-beginners.mdx_, its slug will be _functions-for-beginners_, and the URL will be http://localhost:3000/blog/functions-for-beginners.
 
 In our `getStaticPaths` method, we’re returning our paths variable which contains an object with the property params, which, in turn, has our post slug. We’re setting the fallback property in our return statement to `false` so that any paths not included in our paths list will result in a **404 page**. For example, if a user navigates to https://localhost:3000/blog/some-random-text, they should see a **404 page**.
 
@@ -487,11 +536,10 @@ Now that we have our paths, let’s use `getStaticProps` to get our component pr
 
 ```jsx
 export const getStaticProps = async ({ params: { blog } }) => {
-  const markdownWithMeta = fs.readFileSync(path.join('posts',
-    blog + '.mdx'), 'utf-8')
+  const markdownWithMeta = fs.readFileSync(path.join('posts', blog + '.mdx'), 'utf-8');
 
-  const { data: frontMatter, content } = matter(markdownWithMeta)
-  const mdxSource = await serialize(content)
+  const { data: frontMatter, content } = matter(markdownWithMeta);
+  const mdxSource = await serialize(content);
 
   return {
     props: {
@@ -499,11 +547,11 @@ export const getStaticProps = async ({ params: { blog } }) => {
       blog,
       mdxSource
     }
-  }
-}
+  };
+};
 ```
 
-In our `getStaticProps` function, we’re using the Node.js `fs.readFileSync` method to get our post data in the *./posts* directory, and the `matter` method from gray-matter to extract the front matter. We also have a new method named `serialize`. The `serialize` method is from ‘**next-mdx-remote**‘, an npm package for adding MDX support in our Next.js app. We’re using the serialize method to parse and compile the MDX string so that it can be rendered in our app.
+In our `getStaticProps` function, we’re using the Node.js `fs.readFileSync` method to get our post data in the _./posts_ directory, and the `matter` method from gray-matter to extract the front matter. We also have a new method named `serialize`. The `serialize` method is from ‘**next-mdx-remote**‘, an npm package for adding MDX support in our Next.js app. We’re using the serialize method to parse and compile the MDX string so that it can be rendered in our app.
 
 > **Note:** variable inside should be same as what you specify for `[blog].js`. That means it should be `blog` at all places. Otherwise, you will get an error.
 
@@ -519,25 +567,23 @@ In addition, install React-syntax-highlighter:
 $ npm install react-syntax-highlighter --save
 ```
 
-
-
-Next, let’s add our import statements to the top of the *./pages/blog/[slug].js* file:
+Next, let’s add our import statements to the top of the _./pages/blog/[slug].js_ file:
 
 ```jsx
-import { serialize } from 'next-mdx-remote/serialize'
-import { MDXRemote } from 'next-mdx-remote'
-import fs from 'fs'
-import path from 'path'
-import matter from 'gray-matter'
-import SyntaxHighlighter from 'react-syntax-highlighter'
+import { serialize } from 'next-mdx-remote/serialize';
+import { MDXRemote } from 'next-mdx-remote';
+import fs from 'fs';
+import path from 'path';
+import matter from 'gray-matter';
+import SyntaxHighlighter from 'react-syntax-highlighter';
 ```
 
-Notice that we’re also importing a component named `MDXRemote` from the **‘next-mdx-remote**‘ package. We’ll use `<MDXRemote />` to consume the output of `serialize`, so that we can render it directly into the `PostPage` component. The `<MDXRemote />` component also has an optional components prop, which we’ll be using to supply components to our MDX files. It’s how we were able to use the `<SyntaxHighlighter />` component in our *functions-for-beginners.mdx* file. On the last line of the MDX file, we’re also using the `Button` component that we created earlier:
+Notice that we’re also importing a component named `MDXRemote` from the **‘next-mdx-remote**‘ package. We’ll use `<MDXRemote />` to consume the output of `serialize`, so that we can render it directly into the `PostPage` component. The `<MDXRemote />` component also has an optional components prop, which we’ll be using to supply components to our MDX files. It’s how we were able to use the `<SyntaxHighlighter />` component in our _functions-for-beginners.mdx_ file. On the last line of the MDX file, we’re also using the `Button` component that we created earlier:
 
 ```jsx
 // my-first-mdx-file.mdx
 ...
-<div>Here, I'm using a component inside my MarkDown file: 
+<div>Here, I'm using a component inside my MarkDown file:
     {<Button text={"Click me"}/>}
 </div>
 ```
@@ -547,15 +593,12 @@ To use it, let's create our `Button` component inside `components` directory.
 ```jsx
 const Button = ({ text }) => {
   return (
-    <button
-      className="btn btn-primary"
-      onClick={event => event.target.innerText = 'You clicked me!'}
-    >
+    <button className='btn btn-primary' onClick={(event) => (event.target.innerText = 'You clicked me!')}>
       {text}
     </button>
-  )
-}
-export default Button
+  );
+};
+export default Button;
 ```
 
 Let's import our `Button` component inside the `./pages/blog/[slug].js` file:
@@ -571,12 +614,12 @@ Next, we’ll create our `PostPage` component:
 ```jsx
 const PostPage = ({ frontMatter: { title }, mdxSource }) => {
   return (
-    <div className="mt-4">
+    <div className='mt-4'>
       <h1>{title}</h1>
       <MDXRemote {...mdxSource} components={{ Button, SyntaxHighlighter }} />
     </div>
-  )
-}
+  );
+};
 ```
 
 In our `PostPage` component, we’re using the front matter from `getStaticProps` to get our post’s title. We’re also using `<MDXRemote />` to render our MDX text. We’ve supplied the `Button` and `SyntaxHighlighter` components as an object value to the components prop.
@@ -590,18 +633,16 @@ export default PostPage
 
 Now, when we restart our dev server and navigate to http://localhost:3000/blog/functions-for-beginners, we should see a page that looks like this:
 
-
-
 ## Create Custom component for `syntax highlighter`
 
 Let's create a new file `Highlighter` inside `components` directory and add following information in there:
 
 ```jsx
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { atomDark as theme } from "react-syntax-highlighter/dist/cjs/styles/prism";
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { atomDark as theme } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
 const Highlighter = (props) => {
-  const result = props.linesToHighlight.split(",");
+  const result = props.linesToHighlight.split(',');
   var linesToHighlight = convertLineStrToArray(props.linesToHighlight);
 
   console.log(props.children);
@@ -616,7 +657,6 @@ const Highlighter = (props) => {
   );
 };
 export default Highlighter;
-
 ```
 
 ### Line highlighting
@@ -642,7 +682,7 @@ export default Highlighter;
 ### Using Highlighter Component
 
 ```jsx
-<Highlighter language="js" linesToHighlight="2-4, 6">
+<Highlighter language='js' linesToHighlight='2-4, 6'>
   {` 
 const Comp = (props) => {
   const result = props.linesToHighlight.split(",");
@@ -651,7 +691,6 @@ console.log(linesToHighlight);
 };
 export default Comp;
 `}
-
 </Highlighter>
 ```
 
@@ -699,8 +738,6 @@ Some **mdx** text, with a component <Test name={title}/>
 }
 ```
 
-
-
 ### next-mdx-remote Pros:
 
 Perhaps most substantially, `next-mdx-remote` does not suffer from the intense performance issues that `next-mdx-enhanced` suffered from, meaning it's unlikely to run into the 25 minute builds mentioned above.
@@ -713,11 +750,7 @@ There is more "glue code" to write with `next-mdx-remote` than `@next/mdx` or `n
 
 You also lose out on the nice `next-mdx-enhanced` layouts feature, though it's likely possible to implement a simple version of that feature yourself.
 
-
-
-----
-
-
+---
 
 # Using React components in MDX documents with Next.js Image
 
@@ -740,7 +773,7 @@ const PostPage = ({ frontMatter: { title }, mdxSource }) => {
 Then somewhere in the post, we can use the Image component with any image we’d like:
 
 ```jsx
-<Image width={500} height={500} src="https://www.nasa.gov/sites/default/files/1-bluemarble_west.jpg" />
+<Image width={500} height={500} src='https://www.nasa.gov/sites/default/files/1-bluemarble_west.jpg' />
 ```
 
 > Note: MDX requires whitespace around the components, so make sure there’s a return before and after the Image reference.
@@ -771,15 +804,7 @@ module.exports = {
 }
 ```
 
-
-
-
-
-
-
-
-
-------
+---
 
 # Fetching Reading time
 
@@ -794,8 +819,7 @@ npm install reading-time --save
 Include
 
 ```jsx
-import readingTime from 'reading-time'
-
+import readingTime from 'reading-time';
 ```
 
 Fetch stats
@@ -822,13 +846,13 @@ Receive and Print the stats
 ```jsx
 const PostPage = ({ frontMatter, mdxSource, stats }) => {
   return (
-    <div className="mt-4">
+    <div className='mt-4'>
       ...
       <p>{stats.text}</p>
-	  ...
+      ...
     </div>
-  )
-}
+  );
+};
 ```
 
 ## Alternative way
@@ -862,16 +886,10 @@ const PostPage = ({ frontMatter, mdxSource }) => {
       <p>{frontMatter.readingTime.text}</p>
       ...
 }
-      
+
 ```
 
-
-
-
-
-------
-
-
+---
 
 # ToC
 
@@ -906,15 +924,11 @@ At this point, if you fire up your dev environment, and use your browser devtool
 
 We're halfway there - you can now link to `www.example.com#a-fish-called-wanda`, and the browser will automatically scroll to the heading.
 
-
-
-
-
--------------
+---
 
 # Create A Multi-Page Website
 
-Here we will discuss the steps to create a multi-page website with Next.js. You might get confused a bit while reading this because  we know that React.js is designed to build Single Page Applications(SPA). 
+Here we will discuss the steps to create a multi-page website with Next.js. You might get confused a bit while reading this because we know that React.js is designed to build Single Page Applications(SPA).
 
 Actually, we are creating a next.js app with multiple routes instead of multiple pages. But for the user, it feels the same as multiple pages.
 
@@ -1077,7 +1091,7 @@ export default function Home() {
 
           <Link
             href="/contact"
-            
+
           >
             <a className={styles.card}>
             <h2>Contact &rarr;</h2>
@@ -1091,9 +1105,7 @@ export default function Home() {
 }
 ```
 
-
-
----------
+---
 
 # build a Nextjs application with MongoDB
 
@@ -1118,10 +1130,6 @@ So the cluster is created and now we need to create a **collection**. We discuss
 A collection is simply the collection of databases associated with each project we are going to create. A cluster can contain multiple collections.
 
 So from the cluster, click on the **Browse Collections** tab.
-
-
-
-
 
 We will get an option to load a **Sample Dataset** and **our own data**. Choose the **Add My Own Data** from the options.
 
@@ -1167,22 +1175,18 @@ Let's also specify the database name here:
 DB_NAME= "portfolio-blog"
 ```
 
-
-
 Let’s test if this `MONGODB_URI` is working. First, download and install the [MongoDB Compass](https://www.mongodb.com/try/download/compass). Once installed, check that the `MONGODB_URI` format is correct. Finally, paste the connection `MONGODB_URI` and click connect.
 
 ![image-20220109083239956](README.assets/image-20220109083239956.png)
 
 This should connect to your remote MongoDB remote Atlas cluster.
 
-
-
 ## Install MongoDB
 
-We need to install the [MongoDB package](https://www.npmjs.com/package/mongodb/v/3.5.9) to work with MongoDB in a Next.js app. 
+We need to install the [MongoDB package](https://www.npmjs.com/package/mongodb/v/3.5.9) to work with MongoDB in a Next.js app.
 
 ```shell
-$npm i mongodb --save	
+$npm i mongodb --save
 ```
 
 ## Setup a MongoDB connection
@@ -1192,18 +1196,18 @@ To access the database in our following functionalities, we will create a client
 To do this, create a folder, name it `utils` and create a `mongodb.js` file and add the following.
 
 ```jsx
-import { MongoClient } from "mongodb";
+import { MongoClient } from 'mongodb';
 
 const MONGODB_URI = process.env.MONGODB_URI;
 const MONGODB_DB = process.env.DB_NAME;
 
 const options = {
   useUnifiedTopology: true,
-  useNewUrlParser: true,
+  useNewUrlParser: true
 };
 
 if (!process.env.MONGODB_URI) {
-  throw new Error("Please add your Mongo URI to .env.local");
+  throw new Error('Please add your Mongo URI to .env.local');
 }
 
 let cachedClient = null;
@@ -1215,13 +1219,13 @@ export async function connectToDatabase() {
     // load from cache
     return {
       client: cachedClient,
-      db: cachedDb,
+      db: cachedDb
     };
   }
 
   let client;
   let db;
-  if (process.env.NODE_ENV === "development") {
+  if (process.env.NODE_ENV === 'development') {
     // In development mode, use a global variable so that the value
     // is preserved across module reloads caused by HMR (Hot Module Replacement).
     if (!global._mongoClientPromise) {
@@ -1242,10 +1246,9 @@ export async function connectToDatabase() {
 
   return {
     client: cachedClient,
-    db: cachedDb,
+    db: cachedDb
   };
 }
-
 ```
 
 ## 2 methods to connect MongoDB to our Next.js app
@@ -1264,7 +1267,7 @@ The code inside this method is executed in the server with every request to the 
 To do this, first import the **clientPromise** we created earlier in the mongodb.js file.
 
 ```javascript
-import clientPromise from "../lib/mongodb";
+import clientPromise from '../lib/mongodb';
 ```
 
 Now inside **getServerSideProps**, select the database name and collection name.
@@ -1281,13 +1284,13 @@ This data is injected into the props of the pages.
 export async function getServerSideProps(context) {
   const client = await clientPromise;
 
-  const db = client.db("nextjs-mongodb-atlas-demo");
+  const db = client.db('nextjs-mongodb-atlas-demo');
 
-  let users = await db.collection("users").find({}).toArray();
+  let users = await db.collection('users').find({}).toArray();
   users = JSON.parse(JSON.stringify(users));
 
   return {
-    props: { users },
+    props: { users }
   };
 }
 ```
@@ -1297,15 +1300,15 @@ We will map this user’s data and show it on the home page. The entire **index.
 ```javascript
 // pages/index.js
 
-import clientPromise from "../lib/mongodb";
+import clientPromise from '../lib/mongodb';
 
 export default function Home({ users }) {
   return (
-    <div className="container">
+    <div className='container'>
       <div>
         {users.map((user, index) => {
           return (
-            <div className="card" key={index}>
+            <div className='card' key={index}>
               <h2>{user.name}</h2>
               <p>{user.email}</p>
               <p>{user.mobile}</p>
@@ -1320,13 +1323,13 @@ export default function Home({ users }) {
 export async function getServerSideProps(context) {
   const client = await clientPromise;
 
-  const db = client.db("nextjs-mongodb-atlas-demo");
+  const db = client.db('nextjs-mongodb-atlas-demo');
 
-  let users = await db.collection("users").find({}).toArray();
+  let users = await db.collection('users').find({}).toArray();
   users = JSON.parse(JSON.stringify(users));
 
   return {
-    props: { users },
+    props: { users }
   };
 }
 ```
@@ -1350,27 +1353,26 @@ The handler function will be called whenever a request is sent to that endpoint.
 To do that, edit the `handler` function as follows:
 
 ```jsx
-import connectToDatabase from "../../utils/mongodb";
+import connectToDatabase from '../../utils/mongodb';
 
 export default async function handler(req, res) {
   // connect to the database
   const { db } = await connectToDatabase();
   switch (req.method) {
-    case "GET":
+    case 'GET':
       getSelectedPosts(db, req, res);
       break;
-    case "POST":
+    case 'POST':
       addSelectedPosts(db, req, res);
       break;
-    case "PUT":
+    case 'PUT':
       updateSelectedPosts(db, req, res);
       break;
-    case "DELETE":
+    case 'DELETE':
       deleteSelectedPosts(db, req, res);
       break;
   }
 }
-
 ```
 
 From above, we are switching the various request methods and matching them to their functions. The request methods are as follows:
@@ -1387,27 +1389,22 @@ With our connection set up, we need to configure the function that will be calle
 To do that, add the `getSelectedPosts` function as follows:
 
 ```jsx
-async function getSelectedPosts(db, req,res){
-    try {
-
-        // fetch the posts
-        let posts = await db
-            .collection('selected-posts')
-            .find({})
-            .sort({ published: -1 })
-            .toArray();
-        // return the posts
-        return res.json({
-            message: JSON.parse(JSON.stringify(posts)),
-            success: true,
-        });
-    } catch (error) {
-        // return the error
-        return res.json({
-            message: new Error(error).message,
-            success: false,
-        });
-    }
+async function getSelectedPosts(db, req, res) {
+  try {
+    // fetch the posts
+    let posts = await db.collection('selected-posts').find({}).sort({ published: -1 }).toArray();
+    // return the posts
+    return res.json({
+      message: JSON.parse(JSON.stringify(posts)),
+      success: true
+    });
+  } catch (error) {
+    // return the error
+    return res.json({
+      message: new Error(error).message,
+      success: false
+    });
+  }
 }
 ```
 
@@ -1419,21 +1416,21 @@ Add the `addPost` function as follows:
 
 ```js
 async function addSelectedPosts(db, req, res) {
-    try {
-        // add the post
-        await db.collection('selected-posts').insertOne(JSON.parse(req.body));
-        // return a message
-        return res.json({
-            message: 'Post added successfully',
-            success: true,
-        });
-    } catch (error) {
-        // return an error
-        return res.json({
-            message: new Error(error).message,
-            success: false,
-        });
-    }
+  try {
+    // add the post
+    await db.collection('selected-posts').insertOne(JSON.parse(req.body));
+    // return a message
+    return res.json({
+      message: 'Post added successfully',
+      success: true
+    });
+  } catch (error) {
+    // return an error
+    return res.json({
+      message: new Error(error).message,
+      success: false
+    });
+  }
 }
 ```
 
@@ -1446,37 +1443,37 @@ We will add the functionalities that will help us add a post. Inside the pages f
 Next, add the following lines of code.
 
 ```jsx
-import { useState } from "react";
+import { useState } from 'react';
 
 export default function AddPost() {
   const [loading, setLoading] = useState(false);
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
 
   const handlePost = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     // reset error and message
-    setError("");
-    setMessage("");
+    setError('');
+    setMessage('');
 
     // fields check
-    if (!title || !content) return setError("All fields are required");
+    if (!title || !content) return setError('All fields are required');
 
     // post structure
     let post = {
       title,
       content,
       published: false,
-      createdAt: new Date().toISOString(),
+      createdAt: new Date().toISOString()
     };
     // save the post
-    let response = await fetch("/api/selectedposts", {
-      method: "POST",
-      body: JSON.stringify(post),
+    let response = await fetch('/api/selectedposts', {
+      method: 'POST',
+      body: JSON.stringify(post)
     });
 
     // get the data
@@ -1485,8 +1482,8 @@ export default function AddPost() {
 
     if (data.success) {
       // reset the fields
-      setTitle("");
-      setContent("");
+      setTitle('');
+      setContent('');
       // set the message
       return setMessage(data.message);
     } else {
@@ -1497,40 +1494,40 @@ export default function AddPost() {
 
   return (
     <div>
-      <div className="">
-        <form onSubmit={handlePost} className="">
+      <div className=''>
+        <form onSubmit={handlePost} className=''>
           {error ? (
-            <div className="">
-              <h3 className="">{error}</h3>
+            <div className=''>
+              <h3 className=''>{error}</h3>
             </div>
           ) : null}
           {message ? (
-            <div className="">
-              <h3 className="">{message}</h3>
+            <div className=''>
+              <h3 className=''>{message}</h3>
             </div>
           ) : null}
-          <div className="">
+          <div className=''>
             <label>Title</label>
             <input
-              type="text"
-              name="title"
+              type='text'
+              name='title'
               onChange={(e) => setTitle(e.target.value)}
               value={title}
-              placeholder="title"
+              placeholder='title'
             />
           </div>
-          <div className="">
+          <div className=''>
             <label>Content</label>
             <textarea
-              name="content"
+              name='content'
               onChange={(e) => setContent(e.target.value)}
               value={content}
-              placeholder="Post content"
+              placeholder='Post content'
             />
           </div>
-          <div className="">
-            <button type="submit" disabled={loading ? true : false}>
-              {loading ? "Adding Post" : "Add Post"}
+          <div className=''>
+            <button type='submit' disabled={loading ? true : false}>
+              {loading ? 'Adding Post' : 'Add Post'}
             </button>
           </div>
         </form>
@@ -1538,7 +1535,6 @@ export default function AddPost() {
     </div>
   );
 }
-
 ```
 
 The posts page (http://localhost:3000/add-selected-posts) works like below.
@@ -1547,27 +1543,19 @@ The posts page (http://localhost:3000/add-selected-posts) works like below.
 
 Here we have discussed the steps to connect MongoDB Atlas with a Next.js app. We also covered all the steps to create a database in MongoDB Atlas with screenshots.
 
-
-
 # Highlight through React
 
 ```shell
 $ npm install --save react-rough-notation
 ```
 
-
-
 Then just import the components you need.
 
 ```jsx
-import { RoughNotation, RoughNotationGroup } from "react-rough-notation";
+import { RoughNotation, RoughNotationGroup } from 'react-rough-notation';
 ```
 
-
-
-
-
-----
+---
 
 # Fontawesome through cdn
 
@@ -1575,31 +1563,25 @@ import { RoughNotation, RoughNotationGroup } from "react-rough-notation";
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous"></link>
 ```
 
-
-
 ```markup
-<i class="fas fa-camera"></i> 
+<i class="fas fa-camera"></i>
 ```
 
 or
 
 ```css
-  .message i:before {
-    font-family: "Font Awesome 5 Free";
-    font-weight: 900;
-    content: "";
-    font-style: normal;
-    padding: 0.5em 0.75em;
-    width: 2.5em;
-    height: 100%;
-  }
+.message i:before {
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  content: '';
+  font-style: normal;
+  padding: 0.5em 0.75em;
+  width: 2.5em;
+  height: 100%;
+}
 ```
 
-
-
---------------
-
-
+---
 
 # How to Use Github Actions to Deploy a Next.js Website to AWS S3
 
@@ -1611,7 +1593,7 @@ How can we use GitHub Actions to automate and continuously deploy our app to S3?
 
 GitHub Actions is a free service from GitHub that allows you to set up CI/CD workflows using a configuration file right in your Github repo. You can use them to automate tasks like running tests on our code and sending notifications to Slack.
 
-Previously, if you wanted to set up any kind of automation with tests, builds, or deployments, you would have to look to services like [Circle CI](https://circleci.com/) and [Travis](https://travis-ci.org/) or write your own scripts. But with Actions, you have first class support to powerful tooling to automate your workflow.  They provide a flexible way to automatically run code based on our existing workflows. This provides a lot of possibilities like even deploying our website!
+Previously, if you wanted to set up any kind of automation with tests, builds, or deployments, you would have to look to services like [Circle CI](https://circleci.com/) and [Travis](https://travis-ci.org/) or write your own scripts. But with Actions, you have first class support to powerful tooling to automate your workflow. They provide a flexible way to automatically run code based on our existing workflows. This provides a lot of possibilities like even deploying our website!
 
 ## What is CI/CD?
 
@@ -1714,7 +1696,7 @@ Next, let’s set the [**Region**](https://aws.amazon.com/about-aws/global-infra
 
 Finally, hit the **Create** button on the bottom left of the page.
 
-*Note: even if you use the `[yourname]-static-website` pattern, there’s a chance the name will be taken. If it’s taken, AWS will show an error stating “Bucket name already exists,” at which point you’ll want to try a new name of your choosing.*
+_Note: even if you use the `[yourname]-static-website` pattern, there’s a chance the name will be taken. If it’s taken, AWS will show an error stating “Bucket name already exists,” at which point you’ll want to try a new name of your choosing._
 
 Alternatively, you can hit **Next** for advanced usage, but for this guide, we’re okay with all of the defaults S3 provides.
 
@@ -1726,7 +1708,7 @@ If successful, you should now see your bucket in the list on the S3 console dash
 
 Once we have our S3 bucket configure as a website, we can navigate to our new bucket by clicking the row of our bucket. You’ll be greeted with a message stating “This bucket is empty. Upload new objects to get started,” so that’s what we’ll do.
 
-Now go back to our Next.js project folder, run our build command, and then upload contents inside the `out` directory into our new S3 bucket.We call them *“Objects”* in AWS S3. 
+Now go back to our Next.js project folder, run our build command, and then upload contents inside the `out` directory into our new S3 bucket.We call them _“Objects”_ in AWS S3.
 
 ![img](README.assets/website-files-in-s3.jpg)S3 Bucket with Static App
 
@@ -1742,14 +1724,14 @@ This is because your file doesn’t currently have the permissions and settings 
 
 ### Setting up your bucket as a website
 
-Navigate to the **Properties** tab inside of your bucket, then click **Static website hosting**. S3 Bucket disables static website hosting by default. Therefore, we must allow them. 
+Navigate to the **Properties** tab inside of your bucket, then click **Static website hosting**. S3 Bucket disables static website hosting by default. Therefore, we must allow them.
 
 ![img](README.assets/aws-s3-properties-static-hosting.jpg)Setting up an AWS S3 bucket for statice website hosting
 
 Once there, we want to edit the setting:
 
 - Note down the **Endpoint** at the top of the block. We’ll use this to access our site later (you can always find this here again)
-- Select the “Use this bucket to host a website” option. If you have separate error HTML files, you can set them up in *“Error document”*. Since SPA applications normally handle them in index.html, I have set them to index.html.
+- Select the “Use this bucket to host a website” option. If you have separate error HTML files, you can set them up in _“Error document”_. Since SPA applications normally handle them in index.html, I have set them to index.html.
 - Enter `index.html` in the **Index document** field
 - Finally hit **Save**
 
@@ -1777,7 +1759,7 @@ Then, uncheck the “Block all public access” checkbox and hit **Save**. A war
 
 You will see the section full of warnings, saying that it is dangerous to allow public access. Ignore it since our purpose is to hosting a publicly accessible website. so type in the word “confirm” and hit the **Confirm** button.
 
-Second, we will include Bucket Policy to allow *“GetObject”* Actions to the Bucket Objects. click the **Bucket policy** button and you’ll be taken to a text editor.
+Second, we will include Bucket Policy to allow _“GetObject”_ Actions to the Bucket Objects. click the **Bucket policy** button and you’ll be taken to a text editor.
 
 In this text box, we’ll want to paste the following snippet. Within this snippet, make sure to replace `[your-bucket-name]` with the name of your bucket, otherwise you will not be able to save this file.
 
@@ -1812,8 +1794,6 @@ If you noted down the Endpoint from your Properties page, you can now visit that
 http://[your-bucket-name].s3-website-[region-id].amazonaws.com
 ```
 
-
-
 Now we’ve configured our S3 bucket for website hosting, we should now be able to see our project live on the web!
 
 ![img](README.assets/nextjs-s3-website.jpg)AWS S3 hosted Next.js app
@@ -1822,7 +1802,7 @@ Now we’ve configured our S3 bucket for website hosting, we should now be able 
 
 Although we can use Root user, it is often not safe to use Root user when accessing AWS resources from outside. The root user has all permissions and, therefore, is vulnerable to hacking. Therefore, we will make IAM User that only has permission on S3 and use it to access S3 Bucket resources.
 
-Go to IAM in AWS Management Console. Click on the *Users* and add User. Set the Access type to `Programmatic access` since we will access AWS through GitHub Actions.
+Go to IAM in AWS Management Console. Click on the _Users_ and add User. Set the Access type to `Programmatic access` since we will access AWS through GitHub Actions.
 
 ![img](README.assets/1Y2LdLm5RD2Hjo1qLcHxF4g.png)
 
@@ -1869,7 +1849,7 @@ name: CD
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
@@ -1880,14 +1860,14 @@ jobs:
 
 Starting from the top, we specify our name. This next bit creates a new job called `build`. Here we're saying that we want to use the latest version of Ubuntu to run our tests on. [Ubuntu](https://ubuntu.com/) is common, so you'll only want to customize this if you want to run it on a specific environment. This code alone will trigger a process that spins up a new instance of Ubuntu and simply checks out the code from GitHub any time there’s a new change pushed to the `main` branch.
 
-> The `on` key is how we specify what events trigger our action. This can be a variety of things like based on time with [cron](https://en.wikipedia.org/wiki/Cron). But here, we're saying that we want this action to run any time someone pushes commits to  `master` or someone creates a pull request targeting the `master` branch. We're not going to make a change here.
+> The `on` key is how we specify what events trigger our action. This can be a variety of things like based on time with [cron](https://en.wikipedia.org/wiki/Cron). But here, we're saying that we want this action to run any time someone pushes commits to `master` or someone creates a pull request targeting the `master` branch. We're not going to make a change here.
 >
 > ```yaml
 > on:
 >   push:
->     branches: [ master ]
+>     branches: [master]
 >   pull_request:
->     branches: [ master ]
+>     branches: [master]
 > ```
 
 Next, once we have our code checked out, we want to build it. This will allow us to take that output and sync it to S3.
@@ -1941,7 +1921,7 @@ Between both of these sets of steps, what we’re doing is:
   See [next.js documentation](https://nextjs.org/docs/advanced-features/static-html-export) for more info about `next export`.Finally, we specify the steps we want our job to run. Breaking this down:
 
   - `uses: actions/checkout@v2`: In order for us to run our code, we need to have it available. This checks out our code on our job environment so we can use it to run tests.
-  - `uses: actions/setup-node@v1`: Since we're using node with our project, we'll need it set up on our environment. We're using this action to do that setup  for us for each version we've specified in the matrix we configured above.
+  - `uses: actions/setup-node@v1`: Since we're using node with our project, we'll need it set up on our environment. We're using this action to do that setup for us for each version we've specified in the matrix we configured above.
   - `run: npm ci`: If you're not familiar with `npm ci`, it's similar to running `npm install` but uses the `package-lock.json` file without performing any patch upgrades. So essentially, this installs our dependencies.
   - `run: npm run build --if-present`: `npm run build` runs the build script in our project. The `--if-present` flag performs what it sounds like and only runs this command if the build script is present. It doesn't hurt anything to leave this in as it won't run without the script, but feel free to remove this as we're not building the project here.
   - `run: npm test`: Finally, we run `npm test` to run our tests. This uses the `test` npm script set up in our `package.json` file.
@@ -1994,7 +1974,7 @@ This will provide you with two values: the **Access key ID** and the **Secret ac
 
 ![img](README.assets/aws-secret-access-keys.jpg)Finding Secret and Access Key in AWS
 
-*Note: remember to NOT include the Access Key and Secret Key inside of your code. This could lead to someone compromising your AWS credentials.*
+_Note: remember to NOT include the Access Key and Secret Key inside of your code. This could lead to someone compromising your AWS credentials._
 
 Next, inside of the GitHub repo, navigate to Settings, Secrets, then select New secret.
 
@@ -2015,7 +1995,7 @@ Inside of the GitHub Action, add the following step:
 - run: aws s3 sync ./out s3://[bucket-name]
 ```
 
-*Note: be sure to replace `[bucket-name]` with the name of your S3 Bucket.*
+_Note: be sure to replace `[bucket-name]` with the name of your S3 Bucket._
 
 This command will trigger a sync with our specified S3 bucket, using the contents of the `out` directory, which is where our project builds to.
 
@@ -2023,7 +2003,7 @@ And now, if we commit our changes, we can see that our action is automatically t
 
 ![img](README.assets/github-action-sync-s3-bucket.jpg)Successful AWS S3 sync in GitHub Action workflow
 
-*Note: Make sure that before setting up this action you’ve configured the S3 bucket to host a website (including unblocking permissions on S3 bucket) – otherwise this action may fail.*
+_Note: Make sure that before setting up this action you’ve configured the S3 bucket to host a website (including unblocking permissions on S3 bucket) – otherwise this action may fail._
 
 At this point, our project probably looks the same, as we didn’t make any changes to the code.
 
@@ -2033,7 +2013,7 @@ But if you make a code change, such as changing the title of the homepage inside
 
 ```jsx
 <h1 className={styles.title}>
-  Colby's <a href="https://nextjs.org">Next.js!</a> Site
+  Colby's <a href='https://nextjs.org'>Next.js!</a> Site
 </h1>
 ```
 
@@ -2185,7 +2165,7 @@ And once you navigate back to the pull request, you'll notice that the messaging
 
 ![img](README.assets/github-failing-checks-cant-merge.jpg)Failing tests preventing merge in pull request
 
-*Note: as an administrator of a repository, you'll still be able to merge, so this technically only prevents non-administrators from merging. But will give you increased messaging if the tests fail.*
+_Note: as an administrator of a repository, you'll still be able to merge, so this technically only prevents non-administrators from merging. But will give you increased messaging if the tests fail._
 
 And with that, we have a new Github Action that runs our tests and prevents pull requests from merging if they fail.
 
@@ -2230,7 +2210,7 @@ Once you click this, you'll be redirected to an authorization page. Here, you ca
 
 At this point, our Slack bot is ready to go. At the top of the **OAuth & Permissions** page, you'll see a **Bot User OAuth Access Token**. This is what we'll use when setting up our workflow, so either copy and save this token or remember this location so you know how to find it later.
 
-*Note: this token is private - don't give this out, show it in a screencast, or let anyone see it!*
+_Note: this token is private - don't give this out, show it in a screencast, or let anyone see it!_
 
 ![img](README.assets/slack-app-oauth-token.jpg)Copying OAuth Access Token for Slack bot user
 
@@ -2248,7 +2228,7 @@ Our next step will be somewhat similar to when we created our first Github Actio
 
 While we can use our code editors to do this by creating a file in the `.github` directory, I'm going to use the Github UI.
 
-First, let's navigate back to our *Actions* tab in our repository. Once there, select **New workflow**.
+First, let's navigate back to our _Actions_ tab in our repository. Once there, select **New workflow**.
 
 ![img](README.assets/github-new-workflow.jpg)Setting up a new Github Action workflow
 
@@ -2263,20 +2243,19 @@ name: Slack Notifications
 
 on:
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   notifySlack:
-
     runs-on: ubuntu-latest
 
     steps:
-    - name: Notify slack
-      env:
-        SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-      uses: abinoda/slack-action@master
-      with:
-        args: '{\"channel\":\"[Channel ID]\",\"blocks\":[{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Pull Request:* ${{ github.event.pull_request.title }}\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Who?:* ${{ github.event.pull_request.user.login }}\n*Request State:* ${{ github.event.pull_request.state }}\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"<${{ github.event.pull_request.html_url }}|View Pull Request>\"}}]}'
+      - name: Notify slack
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        uses: abinoda/slack-action@master
+        with:
+          args: '{\"channel\":\"[Channel ID]\",\"blocks\":[{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Pull Request:* ${{ github.event.pull_request.title }}\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Who?:* ${{ github.event.pull_request.user.login }}\n*Request State:* ${{ github.event.pull_request.state }}\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"<${{ github.event.pull_request.html_url }}|View Pull Request>\"}}]}'
 ```
 
 So what's happening in the above?
@@ -2293,36 +2272,40 @@ In order for Github to communicate with Slack, we'll need a token. This is what 
 
 ![img](README.assets/github-slack-token-secret.jpg)Github secrets including SLACK_BOT_TOKEN
 
-The  `with.args` property is what we use to configure the payload to the Slack API that includes the channel ID (`channel`) and our actual message (`blocks`).
+The `with.args` property is what we use to configure the payload to the Slack API that includes the channel ID (`channel`) and our actual message (`blocks`).
 
 The payload in the arguments is stringified and escaped. For example, when expanded it looks like this:
 
 ```json
 {
   "channel": "[Channel ID]",
-  "blocks": [{
-    "type": "section",
-    "text": {
-      "type": "mrkdwn",
-      "text": "*Pull Request:* ${{ github.event.pull_request.title }}"
+  "blocks": [
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*Pull Request:* ${{ github.event.pull_request.title }}"
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*Who?:*n${{ github.event.pull_request.user.login }}n*State:*n${{ github.event.pull_request.state }}"
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "<${{ github.event.pull_request._links.html.href }}|View Pull Request>"
+      }
     }
-  }, {
-    "type": "section",
-    "text": {
-      "type": "mrkdwn",
-      "text": "*Who?:*n${{ github.event.pull_request.user.login }}n*State:*n${{ github.event.pull_request.state }}"
-    }
-  }, {
-    "type": "section",
-    "text": {
-      "type": "mrkdwn",
-      "text": "<${{ github.event.pull_request._links.html.href }}|View Pull Request>"
-    }
-  }]
+  ]
 }
 ```
 
-*Note: this is just to show what the content looks like, we need to use the original file with the stringified and escaped argument.*
+_Note: this is just to show what the content looks like, we need to use the original file with the stringified and escaped argument._
 
 Back to our configuration file, the first thing we set is our channel ID. To find our channel ID, you'll need to use the Slack web interface. Once you open Slack in your browser, you want to find your channel ID in the URL:
 
@@ -2359,7 +2342,7 @@ As long as you set everything up correctly, once the workflow runs, you should n
 
 ![img](README.assets/slack-github-notification.jpg)Slack bot automated message about new pull request
 
-*Note: we won't be merging that pull request in.*
+_Note: we won't be merging that pull request in._
 
 ## GitHub Actions: Cache Everything
 
@@ -2398,10 +2381,6 @@ All together our caching step will look like this:
         key: node-modules-${{ hashFiles('package-lock.json') }}
 ```
 
-
-
-
-
 ## Skip npm install
 
 Caching `node_modules` won't save time on its own. For this we'll need to skip `npm install`. But we can only do this when we were actually able to restore a copy of `node_modules` from the cache.
@@ -2409,9 +2388,6 @@ Caching `node_modules` won't save time on its own. For this we'll need to skip `
 Luckily, this is simple in GitHub Actions. We can access the outcome of our caching step through `steps.{{id}}.outputs.cache-hit` (where `{{id}}` is the id given to our caching step). We can then use an `if` property to conditionally skip installation where the cache has been hit.
 
 All together, our installation step will look like this.
-
-
-
 
 .github/workflows/unit-tests.yml
 
@@ -2456,32 +2432,6 @@ All together in a simple unit test workflow, the completed workflow should look 
 26    - name: Run Tests
 27      run: npm test
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ## What else can we do?
 

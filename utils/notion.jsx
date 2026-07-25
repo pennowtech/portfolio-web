@@ -13,6 +13,35 @@ const notion = new Client({
   auth: process.env.NOTION_KEY
 });
 
+const toMarkdownText = (markdownOutput) => {
+  if (typeof markdownOutput === 'string') return markdownOutput;
+  if (!markdownOutput || typeof markdownOutput !== 'object') return '';
+  if (typeof markdownOutput.parent === 'string') return markdownOutput.parent;
+
+  return Object.values(markdownOutput)
+    .filter((value) => typeof value === 'string')
+    .join('\n\n');
+};
+
+const getPropertyText = (property) => {
+  if (!property) return '';
+
+  switch (property.type) {
+    case 'formula':
+      return property.formula?.string ?? String(property.formula?.number ?? '');
+    case 'rich_text':
+      return property.rich_text?.map((item) => item.plain_text).join('') ?? '';
+    case 'title':
+      return property.title?.map((item) => item.plain_text).join('') ?? '';
+    case 'url':
+      return property.url ?? '';
+    default:
+      return '';
+  }
+};
+
+const getPageSlug = (page) => getPropertyText(page.properties?.Slug);
+
 let dataSourceIdPromise;
 
 const getDataSourceId = async () => {
@@ -52,7 +81,7 @@ const pageToPostTransformer = (page, isPrevNextPostIteration = false) => {
     categories: page.properties.category.select,
     description: page.properties.Description.rich_text[0]?.plain_text ?? '',
     date: dayjs(page.properties.Updated.last_edited_time).format('LL'),
-    slug: page.properties.Slug.formula.string,
+    slug: getPageSlug(page),
     infoPrevNextPost: {
       nextPostLink: page.properties.NextPostLink.rich_text[0]?.plain_text ?? '',
       nextPostTitle: page.properties.NextPostTitle.rich_text[0]?.plain_text ?? '',
@@ -62,6 +91,30 @@ const pageToPostTransformer = (page, isPrevNextPostIteration = false) => {
       prevPostImg: page.properties.PrevPostImg.rich_text[0]?.plain_text ?? ''
     }
   };
+};
+
+const findPageBySlug = async (slug) => {
+  let startCursor;
+
+  do {
+    const response = await notion.dataSources.query({
+      data_source_id: await getDataSourceId(),
+      page_size: 100,
+      start_cursor: startCursor,
+      sorts: [
+        {
+          property: 'Updated',
+          direction: 'descending'
+        }
+      ]
+    });
+    const page = response.results.find((result) => getPageSlug(result).toLowerCase() === slug.toLowerCase());
+
+    if (page) return page;
+    startCursor = response.has_more ? response.next_cursor : undefined;
+  } while (startCursor);
+
+  return null;
 };
 
 /**
@@ -140,7 +193,7 @@ export const getPage = async (pageId) => {
   const page = response;
 
   const mdBlocks = await n2m.pageToMarkdown(page.id);
-  const markdown = n2m.toMarkdownString(mdBlocks);
+  const markdown = toMarkdownText(n2m.toMarkdownString(mdBlocks));
   const post = pageToPostTransformer(page);
 
   return {
@@ -151,34 +204,12 @@ export const getPage = async (pageId) => {
 
 export const getSingleBlogPost = async (slug) => {
   const n2m = new NotionToMarkdown({ notionClient: notion });
-  // list of blog posts
-  const response = await notion.dataSources.query({
-    data_source_id: await getDataSourceId(),
-    filter: {
-      property: 'Slug',
-      formula: {
-        string: {
-          equals: slug // slug
-        }
-      }
-    },
-    sorts: [
-      {
-        property: 'Updated',
-        direction: 'descending'
-      }
-    ]
-  });
+  const page = await findPageBySlug(slug);
 
-  if (!response.results[0]) {
-    console.error('No results available');
-  }
-
-  // grab page from notion
-  const page = response.results[0];
+  if (!page) throw new Error(`No Notion page found for slug "${slug}"`);
 
   const mdBlocks = await n2m.pageToMarkdown(page.id);
-  const markdown = n2m.toMarkdownString(mdBlocks);
+  const markdown = toMarkdownText(n2m.toMarkdownString(mdBlocks));
   const postMeta = pageToPostTransformer(page);
   postMeta.readingTime = readingTime(markdown);
 
@@ -192,44 +223,17 @@ export const getSinglePage = async (slug) => {
   const n2m = new NotionToMarkdown({ notionClient: notion });
 
   try {
-    // list of blog posts
-    const response = await notion.dataSources.query({
-      data_source_id: await getDataSourceId(),
-      filter: {
-        property: 'Slug',
-        formula: {
-          string: {
-            equals: slug // slug
-          }
-        }
-      },
-      sorts: [
-        {
-          property: 'Updated',
-          direction: 'descending'
-        }
-      ]
-    });
+    const page = await findPageBySlug(slug);
 
-    if (!response.results[0]) {
-      throw new Error('No results available');
-    }
-
-    // grab page from notion
-    const page = response.results[0];
+    if (!page) throw new Error(`No Notion page found for slug "${slug}"`);
     const blocks = await notion.blocks.children.list({ block_id: page.id });
 
     const asyncTasks = blocks.results
       .filter((result) => result.has_children)
       .map(async (result) => {
         const mdBlocks = await n2m.pageToMarkdown(result.id);
-        const markdown = n2m.toMarkdownString(mdBlocks);
-        const headingText = result[result.type].rich_text[0].plain_text;
-
-        const replacedWithFontAwesome = markdown.replace(
-          /&#x(.*?);/,
-          (a, b) => `<i className="fa fa-regular">&#x${b};</i>`
-        );
+        const markdown = toMarkdownText(n2m.toMarkdownString(mdBlocks));
+        const headingText = result[result.type].rich_text[0]?.plain_text ?? '';
 
         switch (result.type) {
           case 'heading_2':

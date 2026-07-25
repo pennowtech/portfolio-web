@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 import { Element } from 'react-scroll';
-import { getPublishedBlogPosts, getSinglePage } from '@utils/notion';
+import { getPublishedBlogPosts } from '@utils/notion';
 import Hero from '@components/Intro/Hero';
 
 import { WebSiteTags } from '@utils/consts';
@@ -14,7 +14,7 @@ import AboutSection from '../components/Intro/AboutSection';
 import HeaderMain from '../components/HeaderMain';
 import PostTags from '../components/Post/PostTags';
 
-const Index = ({ posts, headingBlocks }) => {
+const Index = ({ posts }) => {
   const metaInfo = {
     title: 'Writing down my learnings',
     metaKeywords: 'Reactjs, C++, cpp, Python, Data Science, Database',
@@ -33,7 +33,7 @@ const Index = ({ posts, headingBlocks }) => {
         </div>
       </Element>
       <Element id='about-me' className='element min-h-[630px]'>
-        <IntroHighlight classProps='font-RobotoSlab text-base leading-8' headingBlocks={headingBlocks} />
+        <IntroHighlight classProps='font-RobotoSlab text-base leading-8' />
       </Element>
       <Element id='page' className='element'>
         <HomeArticles posts={posts} showAsHorizontal={false} />
@@ -47,12 +47,10 @@ const Index = ({ posts, headingBlocks }) => {
 
 export const getStaticProps = async () => {
   const response = await getPublishedBlogPosts(6);
-  const { blocks, headingBlocks } = await getSinglePage('About-Me');
   return {
     props: {
       // TODO(dummy-content): Remove this prepend when the real article feed is ready.
-      posts: [{ ...DUMMY_ARTICLE, thumbnailUrl: `/${DUMMY_ARTICLE.thumbnailUrl}` }, ...response],
-      headingBlocks
+      posts: [{ ...DUMMY_ARTICLE, thumbnailUrl: `/${DUMMY_ARTICLE.thumbnailUrl}` }, ...response]
     }
   };
 };

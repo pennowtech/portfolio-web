@@ -25,30 +25,26 @@ const ToC = dynamic(() => import('@components/ToC'), {
 });
 
 const PostPage = ({ postMeta, markdown, compiledMDSource }) => {
-  // TODO: ToC content to fix.
-  const content = '';
-
   const metaInfo = {
     title: postMeta.title,
-    metaKeywords: postMeta.tags.map((tag) => tag.name),
+    metaKeywords: postMeta.tags?.map((tag) => tag.name) ?? [],
     metaDesc: postMeta.description
   };
 
-  // TODO: prev next post fix.
   return (
     <FullLayout metaInfo={metaInfo}>
       <HeaderMain />
       <BlogTitleBar postMeta={postMeta} />
 
-      <div className='w-full lg:max-w-[1048px] lg:mx-auto flex flex-col wide:flex-row flex-grow overflow-hidden  '>
-        <div className='w-full h-full flex-grow p-3 overflow-auto'>
+      <main className='mx-auto grid w-full max-w-[1180px] min-w-0 gap-8 px-4 py-8 md:px-6 md:py-12 xl:grid-cols-[minmax(0,46rem)_17rem] xl:gap-12 xl:px-8'>
+        <div className='min-w-0'>
           <Article mdxSource={compiledMDSource} />
           <PrevNextPosts postsNextPrevInfo={postMeta.infoPrevNextPost} />
         </div>
-        <div className='sidebar leading-7 text-base wide:min-w-[35%] max-w-[450px] flex-shrink flex-grow-0 mx-auto p-4'>
+        <aside className='order-first min-w-0 xl:order-last'>
           <ToC content={markdown} />
-        </div>
-      </div>
+        </aside>
+      </main>
     </FullLayout>
   );
 };

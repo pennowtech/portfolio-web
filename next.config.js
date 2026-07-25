@@ -5,14 +5,17 @@ module.exports = (phase) => ({
   images: {
     remotePatterns: [
       new URL('https://www.nasa.gov/**'),
-      new URL('https://images.unsplash.com/**'),
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        pathname: '/**'
+      },
       new URL('https://pixabay.com/**'),
       new URL('https://www.google.com/**'),
       new URL('https://pennow.tech/**'),
       new URL('https://tuk-cdn.s3.amazonaws.com/**')
     ],
-    loader: 'akamai',
-    path: ''
+    unoptimized: true
   },
   reactStrictMode: true
 });

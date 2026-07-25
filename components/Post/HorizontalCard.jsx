@@ -1,5 +1,4 @@
-import React, { useEffect, useRef } from 'react';
-import Image from 'next/legacy/image';
+import React, { useRef } from 'react';
 import Link from 'next/link';
 import ImageWithFallback from '../ImageWithFallback';
 import PostTags from './PostTags';

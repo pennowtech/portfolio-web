@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Head from 'next/head';
-import Image from 'next/legacy/image';
+import Image from 'next/image';
 import FullLayout from '@components/FullLayout';
 import Sidebar from './Sidebar';
 import HeaderMain from './HeaderMain';
@@ -21,8 +21,11 @@ const PostsLayout = ({ pageTitle, metaInfo, tags, recentPosts, ...props }) => {
           <div className='relative w-full h-[120px] md:h-[180px] overflow-hidden mb-8 left-0'>
             <Image
               src='https://images.unsplash.com/photo-1681243303374-72d01f749dfa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=487&q=80'
-              layout='fill'
-              className='object-cover w-full bg-center opacity-93  dark:grayscale'
+              alt=''
+              role='presentation'
+              fill
+              sizes='100vw'
+              className='w-full object-cover object-center opacity-93 dark:grayscale'
             />
             <div className='absolute bg-gradient-to-b from-[#32323200] to-[#100f0fed] h-full w-full' />
             <div className='absolute inset-x-0 bottom-0 text-white flex justify-center items-center '>

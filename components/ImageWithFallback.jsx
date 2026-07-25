@@ -1,32 +1,54 @@
 // https://stackoverflow.com/a/66953317
-import React, { useState, useEffect, forwardRef } from 'react';
-import Image from 'next/legacy/image';
-import { BASE_URL } from '../utils/consts';
+import React, { forwardRef, useEffect, useState } from 'react';
+import Image from 'next/image';
+
+const normalizeSource = (source) => {
+  if (typeof source !== 'string' || !source) return source;
+  if (/^(https?:|data:|blob:)/.test(source) || source.startsWith('/')) return source;
+  return `/${source}`;
+};
 
 const ImageWithFallback = forwardRef((props, ref) => {
-  let hostname = '';
-  if (typeof window !== 'undefined') {
-    hostname = window.location.origin;
-  }
-  const { src, fallbackSrc, alt = '', ...rest } = props;
-  const [imgSrc, setImgSrc] = useState(src);
+  const {
+    src,
+    fallbackSrc = '/blank.jpg',
+    alt = '',
+    layout,
+    objectFit,
+    objectPosition,
+    className,
+    style,
+    width,
+    height,
+    sizes,
+    ...rest
+  } = props;
+  const fallback = normalizeSource(fallbackSrc);
+  const [imgSrc, setImgSrc] = useState(normalizeSource(src) || fallback);
+
   useEffect(() => {
-    setImgSrc(src);
-  }, [src]);
+    setImgSrc(normalizeSource(src) || fallback);
+  }, [fallback, src]);
 
-  const imgUrl = imgSrc || `${BASE_URL}/${imgSrc}`;
-  // console.log(5454, 'hostname:', hostname, 'imgUrl: ', imgUrl);
+  const sharedProps = {
+    ...rest,
+    ref,
+    src: imgSrc,
+    className,
+    sizes,
+    style: {
+      objectFit,
+      objectPosition,
+      ...style
+    },
+    onError: () => setImgSrc(fallback)
+  };
 
-  return (
-    <Image
-      {...rest}
-      alt={alt}
-      src={imgUrl}
-      onError={() => {
-        setImgSrc(fallbackSrc);
-      }}
-    />
-  );
+  if (layout === 'fill') {
+    return <Image {...sharedProps} alt={alt} fill />;
+  }
+
+  return <Image {...sharedProps} alt={alt} width={width} height={height} />;
 });
 
 ImageWithFallback.displayName = 'ImageWithFallback';

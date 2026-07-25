@@ -1,52 +1,64 @@
 import React from 'react';
 import { useTheme } from 'next-themes';
-// import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import { a11yLight, a11yDark } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
-// import { coldarkDark as darktheme } from 'react-syntax-highlighter/dist/cjs/styles/prism';
-// import { atomOneLight as lighttheme } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
-// import { a11yLight } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
+import { a11yDark, a11yLight } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
+
+const parseLineRanges = (value = '') =>
+  value.split(',').flatMap((part) => {
+    const [start, end = start] = part.split('-').map(Number);
+    if (!Number.isFinite(start) || !Number.isFinite(end)) return [];
+    return Array.from({ length: Math.max(0, end - start + 1) }, (_, index) => start + index);
+  });
 
 function Code({ node, inline, className, ...props }) {
-  const { theme, setTheme } = useTheme();
-  const codeTheme = theme === 'light' ? a11yLight : a11yDark;
-  const lineHighlight = theme === 'light' ? '#dfefffcc' : '#37415180';
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === 'dark';
+  const codeTheme = isDark ? a11yDark : a11yLight;
+  const lineHighlight = isDark ? '#37415180' : '#dfefffcc';
 
-  const hasLang = /language-(\w+)/.exec(className || '');
-  const hasMeta = node?.data?.meta;
+  const language = /language-(\w+)/.exec(className || '')?.[1];
+  const metadata = node?.data?.meta?.replace(/\s/g, '') ?? '';
+  const lineRange = /{([\d,-]+)}/.exec(metadata)?.[1] ?? '';
+  const highlightedLines = parseLineRanges(lineRange);
 
-  const applyHighlights = (applyHighlights) => {
-    if (hasMeta) {
-      const RE = /{([\d,-]+)}/;
-      const metadata = node.data.meta?.replace(/\s/g, '');
-      const strlineNumbers = RE?.test(metadata) ? RE?.exec(metadata)[1] : '0';
-      const highlightLines = rangeParser(strlineNumbers);
-      const highlight = highlightLines;
-      const data = highlight.includes(applyHighlights) ? 'highlight' : null;
-      data.backgroundColor = lineHighlight;
-      data.borderLeft = '4px solid #3b82f6';
-      data.marginLeft = '-4px';
-      data.marginLeft = '-4px';
-      return { data };
-    }
-    return {};
-  };
+  const lineProps = (lineNumber) => ({
+    style: highlightedLines.includes(lineNumber)
+      ? {
+          display: 'block',
+          marginLeft: '-0.75rem',
+          paddingLeft: '0.5rem',
+          backgroundColor: lineHighlight,
+          borderLeft: '4px solid #15803d'
+        }
+      : { display: 'block' }
+  });
 
-  return hasLang ? (
+  if (!language) {
+    return (
+      <code
+        className={`${className || ''} rounded bg-slate-100 px-1.5 py-0.5 text-slate-800 dark:bg-slate-800 dark:text-slate-100`}
+        {...props}
+      />
+    );
+  }
+
+  return (
     <SyntaxHighlighter
       style={codeTheme}
-      language={hasLang[1]}
+      language={language}
       PreTag='div'
-      className='codeStyle text-base font-medium'
+      className='codeStyle max-w-full overflow-x-auto rounded-xl text-sm font-medium md:text-base'
+      customStyle={{ margin: 0, padding: '1rem', minWidth: 0 }}
+      codeTagProps={{ style: { whiteSpace: 'pre' } }}
       showLineNumbers
       wrapLines
+      wrapLongLines={false}
       useInlineStyles
-      lineProps={applyHighlights}
+      lineProps={lineProps}
     >
-      {props.children}
+      {String(props.children).replace(/\n$/, '')}
     </SyntaxHighlighter>
-  ) : (
-    <code className={className} {...props} />
   );
 }
+
 export default Code;

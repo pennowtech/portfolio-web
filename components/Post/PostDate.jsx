@@ -3,20 +3,47 @@ import { BiCalendar, BiDotsVerticalRounded, BiTimer, BiUserCircle } from 'react-
 import { DateForDateTime, DateForDisplay } from '../../utils/date';
 
 const PostDate = ({ date, readingTime, author, variant = 'default' }) => {
-  if (date === undefined) {
+  if (variant === 'default' && date === undefined) {
     return '';
   }
 
   if (variant === 'card') {
     return (
       <div className='flex flex-wrap items-center gap-x-3 gap-y-1 font-Monda text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-300'>
-        <span className='flex items-center gap-1.5'>
-          <BiCalendar aria-hidden='true' className='text-base' />
-          <time dateTime={DateForDateTime(date)}>{DateForDisplay(date)}</time>
-        </span>
+        {date && (
+          <span className='flex items-center gap-1.5'>
+            <BiCalendar aria-hidden='true' className='text-base' />
+            <time dateTime={DateForDateTime(date)}>{DateForDisplay(date)}</time>
+          </span>
+        )}
         {readingTime && (
           <span className='flex items-center gap-1.5'>
             <BiTimer aria-hidden='true' className='text-base' />
+            {`${Math.ceil(readingTime)} min read`}
+          </span>
+        )}
+      </div>
+    );
+  }
+
+  if (variant === 'hero') {
+    return (
+      <div className='flex flex-wrap items-center gap-x-4 gap-y-2 font-Monda text-xs font-medium uppercase tracking-wide text-slate-200 sm:text-sm'>
+        {author && (
+          <span className='flex items-center gap-1.5'>
+            <BiUserCircle aria-hidden='true' className='text-lg' />
+            {author}
+          </span>
+        )}
+        {date && (
+          <span className='flex items-center gap-1.5'>
+            <BiCalendar aria-hidden='true' className='text-lg' />
+            <time dateTime={DateForDateTime(date)}>{DateForDisplay(date)}</time>
+          </span>
+        )}
+        {readingTime && (
+          <span className='flex items-center gap-1.5'>
+            <BiTimer aria-hidden='true' className='text-lg' />
             {`${Math.ceil(readingTime)} min read`}
           </span>
         )}
