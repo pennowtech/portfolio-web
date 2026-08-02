@@ -1,4 +1,9 @@
-### PrivacyConsent component
+# Analytics and Privacy Consent
+
+This guide explains how optional Google Analytics works in SinghBuildsTech. For the wider production configuration, see
+[Deployment](DEPLOYMENT.md). For the public-facing data explanation, see the website's `/privacy` page.
+
+## Privacy consent
 
 It:
 
@@ -11,7 +16,7 @@ It:
 
 Our local configuration currently does not contain `NEXT_PUBLIC_GOOGLE_ANALYTICS`, so the analytics consent banner should not appear locally.
 
-#### Consent storage
+## Consent storage
 
 It:
 
@@ -22,9 +27,9 @@ It:
 
 The storage key uses the current SinghBuildsTech prefix: `sbtPrivacyConsent`.
 
-#### Consent-controlled Analytics
+## Consent-controlled Analytics
 
-Added [Analytics.jsx](/Users/sukhdeep.singh/Mine/portfolio-web/components/Analytics.jsx).
+The implementation lives in `components/Analytics.jsx`.
 
 Google Analytics now:
 
@@ -35,3 +40,16 @@ Google Analytics now:
 - Stays disabled when the analytics environment variable is absent
 
 The obsolete `utils/ga.jsx` helper was removed.
+
+## Configuration
+
+Set the GA4 measurement ID only when Analytics should be available:
+
+```dotenv
+NEXT_PUBLIC_GOOGLE_ANALYTICS=G-XXXXXXXXXX
+```
+
+Without this variable, Analytics, the consent prompt, and the footer's Privacy settings control remain disabled. Before
+enabling it, configure the GA4 event-data retention period described in the Privacy Policy.
+
+After changing a production environment variable, follow the redeployment steps in [Deployment](DEPLOYMENT.md).
