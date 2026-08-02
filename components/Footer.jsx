@@ -73,7 +73,7 @@ const Footer = () => {
         <div className='mt-10 flex flex-col items-center justify-between gap-3 border-t border-slate-600 pt-6 text-center text-sm text-slate-400 md:flex-row md:text-left'>
           <p className='m-0'>© {new Date().getFullYear()} Sukhdeep Singh. All rights reserved.</p>
           <nav
-            aria-label='Legal and privacy links'
+            aria-label='Legal, privacy, and author links'
             className='flex flex-wrap items-center justify-center gap-x-4 gap-y-2'
           >
             <Link
@@ -87,6 +87,13 @@ const Footer = () => {
               className='rounded-sm text-slate-300 hover:text-green-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-400'
             >
               Imprint
+            </Link>
+            <Link
+              href='/write'
+              rel='nofollow'
+              className='rounded-sm text-slate-400 hover:text-green-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-400'
+            >
+              Write
             </Link>
             {analyticsAvailable && (
               <button

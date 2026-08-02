@@ -38,7 +38,8 @@ export const getStaticProps = async () => {
       postsToShow,
       totalPosts,
       recentPosts: posts.slice(0, RECENT_POSTS_COUNT)
-    }
+    },
+    revalidate: 60
   };
 };
 

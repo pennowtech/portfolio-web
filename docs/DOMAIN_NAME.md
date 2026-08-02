@@ -22,7 +22,8 @@ template is `.env.example`.
 
 ## Register and connect the domain
 
-At the domain registrar, purchase `singhbuildstech.com` if it is still available. Then:
+Use Porkbun as the registrar and DNS provider. The complete registrar, DNSSEC, Vercel DNS, and email-forwarding
+procedure is in [Porkbun Setup](PORKBUN.md). After purchasing the domain:
 
 1. Open the existing project in Vercel.
 2. Go to **Settings → Domains**.

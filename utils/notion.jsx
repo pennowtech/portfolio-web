@@ -13,6 +13,8 @@ const notion = new Client({
   auth: process.env.NOTION_KEY
 });
 
+const MARKDOWN_SOURCE_MARKER = 'SBT_MARKDOWN_SOURCE_V1';
+
 const toMarkdownText = (markdownOutput) => {
   if (typeof markdownOutput === 'string') return markdownOutput;
   if (!markdownOutput || typeof markdownOutput !== 'object') return '';
@@ -41,6 +43,33 @@ const getPropertyText = (property) => {
 };
 
 const getPageSlug = (page) => getPropertyText(page.properties?.Slug);
+
+const getPageDate = (page) => page.properties?.['Posted on']?.date?.start || page.properties?.Updated?.last_edited_time;
+
+const getStoredMarkdown = async (pageId) => {
+  const blocks = [];
+  let startCursor;
+
+  do {
+    const response = await notion.blocks.children.list({
+      block_id: pageId,
+      page_size: 100,
+      start_cursor: startCursor
+    });
+    blocks.push(...response.results);
+    startCursor = response.has_more ? response.next_cursor : undefined;
+  } while (startCursor);
+
+  const sourceBlocks = blocks.filter(
+    (block) => block.type === 'code' && block.code?.caption?.some((item) => item.plain_text === MARKDOWN_SOURCE_MARKER)
+  );
+  if (!sourceBlocks.length) return null;
+
+  return sourceBlocks
+    .flatMap((block) => block.code.rich_text || [])
+    .map((item) => item.plain_text ?? item.text?.content ?? '')
+    .join('');
+};
 
 let dataSourceIdPromise;
 
@@ -80,7 +109,7 @@ const pageToPostTransformer = (page, isPrevNextPostIteration = false) => {
     tags: page.properties.Tags.multi_select,
     categories: page.properties.category.select,
     description: page.properties.Description.rich_text[0]?.plain_text ?? '',
-    date: dayjs(page.properties.Updated.last_edited_time).format('LL'),
+    date: dayjs(getPageDate(page)).format('LL'),
     slug: getPageSlug(page),
     infoPrevNextPost: {
       nextPostLink: page.properties.NextPostLink.rich_text[0]?.plain_text ?? '',
@@ -192,8 +221,9 @@ export const getPage = async (pageId) => {
   const response = await notion.pages.retrieve({ page_id: pageId });
   const page = response;
 
-  const mdBlocks = await n2m.pageToMarkdown(page.id);
-  const markdown = toMarkdownText(n2m.toMarkdownString(mdBlocks));
+  const storedMarkdown = await getStoredMarkdown(page.id);
+  const mdBlocks = storedMarkdown === null ? await n2m.pageToMarkdown(page.id) : [];
+  const markdown = storedMarkdown ?? toMarkdownText(n2m.toMarkdownString(mdBlocks));
   const post = pageToPostTransformer(page);
 
   return {
@@ -210,8 +240,9 @@ export const getSingleBlogPost = async (slug) => {
 
   if (!page) throw new Error(`No Notion page found for slug "${slug}"`);
 
-  const mdBlocks = await n2m.pageToMarkdown(page.id);
-  const markdown = toMarkdownText(n2m.toMarkdownString(mdBlocks));
+  const storedMarkdown = await getStoredMarkdown(page.id);
+  const mdBlocks = storedMarkdown === null ? await n2m.pageToMarkdown(page.id) : [];
+  const markdown = storedMarkdown ?? toMarkdownText(n2m.toMarkdownString(mdBlocks));
   const postMeta = pageToPostTransformer(page);
   const olderPost = publishedPages[pageIndex + 1] ? pageToPostTransformer(publishedPages[pageIndex + 1]) : null;
   const newerPost = pageIndex > 0 ? pageToPostTransformer(publishedPages[pageIndex - 1]) : null;

@@ -3,8 +3,10 @@ import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeSlug from 'rehype-slug';
+import remarkGfm from 'remark-gfm';
 import YouTube from './YouTube';
 import code from './Code';
+import { LinkedInEmbed, TwitterEmbed } from './SocialEmbed';
 
 const YTComponent = ({ children }) => <YouTube videoId={children} />;
 
@@ -43,6 +45,8 @@ const ImageComponent = ({ node, ...props }) => (
 
 const MDXComponents = {
   youtube: YTComponent,
+  linkedin: LinkedInEmbed,
+  twitter: TwitterEmbed,
   blockquote: BlockquoteComponent,
   highlight: OrangeComponent,
   note: NoteComponent,
@@ -67,6 +71,7 @@ const Article = ({ mdxSource }) => (
       prose-th:whitespace-nowrap prose-th:px-4 prose-th:py-3 prose-td:px-4 prose-td:py-3'
   >
     <ReactMarkdown
+      remarkPlugins={[remarkGfm]}
       rehypePlugins={[rehypeRaw, rehypeSlug, [rehypeAutolinkHeadings, { behavior: 'wrap' }]]}
       components={MDXComponents}
     >
