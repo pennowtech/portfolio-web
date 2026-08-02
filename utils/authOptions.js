@@ -1,5 +1,14 @@
 import GoogleProvider from 'next-auth/providers/google';
 
+// Vercel preview environments can expose these variables as empty strings.
+// NextAuth treats an empty value as an explicit URL and fails while collecting
+// page data, so let it infer the preview host when no URL was configured.
+['NEXTAUTH_URL', 'NEXTAUTH_URL_INTERNAL'].forEach((name) => {
+  if (typeof process.env[name] === 'string' && !process.env[name].trim()) {
+    delete process.env[name];
+  }
+});
+
 const normalizeEmail = (value) =>
   String(value || '')
     .trim()
