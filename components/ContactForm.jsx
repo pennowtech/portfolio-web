@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import Link from 'next/link';
-import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
+import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { BiPaperPlane } from 'react-icons/bi';
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -41,7 +41,7 @@ const validateForm = (formData) => {
   return errors;
 };
 
-const ContactForm = () => {
+const ContactFormContent = () => {
   const { executeRecaptcha } = useGoogleReCaptcha();
   const [formData, setFormData] = useState({
     firstname: '',
@@ -235,9 +235,40 @@ const ContactForm = () => {
             {isSubmitting ? 'Sending…' : 'Send message'}
             <BiPaperPlane aria-hidden='true' className='ml-2 text-lg' />
           </button>
+          <p className='mb-0 mt-4 max-w-xl text-xs leading-relaxed text-slate-500 dark:text-slate-300'>
+            Your details are used only to respond to this enquiry. See the{' '}
+            <Link href='/privacy' className='text-green-700 underline dark:text-green-400'>
+              privacy policy
+            </Link>{' '}
+            for retention, recipients, and your rights.
+          </p>
+          {process.env.NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY && (
+            <p className='mb-0 mt-2 max-w-xl text-xs leading-relaxed text-slate-500 dark:text-slate-300'>
+              This site is protected by reCAPTCHA and the Google{' '}
+              <a className='text-green-700 underline dark:text-green-400' href='https://policies.google.com/privacy'>
+                Privacy Policy
+              </a>{' '}
+              and{' '}
+              <a className='text-green-700 underline dark:text-green-400' href='https://policies.google.com/terms'>
+                Terms of Service
+              </a>{' '}
+              apply.
+            </p>
+          )}
         </form>
       </div>
     </section>
+  );
+};
+
+const ContactForm = () => {
+  const siteKey = process.env.NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY;
+  if (!siteKey) return <ContactFormContent />;
+
+  return (
+    <GoogleReCaptchaProvider reCaptchaKey={siteKey} scriptProps={{ async: true, defer: true, appendTo: 'body' }}>
+      <ContactFormContent />
+    </GoogleReCaptchaProvider>
   );
 };
 

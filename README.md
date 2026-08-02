@@ -1,4 +1,11 @@
-# ArchitectAtWork portfolio
+# SinghBuildsTech portfolio
+
+## PrivacyConsent component
+
+It:
+
+- Appears only when Google Analytics is configured
+- Does not appear when analytics is absent
 
 ## Connect the site to Notion
 
@@ -10,7 +17,7 @@ Keep the connection token private: it belongs in `.env.local`, which is already 
 1. Sign in to the [Notion Developer portal](https://www.notion.so/profile/integrations).
 2. Under **Build**, open **Internal connections**.
 3. Select **Create a new connection**.
-4. Give it a recognizable name, such as `ArchitectAtWork Portfolio`.
+4. Give it a recognizable name, such as `SinghBuildsTech Portfolio`.
 5. Select the workspace containing the portfolio database.
 6. In **Configuration**, enable **Read content**. Enable content insertion only if the connection will also save contact-form submissions.
 7. Copy the **Installation access token** from the Configuration tab. This value is the `NOTION_KEY`.
@@ -83,6 +90,18 @@ The contact form runs through the server-side `/api/contact` route and stores ve
 database. Follow the complete [Portfolio Contact Form: Notion and reCAPTCHA Setup](docs/CONTACT_FORM_SETUP.md) guide to
 create the database, configure reCAPTCHA, set local and Vercel environment variables, test submissions, and troubleshoot
 the integration.
+
+#### Privacy configuration
+
+- The Privacy Policy is available at `/privacy`; the Imprint is available at `/imprint`.
+- Google Analytics loads only after affirmative consent. Leave `NEXT_PUBLIC_GOOGLE_ANALYTICS` unset to disable it.
+- Before enabling Analytics, set the GA4 event-data retention period to two months.
+- The privacy choice is stored under `sbtPrivacyConsent`; the theme preference is stored under `pntDarkTheme`.
+- Google reCAPTCHA is scoped to components that render the contact form rather than wrapping the whole application.
+- Website fonts are bundled through `next/font` and served from the portfolio origin.
+- Follow the quarterly Notion review and 12-month deletion policy in `docs/CONTACT_FORM_SETUP.md`.
+- The current Imprint does not publish a postal address. Add a qualifying address before operating the site in a way
+  that brings it within Section 5 DDG, and obtain legal review when that status is uncertain.
 
 ### 5. Troubleshooting
 

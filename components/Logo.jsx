@@ -8,7 +8,7 @@ const Logo = ({ position = 'header' }) => {
   return (
     <Link
       href='/'
-      aria-label='ArchitectAtWork — home'
+      aria-label='SinghBuildsTech — home'
       className={`not-prose inline-flex items-center gap-2.5 rounded-sm focus-visible:outline-none focus-visible:ring-2 ${
         isFooter ? 'focus-visible:ring-green-400' : 'focus-visible:ring-green-700 dark:focus-visible:ring-green-400'
       }`}
@@ -20,7 +20,7 @@ const Logo = ({ position = 'header' }) => {
             isFooter ? 'text-white' : 'text-slate-900 dark:text-white'
           }`}
         >
-          Architect<span className={isFooter ? 'text-green-400' : 'text-green-700 dark:text-green-400'}>AtWork</span>
+          Singh<span className={isFooter ? 'text-green-400' : 'text-green-700 dark:text-green-400'}>BuildsTech</span>
         </span>
         <span
           className={`mt-1 hidden whitespace-nowrap font-Monda text-[0.55rem] font-semibold uppercase leading-none tracking-[0.16em] sm:block ${

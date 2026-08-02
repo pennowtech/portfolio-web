@@ -1,10 +1,10 @@
-# ArchitectAtWork Brand Notes
+# SinghBuildsTech Brand Notes
 
 ## Brand
 
-**ArchitectAtWork**
+**SinghBuildsTech**
 
-ArchitectAtWork presents the practical work, engineering perspective, and technical writing of Sukhdeep Singh. The
+SinghBuildsTech presents the practical work, engineering perspective, and technical writing of Sukhdeep Singh. The
 name intentionally connects architectural thinking with hands-on implementation.
 
 ## Primary slogan
@@ -29,7 +29,8 @@ This is the default line for the website header, footer, social profiles, and co
 ## Visual direction
 
 - Graphite provides the structural foundation.
-- Forest green identifies actions, active states, and the `AtWork` portion of the name.
+- Forest green identifies actions, active states, and the `BuildsTech` portion of the wordmark.
 - Orange remains a restrained supporting accent where it already carries meaning.
-- Blue is not part of the ArchitectAtWork interface palette.
-- The `A/W` monogram uses structural strokes rather than a decorative icon container.
+- Blue is not part of the SinghBuildsTech interface palette.
+- The geometric `S` monogram sits within an open structural frame, pairing the founder's name with an architectural
+  grid without relying on a decorative icon container.

@@ -65,7 +65,7 @@ Store this value as `NOTION_CONTACT_FORM_DATABASE_ID`.
 ## 4. Create Google reCAPTCHA v3 keys
 
 1. Open the [Google reCAPTCHA Admin Console](https://www.google.com/recaptcha/admin/create).
-2. Enter a recognizable label such as `TechishDeep Portfolio`.
+2. Enter a recognizable label such as `SinghBuildsTech Portfolio`.
 3. Select **Score based (v3)**.
 4. Add the production domain.
 5. Add `localhost` when local testing is required and the console permits it.
@@ -113,6 +113,14 @@ npm run dev
 
 If submission fails, inspect the `/api/contact` request in the browser Network panel. Its response identifies validation,
 reCAPTCHA, configuration, or upstream failures without exposing private credentials.
+
+## Contact-data retention
+
+- Review the Notion contact database at least once every quarter.
+- Delete contact records no later than 12 months after the last substantive communication.
+- Retain a record longer only when an engagement remains active or a statutory retention duty applies.
+- Record any exception and its reason in the Notion entry.
+- Do not place special-category, credential, financial, or other unnecessary confidential data in the contact database.
 
 ## 7. Configure Vercel
 
