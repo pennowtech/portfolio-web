@@ -1,6 +1,102 @@
-/* @import url("https://fonts.googleapis.com/css2?family=Merriweather&family=Fira+Code:wght@400&family=Roboto+Condensed&family=Monda&family=Neuton:wght@700&family=Offside&display=swap"); */
 @config "../tailwind.config.js";
 @import 'tailwindcss';
+
+@font-face {
+  font-family: 'Comic Neue';
+  src: url('/fonts/comic-neue-400.ttf') format('truetype');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Comic Neue';
+  src: url('/fonts/comic-neue-700.ttf') format('truetype');
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Gentium Plus';
+  src: url('/fonts/gentium-plus-400.ttf') format('truetype');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Gentium Plus';
+  src: url('/fonts/gentium-plus-700.ttf') format('truetype');
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter-500.ttf') format('truetype');
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter-700.ttf') format('truetype');
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Monda';
+  src: url('/fonts/monda-400.ttf') format('truetype');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Monda';
+  src: url('/fonts/monda-700.ttf') format('truetype');
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Neuton';
+  src: url('/fonts/neuton-700.ttf') format('truetype');
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Rajdhani';
+  src: url('/fonts/rajdhani-500.ttf') format('truetype');
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Rajdhani';
+  src: url('/fonts/rajdhani-700.ttf') format('truetype');
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Roboto Condensed';
+  src: url('/fonts/roboto-condensed-400.ttf') format('truetype');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Roboto Condensed';
+  src: url('/fonts/roboto-condensed-700.ttf') format('truetype');
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Roboto Slab';
+  src: url('/fonts/roboto-slab-400.ttf') format('truetype');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Roboto Slab';
+  src: url('/fonts/roboto-slab-500.ttf') format('truetype');
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Roboto Slab';
+  src: url('/fonts/roboto-slab-700.ttf') format('truetype');
+  font-weight: 700;
+  font-display: swap;
+}
 
 /* h2 {
   @apply text-3xl md:text-7xl font-Neuton my-80 md:my-4 text-green-600;
@@ -13,6 +109,11 @@
 
 span.comment.linenumber.react-syntax-highlighter-line-number {
   opacity: 0.4;
+}
+
+/* Google permits hiding the badge when its required attribution is displayed with the protected form. */
+.grecaptcha-badge {
+  visibility: hidden !important;
 }
 /* #checkbox: checked + label .switch-ball {
   background-color: white;
@@ -59,12 +160,11 @@ span.comment.linenumber.react-syntax-highlighter-line-number {
     @apply bg-orange-500;
   }
   .message.warning i::before {
-    content: '';
+    content: '⚠';
   }
   .message i:before {
-    font-family: 'Font Awesome 5 Free';
-    font-weight: 900;
-    content: '';
+    font-family: inherit;
+    content: '●';
     font-style: normal;
     padding: 0.5em 0.75em;
     width: 2.5em;
@@ -106,8 +206,8 @@ span.comment.linenumber.react-syntax-highlighter-line-number {
   }
 
   .read-extra:after {
-    content: '';
-    font-family: Font awesome\5 Free;
+    content: '✓';
+    font-family: inherit;
     font-weight: 900;
   }
 

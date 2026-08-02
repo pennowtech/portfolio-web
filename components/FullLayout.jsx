@@ -2,7 +2,7 @@ import React from 'react';
 import Head from 'next/head';
 
 const defaultMeta = {
-  title: 'ArchitectAtWork | Sukhdeep Singh, Technical Architect',
+  title: 'SinghBuildsTech | Sukhdeep Singh, Technical Architect',
   metaDesc:
     'Technical Architect sharing practical work and writing on software architecture, embedded systems, distributed platforms, and engineering.',
   metaKeywords: 'Technical Architect, Software Architecture, Embedded Systems, Rust, C++, Python'

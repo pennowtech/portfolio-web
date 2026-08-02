@@ -1,16 +1,14 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import Head from 'next/head';
-import Script from 'next/script';
-import Router, { useRouter } from 'next/router';
+import Router from 'next/router';
 import { ThemeProvider } from 'next-themes';
 
 import nProgress from 'nprogress';
 import '../styles/globals.css';
-import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
-
-import { logPageView } from '@utils/ga';
 import Footer from '@components/Footer';
+import Analytics from '@components/Analytics';
+import PrivacyConsent from '@components/PrivacyConsent';
 
 nProgress.configure({ showSpinner: false });
 Router.events.on('routeChangeStart', () => nProgress.start());
@@ -18,64 +16,25 @@ Router.events.on('routeChangeComplete', () => nProgress.done());
 Router.events.on('routeChangeError', () => nProgress.done());
 
 function MyApp({ Component, pageProps }) {
-  const router = useRouter();
-  useEffect(() => {
-    const handleRouteChange = (url) => {
-      logPageView(url);
-    };
-
-    // when the component is mounted subscribe to router changes
-    // and log those views
-    router.events.on('routeChangeComplete', handleRouteChange);
-
-    // unsubscribe from route change on unmount
-    return () => {
-      router.events.off('routeChangeComplete', handleRouteChange);
-    };
-  }, [router.events]);
   return (
     <>
-      <Script
-        strategy='lazyOnload'
-        src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}`}
-      />
-      <Script id='google-analytics' strategy='lazyOnload'>
-        {`
-                  window.dataLayer = window.dataLayer || [];
-                    function gtag(){dataLayer.push(arguments);}
-                    gtag('js', new Date());
-                  
-                    gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}');
-                `}
-      </Script>
+      <Analytics />
       <Head>
-        <title>ArchitectAtWork | Sukhdeep Singh, Technical Architect</title>
+        <title>SinghBuildsTech | Sukhdeep Singh, Technical Architect</title>
         <meta
           name='description'
           content='Technical Architect sharing practical work and writing on software architecture, embedded systems, distributed platforms, and engineering.'
         />
       </Head>
-      {/* <Script
-        src="https://www.google.com/recaptcha/api.js?render=6LffScwlAAAAADpicS4xvbjFg3tSTnCVOTkaMrld"
-      /> */}
-      <GoogleReCaptchaProvider
-        reCaptchaKey={process.env.NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY}
-        scriptProps={{
-          async: false, // optional, default to false,
-          defer: true, // optional, default to false
-          appendTo: 'body', // optional, default to "head", can be "head" or "body",
-          nonce: undefined
-        }}
-      >
-        <ThemeProvider attribute='class'>
-          <div className='appjs flex min-h-screen w-full flex-col'>
-            <main className='main flex-1'>
-              <Component {...pageProps} />
-            </main>
-            <Footer />
-          </div>
-        </ThemeProvider>
-      </GoogleReCaptchaProvider>
+      <ThemeProvider attribute='class'>
+        <div className='appjs flex min-h-screen w-full flex-col'>
+          <main className='main flex-1'>
+            <Component {...pageProps} />
+          </main>
+          <Footer />
+          <PrivacyConsent />
+        </div>
+      </ThemeProvider>
     </>
   );
 }

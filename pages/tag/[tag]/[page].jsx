@@ -7,9 +7,9 @@ import PostList from '../../../components/PostList';
 
 export default function TagsPages({ postsToShow, currentTag, tags, totalPosts, recentPosts }) {
   const metaInfo = {
-    title: `${currentTag} articles | ArchitectAtWork`,
+    title: `${currentTag} articles | SinghBuildsTech`,
     metaKeywords: `${currentTag}, Software Architecture, Engineering`,
-    metaDesc: `Browse ArchitectAtWork articles filed under ${currentTag}.`
+    metaDesc: `Browse SinghBuildsTech articles filed under ${currentTag}.`
   };
 
   const startIndex = 0; // index page is always zero.

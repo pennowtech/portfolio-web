@@ -4,8 +4,8 @@ import PostsLayout from '../components/PostsLayout';
 
 const Error404 = () => {
   const metaInfo = {
-    title: 'Page not found | ArchitectAtWork',
-    metaDesc: 'The requested ArchitectAtWork portfolio page could not be found.',
+    title: 'Page not found | SinghBuildsTech',
+    metaDesc: 'The requested SinghBuildsTech portfolio page could not be found.',
     metaKeywords: ''
   };
 

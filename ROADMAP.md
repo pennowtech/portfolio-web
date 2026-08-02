@@ -85,7 +85,8 @@ Across all steps:
 | 8    | Featured projects     | Present three representative products with tailored artwork, concise context, technology, and appropriate access.       | `Complete`  |
 | 9    | Consistency pass      | Review spacing, accessibility, dark mode, and visual consistency at every target viewport.                              | `Complete`  |
 | 10   | Personal identity     | Introduce a distinctive, scalable logo and personal wordmark across the portfolio.                                      | `Complete`  |
-| 11   | Architecture skills   | Add focused architecture capabilities and modelling practices to the technical toolkit.                                 | `In review` |
+| 11   | Architecture skills   | Add focused architecture capabilities and modelling practices to the technical toolkit.                                 | `Complete`  |
+| 12   | Privacy and legal     | Add transparent privacy information, consent controls, contact-form safeguards, and a separate imprint.                 | `In review` |
 
 ## Step 1: Header and Navigation
 
@@ -515,17 +516,17 @@ Status: `Complete`
 
 ### Implementation
 
-- Created the ArchitectAtWork mark as a native SVG for crisp rendering at favicon, header, and footer sizes.
+- Created the SinghBuildsTech mark as a native SVG for crisp rendering at favicon, header, and footer sizes.
 - Combined structural `A` and `W` strokes to connect architectural thinking with practical work.
 - Used graphite as the foundation and forest green for the active `W`; no blue or decorative icon background was
   introduced.
-- Replaced the alias-led header treatment with the `ArchitectAtWork` wordmark and the primary slogan “Architecture
+- Replaced the alias-led header treatment with the `SinghBuildsTech` wordmark and the primary slogan “Architecture
   grounded in engineering.”
 - Added a compact responsive lockup that preserves navigation and theme-control space on phones and tablets.
 - Applied the same identity to the footer and SVG favicon.
 - Replaced all remaining blue interface actions, navigation states, badges, focus rings, and highlighted-code
   backgrounds with the established green palette.
-- Updated public metadata and setup documentation from TechishDeep to ArchitectAtWork.
+- Updated public metadata and setup documentation from TechishDeep to SinghBuildsTech.
 - Added `BRAND.md` with the primary slogan, ten supporting slogans, and palette guidance.
 - Preserved the old raster logo assets in case they are needed during review.
 - Validation: `npm run lint` passes with no errors or warnings.
@@ -548,6 +549,29 @@ Status: `In review`
   it.
 - Preserved the existing responsive two/three/four-column skills layout.
 - Final visual acceptance: awaiting review.
+
+## Step 12: Privacy and Legal
+
+Status: `In review`
+
+### Implementation
+
+- Added a dedicated Privacy Policy describing hosting, contact enquiries, Notion storage, reCAPTCHA, optional
+  analytics, local storage, recipients, international transfers, retention, and data-subject rights.
+- Added a separate Imprint with the available operator and contact information.
+- Clearly identifies that the Imprint still needs a geographic service address before publication if Section 5 DDG
+  applies to the website; no address has been invented or implied.
+- Added Privacy and Imprint links to the footer and a concise privacy notice beside the contact form.
+- Added an analytics consent banner with an equally accessible essential-only choice and a persistent footer control
+  for changing the choice later.
+- Prevented Google Analytics from loading before affirmative consent and removed its cookies when analytics consent
+  is withdrawn.
+- Scoped Google reCAPTCHA to the contact form instead of loading it globally on every page.
+- Replaced externally loaded Google Fonts and Font Awesome CSS with locally hosted font files and native symbols.
+- Documented the contact-enquiry retention schedule, privacy-related environment behavior, and outstanding operational
+  tasks in the README and contact-form setup guide.
+- Validation: `npm run lint`, `npm run build`, and `git diff --check` pass.
+- Final visual and legal-content acceptance: awaiting review.
 
 ## Dummy Article Fixture
 
@@ -621,6 +645,7 @@ Complete this checklist after each implementation step:
 | 2026-07-25 | Full redesign   | The initial complete redesign changed too much at once and was rejected.                      | Reverted; incremental review process adopted.                                              |
 | 2026-07-25 | Step 8 outcome  | Move forward after the featured-project implementation and follow-up layout repair.           | Step 8 marked complete; consistency pass started.                                          |
 | 2026-07-25 | Step 9          | Complete a final metadata, warning, accessibility, and layout-consistency pass.               | Zero-warning lint and production build pass; awaiting visual viewport review.              |
+| 2026-08-02 | Privacy         | Add privacy information, consent controls, a contact notice, and a separate Imprint.          | Implemented with an explicit outstanding postal-address warning for Section 5 DDG.         |
 
 ## Update Template
 
