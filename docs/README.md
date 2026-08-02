@@ -12,6 +12,7 @@ related guides are linked where one system depends on another.
 | [reCAPTCHA](RECAPTCHA.md)                           | Configure spam protection and authorized hostnames.                  |
 | [Analytics](ANALYTICS.md)                           | Configure consent-controlled Google Analytics.                       |
 | [Deployment](DEPLOYMENT.md)                         | Configure Vercel and verify production deployments.                  |
+| [Releases](RELEASES.md)                             | Create version tags and trigger production releases.                 |
 | [Brand](BRAND.md)                                   | Record the SinghBuildsTech identity and visual direction.            |
 | [Roadmap](ROADMAP.md)                               | Track portfolio design decisions and completed improvements.         |
 | [Legacy WordPress Notes](LEGACY_WORDPRESS_NOTES.md) | Preserve historical setup notes that are no longer active.           |

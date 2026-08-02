@@ -41,10 +41,19 @@ Map the Google **site key** to `NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY` and the d
 
 Only `NEXT_PUBLIC_` variables are exposed to browser code. Keep Notion and reCAPTCHA secrets server-only.
 
+## Production releases
+
+Production deployment is tag-driven. A semantic version tag matching `v*.*.*` starts the GitHub Actions release
+workflow, which verifies that the tag matches `package.json`, installs dependencies, runs ESLint, builds with Vercel,
+and deploys the prebuilt artifact to Vercel production.
+
+Follow the complete procedure in [Releases](RELEASES.md). Pushing or merging `main` alone does not deploy production;
+feature branches continue to receive Vercel preview deployments.
+
 ## Deploy and verify
 
 1. Save the environment variables.
-2. Redeploy the latest `main` branch.
+2. Create and push the approved release tag by following [Releases](RELEASES.md).
 3. Confirm the homepage, article archive, article page, contact form, Privacy Policy, and Imprint load successfully.
 4. Submit a test contact enquiry and confirm its arrival in Notion.
 5. Remove the test record when verification is complete.
