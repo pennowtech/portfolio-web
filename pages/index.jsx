@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { Element } from 'react-scroll';
 import { getPublishedBlogPosts } from '@utils/notion';
-import Hero from '@components/Intro/Hero';
 
 import { WebSiteTags } from '@utils/consts';
 import { DUMMY_ARTICLE } from '@utils/dummyArticle';

@@ -6,6 +6,8 @@ on:
   push:
     branches-ignore:
       - main
+    tags-ignore:
+      - '**'
 jobs:
   Deploy-Preview:
     runs-on: ubuntu-latest

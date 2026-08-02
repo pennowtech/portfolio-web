@@ -9,8 +9,7 @@ module.exports = {
       },
       new URL('https://pixabay.com/**'),
       new URL('https://www.google.com/**'),
-      new URL('https://pennow.tech/**'),
-      new URL('https://tuk-cdn.s3.amazonaws.com/**')
+      new URL('https://pennow.tech/**')
     ],
     unoptimized: true
   },
