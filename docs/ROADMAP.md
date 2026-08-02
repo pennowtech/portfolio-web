@@ -527,7 +527,7 @@ Status: `Complete`
 - Replaced all remaining blue interface actions, navigation states, badges, focus rings, and highlighted-code
   backgrounds with the established green palette.
 - Updated public metadata and setup documentation from TechishDeep to SinghBuildsTech.
-- Added `BRAND.md` with the primary slogan, ten supporting slogans, and palette guidance.
+- Added [Brand](BRAND.md) with the primary slogan, ten supporting slogans, and palette guidance.
 - Preserved the old raster logo assets in case they are needed during review.
 - Validation: `npm run lint` passes with no errors or warnings.
 - Validation: `npm run build` passes with the production Webpack configuration.

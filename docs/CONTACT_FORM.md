@@ -1,7 +1,10 @@
-# Portfolio Contact Form: Notion and reCAPTCHA Setup
+# Contact Form
 
 This guide configures the portfolio contact form to validate submissions with Google reCAPTCHA v3 and store successful
 messages in a dedicated Notion database.
+
+For article-database configuration, see [Notion](NOTION.md). For authorized-host troubleshooting, see
+[reCAPTCHA](RECAPTCHA.md). For production variables and verification, see [Deployment](DEPLOYMENT.md).
 
 ## Prerequisites
 
@@ -62,19 +65,9 @@ the database ID is:
 
 Store this value as `NOTION_CONTACT_FORM_DATABASE_ID`.
 
-## 4. Create Google reCAPTCHA v3 keys
+## 4. Configure local environment variables
 
-1. Open the [Google reCAPTCHA Admin Console](https://www.google.com/recaptcha/admin/create).
-2. Enter a recognizable label such as `SinghBuildsTech Portfolio`.
-3. Select **Score based (v3)**.
-4. Add the production domain.
-5. Add `localhost` when local testing is required and the console permits it.
-6. Accept the terms and create the configuration.
-7. Copy the generated site key and secret key.
-
-The site key is safe to expose to the browser. The secret key must remain server-only.
-
-## 5. Configure local environment variables
+Create the site and secret keys using [reCAPTCHA](RECAPTCHA.md), then add the contact-form values to `.env.local`.
 
 Add the following values to `.env.local` in the project root:
 
@@ -83,7 +76,10 @@ NOTION_KEY=ntn_your_existing_integration_token
 NOTION_DATABASE_ID=your_articles_database_id
 NOTION_CONTACT_FORM_DATABASE_ID=your_contact_database_id
 
+# Public site key: safe and required in browser code.
 NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY=your_recaptcha_site_key
+
+# Private verification key: server-only and different from the site key.
 GOOGLE_RECAPTCHA_SECRET_KEY=your_recaptcha_secret_key
 ```
 
@@ -102,7 +98,7 @@ Restart the development server after changing environment variables:
 npm run dev
 ```
 
-## 6. Test locally
+## 5. Test locally
 
 1. Open [http://localhost:3000/contact](http://localhost:3000/contact).
 2. Complete and submit the form.
@@ -122,31 +118,10 @@ reCAPTCHA, configuration, or upstream failures without exposing private credenti
 - Record any exception and its reason in the Notion entry.
 - Do not place special-category, credential, financial, or other unnecessary confidential data in the contact database.
 
-## 7. Configure Vercel
+## 6. Verify production
 
-1. Open the portfolio project in Vercel.
-2. Go to **Settings** → **Environment Variables**.
-3. Add:
-
-   ```text
-   NOTION_KEY
-   NOTION_DATABASE_ID
-   NOTION_CONTACT_FORM_DATABASE_ID
-   NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY
-   GOOGLE_RECAPTCHA_SECRET_KEY
-   ```
-
-4. Enable the variables for **Production** and **Preview** as required.
-5. Save the configuration.
-6. Redeploy the application so the new values become available.
-
-## 8. Verify production
-
-1. Open the deployed contact page.
-2. Send a test message.
-3. Confirm the success state in the browser.
-4. Confirm the new record in Notion.
-5. Remove the test record when it is no longer required.
+Follow [Deployment](DEPLOYMENT.md) to add the environment variables to Vercel and deploy `main`. Then submit a test
+message, confirm the record reaches Notion, and remove the test record when verification is complete.
 
 ## Troubleshooting
 
@@ -163,5 +138,6 @@ reCAPTCHA, configuration, or upstream failures without exposing private credenti
 
 - Keep `NOTION_KEY` and `GOOGLE_RECAPTCHA_SECRET_KEY` server-only.
 - Only the reCAPTCHA site key should use the `NEXT_PUBLIC_` prefix.
+- The site and secret keys must belong to the same Google configuration but must contain different values.
 - Do not log form contents, CAPTCHA tokens, or credentials.
 - Do not cache or reuse reCAPTCHA tokens; they are short-lived and single-use.
