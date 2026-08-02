@@ -40,7 +40,8 @@ export const getStaticProps = async ({ params }) => {
       postsToShow,
       totalPosts,
       recentPosts: posts.slice(0, RECENT_POSTS_COUNT)
-    }
+    },
+    revalidate: 60
   };
 };
 
@@ -57,7 +58,7 @@ export async function getStaticPaths() {
     paths: Array.from({ length: totalPages - 1 }, (_, i) => ({
       params: { page: `${i + 2}` }
     })),
-    fallback: false
+    fallback: 'blocking'
   };
 }
 

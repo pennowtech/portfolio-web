@@ -22,6 +22,23 @@ In VS Code, the equivalent tasks are `Setup: Install dependencies` and `Develop:
 
 Open [http://localhost:3000](http://localhost:3000).
 
+### Open the development site from another device
+
+The Next.js development server protects internal resources such as Fast Refresh from unexpected origins. This project
+allows the current trusted LAN hostname in `next.config.js`:
+
+```js
+allowedDevOrigins: ['192.168.0.79'];
+```
+
+To test from a phone or tablet on the same trusted network, open `http://192.168.0.79:3000`. If the development
+machine receives a different LAN address, replace this exact value rather than adding a wildcard or disabling the
+protection. Restart `npm run dev` after changing `next.config.js`; a browser refresh alone does not reload server
+configuration.
+
+This setting affects development only. It does not configure production CORS or expose the deployed admin API to other
+origins.
+
 Environment variables belong in `.env.local`, which must never be committed. Copy the variable names from the relevant
 service guide rather than placing credentials in documentation or source code.
 

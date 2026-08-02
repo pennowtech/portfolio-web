@@ -37,7 +37,8 @@ export async function getStaticProps({ params }) {
       postsToShow: filteredPosts,
       currentTag,
       recentPosts: posts.slice(0, RECENT_POSTS_COUNT)
-    }
+    },
+    revalidate: 60
   };
 }
 
@@ -48,6 +49,6 @@ export async function getStaticPaths() {
   const paths = Object.keys(tags).map((tag) => ({ params: { tag } }));
   return {
     paths,
-    fallback: false
+    fallback: 'blocking'
   };
 }

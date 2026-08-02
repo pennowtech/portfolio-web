@@ -55,7 +55,8 @@ export const getStaticProps = async () => {
     props: {
       // TODO(dummy-content): Remove this prepend when the real article feed is ready.
       posts: [{ ...DUMMY_ARTICLE, thumbnailUrl: `/${DUMMY_ARTICLE.thumbnailUrl}` }, ...response]
-    }
+    },
+    revalidate: 60
   };
 };
 

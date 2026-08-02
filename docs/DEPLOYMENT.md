@@ -18,7 +18,7 @@ by Vercel rather than copying generic values from another provider. Vercel provi
 
 The application also contains permanent redirects from the `www` hostname and the former
 `portfolio-web-wheat.vercel.app` production alias to the primary domain. The complete domain checklist is in
-[Domain](DOMAIN_NAME.md).
+[Domain](DOMAIN_NAME.md); registrar-specific DNS and forwarding instructions are in [Porkbun Setup](PORKBUN.md).
 
 ## Environment variables
 
@@ -36,6 +36,11 @@ In Vercel:
    NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY
    GOOGLE_RECAPTCHA_SECRET_KEY
    NEXT_PUBLIC_GOOGLE_ANALYTICS
+   ADMIN_EMAIL
+   GOOGLE_CLIENT_ID
+   GOOGLE_CLIENT_SECRET
+   NEXTAUTH_SECRET
+   NEXTAUTH_URL
    ```
 
 4. Enable them for the intended Production and Preview environments.
@@ -52,7 +57,9 @@ This value is used for canonical links, social-sharing metadata, and the XML sit
 Map the Google **site key** to `NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY` and the different Google **secret key** to
 `GOOGLE_RECAPTCHA_SECRET_KEY`. See [reCAPTCHA key roles](RECAPTCHA.md#site-key-and-secret-key) before adding them.
 
-Only `NEXT_PUBLIC_` variables are exposed to browser code. Keep Notion and reCAPTCHA secrets server-only.
+Only `NEXT_PUBLIC_` variables are exposed to browser code. Keep Notion, reCAPTCHA, Google OAuth, and Auth.js secrets
+server-only. Configure the author workspace variables with [Publishing Articles](ARTICLE_PUBLISHING.md). In production,
+set `NEXTAUTH_URL=https://singhbuildstech.com`.
 
 ## Production releases
 

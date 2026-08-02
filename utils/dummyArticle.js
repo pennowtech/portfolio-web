@@ -5,7 +5,8 @@ export const DUMMY_ARTICLE = {
   id: 'dummy-resilient-systems',
   slug: DUMMY_ARTICLE_SLUG,
   title: 'Designing resilient software systems',
-  description: 'A practical guide to boundaries, failure visibility, and building systems that teams can evolve.',
+  description:
+    'A practical, conversational guide to timeouts, retries, idempotency, backpressure, graceful degradation, observability, and recovery.',
   thumbnailUrl: 'top-back-4.jpg',
   date: 'July 25, 2026',
   author: 'Sukhdeep Singh',
@@ -14,6 +15,6 @@ export const DUMMY_ARTICLE = {
     { id: 'architecture', name: 'Architecture', color: 'green' },
     { id: 'engineering', name: 'Engineering', color: 'stone' }
   ],
-  readingTime: { minutes: 6 },
+  readingTime: { minutes: 10 },
   infoPrevNextPost: {}
 };

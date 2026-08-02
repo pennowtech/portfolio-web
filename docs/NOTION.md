@@ -8,7 +8,8 @@ storage is a separate concern documented in [Contact Form](CONTACT_FORM.md).
 1. Sign in to the [Notion integrations portal](https://www.notion.so/profile/integrations).
 2. Create a new internal connection named `SinghBuildsTech Portfolio`.
 3. Select the workspace containing the portfolio database.
-4. Enable **Read content**.
+4. Enable **Read content**. To use the private website authoring workspace, also enable **Insert content** as described
+   in [Publishing Articles](ARTICLE_PUBLISHING.md).
 5. Copy the installation access token. This becomes `NOTION_KEY`.
 
 Never commit or share the token. Rotate it immediately if it is exposed.

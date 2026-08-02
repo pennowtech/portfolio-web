@@ -108,10 +108,21 @@ const Privacy = () => (
     </section>
 
     <section>
+      <h2>Embedded media and social posts</h2>
+      <p>
+        Articles may contain YouTube videos or posts from LinkedIn and X/Twitter. Social posts are not requested from
+        those platforms until the visitor selects the corresponding load button. Once activated, the provider receives
+        connection data such as the IP address, browser information, referring page, and potentially account or cookie
+        information under its own privacy terms. Activation is voluntary and is based on consent under Article 6(1)(a)
+        GDPR.
+      </p>
+    </section>
+
+    <section>
       <h2>Recipients and international transfers</h2>
       <p>
-        Vercel, Notion, and—when the relevant feature is used—Google may act as service providers. Some processing may
-        take place outside the European Economic Area. Where required, transfers rely on the provider’s applicable
+        Vercel, Notion, and—when the relevant feature is used—Google, LinkedIn, and X may process data. Some processing
+        may take place outside the European Economic Area. Where required, transfers rely on the provider’s applicable
         adequacy mechanism or contractual safeguards. Current provider terms and transfer information should be reviewed
         whenever these services or their configurations change.
       </p>

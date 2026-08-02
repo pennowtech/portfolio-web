@@ -74,11 +74,17 @@ export const getStaticProps = async (context) => {
         markdown,
         postMeta,
         compiledMDSource: markdown
-      }
+      },
+      revalidate: 60
     };
   }
 
-  const post = await getSingleBlogPost(blog);
+  let post;
+  try {
+    post = await getSingleBlogPost(blog);
+  } catch {
+    return { notFound: true, revalidate: 60 };
+  }
 
   const options = {
     mdxOptions: {
@@ -95,7 +101,8 @@ export const getStaticProps = async (context) => {
       markdown: post.markdown,
       postMeta: post.postMeta,
       compiledMDSource
-    }
+    },
+    revalidate: 60
   };
 };
 
@@ -114,7 +121,7 @@ export async function getStaticPaths() {
   paths.push({ params: { blog: DUMMY_ARTICLE_SLUG } });
   return {
     paths,
-    fallback: false
+    fallback: 'blocking'
   };
 }
 

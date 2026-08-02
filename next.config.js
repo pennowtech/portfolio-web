@@ -1,10 +1,16 @@
 module.exports = {
+  allowedDevOrigins: ['192.168.0.79'],
   images: {
     remotePatterns: [
       new URL('https://www.nasa.gov/**'),
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',
+        pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.pexels.com',
         pathname: '/**'
       },
       new URL('https://pixabay.com/**'),
