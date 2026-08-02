@@ -6,15 +6,19 @@ the underlying services first using [Notion](NOTION.md), [Contact Form](CONTACT_
 
 ## Domains
 
-Add every hostname in Vercel where the contact form will be used, including:
+Add these hostnames to the existing Vercel project:
 
 ```text
-your-domain.com
-www.your-domain.com
-your-project.vercel.app
+singhbuildstech.com
+www.singhbuildstech.com
 ```
 
-Only include hostnames you actually control. Preview deployments may use additional Vercel hostnames, so those may need to be added separately when testing reCAPTCHA on previews.
+Set `singhbuildstech.com` as the primary domain and redirect `www.singhbuildstech.com` to it. Add the DNS records shown
+by Vercel rather than copying generic values from another provider. Vercel provisions HTTPS after DNS verification.
+
+The application also contains permanent redirects from the `www` hostname and the former
+`portfolio-web-wheat.vercel.app` production alias to the primary domain. The complete domain checklist is in
+[Domain](DOMAIN_NAME.md).
 
 ## Environment variables
 
@@ -25,6 +29,7 @@ In Vercel:
 3. Add the variables required by the enabled features:
 
    ```text
+   NEXT_PUBLIC_SITE_URL
    NOTION_KEY
    NOTION_DATABASE_ID
    NOTION_CONTACT_FORM_DATABASE_ID
@@ -35,6 +40,14 @@ In Vercel:
 
 4. Enable them for the intended Production and Preview environments.
 5. Redeploy the website.
+
+Set the production site URL to:
+
+```dotenv
+NEXT_PUBLIC_SITE_URL=https://singhbuildstech.com
+```
+
+This value is used for canonical links, social-sharing metadata, and the XML sitemap. Do not include a trailing slash.
 
 Map the Google **site key** to `NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY` and the different Google **secret key** to
 `GOOGLE_RECAPTCHA_SECRET_KEY`. See [reCAPTCHA key roles](RECAPTCHA.md#site-key-and-secret-key) before adding them.

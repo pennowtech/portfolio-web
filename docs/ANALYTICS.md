@@ -49,6 +49,10 @@ Set the GA4 measurement ID only when Analytics should be available:
 NEXT_PUBLIC_GOOGLE_ANALYTICS=G-XXXXXXXXXX
 ```
 
+Set the GA4 web stream URL to `https://singhbuildstech.com`. This does not change the measurement ID, but it keeps the
+stream configuration aligned with the public site. Add the domain in Google Search Console separately by following
+[Domain](DOMAIN_NAME.md#google-services).
+
 Without this variable, Analytics, the consent prompt, and the footer's Privacy settings control remain disabled. Before
 enabling it, configure the GA4 event-data retention period described in the Privacy Policy.
 

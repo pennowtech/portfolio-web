@@ -6,6 +6,7 @@ const Error404 = () => {
   const metaInfo = {
     title: 'Page not found | SinghBuildsTech',
     metaDesc: 'The requested SinghBuildsTech portfolio page could not be found.',
+    noIndex: true,
     metaKeywords: ''
   };
 

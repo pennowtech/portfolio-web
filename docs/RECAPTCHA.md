@@ -1,5 +1,8 @@
 # reCAPTCHA
 
+The production reCAPTCHA configuration is registered separately. Never record either credential in this document or
+commit it to the repository.
+
 The contact form uses Google reCAPTCHA v3 for spam protection. The provider is scoped to pages that render the form,
 including the homepage. See [Contact Form](CONTACT_FORM.md) for the complete submission flow and
 [Deployment](DEPLOYMENT.md) for production variables.
@@ -47,6 +50,8 @@ When local keys are configured, the usual cause is that the associated Google co
 
    ```text
    localhost
+   singhbuildstech.com
+   www.singhbuildstech.com
    ```
 
 5. If you sometimes use the IP address instead of localhost, also add:
