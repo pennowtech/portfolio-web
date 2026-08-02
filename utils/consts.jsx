@@ -124,11 +124,6 @@ const skills = [
 const POSTS_PER_PAGE = 10;
 const RECENT_POSTS_COUNT = 5;
 
-const isDev = process.env.NODE_ENV === 'development';
-const REMOTE_BASE_URL = 'https://sukhdeep.online';
-// export const BASE_URL = isDev ? 'http://localhost:3000' : 'http://pennow.tech';
-export const BASE_URL = isDev ? 'http://localhost:3000' : REMOTE_BASE_URL;
-
 export const SelectedPostsList = [14, 44, 12];
 // export const SelectedPostsList = [];
 export {

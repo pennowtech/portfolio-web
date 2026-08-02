@@ -11,6 +11,10 @@ const Privacy = () => (
       <h2>Controller and contact</h2>
       <p>The controller responsible for this website is Sukhdeep Singh, Germany.</p>
       <p>
+        This notice applies to <a href='https://singhbuildstech.com'>https://singhbuildstech.com</a> and its redirected
+        www hostname.
+      </p>
+      <p>
         Privacy enquiries can be sent to <a href='mailto:singhbuildstech@gmail.com'>singhbuildstech@gmail.com</a> or
         through the <Link href='/contact'>contact form</Link>.
       </p>

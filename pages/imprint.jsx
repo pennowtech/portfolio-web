@@ -18,6 +18,8 @@ const Imprint = () => (
     <section>
       <h2>Contact</h2>
       <p>
+        Website: <a href='https://singhbuildstech.com'>https://singhbuildstech.com</a>
+        <br />
         Email: <a href='mailto:singhbuildstech@gmail.com'>singhbuildstech@gmail.com</a>
         <br />
         Online: <Link href='/contact'>Contact form</Link>

@@ -11,6 +11,7 @@ related guides are linked where one system depends on another.
 | [Contact Form](CONTACT_FORM.md)                     | Configure contact storage, submission behavior, and retention.       |
 | [reCAPTCHA](RECAPTCHA.md)                           | Configure spam protection and authorized hostnames.                  |
 | [Analytics](ANALYTICS.md)                           | Configure consent-controlled Google Analytics.                       |
+| [Domain](DOMAIN_NAME.md)                            | Connect `singhbuildstech.com` and configure domain-dependent tools.  |
 | [Deployment](DEPLOYMENT.md)                         | Configure Vercel and verify production deployments.                  |
 | [Releases](RELEASES.md)                             | Create version tags and trigger production releases.                 |
 | [Brand](BRAND.md)                                   | Record the SinghBuildsTech identity and visual direction.            |

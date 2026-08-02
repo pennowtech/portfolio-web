@@ -2,6 +2,8 @@
 
 SinghBuildsTech is mainly portfolio website.
 
+Production website: [singhbuildstech.com](https://singhbuildstech.com)
+
 The portfolio lists down together my practical architecture experience, selected engineering projects, technical skills, and
 long-form writing about building software that works beyond the diagram. Plan is to also to pen down my hobbies and travels here.
 
@@ -28,6 +30,7 @@ Technical and operational guides live in [docs](docs/README.md):
 
 - [Local development](docs/DEVELOPMENT.md)
 - [VS Code task shortcuts](docs/VSCODE_TASKS.md)
+- [Custom domain setup](docs/DOMAIN_NAME.md)
 - [Notion, contact form, Analytics, and deployment guides](docs/README.md)
 
 ## Contact

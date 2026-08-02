@@ -28,7 +28,9 @@ const PostPage = ({ postMeta, markdown, compiledMDSource }) => {
   const metaInfo = {
     title: postMeta.title,
     metaKeywords: postMeta.tags?.map((tag) => tag.name) ?? [],
-    metaDesc: postMeta.description
+    metaDesc: postMeta.description,
+    image: postMeta.thumbnailUrl,
+    type: 'article'
   };
 
   return (
