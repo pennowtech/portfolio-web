@@ -18,14 +18,17 @@ const LoginPage = () => (
   </FullLayout>
 );
 
-export const getServerSideProps = ({ req, res }) => {
+export const getServerSideProps = async ({ req, res }) => {
   res.setHeader('Cache-Control', 'private, no-store');
-  return getServerSession(req, res, authOptions).then((session) => {
+  try {
+    const session = await getServerSession(req, res, authOptions);
     if (isAdminSession(session)) {
       return { redirect: { destination: '/admin/articles/new', permanent: false } };
     }
-    return { props: {} };
-  });
+  } catch (error) {
+    console.error('Failed to get session on /admin/login:', error);
+  }
+  return { props: {} };
 };
 
 export default LoginPage;

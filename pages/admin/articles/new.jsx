@@ -20,9 +20,14 @@ const NewArticlePage = ({ adminEmail, defaultPublicationDate }) => (
 
 export const getServerSideProps = async ({ req, res }) => {
   res.setHeader('Cache-Control', 'private, no-store');
-  const session = await getServerSession(req, res, authOptions);
-  if (!isAdminSession(session)) return { redirect: { destination: '/admin/login', permanent: false } };
-  return { props: { adminEmail: session.user.email, defaultPublicationDate: new Date().toISOString().slice(0, 10) } };
+  try {
+    const session = await getServerSession(req, res, authOptions);
+    if (!isAdminSession(session)) return { redirect: { destination: '/admin/login', permanent: false } };
+    return { props: { adminEmail: session?.user?.email || '', defaultPublicationDate: new Date().toISOString().slice(0, 10) } };
+  } catch (error) {
+    console.error('Failed to get session on /admin/articles/new:', error);
+    return { redirect: { destination: '/admin/login', permanent: false } };
+  }
 };
 
 export default NewArticlePage;
