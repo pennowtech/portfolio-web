@@ -67,12 +67,6 @@ module.exports = {
         has: [{ type: 'host', value: 'www.singhbuildstech.com' }],
         destination: 'https://singhbuildstech.com/:path*',
         permanent: true
-      },
-      {
-        source: '/:path*',
-        has: [{ type: 'host', value: 'portfolio-web-wheat.vercel.app' }],
-        destination: 'https://singhbuildstech.com/:path*',
-        permanent: true
       }
     ];
   }
