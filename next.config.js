@@ -1,8 +1,14 @@
 module.exports = {
-  allowedDevOrigins: ['192.168.0.79'],
+  experimental: {
+    allowedDevOrigins: ['192.168.0.79']
+  },
   images: {
     remotePatterns: [
-      new URL('https://www.nasa.gov/**'),
+      {
+        protocol: 'https',
+        hostname: 'www.nasa.gov',
+        pathname: '/**'
+      },
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',
@@ -13,8 +19,16 @@ module.exports = {
         hostname: 'images.pexels.com',
         pathname: '/**'
       },
-      new URL('https://pixabay.com/**'),
-      new URL('https://www.google.com/**')
+      {
+        protocol: 'https',
+        hostname: 'pixabay.com',
+        pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.google.com',
+        pathname: '/**'
+      }
     ],
     unoptimized: true
   },
