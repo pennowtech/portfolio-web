@@ -3,6 +3,7 @@ import Link from 'next/link';
 
 import HorizontalCard from './Post/HorizontalCard';
 import VerticalCard from './Post/VerticalCard';
+import { useLanguage } from '../utils/LanguageContext';
 
 /**
  * The main component.
@@ -10,6 +11,7 @@ import VerticalCard from './Post/VerticalCard';
  * @visibleName The Best layout Ever 🐙
  */
 export default function HomeArticles({ posts, showAsHorizontal = true }) {
+  const { t } = useLanguage();
   const homepagePosts = showAsHorizontal ? posts : posts.slice(0, 6);
 
   return (
@@ -17,14 +19,16 @@ export default function HomeArticles({ posts, showAsHorizontal = true }) {
       <div className='mx-auto w-full max-w-[1048px] px-4 lg:px-8'>
         <header className='mx-auto mb-10 max-w-2xl text-center md:mb-12'>
           <p className='mb-2 font-Monda text-sm font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-300'>
-            Notes from the field
+            {t('homeArticles.subtitle', 'Notes from the field')}
           </p>
           <h2 id='articles-title' className='mb-3 font-Neuton text-4xl font-semibold leading-tight md:text-5xl'>
-            Articles
+            {t('homeArticles.title', 'Articles')}
           </h2>
           <p className='mb-0 text-slate-600 dark:text-slate-200'>
-            Practical writing on software architecture, engineering decisions, and lessons gathered while building real
-            systems.
+            {t(
+              'homeArticles.desc',
+              'Practical writing on software architecture, engineering decisions, and lessons gathered while building real systems.'
+            )}
           </p>
         </header>
 
@@ -50,7 +54,7 @@ export default function HomeArticles({ posts, showAsHorizontal = true }) {
             href='/page'
             className='flex min-h-11 items-center justify-center rounded-lg bg-green-700 px-6 py-3 font-Monda font-bold text-white shadow-sm transition hover:bg-green-600 hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 focus-visible:ring-offset-2 dark:bg-green-600 dark:hover:bg-green-500 dark:focus-visible:ring-offset-gray-600'
           >
-            View all articles
+            {t('homeArticles.viewAll', 'View all articles')}
           </Link>
         </div>
       </div>

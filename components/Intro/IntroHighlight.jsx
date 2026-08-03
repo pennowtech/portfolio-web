@@ -2,28 +2,12 @@ import React from 'react';
 import Image from 'next/image';
 import ReactMarkdown from 'react-markdown';
 import { skills } from '@utils/consts';
-
-const profileBlocks = [
-  `## 18+ years across demanding domains
-
-Experience stretches across medical devices, high-frequency trading, autonomous driving, microservices, embedded systems, and network programming. It is an unusual mix, but that variety makes it easier to spot patterns, ask sharper questions, and adapt proven ideas to new problems.`,
-  `### Still hands-on
-
-Architecture has never meant stepping away from implementation. Strong working knowledge of C, modern C++, MATLAB, Rust, and Python keeps technical decisions realistic—especially for embedded, performance-sensitive, and systems-level software.`,
-  `### From the wire to the platform
-
-The technical range runs from TCP/IP, SOME/IP, DHCP, SNMP, IPv4/6, CAN, and proprietary protocols to FastAPI, Actix Web, gRPC, PostgreSQL, MongoDB, Redis, Docker, Kubernetes, Ansible, and Argo CD.`,
-  `## More than design documents
-
-The work covers the full path from algorithm development and model-based software to vehicle dynamics, system testing, integration, and delivery. Experience with both Agile and V-model development helps bridge fast-moving teams and rigorously controlled engineering environments.`,
-  `## Practical, positive, and solution-focused
-
-Complex challenges are approached with curiosity, resourcefulness, and a calm focus on finding a workable solution. The goal is not simply to propose an architecture, but to help teams turn it into software that is robust, understandable, and ready to evolve.`
-];
+import { useLanguage } from '../../utils/LanguageContext';
 
 const skillGroups = [
   {
-    title: 'Architecture',
+    titleKey: 'Architecture',
+    defaultTitle: 'Architecture',
     names: [
       'Microservices Architecture',
       'Domain-Driven Design',
@@ -34,27 +18,33 @@ const skillGroups = [
     ]
   },
   {
-    title: 'Architecture Modelling',
+    titleKey: 'Architecture Modelling',
+    defaultTitle: 'Architecture Modelling',
     names: ['ArchiMate', 'UML', 'C4 Model', 'Architecture Decision Records']
   },
   {
-    title: 'Languages',
+    titleKey: 'Languages',
+    defaultTitle: 'Languages',
     names: ['C++ 11/17', 'Rust', 'Python', 'JavaScript', 'Solidity']
   },
   {
-    title: 'Frameworks & testing',
+    titleKey: 'Frameworks & testing',
+    defaultTitle: 'Frameworks & testing',
     names: ['Qt', 'ReactJS', 'Next.JS', 'FastAPI', 'Pytest', 'Jest', 'Material Design']
   },
   {
-    title: 'Systems & networking',
+    titleKey: 'Systems & networking',
+    defaultTitle: 'Systems & networking',
     names: ['TCP/IP', 'Sockets', 'Wireshark', 'Linux']
   },
   {
-    title: 'Data & platforms',
+    titleKey: 'Data & platforms',
+    defaultTitle: 'Data & platforms',
     names: ['PostgreSQL', 'GraphQL', 'Docker', 'Kubernetes', 'PySpark', 'Kafka', 'Git']
   },
   {
-    title: 'Middleware',
+    titleKey: 'Middleware',
+    defaultTitle: 'Middleware',
     names: ['MQTT', 'gRPC', 'D-Bus', 'ROS']
   }
 ];
@@ -100,24 +90,34 @@ const ContentBlock = ({ children, className = '' }) => (
 );
 
 const IntroHighlight = ({ classProps = '' }) => {
-  const contentBlocks = profileBlocks;
+  const { t } = useLanguage();
+
+  const profileBlocks = [
+    `## ${t('introHighlight.block1Title', '18+ years across demanding domains')}\n\n${t('introHighlight.block1Text', 'Experience stretches across medical devices, high-frequency trading, autonomous driving, microservices, embedded systems, and network programming. It is an unusual mix, but that variety makes it easier to spot patterns, ask sharper questions, and adapt proven ideas to new problems.')}`,
+    `### ${t('introHighlight.block2Title', 'Still hands-on')}\n\n${t('introHighlight.block2Text', 'Architecture has never meant stepping away from implementation. Strong working knowledge of C, modern C++, MATLAB, Rust, and Python keeps technical decisions realistic—especially for embedded, performance-sensitive, and systems-level software.')}`,
+    `### ${t('introHighlight.block3Title', 'From the wire to the platform')}\n\n${t('introHighlight.block3Text', 'The technical range runs from TCP/IP, SOME/IP, DHCP, SNMP, IPv4/6, CAN, and proprietary protocols to FastAPI, Actix Web, gRPC, PostgreSQL, MongoDB, Redis, Docker, Kubernetes, Ansible, and Argo CD.')}`,
+    `## ${t('introHighlight.block4Title', 'More than design documents')}\n\n${t('introHighlight.block4Text', 'The work covers the full path from algorithm development and model-based software to vehicle dynamics, system testing, integration, and delivery. Experience with both Agile and V-model development helps bridge fast-moving teams and rigorously controlled engineering environments.')}`,
+    `## ${t('introHighlight.block5Title', 'Practical, positive, and solution-focused')}\n\n${t('introHighlight.block5Text', 'Complex challenges are approached with curiosity, resourcefulness, and a calm focus on finding a workable solution. The goal is not simply to propose an architecture, but to help teams turn it into software that is robust, understandable, and ready to evolve.')}`
+  ];
 
   return (
     <section aria-labelledby='profile-highlights-title' className={`${classProps} relative py-14 md:py-20`}>
       <div className='mx-auto w-full max-w-[1048px] px-4 lg:px-8'>
         <header className='mx-auto mb-12 max-w-3xl text-center md:mb-16'>
           <p className='mb-2 font-Monda text-sm font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-300'>
-            Experience in practice
+            {t('introHighlight.subtitle', 'Experience in practice')}
           </p>
           <h2
             id='profile-highlights-title'
             className='mb-4 font-Neuton text-4xl font-semibold leading-tight md:text-5xl'
           >
-            Profile Highlights
+            {t('introHighlight.title', 'Profile Highlights')}
           </h2>
           <p className='mx-auto mb-0 max-w-2xl text-slate-600 dark:text-slate-200'>
-            A career shaped by complex systems, hands-on development, and the kind of technical variety that keeps the
-            work interesting.
+            {t(
+              'introHighlight.desc',
+              'A career shaped by complex systems, hands-on development, and the kind of technical variety that keeps the work interesting.'
+            )}
           </p>
         </header>
 
@@ -132,38 +132,42 @@ const IntroHighlight = ({ classProps = '' }) => {
             />
           </div>
           <div className='space-y-8'>
-            <ContentBlock>{contentBlocks[0]}</ContentBlock>
-            <ContentBlock>{contentBlocks[1]}</ContentBlock>
-            <ContentBlock>{contentBlocks[2]}</ContentBlock>
+            <ContentBlock>{profileBlocks[0]}</ContentBlock>
+            <ContentBlock>{profileBlocks[1]}</ContentBlock>
+            <ContentBlock>{profileBlocks[2]}</ContentBlock>
           </div>
         </div>
 
         <div className='grid gap-8 border-b border-slate-200 py-12 dark:border-slate-400 md:gap-10 lg:grid-cols-2 lg:py-16'>
-          <ContentBlock>{contentBlocks[3]}</ContentBlock>
-          <ContentBlock>{contentBlocks[4]}</ContentBlock>
+          <ContentBlock>{profileBlocks[3]}</ContentBlock>
+          <ContentBlock>{profileBlocks[4]}</ContentBlock>
         </div>
 
         <div id='skills' className='scroll-mt-24 pt-12 lg:pt-16'>
           <div className='mb-9 max-w-2xl'>
-            <h3 className='mb-3 font-Neuton text-3xl font-semibold md:text-4xl'>Technical toolkit</h3>
+            <h3 className='mb-3 font-Neuton text-3xl font-semibold md:text-4xl'>
+              {t('introHighlight.toolkitTitle', 'Technical toolkit')}
+            </h3>
             <p className='mb-0 text-slate-600 dark:text-slate-200'>
-              Languages, platforms, and engineering tools used across real products and very different technical
-              environments.
+              {t(
+                'introHighlight.toolkitDesc',
+                'Languages, platforms, and engineering tools used across real products and very different technical environments.'
+              )}
             </p>
           </div>
 
           <div className='divide-y divide-slate-200 dark:divide-slate-400'>
             {groupedSkills.map((group) => (
               <section
-                key={group.title}
-                aria-labelledby={`skill-group-${group.title.replaceAll(' ', '-').replace('&', 'and').toLowerCase()}`}
+                key={group.defaultTitle}
+                aria-labelledby={`skill-group-${group.defaultTitle.replaceAll(' ', '-').replace('&', 'and').toLowerCase()}`}
                 className='grid gap-4 py-6 first:pt-0 md:grid-cols-[12rem_1fr] md:gap-8'
               >
                 <h4
-                  id={`skill-group-${group.title.replaceAll(' ', '-').replace('&', 'and').toLowerCase()}`}
+                  id={`skill-group-${group.defaultTitle.replaceAll(' ', '-').replace('&', 'and').toLowerCase()}`}
                   className='m-0 font-Monda text-base font-semibold'
                 >
-                  {group.title}
+                  {t(`introHighlight.groups.${group.titleKey}`, group.defaultTitle)}
                 </h4>
                 <ul className='m-0 grid list-none grid-cols-2 gap-x-5 gap-y-5 p-0 sm:grid-cols-3 lg:grid-cols-4'>
                   {group.items.map((skill) => (
