@@ -25,6 +25,13 @@ const sanitizeAuthUrl = (name) => {
 
 ['NEXTAUTH_URL', 'NEXTAUTH_URL_INTERNAL', 'VERCEL_URL'].forEach(sanitizeAuthUrl);
 
+if (!process.env.NEXTAUTH_URL && process.env.VERCEL_URL) {
+  process.env.NEXTAUTH_URL = process.env.VERCEL_URL;
+}
+if (!process.env.NEXTAUTH_URL) {
+  process.env.NEXTAUTH_URL = 'https://singhbuildstech.com';
+}
+
 const normalizeEmail = (value) =>
   String(value || '')
     .trim()

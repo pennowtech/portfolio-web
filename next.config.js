@@ -1,3 +1,32 @@
+const sanitizeAuthUrl = (name) => {
+  let val = process.env[name];
+  if (typeof val === 'string') {
+    val = val.trim();
+    if (!val) {
+      delete process.env[name];
+      return;
+    }
+    if (!/^https?:\/\//i.test(val)) {
+      val = `https://${val}`;
+    }
+    try {
+      new URL(val);
+      process.env[name] = val;
+    } catch {
+      delete process.env[name];
+    }
+  }
+};
+
+['NEXTAUTH_URL', 'NEXTAUTH_URL_INTERNAL', 'VERCEL_URL'].forEach(sanitizeAuthUrl);
+
+if (!process.env.NEXTAUTH_URL && process.env.VERCEL_URL) {
+  process.env.NEXTAUTH_URL = process.env.VERCEL_URL;
+}
+if (!process.env.NEXTAUTH_URL) {
+  process.env.NEXTAUTH_URL = 'https://singhbuildstech.com';
+}
+
 module.exports = {
   allowedDevOrigins: ['192.168.0.79'],
   images: {
