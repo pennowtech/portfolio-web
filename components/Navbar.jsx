@@ -3,6 +3,7 @@ import { AiOutlineBars, AiOutlineClose } from 'react-icons/ai';
 
 import { MenuItems } from '../utils/consts';
 import NavBarItem from './NavBarItem';
+import LanguageSwitcher from './LanguageSwitcher';
 
 // const MyLink = React.forwardRef((props, ref) => <Link href={href}>{props.children}</Link>);
 
@@ -62,19 +63,27 @@ const Navbar = ({ homepage, classprops }) => {
 
   return (
     <nav aria-label='Primary navigation' className={`${classprops} flex items-center`}>
-      <ul className='m-0 hidden list-none flex-row items-center gap-1 p-0 xl:flex'>{desktopNavItems}</ul>
+      <ul className='m-0 hidden list-none flex-row items-center gap-1 p-0 xl:flex'>
+        {desktopNavItems}
+        <li className='ml-2 border-l border-slate-300 dark:border-slate-700 pl-3'>
+          <LanguageSwitcher />
+        </li>
+      </ul>
 
-      <button
-        ref={menuButtonRef}
-        type='button'
-        aria-label='Open navigation menu'
-        aria-expanded={isMenuVisible}
-        aria-controls='mobile-navigation'
-        className='ml-3 flex size-11 items-center justify-center rounded-md transition-colors hover:bg-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 dark:hover:bg-slate-700 xl:hidden'
-        onClick={() => setMenuVisible(true)}
-      >
-        <AiOutlineBars aria-hidden='true' fontSize={28} />
-      </button>
+      <div className='flex items-center xl:hidden'>
+        <LanguageSwitcher className='mr-2' />
+        <button
+          ref={menuButtonRef}
+          type='button'
+          aria-label='Open navigation menu'
+          aria-expanded={isMenuVisible}
+          aria-controls='mobile-navigation'
+          className='ml-1 flex size-11 items-center justify-center rounded-md transition-colors hover:bg-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 dark:hover:bg-slate-700'
+          onClick={() => setMenuVisible(true)}
+        >
+          <AiOutlineBars aria-hidden='true' fontSize={28} />
+        </button>
+      </div>
 
       {isMenuVisible && (
         <div className='fixed inset-0 z-[60] xl:hidden'>
@@ -108,6 +117,9 @@ const Navbar = ({ homepage, classprops }) => {
                 <NavBarItem key={item.title} menu={item} homepage={homepage} onNavigate={closeMenu} />
               ))}
             </ul>
+            <div className='mt-6 pt-4 border-t border-slate-300 dark:border-slate-700 flex justify-center'>
+              <LanguageSwitcher />
+            </div>
           </aside>
         </div>
       )}

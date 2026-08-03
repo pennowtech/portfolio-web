@@ -1,0 +1,200 @@
+{
+  "nav": {
+    "home": "Startseite",
+    "about": "Über mich",
+    "skills": "Fähigkeiten",
+    "projects": "Projekte",
+    "articles": "Artikel",
+    "contact": "Kontakt",
+    "menu": "Menü",
+    "language": "Sprache"
+  },
+  "footer": {
+    "slogan": "Architektur fundiert auf Ingenieurskunst – durch praktische Systeme, verlässliche Software und Lösungen für die reale Welt.",
+    "responseNotice": "Antwort erfolgt üblicherweise innerhalb von ein bis zwei Werktagen.",
+    "explore": "Entdecken",
+    "connect": "Verbinden",
+    "rights": "Alle Rechte vorbehalten.",
+    "privacy": "Datenschutzerklärung",
+    "imprint": "Impressum",
+    "privacySettings": "Datenschutzeinstellungen"
+  },
+  "privacy": {
+    "titleChoice": "Ihre Datenschutz-Auswahl",
+    "consentText": "Essenzielle Speicherdaten speichern Ihre Design- und Datenschutzeinstellungen. Optionales Google Analytics ist deaktiviert, sofern Sie nicht zustimmen. Lesen Sie die Datenschutzerklärung.",
+    "policyLink": "Datenschutzerklärung",
+    "accept": "Analytics akzeptieren",
+    "essentialOnly": "Nur essenzielle",
+    "learnMore": "Mehr erfahren"
+  },
+  "aboutSection": {
+    "role": "Software- & Systemarchitekt",
+    "location": "Deutschland · Architektur, Systeme & Software",
+    "fact1Label": "Jahre Entwicklerpraxis",
+    "fact2Label": "Fachbereiche",
+    "fact3Label": "Hauptsprachen",
+    "headline": "Durchdachte Architektur & modernes Systemdesign",
+    "subheadline": "Ich entwerfe belastbare Systemarchitekturen und sauberes Design – damit komplexe Software verständlich, schnell und verlässlich bleibt.",
+    "highlight1": "Über 18 Jahre Erfahrung im Entwurf komplexer Systeme – von Medizintechnik und autonomen Fahrzeugen bis Hochfrequenzhandel und Microservices.",
+    "highlight2": "Hands-on Architekt mit echter Leidenschaft für C++, Rust, Python und moderne Web-Architekturen.",
+    "highlight3": "Entwurf robuster Service-Architekturen, APIs und Datenplattformen mit FastAPI, gRPC, PostgreSQL und Redis.",
+    "highlight4": "Architekturelle Kompetenz auf allen Ebenen – von Netzwerkprotokollen (TCP/IP, CAN) bis zu Cloud-Infrastruktur (Docker, K8s).",
+    "highlight5": "Starkes Systemdesign kombiniert mit transparenter Kommunikation, Teamgeist und lösungsorientiertem Handeln.",
+    "getInTouch": "Lass uns sprechen",
+    "viewProfile": "Mehr über mich",
+    "siteDesignedTag": "Von mir entworfen und umgesetzt, von A bis Z."
+  },
+  "introHighlight": {
+    "subtitle": "Mein Weg & meine Haltung",
+    "title": "Architektur & Engineering in der Praxis",
+    "desc": "Wie 18+ Jahre Erfahrung in unterschiedlichen Branchen meine Denkweise in Softwarearchitektur und Systemdesign geprägt haben.",
+    "block1Title": "Vielseitigkeit durch verschiedene Domänen",
+    "block1Text": "Entwürfe für Medizintechnik, Hochfrequenzhandel und autonomes Fahren haben mir gezeigt, wie man Architekturmuster früh erkennt und belastbare Lösungen entwickelt.",
+    "block2Title": "Code-nahes Architektur-Verständnis",
+    "block2Text": "Gute Architektur entsteht im Code. Durch tägliches Programmieren in C++, Rust, Python und TypeScript bleiben meine Entwürfe performant, praxistauglich und entwicklerfreundlich.",
+    "block3Title": "Ganzheitliches Systemdesign",
+    "block3Text": "Von Netzwerkprotokollen auf Bit-Ebene (TCP/IP, CAN) bis hin zu Cloud-Plattformen mit Docker, Kubernetes und gRPC bringe ich Struktur in jede Schicht.",
+    "block4Title": "Ergebnisse statt reiner Dokumentation",
+    "block4Text": "Architekturkonzepte sind wertvoll, aber entscheidend ist die funktionierende Anwendung. Mein Fokus liegt auf der verlässlichen Umsetzung in Production.",
+    "block5Title": "Teamorientiert & lösungsorientiert",
+    "block5Text": "Starke Architektur entsteht gemeinsam. Ich bringe Ruhe, aktives Zuhören und pragmatische Energie ein, um komplexe Herausforderungen entspannt zu lösen.",
+    "toolkitTitle": "Technisches Werkzeugset",
+    "toolkitDesc": "Sprachen, Frameworks und Architektur-Tools, mit denen ich täglich arbeite.",
+    "groups": {
+      "Architecture": "Architektur",
+      "Architecture Modelling": "Architekturmodellierung",
+      "Languages": "Programmiersprachen",
+      "Frameworks & testing": "Frameworks & Testing",
+      "Systems & networking": "Systeme & Netzwerke",
+      "Data & platforms": "Daten & Plattformen",
+      "Middleware": "Middleware"
+    }
+  },
+  "projects": {
+    "subtitle": "Ausgewählte Arbeiten",
+    "title": "Projekte rund um echte Herausforderungen",
+    "desc": "Drei Produkte, die Systemdenken, praktische Entwicklerarbeit und zukunftssichere Architektur vereinen.",
+    "featuredLabel": "Hervorgehobenes Projekt",
+    "exploreGithub": "Auf GitHub erkunden",
+    "privateDevelopment": "Interne Produktentwicklung",
+    "rustyCanStudio": {
+      "title": "Rusty CAN Studio",
+      "imageAlt": "Ingenieur-Workstation mit Visualisierung von CAN-Bus-Verkehr und eingebetteten Netzwerksignalen",
+      "description": "Ein Desktop-Engineering-Werkzeug, das komplexen CAN- und CAN-FD-Verkehr in prüfbare, dekodierbare und wiederholbare Arbeitsabläufe verwandelt.",
+      "label": "Zentrales Engineering-Tool",
+      "highlights": [
+        "Echtzeit- und Offline-Spurenanalyse",
+        "Profilgestützte Protokolldekodierung",
+        "Wiederholbare Testsimulation"
+      ]
+    },
+    "lingora": {
+      "title": "Lingora",
+      "imageAlt": "Plattformübergreifendes Sprachlernsystem mit verknüpften semantischen Konzepten und Lernkarten",
+      "description": "Eine KI-native, Offline-First Sprachlernplattform, aufgebaut um deutsche Morphologie, kontextuelle Bedeutungscluster und FSRS-basiertes Wiederholen auf Mobil- und Desktopgeräten.",
+      "label": "KI-Architektur"
+    },
+    "shelfie": {
+      "title": "Shelfie",
+      "imageAlt": "Offline-First digitale Bibliothek mit Lese-, Anmerkungs- und Synchronisierungswerkzeugen",
+      "description": "Eine ausgereifte Offline-First Android-Bibliothek und E-Book-Reader mit Ausleihe, Anmerkungen, Wortschatztraining, datenschutzfreundlicher KI-Unterstützung und konfliktsicherer Synchronisation.",
+      "label": "Produkt-Engineering"
+    }
+  },
+  "homeArticles": {
+    "subtitle": "Erkenntnisse aus dem Feld",
+    "title": "Artikel",
+    "desc": "Praxisnahe Beiträge zu Softwarearchitektur, technischen Entscheidungen und Erfahrungen beim Aufbau realer Systeme.",
+    "viewAll": "Alle Artikel anzeigen"
+  },
+  "contact": {
+    "subtitle": "Gespräch beginnen",
+    "title": "Kontaktieren Sie mich",
+    "headline": "Haben Sie eine spannende technische Herausforderung?",
+    "desc": "Beschreiben Sie kurz Ihr Produkt, Ihre Plattform oder Ihre Engineering-Aufgabe. Eine kurze Nachricht genügt für den ersten Schritt.",
+    "fallbackText": "Falls das Formular nicht erreichbar ist, kontaktieren Sie mich über",
+    "firstname": "Vorname",
+    "lastname": "Nachname",
+    "email": "E-Mail-Adresse",
+    "message": "Nachricht",
+    "placeholder": "Ein kurzer Überblick über Herausforderung, Kontext oder Vorhaben…",
+    "helpMessage": "Bitte vermeiden Sie die Übermittlung vertraulicher Informationen.",
+    "send": "Nachricht senden",
+    "sending": "Wird gesendet…",
+    "privacyNotice": "Ihre Angaben werden ausschließlich zur Bearbeitung dieser Anfrage verwendet. Details entnehmen Sie der Datenschutzerklärung.",
+    "recaptchaStart": "Diese Website ist durch reCAPTCHA geschützt und es gelten die Google",
+    "recaptchaPrivacy": "Datenschutzbestimmungen",
+    "recaptchaAnd": "und",
+    "recaptchaTerms": "Nutzungsbedingungen",
+    "recaptchaEnd": "."
+  },
+  "imprintPage": {
+    "operatorTitle": "Websitebetreiber",
+    "country": "Deutschland",
+    "contactTitle": "Kontakt",
+    "website": "Website",
+    "email": "E-Mail",
+    "online": "Online",
+    "contactFormLink": "Kontaktformular",
+    "natureTitle": "Art dieser Website",
+    "natureText": "SinghBuildsTech ist ein persönliches berufliches Portfolio zur Präsentation von Erfahrungen, Projekten und Fachartikeln. Es werden keine Käufe, Verträge oder kostenpflichtigen digitalen Dienstleistungen direkt über diese Website geschlossen.",
+    "noteTitle": "Wichtiger Hinweis zur Anbieterkennzeichnung nach deutschem Recht",
+    "noteText": "§ 5 DDG verlangt die Angabe von Name, Anschrift und elektronischen Kontaktdaten, sofern die Voraussetzungen für einen geschäftsmäßigen digitalen Dienst vorliegen. Diese Seite stellt derzeit die Identität des Betreibers und elektronische Kontaktdaten bereit, veröffentlicht jedoch keine Postanschrift. Vor der Nutzung dieser Seite zum Anbieten kostenpflichtiger Dienste oder dem Betrieb im Rahmen von § 5 DDG muss eine qualifizierte Postanschrift hinzugefügt und überprüft werden.",
+    "officialText": "Offizieller Gesetzestext",
+    "sectionLink": "§ 5 DDG"
+  },
+  "privacyPage": {
+    "s1Title": "Verantwortlicher und Kontakt",
+    "s1p1": "Verantwortlicher für diese Website im Sinne der Datenschutz-Grundverordnung ist Sukhdeep Singh, Deutschland.",
+    "s1p2Start": "Diese Erklärung gilt für",
+    "s1p2End": "und die zugehörige weitergeleitete www-Domain.",
+    "s1p3Start": "Datenschutzanfragen können per E-Mail an",
+    "s1p3Mid": "oder über das",
+    "contactFormLink": "Kontaktformular",
+    "s2Title": "Hosting und Server-Logfiles",
+    "s2p1": "Die Website wird bei Vercel gehostet. Bei jedem Aufruf einer Seite werden technische Verbindungsdaten wie IP-Adresse, Datum und Uhrzeit, aufgerufene Ressource, Browserinformationen und Antwortstatus in Server- und Sicherheits-Logs verarbeitet. Dies ist erforderlich, um die Website auszuliefern, zu sichern und zu analysieren. Rechtsgrundlage ist das berechtigte Interesse an einem sicheren und zuverlässigen Betrieb gemäß Art. 6 Abs. 1 lit. f DSGVO.",
+    "s2p2Start": "Weitere Einzelheiten zur Datenverarbeitung durch Vercel finden Sie in der",
+    "vercelPolicy": "Vercel Datenschutzerklärung",
+    "s3Title": "Kontaktanfragen",
+    "s3p1": "Das Kontaktformular erfasst Vorname, Nachname, E-Mail-Adresse und den Inhalt der Nachricht. Diese Angaben werden verwendet, um die Anfrage zu prüfen und zu beantworten. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO, sofern die Anfrage vorvertragliche Maßnahmen betrifft, und im Übrigen Art. 6 Abs. 1 lit. f DSGVO.",
+    "s3p2": "Erfolgreich übermittelte Anfragen werden in einer privaten Notion-Datenbank gespeichert. Kontaktdaten werden mindestens vierteljährlich überprüft und spätestens 12 Monate nach der letzten inhaltlichen Kommunikation gelöscht, es sei denn, sie werden für eine laufende Zusammenarbeit oder aufgrund gesetzlicher Aufbewahrungspflichten benötigt.",
+    "s3p3Start": "Erfahren Sie mehr in der",
+    "notionPolicy": "Notion Datenschutzerklärung",
+    "s4Title": "Spamschutz mit Google reCAPTCHA",
+    "s4p1": "Das Kontaktformular nutzt Google reCAPTCHA v3, um berechtigte Eingaben von automatisiertem Missbrauch zu unterscheiden. Der Dienst wertet technische und verhaltensbezogene Signale aus und liefert einen Risiko-Score zurück. Dieser Wert dient ausschließlich der Annahme oder Ablehnung des Formulars.",
+    "s4p2Start": "Diese Verarbeitung dient dem berechtigten Interesse am Schutz des Formulars und der Website gemäß Art. 6 Abs. 1 lit. f DSGVO. Es gelten Google’s",
+    "googlePrivacy": "Datenschutzbestimmungen",
+    "and": "und",
+    "googleTerms": "Nutzungsbedingungen",
+    "apply": ".",
+    "s5Title": "Optionales Google Analytics",
+    "s5p1": "Sofern Google Analytics konfiguriert ist, bleibt es deaktiviert, bis der Besucher „Analytics akzeptieren“ auswählt. Der Dienst kann dann Seitenaufrufe, Geräte- und Browserinformationen, ungefähren Standort sowie Interaktionsdaten verarbeiten. Die IP-Anonymisierung ist aktiviert. Rechtsgrundlage ist die Einwilligung gemäß Art. 6 Abs. 1 lit. a DSGVO. Ereignisdaten werden maximal zwei Monate gespeichert.",
+    "s5p2": "Die Einwilligung kann ohne Nachteile verweigert und jederzeit über „Datenschutzeinstellungen“ im Footer angepasst werden.",
+    "s6Title": "Schriftarten und lokaler Browserspeicher",
+    "s6p1": "Schriftarten werden direkt vom eigenen Server geladen. Der Browser stellt keine Verbindung zu Google Fonts her.",
+    "s6p2": "Im lokalen Speicher (Local Storage) werden das Farbschema und die Datenschutz-Auswahl gespeichert. Diese Werte sind erforderlich, um das Erscheinungsbild und den Einwilligungssstatus zu erhalten.",
+    "s7Title": "Eingebettete Medien und Social-Media-Beiträge",
+    "s7p1": "Beiträge können YouTube-Videos oder Social-Media-Posts von LinkedIn und X/Twitter enthalten. Externe Inhalte werden erst geladen, wenn der Besucher die entsprechende Schaltfläche betätigt. Die Aktivierung ist freiwillig und basiert auf Art. 6 Abs. 1 lit. a DSGVO.",
+    "s8Title": "Empfänger und internationale Datenübermittlungen",
+    "s8p1": "Vercel, Notion und – bei Nutzung entsprechender Funktionen – Google, LinkedIn und X können Daten verarbeiten. Eine Verarbeitung außerhalb des Europäischen Wirtschaftsraums erfolgt auf Grundlage geeigneter Garantien oder Angemessenheitsbeschlüsse.",
+    "s9Title": "Ihre Rechte",
+    "s9p1": "Betroffene Personen haben im Rahmen der DSGVO das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch. Einwilligungen können jederzeit widerrufen werden.",
+    "s9p2Start": "Beschwerden können an die zuständige Datenschutzaufsichtsbehörde gerichtet werden. Der",
+    "bfdiLink": "BfDI Anschriftenfinder",
+    "s9p2End": "hilft bei der Ermittlung der zuständigen Behörde.",
+    "s10Title": "Aktualisierungen",
+    "s10p1": "Stand: 2. August 2026. Diese Erklärung wird bei Änderungen der Datenflüsse, Anbieter oder rechtlichen Vorgaben aktualisiert."
+  },
+  "legal": {
+    "privacy": {
+      "title": "Datenschutzerklärung",
+      "eyebrow": "Ihre Daten und Ihre Wahl",
+      "description": "Wie SinghBuildsTech.com personenbezogene Daten verarbeitet, welche Dienste beteiligt sind und welche Rechte Besuchern zustehen."
+    },
+    "imprint": {
+      "title": "Impressum",
+      "eyebrow": "Rechtliche Informationen",
+      "description": "Betreiber- und Kontaktinformationen für das persönliche berufliche Portfolio SinghBuildsTech."
+    }
+  }
+}

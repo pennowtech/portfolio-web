@@ -1,9 +1,15 @@
 import React from 'react';
 import { Link as ScrollLink } from 'react-scroll';
 import Link from 'next/link';
+import { useLanguage } from '../utils/LanguageContext';
 
 const NavBarItem = ({ menu, classprops, homepage, onNavigate }) => {
+  const { t } = useLanguage();
   const fullPath = `/#${menu.path}`;
+  const localizedTitle = t(
+    `nav.${menu.path === 'about-me' ? 'about' : menu.path === 'page' ? 'articles' : menu.path}`,
+    menu.title
+  );
   const linkClasses = `flex min-h-11 w-full items-center rounded-md px-3 py-2 transition-colors duration-200
     hover:bg-green-700 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700
     dark:hover:bg-slate-900 dark:hover:text-orange-400 ${classprops || ''}`.trim();
@@ -29,11 +35,11 @@ const NavBarItem = ({ menu, classprops, homepage, onNavigate }) => {
           }}
           className={`${linkClasses} cursor-pointer whitespace-nowrap`}
         >
-          {menu.title}
+          {localizedTitle}
         </ScrollLink>
       ) : (
         <Link href={fullPath} onClick={onNavigate} className={`${linkClasses} whitespace-nowrap`}>
-          {menu.title}
+          {localizedTitle}
         </Link>
       )}
     </li>

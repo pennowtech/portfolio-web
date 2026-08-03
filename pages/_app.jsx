@@ -10,6 +10,8 @@ import Footer from '@components/Footer';
 import Analytics from '@components/Analytics';
 import PrivacyConsent from '@components/PrivacyConsent';
 
+import { LanguageProvider } from '../utils/LanguageContext';
+
 nProgress.configure({ showSpinner: false });
 Router.events.on('routeChangeStart', () => nProgress.start());
 Router.events.on('routeChangeComplete', () => nProgress.done());
@@ -17,7 +19,7 @@ Router.events.on('routeChangeError', () => nProgress.done());
 
 function MyApp({ Component, pageProps }) {
   return (
-    <>
+    <LanguageProvider>
       <Analytics />
       <Head>
         <title>SinghBuildsTech | Sukhdeep Singh, Technical Architect</title>
@@ -35,7 +37,7 @@ function MyApp({ Component, pageProps }) {
           <PrivacyConsent />
         </div>
       </ThemeProvider>
-    </>
+    </LanguageProvider>
   );
 }
 

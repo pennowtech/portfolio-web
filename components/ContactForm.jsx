@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react';
 import Link from 'next/link';
 import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { BiPaperPlane } from 'react-icons/bi';
+import { useLanguage } from '../utils/LanguageContext';
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -42,6 +43,7 @@ const validateForm = (formData) => {
 };
 
 const ContactFormContent = () => {
+  const { t } = useLanguage();
   const { executeRecaptcha } = useGoogleReCaptcha();
   const [formData, setFormData] = useState({
     firstname: '',
@@ -120,17 +122,19 @@ const ContactFormContent = () => {
       <div className='mx-auto grid w-full max-w-[1048px] gap-10 px-4 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16 lg:px-8'>
         <div className='self-start lg:sticky lg:top-28'>
           <p className='mb-2 font-Monda text-sm font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-300'>
-            Start a conversation
+            {t('contact.subtitle', 'Start a conversation')}
           </p>
           <h2 id='contact-title' className='mb-4 font-Neuton text-4xl font-semibold leading-tight md:text-5xl'>
-            Have a system challenge worth discussing?
+            {t('contact.headline', 'Have a system challenge worth discussing?')}
           </h2>
           <p className='mb-5 leading-relaxed text-slate-600 dark:text-slate-200'>
-            Share a little context about the product, platform, or engineering problem. A concise message is enough to
-            get the conversation started.
+            {t(
+              'contact.desc',
+              'Share a little context about the product, platform, or engineering problem. A concise message is enough to get the conversation started.'
+            )}
           </p>
           <p className='mb-0 text-sm text-slate-500 dark:text-slate-300'>
-            If the form is unavailable, reach out through{' '}
+            {t('contact.fallbackText', 'If the form is unavailable, reach out through')}{' '}
             <Link
               href='https://x.com/techishdeep'
               className='font-semibold text-green-700 underline underline-offset-4 hover:text-green-600 dark:text-green-400'
@@ -150,7 +154,7 @@ const ContactFormContent = () => {
             <InputField
               id='firstname'
               type='text'
-              label='First name'
+              label={t('contact.firstname', 'First name')}
               autoComplete='given-name'
               value={formData.firstname}
               onChange={handleChange}
@@ -160,7 +164,7 @@ const ContactFormContent = () => {
             <InputField
               id='lastname'
               type='text'
-              label='Last name'
+              label={t('contact.lastname', 'Last name')}
               autoComplete='family-name'
               value={formData.lastname}
               onChange={handleChange}
@@ -173,7 +177,7 @@ const ContactFormContent = () => {
             <InputField
               id='email'
               type='email'
-              label='Email address'
+              label={t('contact.email', 'Email address')}
               autoComplete='email'
               value={formData.email}
               onChange={handleChange}
@@ -184,13 +188,13 @@ const ContactFormContent = () => {
 
           <div className='mt-6'>
             <label className='mb-2 block font-Monda text-sm font-semibold' htmlFor='message'>
-              Message
+              {t('contact.message', 'Message')}
             </label>
             <textarea
               className='min-h-44 w-full resize-y rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-green-700 focus:ring-2 focus:ring-green-700/20 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-500 dark:bg-gray-700 dark:text-slate-50 dark:placeholder:text-slate-400 dark:focus:border-green-400 dark:focus:ring-green-400/20'
               id='message'
               name='message'
-              placeholder='A short overview of the challenge, context, or opportunity…'
+              placeholder={t('contact.placeholder', 'A short overview of the challenge, context, or opportunity…')}
               value={formData.message}
               onChange={handleChange}
               disabled={isSubmitting}
@@ -206,7 +210,7 @@ const ContactFormContent = () => {
                 </p>
               ) : (
                 <p id='message-help' className='m-0 text-slate-500 dark:text-slate-300'>
-                  Please avoid including confidential information.
+                  {t('contact.helpMessage', 'Please avoid including confidential information.')}
                 </p>
               )}
               <span className='shrink-0 text-slate-400'>{formData.message.length}/4000</span>
@@ -232,27 +236,26 @@ const ContactFormContent = () => {
             disabled={isSubmitting}
             className='mt-6 flex min-h-12 w-full items-center justify-center rounded-lg bg-green-700 px-6 py-3 font-Monda font-bold text-white shadow-sm transition hover:bg-green-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-green-600 dark:hover:bg-green-500 dark:focus-visible:ring-offset-gray-700 sm:w-auto'
           >
-            {isSubmitting ? 'Sending…' : 'Send message'}
+            {isSubmitting ? t('contact.sending', 'Sending…') : t('contact.send', 'Send message')}
             <BiPaperPlane aria-hidden='true' className='ml-2 text-lg' />
           </button>
           <p className='mb-0 mt-4 max-w-xl text-xs leading-relaxed text-slate-500 dark:text-slate-300'>
-            Your details are used only to respond to this enquiry. See the{' '}
-            <Link href='/privacy' className='text-green-700 underline dark:text-green-400'>
-              privacy policy
-            </Link>{' '}
-            for retention, recipients, and your rights.
+            {t(
+              'contact.privacyNotice',
+              'Your details are used only to respond to this enquiry. See the privacy policy for retention, recipients, and your rights.'
+            )}
           </p>
           {process.env.NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY && (
             <p className='mb-0 mt-2 max-w-xl text-xs leading-relaxed text-slate-500 dark:text-slate-300'>
-              This site is protected by reCAPTCHA and the Google{' '}
+              {t('contact.recaptchaStart', 'This site is protected by reCAPTCHA and the Google')}{' '}
               <a className='text-green-700 underline dark:text-green-400' href='https://policies.google.com/privacy'>
-                Privacy Policy
+                {t('contact.recaptchaPrivacy', 'Privacy Policy')}
               </a>{' '}
-              and{' '}
+              {t('contact.recaptchaAnd', 'and')}{' '}
               <a className='text-green-700 underline dark:text-green-400' href='https://policies.google.com/terms'>
-                Terms of Service
+                {t('contact.recaptchaTerms', 'Terms of Service')}
               </a>{' '}
-              apply.
+              {t('contact.recaptchaEnd', 'apply.')}
             </p>
           )}
         </form>

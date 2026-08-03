@@ -13,8 +13,10 @@ import FullLayout from '../components/FullLayout';
 import AboutSection from '../components/Intro/AboutSection';
 import HeaderMain from '../components/HeaderMain';
 import PostTags from '../components/Post/PostTags';
+import { useLanguage } from '../utils/LanguageContext';
 
 const Index = ({ posts }) => {
+  const { t } = useLanguage();
   const metaInfo = {
     title: 'SinghBuildsTech | Sukhdeep Singh, Technical Architect',
     metaKeywords: 'Technical Architect, Software Architecture, Embedded Systems, Rust, C++, Python, Microservices',
@@ -28,7 +30,10 @@ const Index = ({ posts }) => {
         <AboutSection classProps='font-RobotoSlab text-base leading-8' />
         <div className='container mx-auto px-4 pb-12 font-Rajdhani text-base md:pb-16'>
           <p className='text-pink-500 dark:text-green-400 font-semibold'>
-            This whole website is designed by me, from designing till development.{' '}
+            {t(
+              'aboutSection.siteDesignedTag',
+              'This whole website is designed by me, from designing till development.'
+            )}
           </p>
           <PostTags limitedTags={false} tags={WebSiteTags} />
         </div>
