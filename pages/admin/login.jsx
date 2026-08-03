@@ -2,8 +2,8 @@ import React from 'react';
 import FullLayout from '@components/FullLayout';
 import HeaderMain from '@components/HeaderMain';
 import AdminLogin from '@components/AdminLogin';
-import { getServerSession } from 'next-auth/next';
 import { authOptions, isAdminSession } from '@utils/authOptions';
+import { getServerSession } from 'next-auth/next';
 
 const LoginPage = () => (
   <FullLayout

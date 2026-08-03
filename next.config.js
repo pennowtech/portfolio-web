@@ -1,7 +1,5 @@
 module.exports = {
-  experimental: {
-    allowedDevOrigins: ['192.168.0.79']
-  },
+  allowedDevOrigins: ['192.168.0.79'],
   images: {
     remotePatterns: [
       {

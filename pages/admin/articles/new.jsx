@@ -2,8 +2,8 @@ import React from 'react';
 import FullLayout from '@components/FullLayout';
 import HeaderMain from '@components/HeaderMain';
 import ArticleEditor from '@components/ArticleEditor';
-import { getServerSession } from 'next-auth/next';
 import { authOptions, isAdminSession } from '@utils/authOptions';
+import { getServerSession } from 'next-auth/next';
 
 const NewArticlePage = ({ adminEmail, defaultPublicationDate }) => (
   <FullLayout

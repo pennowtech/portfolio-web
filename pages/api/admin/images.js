@@ -1,5 +1,5 @@
-import { getServerSession } from 'next-auth/next';
 import { authOptions, isAdminSession } from '@utils/authOptions';
+import { getServerSession } from 'next-auth/next';
 import { isSameOriginRequest } from '@utils/requestSecurity';
 
 export default async function handler(req, res) {
