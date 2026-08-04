@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { AiOutlineBars, AiOutlineClose } from 'react-icons/ai';
+import { BiSearch } from 'react-icons/bi';
 
 import { MenuItems } from '../utils/consts';
 import NavBarItem from './NavBarItem';
 import LanguageSwitcher from './LanguageSwitcher';
-
-// const MyLink = React.forwardRef((props, ref) => <Link href={href}>{props.children}</Link>);
+import ThemeToggle from './ThemeToggle';
 
 const Navbar = ({ homepage, classprops }) => {
   const [isMenuVisible, setMenuVisible] = useState(false);
@@ -19,6 +19,10 @@ const Navbar = ({ homepage, classprops }) => {
 
   const closeMenu = () => {
     setMenuVisible(false);
+  };
+
+  const triggerCmdK = () => {
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }));
   };
 
   useEffect(() => {
@@ -65,50 +69,56 @@ const Navbar = ({ homepage, classprops }) => {
     <nav aria-label='Primary navigation' className={`${classprops} flex items-center`}>
       <ul className='m-0 hidden list-none flex-row items-center gap-1 p-0 xl:flex'>
         {desktopNavItems}
-        <li className='ml-2 border-l border-slate-300 dark:border-slate-700 pl-3 flex items-center gap-2'>
+        <li className='ml-2 border-l border-slate-300 dark:border-slate-700 pl-3 flex items-center gap-2.5'>
           <button
             type='button'
-            onClick={() => window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }))}
-            className='inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-slate-100/80 px-2.5 py-1 text-xs font-semibold text-slate-600 transition hover:border-slate-400 hover:bg-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
+            onClick={triggerCmdK}
+            className='inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-slate-100/80 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700'
             title='Search articles and commands (Cmd + K)'
           >
+            <BiSearch aria-hidden='true' className='text-sm text-slate-500 dark:text-slate-400' />
             <span>Search</span>
-            <kbd className='rounded border border-slate-300 bg-white px-1 py-0.2 text-[10px] font-bold text-slate-500 shadow-2xs dark:border-slate-600 dark:bg-slate-900 dark:text-slate-400'>
+            <kbd className='rounded border border-slate-300 bg-white px-1.5 py-0.5 text-[10px] font-bold text-slate-500 shadow-2xs dark:border-slate-600 dark:bg-slate-900 dark:text-slate-400'>
               ⌘K
             </kbd>
           </button>
+          <ThemeToggle />
           <LanguageSwitcher />
         </li>
       </ul>
 
-      <div className='flex items-center xl:hidden'>
+      <div className='flex items-center gap-2 xl:hidden'>
         <button
           type='button'
-          onClick={() => window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }))}
-          className='mr-2 inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-slate-100/80 px-2 py-1 text-xs font-semibold text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300'
+          onClick={triggerCmdK}
+          className='inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-800 shadow-2xs transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700'
+          title='Search articles and commands (Cmd + K)'
         >
-          <kbd className='text-[10px] font-bold'>⌘K</kbd>
+          <BiSearch aria-hidden='true' className='text-sm text-orange-600 dark:text-orange-400' />
+          <span>Search</span>
+          <kbd className='rounded border border-slate-300 bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-300'>
+            ⌘K
+          </kbd>
         </button>
-        <LanguageSwitcher className='mr-2' />
         <button
           ref={menuButtonRef}
           type='button'
           aria-label='Open navigation menu'
           aria-expanded={isMenuVisible}
           aria-controls='mobile-navigation'
-          className='ml-1 flex size-11 items-center justify-center rounded-md transition-colors hover:bg-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 dark:hover:bg-slate-700'
+          className='flex size-11 items-center justify-center rounded-lg border border-slate-300 bg-white text-slate-900 shadow-2xs transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700'
           onClick={() => setMenuVisible(true)}
         >
-          <AiOutlineBars aria-hidden='true' fontSize={28} />
+          <AiOutlineBars aria-hidden='true' className='text-2xl' />
         </button>
       </div>
 
       {isMenuVisible && (
-        <div className='fixed inset-0 z-[60] xl:hidden'>
+        <div className='fixed inset-0 z-[100] xl:hidden'>
           <button
             type='button'
             aria-label='Close navigation menu'
-            className='absolute inset-0 h-full w-full cursor-default bg-slate-950/50 backdrop-blur-[1px]'
+            className='absolute inset-0 h-full w-full cursor-default bg-slate-950/60 backdrop-blur-xs'
             onClick={closeMenu}
           />
           <aside
@@ -117,17 +127,17 @@ const Navbar = ({ homepage, classprops }) => {
             role='dialog'
             aria-modal='true'
             aria-label='Navigation menu'
-            className='relative flex h-dvh w-[min(82vw,22rem)] flex-col bg-slate-100 p-4 text-slate-900 shadow-2xl dark:bg-slate-800 dark:text-slate-100'
+            className='relative flex h-dvh w-[min(85vw,22rem)] flex-col bg-slate-100 p-5 text-slate-900 shadow-2xl dark:bg-slate-800 dark:text-slate-100'
           >
-            <div className='mb-5 flex items-center justify-between border-b border-slate-300 pb-3 dark:border-slate-600'>
-              <span className='font-Rajdhani text-xl font-bold'>Menu</span>
+            <div className='mb-6 flex items-center justify-between border-b border-slate-300 pb-3.5 dark:border-slate-700'>
+              <span className='font-Rajdhani text-2xl font-bold tracking-wide'>Menu</span>
               <button
                 type='button'
                 aria-label='Close navigation menu'
-                className='flex size-11 items-center justify-center rounded-md transition-colors hover:bg-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 dark:hover:bg-slate-700'
+                className='flex size-10 items-center justify-center rounded-lg text-slate-700 transition hover:bg-slate-200 dark:text-slate-200 dark:hover:bg-slate-700'
                 onClick={closeMenu}
               >
-                <AiOutlineClose aria-hidden='true' fontSize={28} />
+                <AiOutlineClose aria-hidden='true' className='text-2xl' />
               </button>
             </div>
             <ul className='m-0 flex list-none flex-col gap-2 p-0'>
@@ -135,8 +145,15 @@ const Navbar = ({ homepage, classprops }) => {
                 <NavBarItem key={item.title} menu={item} homepage={homepage} onNavigate={closeMenu} />
               ))}
             </ul>
-            <div className='mt-6 pt-4 border-t border-slate-300 dark:border-slate-700 flex justify-center'>
-              <LanguageSwitcher />
+            <div className='mt-auto flex flex-col gap-3 border-t border-slate-300 pt-5 dark:border-slate-700'>
+              <div className='flex items-center justify-between rounded-xl border border-slate-300 bg-white p-3 shadow-2xs dark:border-slate-700 dark:bg-slate-900/60'>
+                <span className='font-Monda text-sm font-semibold text-slate-800 dark:text-slate-200'>Appearance</span>
+                <ThemeToggle />
+              </div>
+              <div className='flex items-center justify-between rounded-xl border border-slate-300 bg-white p-3 shadow-2xs dark:border-slate-700 dark:bg-slate-900/60'>
+                <span className='font-Monda text-sm font-semibold text-slate-800 dark:text-slate-200'>Language</span>
+                <LanguageSwitcher />
+              </div>
             </div>
           </aside>
         </div>
