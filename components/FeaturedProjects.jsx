@@ -9,7 +9,7 @@ const TechnologyList = ({ project }) => (
     {project.technologies.map((technology) => (
       <li
         key={technology}
-        className='rounded-full border border-slate-200 px-2.5 py-1 font-Monda text-xs font-semibold text-slate-600 dark:border-slate-500 dark:text-slate-200'
+        className='rounded-full border border-slate-300 bg-slate-100/80 px-3 py-1 font-Monda text-xs font-bold text-slate-700 shadow-xs dark:border-slate-700/80 dark:bg-slate-800/80 dark:text-slate-200'
       >
         {technology}
       </li>
@@ -23,13 +23,13 @@ const ProjectAction = ({ project, t }) =>
       href={project.href}
       target='_blank'
       rel='noopener noreferrer'
-      className='inline-flex min-h-11 items-center font-Monda text-sm font-bold text-green-700 transition hover:text-green-600 focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:text-green-400 dark:hover:text-green-300'
+      className='inline-flex min-h-11 items-center justify-center rounded-xl bg-green-700 px-5 font-Monda text-sm font-bold text-white shadow-md transition duration-200 hover:bg-green-800 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:bg-green-600 dark:hover:bg-green-500'
     >
       {t('projects.exploreGithub', 'Explore on GitHub')}
-      <FaArrowUpRightFromSquare aria-hidden='true' className='ml-2' />
+      <FaArrowUpRightFromSquare aria-hidden='true' className='ml-2 text-xs' />
     </Link>
   ) : (
-    <p className='mb-0 flex min-h-11 items-center font-Monda text-sm font-semibold text-slate-500 dark:text-slate-300'>
+    <p className='mb-0 flex min-h-11 items-center font-Monda text-sm font-semibold text-slate-500 dark:text-slate-400'>
       <FaLock aria-hidden='true' className='mr-2' />
       {t('projects.privateDevelopment', 'Private product development')}
     </p>
@@ -37,43 +37,48 @@ const ProjectAction = ({ project, t }) =>
 
 const ProjectImage = ({ project, featured = false }) => (
   <div
-    className={`relative overflow-hidden ${featured ? 'aspect-[16/9] lg:aspect-auto lg:min-h-[29rem]' : 'aspect-[16/9]'}`}
+    className={`relative overflow-hidden ${featured ? 'aspect-[16/10] lg:aspect-auto lg:min-h-[30rem]' : 'aspect-[16/10]'}`}
   >
     <Image
       src={project.image}
       alt={project.imageAlt}
       fill
-      sizes={featured ? '(max-width: 1023px) 100vw, 60vw' : '(max-width: 767px) 100vw, 50vw'}
-      className='m-0 object-cover object-top transition duration-500 group-hover:scale-[1.025]'
+      sizes={featured ? '(max-width: 1023px) 100vw, 55vw' : '(max-width: 767px) 100vw, 50vw'}
+      className='m-0 object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105'
     />
-    <div className='absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-slate-950/85 to-transparent' />
-    <span className='absolute bottom-4 left-4 rounded-full border border-white/40 bg-slate-950/75 px-3 py-1 font-Monda text-xs font-semibold text-white backdrop-blur-sm'>
+    <div className='absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent' />
+    <span className='absolute bottom-4 left-4 rounded-full border border-orange-500/40 bg-slate-950/80 px-3.5 py-1 font-Monda text-xs font-bold tracking-wide text-orange-400 backdrop-blur-md shadow-md'>
       {project.label}
     </span>
   </div>
 );
 
 const FeaturedProject = ({ project, t }) => (
-  <article className='not-prose group grid min-w-0 overflow-hidden rounded-2xl border border-slate-300 bg-white shadow-md transition duration-200 hover:border-slate-400 hover:shadow-xl dark:border-slate-500 dark:bg-gray-700 dark:hover:border-slate-400 lg:grid-cols-[1.2fr_0.8fr]'>
+  <article className='not-prose group relative grid min-w-0 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl transition-all duration-300 hover:border-orange-500/50 hover:shadow-2xl dark:border-slate-800 dark:bg-slate-900/90 dark:hover:border-orange-500/40 lg:grid-cols-[1.15fr_0.85fr]'>
     <ProjectImage project={project} featured />
-    <div className='flex flex-col justify-center p-6 md:p-8 lg:p-9'>
-      <p className='mb-2 font-Monda text-xs font-bold uppercase tracking-[0.14em] text-orange-700 dark:text-orange-400'>
-        {t('projects.featuredLabel', 'Featured project')}
-      </p>
-      <h3 className='mb-4 mt-0 font-Neuton text-3xl font-semibold leading-tight md:text-4xl'>{project.title}</h3>
-      <p className='mb-6 text-base leading-relaxed text-slate-600 dark:text-slate-200'>{project.description}</p>
+    <div className='flex flex-col justify-center p-6 sm:p-8 lg:p-10'>
+      <div className='mb-3 inline-flex items-center gap-2'>
+        <span className='size-2.5 rounded-full bg-orange-500 animate-pulse' />
+        <span className='font-Monda text-xs font-bold uppercase tracking-[0.16em] text-orange-600 dark:text-orange-400'>
+          {t('projects.featuredLabel', 'Featured project')}
+        </span>
+      </div>
+      <h3 className='mb-4 mt-0 font-Neuton text-3xl font-semibold leading-tight text-slate-900 dark:text-white sm:text-4xl'>
+        {project.title}
+      </h3>
+      <p className='mb-6 text-base leading-relaxed text-slate-600 dark:text-slate-300'>{project.description}</p>
 
-      <ul className='mb-6 mt-0 grid list-none gap-2.5 p-0 text-sm text-slate-700 dark:text-slate-100'>
+      <ul className='mb-6 mt-0 grid list-none gap-2.5 p-0 text-sm text-slate-700 dark:text-slate-200'>
         {project.highlights.map((highlight) => (
           <li key={highlight} className='flex items-start gap-2.5'>
-            <FaCheck aria-hidden='true' className='mt-1 shrink-0 text-green-700 dark:text-green-400' />
+            <FaCheck aria-hidden='true' className='mt-1 shrink-0 text-green-600 dark:text-green-400' />
             <span>{highlight}</span>
           </li>
         ))}
       </ul>
 
       <TechnologyList project={project} />
-      <div className='mt-6'>
+      <div className='mt-8'>
         <ProjectAction project={project} t={t} />
       </div>
     </div>
@@ -81,14 +86,16 @@ const FeaturedProject = ({ project, t }) => (
 );
 
 const SupportingProject = ({ project, t }) => (
-  <article className='not-prose group flex h-full min-w-0 flex-col overflow-hidden rounded-xl border border-slate-200 bg-white transition duration-200 hover:-translate-y-1 hover:border-slate-300 hover:shadow-lg dark:border-slate-500 dark:bg-gray-700 dark:hover:border-slate-400'>
+  <article className='not-prose group flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg transition-all duration-300 hover:-translate-y-1.5 hover:border-orange-500/50 hover:shadow-2xl dark:border-slate-800 dark:bg-slate-900/90 dark:hover:border-orange-500/40'>
     <ProjectImage project={project} />
-    <div className='flex flex-1 flex-col p-5 md:p-6'>
-      <h3 className='mb-3 mt-0 font-Neuton text-2xl font-semibold leading-tight md:text-3xl'>{project.title}</h3>
-      <p className='mb-5 text-base leading-relaxed text-slate-600 dark:text-slate-200'>{project.description}</p>
+    <div className='flex flex-1 flex-col p-6 sm:p-7'>
+      <h3 className='mb-3 mt-0 font-Neuton text-2xl font-semibold leading-tight text-slate-900 dark:text-white sm:text-3xl'>
+        {project.title}
+      </h3>
+      <p className='mb-6 text-base leading-relaxed text-slate-600 dark:text-slate-300'>{project.description}</p>
       <div className='mt-auto'>
         <TechnologyList project={project} />
-        <div className='mt-5'>
+        <div className='mt-6'>
           <ProjectAction project={project} t={t} />
         </div>
       </div>
@@ -155,16 +162,26 @@ const FeaturedProjects = () => {
   const [featuredProject, ...supportingProjects] = projects;
 
   return (
-    <section aria-labelledby='projects-title' className='relative py-14 md:py-20'>
+    <section
+      aria-labelledby='projects-title'
+      className='relative py-20 md:py-28 bg-slate-100/90 text-slate-900 dark:bg-slate-900 dark:text-white transition-colors duration-200 isolate overflow-hidden border-y border-slate-200 dark:border-slate-800 shadow-xl'
+    >
+      {/* Premium ambient glow lighting */}
+      <div className='absolute -top-40 left-1/4 -z-10 h-[30rem] w-[30rem] rounded-full bg-orange-500/10 dark:bg-orange-500/15 blur-[120px]' />
+      <div className='absolute -bottom-40 right-1/4 -z-10 h-[30rem] w-[30rem] rounded-full bg-green-500/10 dark:bg-green-500/15 blur-[120px]' />
+
       <div className='mx-auto w-full max-w-[1048px] px-4 lg:px-8'>
-        <header className='mx-auto mb-10 max-w-3xl text-center md:mb-12'>
-          <p className='mb-2 font-Monda text-sm font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-300'>
+        <header className='mx-auto mb-14 max-w-3xl text-center md:mb-20'>
+          <p className='mb-3 font-Monda text-xs font-bold uppercase tracking-[0.22em] text-orange-600 dark:text-orange-400'>
             {t('projects.subtitle', 'Selected work')}
           </p>
-          <h2 id='projects-title' className='mb-3 font-Neuton text-4xl font-semibold leading-tight md:text-5xl'>
+          <h2
+            id='projects-title'
+            className='mb-4 font-Neuton text-4xl font-semibold leading-tight text-slate-900 dark:text-white md:text-5xl lg:text-6xl'
+          >
             {t('projects.title', 'Projects built around real problems')}
           </h2>
-          <p className='mx-auto mb-0 max-w-2xl text-slate-600 dark:text-slate-200'>
+          <p className='mx-auto mb-0 max-w-2xl text-base text-slate-600 dark:text-slate-300 md:text-lg'>
             {t(
               'projects.desc',
               'Three products that bring together systems thinking, hands-on engineering, and architecture designed to hold up beyond the first release.'
@@ -174,7 +191,7 @@ const FeaturedProjects = () => {
 
         <FeaturedProject project={featuredProject} t={t} />
 
-        <div className='mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 xl:gap-8'>
+        <div className='mt-10 grid grid-cols-1 gap-8 md:grid-cols-2 lg:gap-10'>
           {supportingProjects.map((project) => (
             <SupportingProject key={project.title} project={project} t={t} />
           ))}

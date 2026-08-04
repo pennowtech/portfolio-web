@@ -30,7 +30,8 @@ if (!process.env.NEXTAUTH_URL) {
 module.exports = {
   i18n: {
     locales: ['en', 'de'],
-    defaultLocale: 'en'
+    defaultLocale: 'en',
+    localeDetection: false
   },
   allowedDevOrigins: ['192.168.0.79'],
   images: {

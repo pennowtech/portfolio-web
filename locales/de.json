@@ -33,9 +33,9 @@
     "fact1Label": "Jahre Entwicklerpraxis",
     "fact2Label": "Fachbereiche",
     "fact3Label": "Hauptsprachen",
-    "headline": "Durchdachte Architektur & modernes Systemdesign",
+    "headline": "Komplexe Systeme in saubere, skalierbare Software verwandeln",
     "subheadline": "Ich entwerfe belastbare Systemarchitekturen und sauberes Design – damit komplexe Software verständlich, schnell und verlässlich bleibt.",
-    "highlight1": "Über 18 Jahre Erfahrung im Entwurf komplexer Systeme – von Medizintechnik und autonomen Fahrzeugen bis Hochfrequenzhandel und Microservices.",
+    "highlight1": "Über ein Jahrzehnt Erfahrung im Entwurf komplexer Systeme – von Medizintechnik und autonomen Fahrzeugen bis Hochfrequenzhandel und Microservices.",
     "highlight2": "Hands-on Architekt mit echter Leidenschaft für C++, Rust, Python und moderne Web-Architekturen.",
     "highlight3": "Entwurf robuster Service-Architekturen, APIs und Datenplattformen mit FastAPI, gRPC, PostgreSQL und Redis.",
     "highlight4": "Architekturelle Kompetenz auf allen Ebenen – von Netzwerkprotokollen (TCP/IP, CAN) bis zu Cloud-Infrastruktur (Docker, K8s).",
@@ -47,7 +47,7 @@
   "introHighlight": {
     "subtitle": "Mein Weg & meine Haltung",
     "title": "Architektur & Engineering in der Praxis",
-    "desc": "Wie 18+ Jahre Erfahrung in unterschiedlichen Branchen meine Denkweise in Softwarearchitektur und Systemdesign geprägt haben.",
+    "desc": "Wie über ein Jahrzehnt Erfahrung in unterschiedlichen Branchen meine Denkweise in Softwarearchitektur und Systemdesign geprägt haben.",
     "block1Title": "Vielseitigkeit durch verschiedene Domänen",
     "block1Text": "Entwürfe für Medizintechnik, Hochfrequenzhandel und autonomes Fahren haben mir gezeigt, wie man Architekturmuster früh erkennt und belastbare Lösungen entwickelt.",
     "block2Title": "Code-nahes Architektur-Verständnis",
@@ -196,5 +196,75 @@
       "eyebrow": "Rechtliche Informationen",
       "description": "Betreiber- und Kontaktinformationen für das persönliche berufliche Portfolio SinghBuildsTech."
     }
+  },
+  "architectureSpotlight": {
+    "subtitle": "Interaktive Architektur-Blaupause",
+    "title": "Systemdesign & Architektur-Highlights",
+    "desc": "Erkunden Sie interaktive Architektur-Blaupausen verteilter Plattformen, Embedded Systems und leistungskritischer Pipelines.",
+    "highlightsHeader": "Zentrale Architektonische Vorteile",
+    "lingora-ai-platform": {
+      "nodes": [
+        { "label": "Kontext-Erfassung / Mining", "detail": "Zwischenablage & Web-Inhalte Importeur" },
+        { "label": "Morphologie-Engine", "detail": "Deutscher Lemmatisierer & Semantische Cluster" },
+        { "label": "Lokale SQLite & FSRS-Planer", "detail": "Offline Intervallwiederholungs-Cache" },
+        { "label": "LLM-Generierung & Sync", "detail": "Validierte KI-Prompts & Konfliktfreier Sync" }
+      ]
+    },
+    "distributed-microservices": {
+      "nodes": [
+        { "label": "API Gateway / Edge", "detail": "FastAPI / Envoy Reverse Proxy" },
+        { "label": "Auth- & Zugriffsdienst", "detail": "OAuth2 / JWT Token Validierung" },
+        { "label": "gRPC Service Mesh", "detail": "Actix-Web & Rust Microservices" },
+        { "label": "Persistenzschicht", "detail": "PostgreSQL + Redis Cache" }
+      ]
+    },
+    "embedded-can-bus": {
+      "nodes": [
+        { "label": "Medizingeräte-Sensoren", "detail": "CAN-Bus Transceiver & Geräteknoten" },
+        { "label": "Nativer Rust-Parser", "detail": "DBC-Profil Dekodierung auf Bit-Ebene" },
+        { "label": "Sperrfreier Puffer", "detail": "Zero-Copy Frame-Speicher" },
+        { "label": "Desktop-Diagnose-Werkbank", "detail": "Tauri + React High-FPS Rendering" }
+      ]
+    },
+    "high-frequency-pipeline": {
+      "nodes": [
+        { "label": "Raw TCP / UDP Sockets", "detail": "Kernel-Bypass Paket-Erfassung" },
+        { "label": "C++ Order-Engine", "detail": "Cache-ausgerichtete Datenstrukturen" },
+        { "label": "In-Memory Speicher", "detail": "Ultra-Low-Latency Key-Value Engine" },
+        { "label": "Audit- & Compliance-Log", "detail": "Asynchroner Persistenter Logger" }
+      ]
+    },
+    "blueprint4Title": "Lingora AI-Native Local-First Architektur",
+    "blueprint4Cat": "AI & Local-First Plattform",
+    "blueprint4Summary": "Plattformübergreifende KI-Sprachlernplattform mit Local-First SQLite-Sync, deutscher Morphologie-Analyse und FSRS-Intervallwiederholung.",
+    "blueprint4Highlights": [
+      "Local-First Offline-Verfügbarkeit mit konfliktfreier Hintergrund-Synchronisation",
+      "Optimierte FSRS-Intervallwiederholung für effektives Gedächtnistraining",
+      "Deutsche Morphologie & semantisches Konzept-Clustering für tiefes Kontextverständnis"
+    ],
+    "blueprint1Title": "Verteiltes Service-Mesh & Microservices",
+    "blueprint1Cat": "Verteilte Systeme",
+    "blueprint1Summary": "Ereignisgesteuerte Microservices-Architektur mit hoher Durchsatzrate, gRPC-Kommunikation und Redis-Caching.",
+    "blueprint1Highlights": [
+      "Sub-Millisekunden Latenz zwischen Services via gRPC Protocol Buffers",
+      "Fehlerisolation und automatisierte Circuit-Breaker-Muster",
+      "Ereignis-Streaming mit Apache Kafka für asynchrone Verarbeitung"
+    ],
+    "blueprint2Title": "Medizintechnik CAN-Bus & Signalverarbeitung",
+    "blueprint2Cat": "Embedded & Medizintechnik",
+    "blueprint2Summary": "Echtzeit-CAN-Bus Kommunikation & Signal-Dekodierung für hochverlässliche Medizingeräte.",
+    "blueprint2Highlights": [
+      "Zero-Copy Speicherpipelines für 100% Paket-Erfassung bei Diagnostik-Streams",
+      "Echtzeit-Dekodierung von DBC-Signalen und Aufzeichnung von Medizingeräte-Traces",
+      "Plattformübergreifender Rust-Kern mit leichtem Tauri-GUI Frontend"
+    ],
+    "blueprint3Title": "Low-Latency Trading & Datenpipeline",
+    "blueprint3Cat": "Performance Engineering",
+    "blueprint3Summary": "Leistungskritische Datenpipeline, optimiert für minimalen Jitter und sofortige Ausführung.",
+    "blueprint3Highlights": [
+      "Cache-optimierte C++ Speicherausrichtung zur Vermeidung von Heap-Spitzen",
+      "Vorhersehbare deterministische Ausführungszeiten für Hochfrequenz-Workloads",
+      "Umfassende Telemetrie und Wireshark-kompatible Paket-Inspektion"
+    ]
   }
 }

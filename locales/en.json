@@ -33,9 +33,9 @@
     "fact1Label": "Years building software",
     "fact2Label": "Technical fields",
     "fact3Label": "Core languages",
-    "headline": "Thoughtful architecture & design for real-world software",
+    "headline": "Turning complex engineering challenges into clean, scalable software",
     "subheadline": "I craft resilient system architectures and clean designs, keeping complex software intuitive, performant, and reliable.",
-    "highlight1": "18+ years designing architecture across medical devices, autonomous vehicles, high-speed trading, and microservices.",
+    "highlight1": "A decade of experience designing architecture across medical devices, autonomous vehicles, high-speed trading, and microservices.",
     "highlight2": "Hands-on architect who loves coding daily in C++, Rust, Python, and modern web frameworks.",
     "highlight3": "Designing robust service architectures, APIs, and data models using FastAPI, gRPC, PostgreSQL, and Redis.",
     "highlight4": "Architectural mastery from low-level hardware & network protocols (TCP/IP, CAN) to cloud infra (Docker, K8s).",
@@ -47,7 +47,7 @@
   "introHighlight": {
     "subtitle": "My Journey & Philosophy",
     "title": "Architecture & Engineering in Action",
-    "desc": "How 18+ years across diverse industries shaped my approach to software architecture and system design.",
+    "desc": "How over a decade across diverse industries shaped my approach to software architecture and system design.",
     "block1Title": "Versatility from Diverse Domains",
     "block1Text": "Designing for medical devices, high-frequency trading, and autonomous vehicles taught me how to spot patterns early and architect resilient solutions, no matter the domain.",
     "block2Title": "Code-First Architectural Mindset",
@@ -135,5 +135,75 @@
       "eyebrow": "Legal information",
       "description": "Operator and contact information for the SinghBuildsTech personal professional portfolio."
     }
+  },
+  "architectureSpotlight": {
+    "subtitle": "Interactive Architecture Blueprint",
+    "title": "System Design & Architecture Spotlight",
+    "desc": "Explore interactive blueprints showing how I structure distributed platforms, embedded systems, and low-latency pipelines.",
+    "highlightsHeader": "Key Architectural Benefits",
+    "lingora-ai-platform": {
+      "nodes": [
+        { "label": "Context Capture / Mining", "detail": "Clipboard & Web Content Importer" },
+        { "label": "Morphology Engine", "detail": "German Lemmatizer & Semantic Clusters" },
+        { "label": "Local SQLite & FSRS Scheduler", "detail": "Offline Spaced-Repetition Cache" },
+        { "label": "LLM Generation & Sync", "detail": "Validated AI Prompts & Conflict-free Sync" }
+      ]
+    },
+    "distributed-microservices": {
+      "nodes": [
+        { "label": "API Gateway / Edge", "detail": "FastAPI / Envoy Reverse Proxy" },
+        { "label": "Auth & Access Service", "detail": "OAuth2 / JWT Token Validation" },
+        { "label": "gRPC Service Mesh", "detail": "Actix-Web & Rust Microservices" },
+        { "label": "Persistence Layer", "detail": "PostgreSQL + Redis Cache" }
+      ]
+    },
+    "embedded-can-bus": {
+      "nodes": [
+        { "label": "Medical Hardware Sensors", "detail": "CAN Bus Transceiver & Device Nodes" },
+        { "label": "Rust Native Parser", "detail": "Bit-level DBC Profile Decoder" },
+        { "label": "Lock-free Ring Buffer", "detail": "Zero-copy Frame Storage" },
+        { "label": "Desktop Diagnostic Workbench", "detail": "Tauri + React High-FPS Render" }
+      ]
+    },
+    "high-frequency-pipeline": {
+      "nodes": [
+        { "label": "Raw TCP / UDP Sockets", "detail": "Kernel Bypass Packet Capture" },
+        { "label": "C++ Order Engine", "detail": "Cache-aligned Data Structures" },
+        { "label": "In-Memory Store", "detail": "Ultra-low Latency Key-Value Engine" },
+        { "label": "Audit & Compliance Log", "detail": "Asynchronous Persistent Logger" }
+      ]
+    },
+    "blueprint4Title": "Lingora AI-Native Local-First Architecture",
+    "blueprint4Cat": "AI & Local-First Platform",
+    "blueprint4Summary": "Cross-platform AI language learning platform featuring local-first SQLite sync, German morphological parsing, and FSRS spaced repetition.",
+    "blueprint4Highlights": [
+      "Local-first offline availability with conflict-free background synchronization",
+      "Optimized FSRS spaced-repetition memory scheduling engine",
+      "German morphology & semantic concept clustering for deep contextual acquisition"
+    ],
+    "blueprint1Title": "Distributed Service Mesh & Microservices",
+    "blueprint1Cat": "Distributed Systems",
+    "blueprint1Summary": "High-throughput, event-driven microservices architecture with gRPC inter-service communication and Redis caching.",
+    "blueprint1Highlights": [
+      "Sub-millisecond inter-service latency via gRPC protocol buffers",
+      "Fault isolation and automated circuit breaking",
+      "Event streaming with Apache Kafka for asynchronous processing"
+    ],
+    "blueprint2Title": "Medical Device CAN Bus & Signal Processing",
+    "blueprint2Cat": "Embedded & Medical Systems",
+    "blueprint2Summary": "Real-time CAN bus communication & signal decoding architecture for high-reliability medical devices.",
+    "blueprint2Highlights": [
+      "Zero-copy memory pipelines for 100% packet retention during diagnostic streaming",
+      "Real-time DBC signal decoding and trace recording for medical devices",
+      "Cross-platform Rust core with lightweight Tauri GUI frontend"
+    ],
+    "blueprint3Title": "Low-Latency Trading & Data Pipeline",
+    "blueprint3Cat": "Performance Engineering",
+    "blueprint3Summary": "Performance-critical data pipeline optimized for low-jitter packet processing and instant execution.",
+    "blueprint3Highlights": [
+      "Cache-conscious C++ memory alignment avoiding heap allocation spikes",
+      "Predictable deterministic execution times for high-frequency workloads",
+      "Comprehensive telemetry and Wireshark-compatible packet inspection"
+    ]
   }
 }
