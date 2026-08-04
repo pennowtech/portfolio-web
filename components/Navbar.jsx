@@ -65,12 +65,30 @@ const Navbar = ({ homepage, classprops }) => {
     <nav aria-label='Primary navigation' className={`${classprops} flex items-center`}>
       <ul className='m-0 hidden list-none flex-row items-center gap-1 p-0 xl:flex'>
         {desktopNavItems}
-        <li className='ml-2 border-l border-slate-300 dark:border-slate-700 pl-3'>
+        <li className='ml-2 border-l border-slate-300 dark:border-slate-700 pl-3 flex items-center gap-2'>
+          <button
+            type='button'
+            onClick={() => window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }))}
+            className='inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-slate-100/80 px-2.5 py-1 text-xs font-semibold text-slate-600 transition hover:border-slate-400 hover:bg-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
+            title='Search articles and commands (Cmd + K)'
+          >
+            <span>Search</span>
+            <kbd className='rounded border border-slate-300 bg-white px-1 py-0.2 text-[10px] font-bold text-slate-500 shadow-2xs dark:border-slate-600 dark:bg-slate-900 dark:text-slate-400'>
+              ⌘K
+            </kbd>
+          </button>
           <LanguageSwitcher />
         </li>
       </ul>
 
       <div className='flex items-center xl:hidden'>
+        <button
+          type='button'
+          onClick={() => window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }))}
+          className='mr-2 inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-slate-100/80 px-2 py-1 text-xs font-semibold text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300'
+        >
+          <kbd className='text-[10px] font-bold'>⌘K</kbd>
+        </button>
         <LanguageSwitcher className='mr-2' />
         <button
           ref={menuButtonRef}

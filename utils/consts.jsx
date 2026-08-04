@@ -52,8 +52,7 @@ const WebSiteTags = [
 
 const MenuItems = [
   { title: 'Home', path: 'home' },
-  { title: 'About', path: 'about-me' },
-  { title: 'Skills', path: 'skills' },
+  { title: 'About', path: 'spotlight' },
   { title: 'Projects', path: 'projects' },
   { title: 'Articles', path: 'page' },
   { title: 'Contact', path: 'contact' }

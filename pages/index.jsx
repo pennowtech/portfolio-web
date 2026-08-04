@@ -36,10 +36,11 @@ const Index = ({ posts }) => {
               'This whole website is designed by me, from designing till development.'
             )}
           </p>
-          <PostTags limitedTags={false} tags={WebSiteTags} />
         </div>
       </Element>
-      <ArchitectureSpotlight />
+      <Element id='spotlight' className='element'>
+        <ArchitectureSpotlight />
+      </Element>
       <Element id='about-me' className='element min-h-[630px] bg-slate-50 dark:bg-slate-700/35'>
         <IntroHighlight classProps='font-RobotoSlab text-base leading-8' />
       </Element>
