@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import LegalPage from '@components/LegalPage';
-import { useLanguage } from '../utils/LanguageContext';
+import { useLanguage } from '../../utils/LanguageContext';
 
 const Privacy = () => {
   const { t } = useLanguage();
@@ -14,6 +14,25 @@ const Privacy = () => {
         'How SinghBuildsTech.com processes personal data, which services are involved, and the choices and rights available to visitors.'
       )}
     >
+      <section className='rounded-xl border border-slate-200 bg-slate-50 p-6 dark:border-slate-700 dark:bg-slate-800/50'>
+        <h2 className='!mt-0 text-xl font-bold text-slate-900 dark:text-slate-100'>
+          {t('privacyPage.appsTitle', 'Application Privacy Notices')}
+        </h2>
+        <p className='text-sm text-slate-600 dark:text-slate-300'>
+          {t(
+            'privacyPage.appsDesc',
+            'If you use one of our mobile or desktop applications, dedicated privacy notices apply to their specific features and data storage model:'
+          )}
+        </p>
+        <ul className='mt-3 space-y-2 font-medium'>
+          <li>
+            <Link href='/privacy/lingora' className='text-green-700 hover:underline dark:text-green-400'>
+              Lingora Privacy Policy (Android App)
+            </Link>
+          </li>
+        </ul>
+      </section>
+
       <section>
         <h2>{t('privacyPage.s1Title', 'Controller and contact')}</h2>
         <p>{t('privacyPage.s1p1', 'The controller responsible for this website is Sukhdeep Singh, Germany.')}</p>
