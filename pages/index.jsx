@@ -13,6 +13,7 @@ import FullLayout from '../components/FullLayout';
 import AboutSection from '../components/Intro/AboutSection';
 import HeaderMain from '../components/HeaderMain';
 import PostTags from '../components/Post/PostTags';
+import ArchitectureSpotlight from '../components/ArchitectureSpotlight';
 import { useLanguage } from '../utils/LanguageContext';
 
 const Index = ({ posts }) => {
@@ -21,7 +22,7 @@ const Index = ({ posts }) => {
     title: 'SinghBuildsTech | Sukhdeep Singh, Technical Architect',
     metaKeywords: 'Technical Architect, Software Architecture, Embedded Systems, Rust, C++, Python, Microservices',
     metaDesc:
-      'Portfolio of Sukhdeep Singh, a Technical Architect with 18+ years of experience across embedded systems, networking, distributed platforms, and software engineering.'
+      'Portfolio of Sukhdeep Singh, a Technical Architect with over a decade of experience across embedded systems, networking, distributed platforms, and software engineering.'
   };
   return (
     <FullLayout metaInfo={metaInfo}>
@@ -38,6 +39,7 @@ const Index = ({ posts }) => {
           <PostTags limitedTags={false} tags={WebSiteTags} />
         </div>
       </Element>
+      <ArchitectureSpotlight />
       <Element id='about-me' className='element min-h-[630px] bg-slate-50 dark:bg-slate-700/35'>
         <IntroHighlight classProps='font-RobotoSlab text-base leading-8' />
       </Element>

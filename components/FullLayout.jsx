@@ -32,6 +32,9 @@ const FullLayout = ({ metaInfo = {}, title, metaKeywords, metaDesc, children }) 
         <meta name='description' content={metadata.metaDesc} />
         {metadata.metaKeywords && <meta name='keywords' content={metadata.metaKeywords} />}
         <link rel='canonical' href={canonicalUrl} />
+        <link rel='alternate' hrefLang='en' href={absoluteUrl(`/en${path === '/' ? '' : path}`)} />
+        <link rel='alternate' hrefLang='de' href={absoluteUrl(`/de${path === '/' ? '' : path}`)} />
+        <link rel='alternate' hrefLang='x-default' href={canonicalUrl} />
         {metadata.noIndex && <meta name='robots' content='noindex, nofollow' />}
         <meta property='og:site_name' content='SinghBuildsTech' />
         <meta property='og:type' content={metadata.type} />

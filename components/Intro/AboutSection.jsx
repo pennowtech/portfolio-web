@@ -15,7 +15,7 @@ const AboutSection = ({ classProps = '' }) => {
   const { t } = useLanguage();
 
   const professionalFacts = [
-    { value: '18+', label: t('aboutSection.fact1Label', 'Years of experience') },
+    { value: '10+', label: t('aboutSection.fact1Label', 'Years building software') },
     { value: '6', label: t('aboutSection.fact2Label', 'Technical domains') },
     { value: '5', label: t('aboutSection.fact3Label', 'Core languages') }
   ];
@@ -99,17 +99,17 @@ const AboutSection = ({ classProps = '' }) => {
 
           <dl
             aria-label='Professional experience at a glance'
-            className='mt-7 grid grid-cols-3 bg-slate-900 px-2 py-5 text-white dark:bg-slate-950 sm:px-8'
+            className='mt-7 grid grid-cols-3 border-y border-slate-200 bg-slate-100 px-2 py-5 text-slate-900 transition-colors duration-200 dark:border-slate-800 dark:bg-slate-950 dark:text-white sm:px-8'
           >
             {professionalFacts.map((fact) => (
               <div
                 key={fact.label}
-                className='flex min-w-0 flex-col items-center justify-center border-r border-white/20 px-2 text-center last:border-r-0 sm:px-6'
+                className='flex min-w-0 flex-col items-center justify-center border-r border-slate-300 px-2 text-center last:border-r-0 dark:border-slate-700/60 sm:px-6'
               >
-                <dt className='order-2 mt-1 w-full text-center font-Monda text-[0.62rem] font-semibold uppercase leading-tight tracking-wide text-slate-300 sm:text-xs'>
+                <dt className='order-2 mt-1 w-full text-center font-Monda text-[0.62rem] font-bold uppercase leading-tight tracking-wider text-slate-600 dark:text-slate-300 sm:text-xs'>
                   {fact.label}
                 </dt>
-                <dd className='order-1 m-0 w-full text-center font-Rajdhani text-3xl font-bold leading-none text-orange-400 sm:text-4xl'>
+                <dd className='order-1 m-0 w-full text-center font-Rajdhani text-3xl font-extrabold leading-none text-orange-600 dark:text-orange-400 sm:text-4xl'>
                   {fact.value}
                 </dd>
               </div>
@@ -118,15 +118,9 @@ const AboutSection = ({ classProps = '' }) => {
 
           <div className='mx-auto max-w-4xl px-5 py-8 md:px-10 md:py-10'>
             <div className='mb-7 text-center'>
-              <h2 className='mb-2 font-Neuton text-3xl font-semibold md:text-4xl'>
+              <h4 className='mb-2 font-Neuton text-xl font-semibold md:text-2xl'>
                 {t('aboutSection.headline', 'Designing systems that hold up in the real world')}
-              </h2>
-              <p className='mx-auto mb-0 max-w-2xl text-slate-600 dark:text-slate-200'>
-                {t(
-                  'aboutSection.subheadline',
-                  'Architecture grounded in hands-on engineering, broad domain knowledge, and a practical focus on reliable delivery.'
-                )}
-              </p>
+              </h4>
             </div>
 
             <ul className='m-0 grid list-none gap-4 p-0 md:gap-5'>

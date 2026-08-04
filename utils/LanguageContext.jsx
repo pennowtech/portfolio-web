@@ -13,13 +13,22 @@ export const LanguageProvider = ({ children }) => {
   const [locale, setLocale] = useState(router.locale || 'en');
 
   useEffect(() => {
-    if (router.locale && router.locale !== locale) {
+    const savedLocale = typeof window !== 'undefined' ? localStorage.getItem('preferred_locale') : null;
+    if (savedLocale && (savedLocale === 'en' || savedLocale === 'de') && router.locale !== savedLocale) {
+      const { pathname, asPath, query } = router;
+      router.push({ pathname, query }, asPath, { locale: savedLocale });
+      setLocale(savedLocale);
+    } else if (router.locale && router.locale !== locale) {
       setLocale(router.locale);
     }
-  }, [router.locale, locale]);
+  }, [router.locale, router, locale]);
 
   const switchLanguage = (newLocale) => {
     setLocale(newLocale);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('preferred_locale', newLocale);
+      document.cookie = `NEXT_LOCALE=${newLocale}; max-age=31536000; path=/`;
+    }
     const { pathname, asPath, query } = router;
     router.push({ pathname, query }, asPath, { locale: newLocale });
   };
