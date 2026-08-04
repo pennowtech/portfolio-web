@@ -12,6 +12,7 @@ const parseLineRanges = (value = '') =>
 
 function Code({ node, inline, className, ...props }) {
   const { resolvedTheme } = useTheme();
+  const [copied, setCopied] = React.useState(false);
   const isDark = resolvedTheme === 'dark';
   const codeTheme = isDark ? a11yDark : a11yLight;
   const lineHighlight = isDark ? '#14532d66' : '#dcfce7cc';
@@ -20,6 +21,13 @@ function Code({ node, inline, className, ...props }) {
   const metadata = node?.data?.meta?.replace(/\s/g, '') ?? '';
   const lineRange = /{([\d,-]+)}/.exec(metadata)?.[1] ?? '';
   const highlightedLines = parseLineRanges(lineRange);
+  const codeString = String(props.children).replace(/\n$/, '');
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(codeString);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const lineProps = (lineNumber) => ({
     style: highlightedLines.includes(lineNumber)
@@ -43,21 +51,30 @@ function Code({ node, inline, className, ...props }) {
   }
 
   return (
-    <SyntaxHighlighter
-      style={codeTheme}
-      language={language}
-      PreTag='div'
-      className='codeStyle max-w-full overflow-x-auto rounded-xl text-sm font-medium md:text-base'
-      customStyle={{ margin: 0, padding: '1rem', minWidth: 0 }}
-      codeTagProps={{ style: { whiteSpace: 'pre' } }}
-      showLineNumbers
-      wrapLines
-      wrapLongLines={false}
-      useInlineStyles
-      lineProps={lineProps}
-    >
-      {String(props.children).replace(/\n$/, '')}
-    </SyntaxHighlighter>
+    <div className='relative group'>
+      <button
+        type='button'
+        onClick={handleCopy}
+        className='absolute right-2 top-2 z-10 rounded-lg border border-slate-300 bg-slate-800/80 px-2.5 py-1 text-xs font-semibold text-slate-200 backdrop-blur-sm transition duration-200 hover:bg-slate-700 hover:text-white dark:border-slate-700 opacity-90 group-hover:opacity-100'
+      >
+        {copied ? '✓ Copied' : 'Copy'}
+      </button>
+      <SyntaxHighlighter
+        style={codeTheme}
+        language={language}
+        PreTag='div'
+        className='codeStyle max-w-full overflow-x-auto rounded-xl text-sm font-medium md:text-base'
+        customStyle={{ margin: 0, padding: '1rem', minWidth: 0 }}
+        codeTagProps={{ style: { whiteSpace: 'pre' } }}
+        showLineNumbers
+        wrapLines
+        wrapLongLines={false}
+        useInlineStyles
+        lineProps={lineProps}
+      >
+        {codeString}
+      </SyntaxHighlighter>
+    </div>
   );
 }
 

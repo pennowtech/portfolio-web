@@ -187,34 +187,55 @@ const ContactFormContent = () => {
           </div>
 
           <div className='mt-6'>
-            <label className='mb-2 block font-Monda text-sm font-semibold' htmlFor='message'>
-              {t('contact.message', 'Message')}
-            </label>
+            <div className='mb-2 flex flex-wrap items-center justify-between gap-2'>
+              <label htmlFor='message' className='font-Monda text-sm font-semibold'>
+                {t('contact.message', 'Message')}
+              </label>
+              <div className='flex flex-wrap gap-1.5 text-xs font-Monda'>
+                {[
+                  {
+                    label: 'Architecture Audit',
+                    text: 'Hi Sukhdeep, I would like to discuss an Architecture Audit for our system.'
+                  },
+                  { label: 'System Design', text: 'Hi Sukhdeep, we have a System Design challenge in our platform.' },
+                  { label: 'Consulting', text: 'Hi Sukhdeep, I am interested in technical architecture consulting.' }
+                ].map((preset) => (
+                  <button
+                    type='button'
+                    key={preset.label}
+                    onClick={() => setFormData((curr) => ({ ...curr, message: preset.text }))}
+                    className='rounded-md border border-slate-300 bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700 hover:border-slate-400 hover:bg-slate-200 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700'
+                  >
+                    + {preset.label}
+                  </button>
+                ))}
+              </div>
+            </div>
             <textarea
-              className='min-h-44 w-full resize-y rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-green-700 focus:ring-2 focus:ring-green-700/20 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-500 dark:bg-gray-700 dark:text-slate-50 dark:placeholder:text-slate-400 dark:focus:border-green-400 dark:focus:ring-green-400/20'
               id='message'
               name='message'
-              placeholder={t('contact.placeholder', 'A short overview of the challenge, context, or opportunity…')}
+              rows={5}
               value={formData.message}
               onChange={handleChange}
               disabled={isSubmitting}
-              maxLength={4000}
-              required
+              placeholder={t('contact.placeholder', 'A short overview of the challenge, context, or opportunity…')}
               aria-invalid={Boolean(errors.message)}
               aria-describedby={errors.message ? 'message-error' : 'message-help'}
+              className={`w-full rounded-lg border bg-white px-3.5 py-2 text-base outline-none transition dark:bg-slate-800 ${
+                errors.message
+                  ? 'border-red-500 focus:ring-2 focus:ring-red-500'
+                  : 'border-slate-300 focus:border-green-700 focus:ring-2 focus:ring-green-700 dark:border-slate-500 dark:focus:border-green-400 dark:focus:ring-green-400'
+              }`}
             />
-            <div className='mt-2 flex items-start justify-between gap-4 text-sm'>
-              {errors.message ? (
-                <p id='message-error' className='m-0 text-red-700 dark:text-red-300'>
-                  {errors.message}
-                </p>
-              ) : (
-                <p id='message-help' className='m-0 text-slate-500 dark:text-slate-300'>
-                  {t('contact.helpMessage', 'Please avoid including confidential information.')}
-                </p>
-              )}
-              <span className='shrink-0 text-slate-400'>{formData.message.length}/4000</span>
-            </div>
+            {errors.message ? (
+              <p id='message-error' className='mt-1 text-xs text-red-600 dark:text-red-400'>
+                {errors.message}
+              </p>
+            ) : (
+              <p id='message-help' className='mt-1 text-xs text-slate-500 dark:text-slate-300'>
+                {t('contact.helpMessage', 'Please avoid including confidential information.')}
+              </p>
+            )}
           </div>
 
           {status && (

@@ -12,32 +12,31 @@ const PostsLayout = ({ pageTitle, metaInfo, tags, recentPosts, ...props }) => {
     <FullLayout metaInfo={metaInfo}>
       <HeaderMain />
       {pageTitle && (
-        <header className='relative isolate min-h-52 w-full overflow-hidden md:min-h-64'>
-          <Image
-            src='https://images.unsplash.com/photo-1681243303374-72d01f749dfa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=487&q=80'
-            alt=''
-            role='presentation'
-            fill
-            sizes='100vw'
-            className='object-cover object-center dark:grayscale'
-          />
-          <div className='absolute inset-0 bg-gradient-to-b from-slate-950/20 via-slate-950/55 to-slate-950/90' />
-          <div className='relative mx-auto flex min-h-52 w-full max-w-[1180px] items-end px-4 pb-9 text-white md:min-h-64 md:px-6 md:pb-12 lg:px-8'>
+        <header className='relative isolate min-h-[18rem] w-full overflow-hidden bg-slate-900 text-white md:min-h-[22rem] border-b border-slate-800 shadow-xl'>
+          {/* Ambient glow */}
+          <div className='absolute -top-32 left-1/3 -z-10 h-96 w-96 rounded-full bg-orange-500/15 blur-[120px]' />
+          <div className='absolute -bottom-32 right-1/4 -z-10 h-96 w-96 rounded-full bg-green-500/15 blur-[120px]' />
+
+          <div className='relative mx-auto flex min-h-[18rem] w-full max-w-7xl flex-col justify-end px-4 pb-10 text-white md:min-h-[22rem] md:px-6 md:pb-12 lg:px-8'>
             <div>
-              <p className='mb-2 font-Monda text-xs font-semibold uppercase tracking-[0.16em] text-slate-200 md:text-sm'>
-                Notes from the field
+              <p className='mb-2 font-Monda text-xs font-bold uppercase tracking-[0.2em] text-orange-400'>
+                Notes & Field Engineering
               </p>
               <h1 className='m-0 font-Neuton text-4xl font-semibold leading-tight text-white md:text-6xl'>
                 {pageTitle}
               </h1>
+              <p className='mt-3 max-w-2xl text-base text-slate-300 md:text-lg'>
+                Explorations in system design, embedded hardware, distributed platforms, and real-world engineering
+                decisions.
+              </p>
             </div>
           </div>
         </header>
       )}
-      <div className='mx-auto w-full max-w-[1180px] px-4 py-10 md:px-6 md:py-14 lg:px-8'>
+      <div className='mx-auto w-full max-w-7xl px-4 py-12 md:px-6 md:py-16 lg:px-8'>
         <div
           className={`grid min-w-0 grid-cols-1 gap-10 ${
-            hasSidebar ? 'xl:grid-cols-[minmax(0,1fr)_17rem] xl:gap-12' : ''
+            hasSidebar ? 'lg:grid-cols-[minmax(0,1fr)_18rem] lg:gap-12' : ''
           }`}
         >
           <main className='min-w-0'>{props.children}</main>
