@@ -42,9 +42,10 @@ const validateForm = (formData) => {
   return errors;
 };
 
-const ContactFormContent = () => {
+const ContactFormContent = ({ hasSiteKey }) => {
   const { t } = useLanguage();
-  const { executeRecaptcha } = useGoogleReCaptcha();
+  const recaptchaContext = useGoogleReCaptcha();
+  const executeRecaptcha = recaptchaContext?.executeRecaptcha;
   const [formData, setFormData] = useState({
     firstname: '',
     lastname: '',
@@ -63,6 +64,14 @@ const ContactFormContent = () => {
       if (Object.keys(validationErrors).length) {
         setErrors(validationErrors);
         setStatus({ type: 'error', message: 'Please check the highlighted fields.' });
+        return;
+      }
+
+      if (!hasSiteKey) {
+        setStatus({
+          type: 'error',
+          message: 'Spam protection (reCAPTCHA) is not configured in this environment. Form submissions are disabled.'
+        });
         return;
       }
 
@@ -107,7 +116,7 @@ const ContactFormContent = () => {
         setIsSubmitting(false);
       }
     },
-    [executeRecaptcha, formData]
+    [executeRecaptcha, formData, hasSiteKey]
   );
 
   const handleChange = useCallback((event) => {
@@ -150,6 +159,15 @@ const ContactFormContent = () => {
           onSubmit={handleSubmit}
           noValidate
         >
+          {!hasSiteKey && (
+            <div
+              role='alert'
+              className='mb-6 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-100'
+            >
+              ⚠️ {t('contact.noRecaptchaWarning', 'Spam protection (reCAPTCHA) is not configured in this environment. Form submissions are disabled.')}
+            </div>
+          )}
+
           <div className='grid gap-6 sm:grid-cols-2'>
             <InputField
               id='firstname'
@@ -159,7 +177,7 @@ const ContactFormContent = () => {
               value={formData.firstname}
               onChange={handleChange}
               error={errors.firstname}
-              disabled={isSubmitting}
+              disabled={isSubmitting || !hasSiteKey}
             />
             <InputField
               id='lastname'
@@ -169,7 +187,7 @@ const ContactFormContent = () => {
               value={formData.lastname}
               onChange={handleChange}
               error={errors.lastname}
-              disabled={isSubmitting}
+              disabled={isSubmitting || !hasSiteKey}
             />
           </div>
 
@@ -182,7 +200,7 @@ const ContactFormContent = () => {
               value={formData.email}
               onChange={handleChange}
               error={errors.email}
-              disabled={isSubmitting}
+              disabled={isSubmitting || !hasSiteKey}
             />
           </div>
 
@@ -203,8 +221,9 @@ const ContactFormContent = () => {
                   <button
                     type='button'
                     key={preset.label}
+                    disabled={isSubmitting || !hasSiteKey}
                     onClick={() => setFormData((curr) => ({ ...curr, message: preset.text }))}
-                    className='rounded-md border border-slate-300 bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700 hover:border-slate-400 hover:bg-slate-200 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700'
+                    className='rounded-md border border-slate-300 bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700 hover:border-slate-400 hover:bg-slate-200 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700'
                   >
                     + {preset.label}
                   </button>
@@ -217,11 +236,11 @@ const ContactFormContent = () => {
               rows={5}
               value={formData.message}
               onChange={handleChange}
-              disabled={isSubmitting}
+              disabled={isSubmitting || !hasSiteKey}
               placeholder={t('contact.placeholder', 'A short overview of the challenge, context, or opportunity…')}
               aria-invalid={Boolean(errors.message)}
               aria-describedby={errors.message ? 'message-error' : 'message-help'}
-              className={`w-full rounded-lg border bg-white px-3.5 py-2 text-base outline-none transition dark:bg-slate-800 ${
+              className={`w-full rounded-lg border bg-white px-3.5 py-2 text-base outline-none transition disabled:cursor-not-allowed disabled:opacity-60 dark:bg-slate-800 ${
                 errors.message
                   ? 'border-red-500 focus:ring-2 focus:ring-red-500'
                   : 'border-slate-300 focus:border-green-700 focus:ring-2 focus:ring-green-700 dark:border-slate-500 dark:focus:border-green-400 dark:focus:ring-green-400'
@@ -254,8 +273,8 @@ const ContactFormContent = () => {
 
           <button
             type='submit'
-            disabled={isSubmitting}
-            className='mt-6 flex min-h-12 w-full items-center justify-center rounded-lg bg-green-700 px-6 py-3 font-Monda font-bold text-white shadow-sm transition hover:bg-green-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-green-600 dark:hover:bg-green-500 dark:focus-visible:ring-offset-gray-700 sm:w-auto'
+            disabled={isSubmitting || !hasSiteKey}
+            className='mt-6 flex min-h-12 w-full items-center justify-center rounded-lg bg-green-700 px-6 py-3 font-Monda font-bold text-white shadow-sm transition hover:bg-green-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-green-600 dark:hover:bg-green-500 dark:focus-visible:ring-offset-gray-700 sm:w-auto'
           >
             {isSubmitting ? t('contact.sending', 'Sending…') : t('contact.send', 'Send message')}
             <BiPaperPlane aria-hidden='true' className='ml-2 text-lg' />
@@ -266,7 +285,7 @@ const ContactFormContent = () => {
               'Your details are used only to respond to this enquiry. See the privacy policy for retention, recipients, and your rights.'
             )}
           </p>
-          {process.env.NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY && (
+          {hasSiteKey && (
             <p className='mb-0 mt-2 max-w-xl text-xs leading-relaxed text-slate-500 dark:text-slate-300'>
               {t('contact.recaptchaStart', 'This site is protected by reCAPTCHA and the Google')}{' '}
               <a className='text-green-700 underline dark:text-green-400' href='https://policies.google.com/privacy'>
@@ -287,11 +306,11 @@ const ContactFormContent = () => {
 
 const ContactForm = () => {
   const siteKey = process.env.NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY;
-  if (!siteKey) return <ContactFormContent />;
+  if (!siteKey) return <ContactFormContent hasSiteKey={false} />;
 
   return (
     <GoogleReCaptchaProvider reCaptchaKey={siteKey} scriptProps={{ async: true, defer: true, appendTo: 'body' }}>
-      <ContactFormContent />
+      <ContactFormContent hasSiteKey={true} />
     </GoogleReCaptchaProvider>
   );
 };

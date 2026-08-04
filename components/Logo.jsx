@@ -9,14 +9,14 @@ const Logo = ({ position = 'header' }) => {
     <Link
       href='/'
       aria-label='SinghBuildsTech — home'
-      className={`not-prose inline-flex items-center gap-2.5 rounded-sm focus-visible:outline-none focus-visible:ring-2 ${
+      className={`not-prose inline-flex min-w-0 shrink items-center gap-1.5 sm:gap-2.5 rounded-sm focus-visible:outline-none focus-visible:ring-2 ${
         isFooter ? 'focus-visible:ring-green-400' : 'focus-visible:ring-green-700 dark:focus-visible:ring-green-400'
       }`}
     >
-      <LogoMark className='size-10 shrink-0 md:size-11' />
+      <LogoMark className='size-9 shrink-0 sm:size-10 md:size-11' />
       <span className='flex min-w-0 flex-col'>
         <span
-          className={`whitespace-nowrap font-Rajdhani text-xl font-bold leading-none tracking-tight md:text-2xl ${
+          className={`whitespace-nowrap font-Rajdhani text-lg font-bold leading-none tracking-tight sm:text-xl md:text-2xl ${
             isFooter ? 'text-white' : 'text-slate-900 dark:text-white'
           }`}
         >

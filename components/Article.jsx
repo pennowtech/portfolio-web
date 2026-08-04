@@ -58,11 +58,11 @@ const MDXComponents = {
 const Article = ({ mdxSource }) => (
   <article
     id='post'
-    className='prose prose-slate max-w-none text-sm leading-7 dark:prose-invert sm:text-base sm:leading-8 lg:text-lg lg:leading-8
+    className='prose prose-slate max-w-none text-base leading-relaxed dark:prose-invert sm:text-base sm:leading-8 lg:text-lg lg:leading-8
       prose-headings:scroll-mt-24 prose-headings:font-Neuton prose-headings:font-semibold prose-headings:leading-tight
-      prose-h2:mb-3 prose-h2:mt-8 prose-h2:text-xl sm:prose-h2:text-2xl lg:prose-h2:mt-12 lg:prose-h2:text-4xl
-      prose-h3:mb-2 prose-h3:mt-6 prose-h3:text-lg sm:prose-h3:text-xl lg:prose-h3:mt-9 lg:prose-h3:text-2xl
-      prose-p:my-4 sm:prose-p:my-5
+      prose-h2:mb-3 prose-h2:mt-8 prose-h2:text-2xl lg:prose-h2:mt-12 lg:prose-h2:text-4xl
+      prose-h3:mb-2 prose-h3:mt-6 prose-h3:text-xl lg:prose-h3:mt-9 lg:prose-h3:text-2xl
+      prose-p:my-4 prose-p:text-base sm:prose-p:my-5 sm:prose-p:text-base lg:prose-p:text-lg
       prose-a:font-medium prose-a:text-green-700 prose-a:underline prose-a:decoration-green-700/30 prose-a:underline-offset-4
       hover:prose-a:decoration-green-700 dark:prose-a:text-green-400
       prose-li:my-1 sm:prose-li:my-1.5 prose-hr:my-8 lg:prose-hr:my-10
