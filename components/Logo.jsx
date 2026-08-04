@@ -13,7 +13,7 @@ const Logo = ({ position = 'header' }) => {
         isFooter ? 'focus-visible:ring-green-400' : 'focus-visible:ring-green-700 dark:focus-visible:ring-green-400'
       }`}
     >
-      <LogoMark className='size-9 shrink-0 sm:size-10 md:size-11' />
+      <LogoMark className='w-9 h-9 shrink-0 sm:w-10 sm:h-10 md:w-11 md:h-11' />
       <span className='flex min-w-0 flex-col'>
         <span
           className={`whitespace-nowrap font-Rajdhani text-lg font-bold leading-none tracking-tight sm:text-xl md:text-2xl ${

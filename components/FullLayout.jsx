@@ -9,7 +9,7 @@ const defaultMeta = {
   metaDesc:
     'Technical Architect sharing practical work and writing on software architecture, embedded systems, distributed platforms, and engineering.',
   metaKeywords: 'Technical Architect, Software Architecture, Embedded Systems, Rust, C++, Python',
-  image: '/top-back-4.jpg',
+  image: '/singhbuildstech-logo.png',
   type: 'website'
 };
 

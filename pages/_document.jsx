@@ -7,7 +7,8 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
-          <link rel='icon' href='/singh-builds-tech-mark.svg' type='image/svg+xml' />
+          <link rel='icon' href='/favicon.png' type='image/png' />
+          <link rel='apple-touch-icon' href='/singhbuildstech-logo.png' />
           <meta name='theme-color' content='#1e293b' />
           <Script strategy='beforeInteractive' src='/persist-theme.js' />
         </Head>

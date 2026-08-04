@@ -82,9 +82,22 @@ const AboutSection = ({ classProps = '' }) => {
       </div>
 
       <div className='relative z-10 mx-auto -mt-28 w-full max-w-[1048px] px-4 md:-mt-36 lg:px-8'>
-        <article className='overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl dark:border-slate-500 dark:bg-gray-600'>
+        <div className='relative z-20 flex justify-center -mb-12 md:-mb-14'>
+          <div className='relative h-24 w-24 md:h-28 md:w-28 rounded-full border-4 border-white shadow-2xl overflow-hidden bg-slate-950 dark:border-slate-800 shrink-0'>
+            <Image
+              src='/singhbuildstech-logo.png'
+              alt='SinghBuildsTech emblem'
+              width={112}
+              height={112}
+              className='h-full w-full object-cover'
+              priority
+            />
+          </div>
+        </div>
+
+        <article className='overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl dark:border-slate-500 dark:bg-gray-600 pt-14 md:pt-16'>
           <div className='px-5 md:px-8'>
-            <header className='mx-auto mt-4 max-w-3xl text-center md:mt-5'>
+            <header className='mx-auto mt-2 flex flex-col items-center max-w-3xl text-center md:mt-3'>
               <p className='mb-2 font-Monda text-sm font-bold uppercase tracking-[0.16em] text-orange-600 dark:text-orange-400'>
                 {t('aboutSection.role', 'Technical Architect')}
               </p>
