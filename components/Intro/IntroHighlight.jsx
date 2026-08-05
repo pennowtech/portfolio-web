@@ -1,64 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import ReactMarkdown from 'react-markdown';
-import { skills } from '@utils/consts';
 import { useLanguage } from '../../utils/LanguageContext';
-
-const skillGroups = [
-  {
-    titleKey: 'Architecture',
-    defaultTitle: 'Architecture',
-    names: [
-      'Microservices Architecture',
-      'Domain-Driven Design',
-      'Network Architecture',
-      'System Design',
-      'Distributed Systems',
-      'Legacy Modernization'
-    ]
-  },
-  {
-    titleKey: 'Architecture Modelling',
-    defaultTitle: 'Architecture Modelling',
-    names: ['ArchiMate', 'UML', 'C4 Model', 'Architecture Decision Records']
-  },
-  {
-    titleKey: 'Languages',
-    defaultTitle: 'Languages',
-    names: ['C++ 11/17', 'Rust', 'Python', 'JavaScript', 'Solidity']
-  },
-  {
-    titleKey: 'Frameworks & testing',
-    defaultTitle: 'Frameworks & testing',
-    names: ['Qt', 'ReactJS', 'Next.JS', 'FastAPI', 'Pytest', 'Jest', 'Material Design']
-  },
-  {
-    titleKey: 'Systems & networking',
-    defaultTitle: 'Systems & networking',
-    names: ['TCP/IP', 'Sockets', 'Wireshark', 'Linux']
-  },
-  {
-    titleKey: 'Data & platforms',
-    defaultTitle: 'Data & platforms',
-    names: ['PostgreSQL', 'GraphQL', 'Docker', 'Kubernetes', 'PySpark', 'Kafka', 'Git']
-  },
-  {
-    titleKey: 'Middleware',
-    defaultTitle: 'Middleware',
-    names: ['MQTT', 'gRPC', 'D-Bus', 'ROS']
-  }
-];
-
-const normalizedName = (name) => {
-  if (name === 'JS') return 'JavaScript';
-  if (name === 'Materialdesign') return 'Material Design';
-  return name;
-};
-
-const groupedSkills = skillGroups.map((group) => ({
-  ...group,
-  items: group.names.map((name) => skills.find((skill) => normalizedName(skill.name) === name)).filter(Boolean)
-}));
 
 const MarkdownHeading2 = ({ children }) => (
   <h3 className='mb-3 mt-0 font-Neuton text-2xl font-semibold leading-tight md:text-3xl'>{children}</h3>
@@ -141,45 +84,6 @@ const IntroHighlight = ({ classProps = '' }) => {
         <div className='grid gap-8 border-b border-slate-200 py-12 dark:border-slate-400 md:gap-10 lg:grid-cols-2 lg:py-16'>
           <ContentBlock>{profileBlocks[3]}</ContentBlock>
           <ContentBlock>{profileBlocks[4]}</ContentBlock>
-        </div>
-
-        <div id='skills' className='scroll-mt-24 pt-12 lg:pt-16'>
-          <div className='mb-9 max-w-2xl'>
-            <h3 className='mb-3 font-Neuton text-3xl font-semibold md:text-4xl'>
-              {t('introHighlight.toolkitTitle', 'Technical toolkit')}
-            </h3>
-            <p className='mb-0 text-slate-600 dark:text-slate-200'>
-              {t(
-                'introHighlight.toolkitDesc',
-                'Languages, platforms, and engineering tools used across real products and very different technical environments.'
-              )}
-            </p>
-          </div>
-
-          <div className='divide-y divide-slate-200 dark:divide-slate-400'>
-            {groupedSkills.map((group) => (
-              <section
-                key={group.defaultTitle}
-                aria-labelledby={`skill-group-${group.defaultTitle.replaceAll(' ', '-').replace('&', 'and').toLowerCase()}`}
-                className='grid gap-4 py-6 first:pt-0 md:grid-cols-[12rem_1fr] md:gap-8'
-              >
-                <h4
-                  id={`skill-group-${group.defaultTitle.replaceAll(' ', '-').replace('&', 'and').toLowerCase()}`}
-                  className='m-0 font-Monda text-base font-semibold'
-                >
-                  {t(`introHighlight.groups.${group.titleKey}`, group.defaultTitle)}
-                </h4>
-                <ul className='m-0 grid list-none grid-cols-2 gap-x-5 gap-y-5 p-0 sm:grid-cols-3 lg:grid-cols-4'>
-                  {group.items.map((skill) => (
-                    <li key={skill.name} className='flex min-w-0 items-center gap-2.5 text-sm sm:text-base'>
-                      <skill.icon aria-hidden='true' className='shrink-0 text-lg' />
-                      <span className='min-w-0 leading-tight'>{normalizedName(skill.name)}</span>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            ))}
-          </div>
         </div>
       </div>
     </section>

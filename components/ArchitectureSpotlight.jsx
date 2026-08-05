@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../utils/LanguageContext';
+import TechnicalToolkitModal from './TechnicalToolkitModal';
 import { FaCubes, FaNetworkWired, FaServer, FaShieldHalved } from 'react-icons/fa6';
 import { MdOutlineArchitecture, MdMemory, MdSpeed } from 'react-icons/md';
 
@@ -101,6 +102,7 @@ const architectureBlueprints = [
 const ArchitectureSpotlight = () => {
   const { t } = useLanguage();
   const [activeBlueprint, setActiveBlueprint] = useState(architectureBlueprints[0]);
+  const [isToolkitOpen, setIsToolkitOpen] = useState(false);
 
   return (
     <section
@@ -211,7 +213,19 @@ const ArchitectureSpotlight = () => {
             </ul>
           </div>
         </div>
+
+        <div className='mt-10 flex justify-center'>
+          <button
+            onClick={() => setIsToolkitOpen(true)}
+            className='flex min-h-11 cursor-pointer items-center justify-center rounded-lg border border-slate-300 bg-white px-8 py-3 font-Monda font-bold text-slate-800 shadow-md transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700'
+          >
+            <FaCubes className='mr-2' />
+            {t('architectureSpotlight.viewToolkit', 'View Full Technical Toolkit')}
+          </button>
+        </div>
       </div>
+
+      <TechnicalToolkitModal isOpen={isToolkitOpen} setIsOpen={setIsToolkitOpen} />
     </section>
   );
 };
