@@ -101,9 +101,9 @@ const ArticleEditorHelp = ({ open, onClose }) => {
 
           <HelpSection title='Keyboard shortcuts'>
             <p>
-              Use <strong>Ctrl+B</strong> or <strong>⌘B</strong> for bold and <strong>Ctrl+I</strong> or{' '}
-              <strong>⌘I</strong> for italic while the editor is focused. Selected text is wrapped; with no selection,
-              placeholder text is inserted and selected for replacement.
+              Use <strong>Ctrl+Z</strong> or <strong>⌘Z</strong> to undo, <strong>Ctrl+Y</strong>, <strong>⌘Y</strong>,
+              or <strong>Ctrl+Shift+Z</strong> to redo, <strong>Ctrl+B</strong> or <strong>⌘B</strong> for bold, and{' '}
+              <strong>Ctrl+I</strong> or <strong>⌘I</strong> for italic while the editor is focused.
             </p>
           </HelpSection>
 

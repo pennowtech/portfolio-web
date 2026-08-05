@@ -11,8 +11,9 @@ import {
   FiTable,
   FiHash
 } from 'react-icons/fi';
-import { LuBraces, LuListOrdered, LuListTree, LuQuote } from 'react-icons/lu';
+import { LuBraces, LuListOrdered, LuListTree, LuQuote, LuUndo, LuRedo } from 'react-icons/lu';
 import { EditorView } from '@codemirror/view';
+import { undo, redo } from '@codemirror/commands';
 import { FaLinkedin, FaYoutube, FaXTwitter } from 'react-icons/fa6';
 import { MdHighlight } from 'react-icons/md';
 
@@ -230,12 +231,47 @@ const MarkdownToolbar = ({ getEditorView, markdown, onHelp, showLineNumbers, onT
       `## Table of contents\n\n${headings.length ? headings.map(({ level, title }) => `${'  '.repeat(level - 2)}- [${title}](#${headingSlug(title)})`).join('\n') : '- Add headings first.'}\n\n`
     );
 
+  const handleUndo = () => {
+    const editorView = getEditorView();
+    if (editorView) {
+      undo(editorView);
+      editorView.focus();
+    }
+  };
+
+  const handleRedo = () => {
+    const editorView = getEditorView();
+    if (editorView) {
+      redo(editorView);
+      editorView.focus();
+    }
+  };
+
   return (
     <div
       className='flex flex-wrap items-center gap-1 border-b border-slate-300 bg-slate-50 p-2 dark:border-slate-600 dark:bg-slate-800'
       role='toolbar'
       aria-label='Markdown formatting'
     >
+      <button
+        type='button'
+        onClick={handleUndo}
+        title='Undo (Ctrl/⌘ Z)'
+        aria-label='Undo (Ctrl/⌘ Z)'
+        className='flex size-9 items-center justify-center rounded-md text-slate-700 hover:bg-white hover:text-green-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:text-slate-100 dark:hover:bg-slate-700 dark:hover:text-green-400'
+      >
+        <LuUndo aria-hidden='true' />
+      </button>
+      <button
+        type='button'
+        onClick={handleRedo}
+        title='Redo (Ctrl/⌘ Y or Ctrl/⌘ Shift Z)'
+        aria-label='Redo (Ctrl/⌘ Y or Ctrl/⌘ Shift Z)'
+        className='flex size-9 items-center justify-center rounded-md text-slate-700 hover:bg-white hover:text-green-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:text-slate-100 dark:hover:bg-slate-700 dark:hover:text-green-400'
+      >
+        <LuRedo aria-hidden='true' />
+      </button>
+      <span className='mx-1 h-6 border-l border-slate-300 dark:border-slate-600' />
       <label className='relative shrink-0'>
         <span className='sr-only'>Text style</span>
         <select
