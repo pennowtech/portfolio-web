@@ -29,7 +29,8 @@ if (!process.env.NEXTAUTH_URL && process.env.VERCEL_URL) {
   process.env.NEXTAUTH_URL = process.env.VERCEL_URL;
 }
 if (!process.env.NEXTAUTH_URL) {
-  process.env.NEXTAUTH_URL = 'https://singhbuildstech.com';
+  process.env.NEXTAUTH_URL =
+    process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'https://singhbuildstech.com';
 }
 
 const normalizeEmail = (value) =>

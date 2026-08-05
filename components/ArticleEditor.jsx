@@ -7,6 +7,7 @@ import { signOut } from 'next-auth/react';
 import { markdown as markdownLanguage } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
 import { EditorView } from '@codemirror/view';
+import { undo, redo } from '@codemirror/commands';
 import MarkdownToolbar from './MarkdownToolbar';
 import ArticleEditorHelp from './ArticleEditorHelp';
 import CoverImagePicker from './CoverImagePicker';
@@ -193,7 +194,18 @@ const ArticleEditor = ({ adminEmail, defaultPublicationDate }) => {
       markdownLanguage({ codeLanguages: languages }),
       EditorView.lineWrapping,
       EditorView.theme({
+        '&': {
+          fontFamily:
+            "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace !important",
+          fontSize: '14px'
+        },
+        '.cm-content': {
+          fontFamily:
+            "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace !important"
+        },
         '.cm-gutters': {
+          fontFamily:
+            "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace !important",
           backgroundColor: 'rgba(22, 101, 52, 0.10)',
           borderRight: '1px solid rgba(22, 101, 52, 0.20)'
         },
@@ -252,9 +264,28 @@ const ArticleEditor = ({ adminEmail, defaultPublicationDate }) => {
 
   const handleEditorShortcut = (event) => {
     const editorView = editorViewRef.current;
-    if ((!event.ctrlKey && !event.metaKey) || !['b', 'i'].includes(event.key.toLowerCase()) || !editorView) return;
+    if (!editorView || (!event.ctrlKey && !event.metaKey)) return;
+    const key = event.key.toLowerCase();
+
+    if (key === 'z' && event.shiftKey) {
+      event.preventDefault();
+      redo(editorView);
+      return;
+    }
+    if (key === 'z') {
+      event.preventDefault();
+      undo(editorView);
+      return;
+    }
+    if (key === 'y') {
+      event.preventDefault();
+      redo(editorView);
+      return;
+    }
+
+    if (!['b', 'i'].includes(key)) return;
     event.preventDefault();
-    const marker = event.key.toLowerCase() === 'b' ? '**' : '*';
+    const marker = key === 'b' ? '**' : '*';
     const selection = editorView.state.selection.main;
     const selected = editorView.state.sliceDoc(selection.from, selection.to);
     const wrappedOutside =
