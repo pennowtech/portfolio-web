@@ -64,7 +64,7 @@ const AboutSection = ({ classProps = '' }) => {
         <div
           aria-hidden='true'
           className='absolute inset-0 bg-cover bg-center'
-          style={{ backgroundImage: "url('/header-banner.png')" }}
+          style={{ backgroundImage: "url('/top-back-4.png')" }}
         >
           <div className='absolute inset-0 bg-gradient-to-b from-slate-950/45 to-slate-950/70' />
         </div>
