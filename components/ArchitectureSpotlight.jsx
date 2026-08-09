@@ -115,7 +115,7 @@ const ArchitectureSpotlight = () => {
 
       <div className='mx-auto w-full max-w-[1048px] px-4 lg:px-8'>
         <header className='mx-auto mb-10 max-w-3xl text-center md:mb-12'>
-          <p className='mb-2 font-Monda text-sm font-semibold uppercase tracking-[0.16em] text-orange-600 dark:text-orange-400'>
+          <p className='mb-2 font-Monda text-sm font-semibold uppercase tracking-[0.16em] text-orange-700 dark:text-orange-400'>
             {t('architectureSpotlight.subtitle', 'Interactive Architecture Blueprint')}
           </p>
           <h2 className='mb-3 font-Neuton text-4xl font-semibold leading-tight md:text-5xl'>
@@ -141,7 +141,7 @@ const ArchitectureSpotlight = () => {
                 onClick={() => setActiveBlueprint(blueprint)}
                 className={`flex items-center gap-2.5 rounded-xl border px-4 py-3 font-Monda text-sm font-bold transition duration-200 ${
                   isActive
-                    ? 'border-orange-500 bg-white text-orange-600 dark:bg-slate-800 dark:text-orange-400 shadow-lg ring-2 ring-orange-500/30'
+                    ? 'border-orange-500 bg-white text-orange-700 dark:bg-slate-800 dark:text-orange-400 shadow-lg ring-2 ring-orange-500/30'
                     : 'border-slate-300 bg-white/70 text-slate-700 hover:border-slate-400 hover:bg-white dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:bg-slate-800'
                 }`}
               >
@@ -156,7 +156,7 @@ const ArchitectureSpotlight = () => {
         <div className='overflow-hidden rounded-2xl border border-slate-300 bg-white p-6 shadow-xl dark:border-slate-700 dark:bg-slate-800/80 backdrop-blur-sm md:p-8'>
           <div className='mb-6 flex flex-col justify-between gap-4 border-b border-slate-200 dark:border-slate-700 pb-6 md:flex-row md:items-center'>
             <div>
-              <span className='rounded-full border border-orange-500/40 bg-orange-500/10 px-3 py-1 font-Monda text-xs font-bold text-orange-600 dark:text-orange-400'>
+              <span className='rounded-full border border-orange-500/40 bg-orange-500/10 px-3 py-1 font-Monda text-xs font-bold text-orange-700 dark:text-orange-400'>
                 {t(`architectureSpotlight.${activeBlueprint.categoryKey}`, activeBlueprint.defaultCategory)}
               </span>
               <h3 className='mt-2 font-Neuton text-2xl font-semibold text-slate-900 dark:text-white md:text-3xl'>
@@ -176,7 +176,7 @@ const ArchitectureSpotlight = () => {
                 className='relative flex flex-col justify-between rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-900/90 transition duration-300 hover:border-orange-500/60 hover:shadow-lg'
               >
                 <div>
-                  <div className='mb-2 flex items-center justify-between text-xs font-semibold text-orange-600 dark:text-orange-400'>
+                  <div className='mb-2 flex items-center justify-between text-xs font-semibold text-orange-700 dark:text-orange-400'>
                     <span>Node 0{index + 1}</span>
                     <span className='size-2 rounded-full bg-green-500 animate-pulse' />
                   </div>

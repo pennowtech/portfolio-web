@@ -1,8 +1,12 @@
 {
+  "accessibility": {
+    "backToTop": "Back to top"
+  },
   "nav": {
     "home": "Home",
     "about": "About",
     "skills": "Skills",
+    "life-interests": "Life & Interests",
     "projects": "Projects",
     "articles": "Articles",
     "contact": "Contact",
@@ -68,6 +72,44 @@
       "Systems & networking": "Systems & networking",
       "Data & platforms": "Data & platforms",
       "Middleware": "Middleware"
+    }
+  },
+  "personalSide": {
+    "title": "Life Beyond the Screen",
+    "desc": "Away from architecture diagrams, life is still about discovery: countries and cultures, long rides, open water, and books that make the world feel bigger.",
+    "signature": "Reading feeds the curiosity. Writing gives it somewhere to go.",
+    "readerTitle": "Always one more chapter",
+    "readerBody": "Reading is how I slow down without standing still. A good book opens a different world, challenges an old assumption, and usually leaves behind a question worth carrying.",
+    "readerCaption": "Reading feeds my curiosity. I enjoy discovering new ideas, different perspectives, and stories that stay with me long after the last page.",
+    "readerAlt": "Sukhdeep enjoying a book",
+    "traits": {
+      "explore": "Travels for the culture, not the checklist.",
+      "move": "Cycles far. Swims often. Comes back recharged.",
+      "create": "Reads widely. Writes thoughtfully. Stays curious."
+    },
+    "stories": {
+      "writing": {
+        "label": "Writing",
+        "title": "I enjoy turning ideas into words",
+        "body": "I write about things I have learned, places I have seen, and ideas that stay with me. It is a simple way to share a little of how I see the world."
+      },
+      "mysore": {
+        "alt": "A cultural stop from Sukhdeep’s travels",
+        "caption": "Different cultures keep curiosity honest—and assumptions pleasantly unsettled."
+      },
+      "lisbon": {
+        "alt": "An evening discovered while travelling",
+        "caption": "The best plans leave a little room for the road to surprise you."
+      },
+      "water": {
+        "label": "Swimming",
+        "title": "Put me near water and I am happy",
+        "body": "Swimming is one of my favorite ways to stay active and switch off. Pool, lake, or sea—I am rarely difficult to convince when there is a chance to get in the water."
+      },
+      "street": {
+        "alt": "Sukhdeep exploring a new city on foot",
+        "caption": "New streets. New stories. A better way of seeing familiar problems."
+      }
     }
   },
   "projects": {

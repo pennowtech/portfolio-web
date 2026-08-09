@@ -98,7 +98,7 @@ const AboutSection = ({ classProps = '' }) => {
         <article className='overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl dark:border-slate-500 dark:bg-gray-600 pt-14 md:pt-16'>
           <div className='px-5 md:px-8'>
             <header className='mx-auto mt-2 flex flex-col items-center max-w-3xl text-center md:mt-3'>
-              <p className='mb-2 font-Monda text-sm font-bold uppercase tracking-[0.16em] text-orange-600 dark:text-orange-400'>
+              <p className='mb-2 font-Monda text-sm font-bold uppercase tracking-[0.16em] text-orange-700 dark:text-orange-200'>
                 {t('aboutSection.role', 'Technical Architect')}
               </p>
               <h1 id='profile-hero-title' className='mb-2 font-Neuton text-4xl font-semibold leading-tight md:text-5xl'>
@@ -131,9 +131,9 @@ const AboutSection = ({ classProps = '' }) => {
 
           <div className='mx-auto max-w-4xl px-5 py-8 md:px-10 md:py-10'>
             <div className='mb-7 text-center'>
-              <h4 className='mb-2 font-Neuton text-xl font-semibold md:text-2xl'>
+              <p className='mb-2 font-Neuton text-xl font-semibold md:text-2xl'>
                 {t('aboutSection.headline', 'Designing systems that hold up in the real world')}
-              </h4>
+              </p>
             </div>
 
             <ul className='m-0 grid list-none gap-4 p-0 md:gap-5'>
@@ -161,7 +161,7 @@ const AboutSection = ({ classProps = '' }) => {
               role='button'
               tabIndex={0}
               onKeyDown={handleKeyboardActivation}
-              className='flex min-h-11 cursor-pointer items-center justify-center rounded-lg bg-green-700 px-6 py-3 font-Monda font-bold text-white shadow transition hover:bg-green-800 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 focus-visible:ring-offset-2 dark:bg-green-600 dark:hover:bg-green-500 dark:focus-visible:ring-green-400 dark:focus-visible:ring-offset-gray-600'
+              className='flex min-h-11 cursor-pointer items-center justify-center rounded-lg bg-green-700 px-6 py-3 font-Monda font-bold text-white shadow transition hover:bg-green-800 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 focus-visible:ring-offset-2 dark:bg-green-700 dark:hover:bg-green-800 dark:focus-visible:ring-green-400 dark:focus-visible:ring-offset-gray-600'
             >
               {t('aboutSection.getInTouch', 'Get in touch')}
             </ScrollLink>
@@ -174,7 +174,7 @@ const AboutSection = ({ classProps = '' }) => {
               role='button'
               tabIndex={0}
               onKeyDown={handleKeyboardActivation}
-              className='flex min-h-11 cursor-pointer items-center justify-center rounded-lg border-2 border-orange-500 px-6 py-3 font-Monda font-bold text-slate-800 transition hover:bg-orange-500 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 focus-visible:ring-offset-2 dark:text-slate-100 dark:focus-visible:ring-green-400 dark:focus-visible:ring-offset-gray-600'
+              className='flex min-h-11 cursor-pointer items-center justify-center rounded-lg border-2 border-orange-500 px-6 py-3 font-Monda font-bold text-slate-800 transition hover:border-orange-700 hover:bg-orange-700 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 focus-visible:ring-offset-2 dark:text-slate-100 dark:focus-visible:ring-green-400 dark:focus-visible:ring-offset-gray-600'
             >
               {t('aboutSection.viewProfile', 'View full profile')}
             </ScrollLink>

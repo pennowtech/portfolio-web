@@ -67,18 +67,19 @@ const Navbar = ({ homepage, classprops }) => {
 
   return (
     <nav aria-label='Primary navigation' className={`${classprops} flex items-center`}>
-      <ul className='m-0 hidden list-none flex-row items-center gap-1 p-0 xl:flex'>
+      <ul className='m-0 hidden w-full list-none flex-row items-center gap-0.5 p-0 md:flex'>
         {desktopNavItems}
-        <li className='ml-2 border-l border-slate-300 dark:border-slate-700 pl-3 flex items-center gap-2.5'>
+        <li className='ml-auto flex items-center gap-1.5 border-l border-slate-300 pl-2 lg:gap-2.5 lg:pl-4 dark:border-slate-700'>
           <button
             type='button'
             onClick={triggerCmdK}
-            className='inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-slate-100/80 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700'
+            aria-label='Search articles and commands'
+            className='inline-flex size-11 items-center justify-center rounded-lg border border-slate-300 bg-slate-100/80 text-xs font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-200 lg:w-auto lg:gap-1.5 lg:px-3 lg:py-1.5 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700'
             title='Search articles and commands (Cmd + K)'
           >
             <BiSearch aria-hidden='true' className='text-sm text-slate-500 dark:text-slate-400' />
-            <span>Search</span>
-            <kbd className='rounded border border-slate-300 bg-white px-1.5 py-0.5 text-[10px] font-bold text-slate-500 shadow-2xs dark:border-slate-600 dark:bg-slate-900 dark:text-slate-400'>
+            <span className='hidden lg:inline'>Search</span>
+            <kbd className='hidden rounded border border-slate-300 bg-white px-1.5 py-0.5 text-[10px] font-bold text-slate-500 shadow-2xs xl:inline dark:border-slate-600 dark:bg-slate-900 dark:text-slate-400'>
               ⌘K
             </kbd>
           </button>
@@ -87,16 +88,17 @@ const Navbar = ({ homepage, classprops }) => {
         </li>
       </ul>
 
-      <div className='flex items-center gap-2 xl:hidden'>
+      <div className='flex items-center gap-1.5 sm:gap-2 md:hidden'>
         <button
           type='button'
           onClick={triggerCmdK}
-          className='inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-800 shadow-2xs transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700'
+          aria-label='Search articles and commands'
+          className='inline-flex size-11 items-center justify-center rounded-lg border border-slate-300 bg-white text-xs font-semibold text-slate-800 shadow-2xs transition hover:bg-slate-100 sm:w-auto sm:gap-1.5 sm:px-3 sm:py-1.5 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700'
           title='Search articles and commands (Cmd + K)'
         >
           <BiSearch aria-hidden='true' className='text-sm text-orange-600 dark:text-orange-400' />
-          <span>Search</span>
-          <kbd className='rounded border border-slate-300 bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-300'>
+          <span className='hidden sm:inline'>Search</span>
+          <kbd className='hidden rounded border border-slate-300 bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold text-slate-600 sm:inline dark:border-slate-600 dark:bg-slate-900 dark:text-slate-300'>
             ⌘K
           </kbd>
         </button>
@@ -114,7 +116,7 @@ const Navbar = ({ homepage, classprops }) => {
       </div>
 
       {isMenuVisible && (
-        <div className='fixed inset-0 z-[100] xl:hidden'>
+        <div className='fixed inset-0 z-[100] md:hidden'>
           <button
             type='button'
             aria-label='Close navigation menu'

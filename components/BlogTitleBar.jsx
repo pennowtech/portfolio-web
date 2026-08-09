@@ -47,7 +47,7 @@ const BlogTitleBar = ({ postMeta }) => {
           {postMeta.title}
         </h1>
 
-        <PostDate date={postMeta.date} readingTime={readingTime} author={postMeta.author} variant='hero' />
+        <PostDate date={postMeta.date} readingTime={readingTime} author={postMeta.author} variant='photoHero' />
       </div>
     </header>
   );

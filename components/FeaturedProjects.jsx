@@ -59,7 +59,7 @@ const FeaturedProject = ({ project, t }) => (
     <div className='flex flex-col justify-center p-6 sm:p-8 lg:p-10'>
       <div className='mb-3 inline-flex items-center gap-2'>
         <span className='size-2.5 rounded-full bg-orange-500 animate-pulse' />
-        <span className='font-Monda text-xs font-bold uppercase tracking-[0.16em] text-orange-600 dark:text-orange-400'>
+        <span className='font-Monda text-xs font-bold uppercase tracking-[0.16em] text-orange-700 dark:text-orange-400'>
           {t('projects.featuredLabel', 'Featured project')}
         </span>
       </div>
@@ -172,7 +172,7 @@ const FeaturedProjects = () => {
 
       <div className='mx-auto w-full max-w-[1048px] px-4 lg:px-8'>
         <header className='mx-auto mb-14 max-w-3xl text-center md:mb-20'>
-          <p className='mb-3 font-Monda text-xs font-bold uppercase tracking-[0.22em] text-orange-600 dark:text-orange-400'>
+          <p className='mb-3 font-Monda text-xs font-bold uppercase tracking-[0.22em] text-orange-700 dark:text-orange-400'>
             {t('projects.subtitle', 'Selected work')}
           </p>
           <h2

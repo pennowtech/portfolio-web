@@ -73,7 +73,7 @@ const CommandPalette = () => {
     <div className='fixed inset-0 z-50 flex items-start justify-center bg-slate-950/60 p-4 pt-20 backdrop-blur-sm'>
       <div className='w-full max-w-lg overflow-hidden rounded-2xl border border-slate-300 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-900'>
         <div className='flex items-center border-b border-slate-200 px-4 py-3 dark:border-slate-800'>
-          <FaSearch className='mr-3 text-slate-400' />
+          <FaSearch className='mr-3 text-slate-500 dark:text-slate-400' />
           <input
             type='text'
             autoFocus
@@ -94,7 +94,7 @@ const CommandPalette = () => {
                     action.run();
                     setIsOpen(false);
                   }}
-                  className='flex w-full items-center justify-between rounded-xl px-3 py-2.5 font-Monda text-sm font-semibold text-slate-700 hover:bg-orange-500/10 hover:text-orange-600 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-orange-400'
+                  className='flex w-full items-center justify-between rounded-xl px-3 py-2.5 font-Monda text-sm font-semibold text-slate-700 hover:bg-orange-500/10 hover:text-orange-700 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-orange-400'
                 >
                   <div className='flex items-center min-w-0 pr-2'>
                     <Icon className='mr-3 shrink-0 text-base' />
