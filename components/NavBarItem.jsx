@@ -10,12 +10,13 @@ const NavBarItem = ({ menu, classprops, homepage, onNavigate }) => {
     `nav.${menu.path === 'about-me' ? 'about' : menu.path === 'page' ? 'articles' : menu.path}`,
     menu.title
   );
-  const linkClasses = `flex min-h-11 w-full items-center rounded-md px-2 py-2 2xl:px-3 transition-colors duration-200
+  const linkClasses =
+    `flex min-h-11 w-full items-center rounded-md px-1.5 py-2 lg:px-2 2xl:px-3 transition-colors duration-200
     hover:bg-green-700 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700
     dark:hover:bg-slate-900 dark:hover:text-orange-400 ${classprops || ''}`.trim();
 
   return (
-    <li className='w-full list-none xl:w-auto'>
+    <li className='w-full list-none md:w-auto'>
       {homepage ? (
         <ScrollLink
           activeClass='bg-green-700 text-white dark:bg-green-600 dark:text-white'

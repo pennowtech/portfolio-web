@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { absoluteUrl } from '@utils/site';
 import CommandPalette from './CommandPalette';
+import BackToTopButton from './BackToTopButton';
 
 const defaultMeta = {
   title: 'SinghBuildsTech | Sukhdeep Singh, Technical Architect',
@@ -51,6 +52,7 @@ const FullLayout = ({ metaInfo = {}, title, metaKeywords, metaDesc, children }) 
       <div id='content' className='mx-auto flex w-full flex-grow flex-col'>
         {children}
       </div>
+      <BackToTopButton />
       <CommandPalette />
     </>
   );

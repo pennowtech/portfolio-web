@@ -51,14 +51,16 @@ const Index = ({ postsToShow, totalPosts, recentPosts }) => {
                 alt={featuredHeroPost.title}
                 className='object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105'
                 layout='fill'
+                priority
+                sizes='(max-width: 1023px) 100vw, 58vw'
               />
               <div className='absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent' />
               <span className='absolute top-4 left-4 rounded-full border border-orange-500/40 bg-slate-950/80 px-3 py-1 font-Monda text-xs font-bold text-orange-400 backdrop-blur-md shadow-md'>
                 🔥 Featured Article
               </span>
+              <PostCategories categories={featuredHeroPost.categories} variant='card' />
             </div>
             <div className='flex flex-col justify-center p-6 sm:p-8 lg:p-10'>
-              <PostCategories categories={featuredHeroPost.categories} variant='card' />
               <Link href={`/blog/${featuredHeroPost.slug}`}>
                 <h2 className='mb-4 mt-2 font-Neuton text-3xl font-semibold leading-tight text-slate-900 transition hover:text-orange-600 dark:text-white dark:hover:text-orange-400 sm:text-4xl'>
                   {featuredHeroPost.title}
@@ -81,7 +83,9 @@ const Index = ({ postsToShow, totalPosts, recentPosts }) => {
 
       {/* Category Pills Filter */}
       <div className='mb-8 flex flex-wrap items-center gap-2 border-b border-slate-200 pb-4 dark:border-slate-800'>
-        <span className='mr-2 font-Monda text-xs font-bold uppercase tracking-wider text-slate-400'>Filter by:</span>
+        <span className='mr-2 font-Monda text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-300'>
+          Filter by:
+        </span>
         {categoriesList.map((cat) => (
           <button
             key={cat}
@@ -101,7 +105,7 @@ const Index = ({ postsToShow, totalPosts, recentPosts }) => {
       {filteredPosts.length > 0 ? (
         <PostList posts={filteredPosts} />
       ) : (
-        <p className='py-8 text-center text-slate-500 dark:text-slate-400 font-Monda'>
+        <p className='py-8 text-center text-slate-500 dark:text-slate-300 font-Monda'>
           No articles found in this category.
         </p>
       )}

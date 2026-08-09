@@ -26,9 +26,13 @@ const PostDate = ({ date, readingTime, author, variant = 'default' }) => {
     );
   }
 
-  if (variant === 'hero') {
+  if (variant === 'hero' || variant === 'photoHero') {
+    const toneClass = variant === 'photoHero' ? 'text-slate-100' : 'text-slate-700 dark:text-slate-200';
+
     return (
-      <div className='flex flex-wrap items-center gap-x-4 gap-y-2 font-Monda text-xs font-semibold uppercase tracking-wide text-slate-700 dark:text-slate-200 sm:text-sm'>
+      <div
+        className={`flex flex-wrap items-center gap-x-4 gap-y-2 font-Monda text-xs font-semibold uppercase tracking-wide sm:text-sm ${toneClass}`}
+      >
         {author && (
           <span className='flex items-center gap-1.5'>
             <BiUserCircle aria-hidden='true' className='text-lg' />

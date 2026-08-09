@@ -1,8 +1,12 @@
 {
+  "accessibility": {
+    "backToTop": "Nach oben"
+  },
   "nav": {
     "home": "Startseite",
     "about": "Über mich",
     "skills": "Fähigkeiten",
+    "life-interests": "Leben & Interessen",
     "projects": "Projekte",
     "articles": "Artikel",
     "contact": "Kontakt",
@@ -68,6 +72,45 @@
       "Systems & networking": "Systeme & Netzwerke",
       "Data & platforms": "Daten & Plattformen",
       "Middleware": "Middleware"
+    }
+  },
+  "personalSide": {
+    "subtitle": "Nach Feierabend",
+    "title": "Das Leben jenseits des Bildschirms",
+    "desc": "Abseits von Architekturdiagrammen geht es weiterhin ums Entdecken: Länder und Kulturen, lange Radtouren, offenes Wasser und Bücher, die die Welt größer machen.",
+    "signature": "Lesen weckt meine Neugier. Schreiben gibt meinen Gedanken einen Platz.",
+    "readerTitle": "Nur noch ein Kapitel",
+    "readerBody": "Ich lese gern, weil ich dabei neue Ideen, andere Perspektiven und gute Geschichten entdecke. Manche davon begleiten mich noch lange nach der letzten Seite.",
+    "readerCaption": "Lesen weckt meine Neugier. Ich entdecke dabei gern neue Ideen, andere Perspektiven und Geschichten, die mir noch lange nach der letzten Seite im Gedächtnis bleiben.",
+    "readerAlt": "Sukhdeep vertieft in ein Buch",
+    "traits": {
+      "explore": "Ich reise, um Kulturen kennenzulernen, nicht um eine Liste abzuhaken.",
+      "move": "Fährt weit. Schwimmt oft. Kehrt mit neuer Energie zurück.",
+      "create": "Liest vielseitig. Schreibt mit Bedacht. Bleibt neugierig."
+    },
+    "stories": {
+      "writing": {
+        "label": "Schreiben",
+        "title": "Ich bringe meine Gedanken gern zu Papier",
+        "body": "Ich schreibe über Dinge, die ich gelernt habe, Orte, die ich gesehen habe, und Ideen, die mich nicht loslassen. So teile ich ein Stück davon, wie ich die Welt sehe."
+      },
+      "mysore": {
+        "alt": "Ein kultureller Halt auf Sukhdeeps Reisen",
+        "caption": "Andere Kulturen halten die Neugier ehrlich—und Gewissheiten angenehm beweglich."
+      },
+      "lisbon": {
+        "alt": "Ein Abend, entdeckt auf Reisen",
+        "caption": "Die besten Pläne lassen der Reise ein wenig Platz für Überraschungen."
+      },
+      "water": {
+        "label": "Schwimmen",
+        "title": "In der Nähe von Wasser bin ich glücklich",
+        "body": "Schwimmen gehört für mich zu den schönsten Wegen, aktiv zu bleiben und abzuschalten. Ob Schwimmbad, See oder Meer – wenn ich ins Wasser kann, muss man mich selten zweimal fragen."
+      },
+      "street": {
+        "alt": "Sukhdeep erkundet zu Fuß eine neue Stadt",
+        "caption": "Neue Straßen. Neue Geschichten. Ein frischer Blick auf vertraute Probleme."
+      }
     }
   },
   "projects": {

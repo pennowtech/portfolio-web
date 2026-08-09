@@ -2,6 +2,7 @@ import React from 'react';
 import HeaderMain from '../components/HeaderMain';
 import AboutSection from '../components/Intro/AboutSection';
 import IntroHighlight from '../components/Intro/IntroHighlight';
+import PersonalSide from '../components/Intro/PersonalSide';
 import FullLayout from '../components/FullLayout';
 
 const AboutMe = () => (
@@ -16,6 +17,7 @@ const AboutMe = () => (
     <HeaderMain />
     <AboutSection />
     <IntroHighlight />
+    <PersonalSide />
   </FullLayout>
 );
 

@@ -7,6 +7,7 @@ import { WebSiteTags } from '@utils/consts';
 import { DUMMY_ARTICLE } from '@utils/dummyArticle';
 import FeaturedProjects from '@components/FeaturedProjects';
 import IntroHighlight from '../components/Intro/IntroHighlight';
+import PersonalSide from '../components/Intro/PersonalSide';
 import HomeArticles from '../components/HomeArticles';
 import ContactForm from '../components/ContactForm';
 import FullLayout from '../components/FullLayout';
@@ -43,6 +44,9 @@ const Index = ({ posts }) => {
       </Element>
       <Element id='about-me' className='element min-h-[630px] bg-slate-50 dark:bg-slate-700/35'>
         <IntroHighlight classProps='font-RobotoSlab text-base leading-8' />
+      </Element>
+      <Element id='life-interests' className='element'>
+        <PersonalSide />
       </Element>
       <Element id='projects' className='element bg-white dark:bg-gray-600'>
         <FeaturedProjects />
