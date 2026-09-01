@@ -37,7 +37,8 @@ export default async function handler(req, res) {
     targetOwner = 'pennowtech',
     targetRepo = 'Lingora',
     category = 'General',
-    platform = 'Mobile App',
+    app: clientApp = '',
+    platform = 'App Client',
     deviceMeta = ''
   } = req.body || {};
 
@@ -74,17 +75,23 @@ export default async function handler(req, res) {
     const octokit = await app.getInstallationOctokit(installation.id);
 
     // 5. Structure Formatted Markdown Body with Diagnostics
-    const formattedBody = [
-      `${body.trim()}`,
-      `\n\n---`,
-      `### 📋 Execution Environment Metadata`,
+    const metadataLines = [
       `- **Sender Email:** ${email?.trim() || 'Anonymous App User'}`,
+      clientApp?.trim() ? `- **App Target:** \`${clientApp.trim()}\`` : null,
       `- **Origin Client Application:** ${platform}`,
       `- **Operating System / Build:** ${deviceMeta || 'No diagnostic context provided.'}`,
       `- **Generated Timestamp:** ${new Date().toISOString()}`
-    ].join('\n');
+    ].filter(Boolean);
+
+    const formattedBody = [`${body.trim()}`, `\n\n---`, `### 📋 Execution Environment Metadata`, ...metadataLines].join(
+      '\n'
+    );
 
     const categoryLabel = (category || 'general').toLowerCase();
+    const labels = [categoryLabel, 'user-report'];
+    if (clientApp?.trim()) {
+      labels.push(`app:${clientApp.trim().toLowerCase()}`);
+    }
 
     // 6. Submit Issue to Targeted Repository
     const response = await octokit.request('POST /repos/{owner}/{repo}/issues', {
@@ -92,7 +99,7 @@ export default async function handler(req, res) {
       repo: targetRepo,
       title: `[${category}] ${title.trim()}`,
       body: formattedBody,
-      labels: [categoryLabel, 'user-report']
+      labels
     });
 
     return res.status(200).json({
