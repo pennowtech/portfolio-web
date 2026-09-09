@@ -210,6 +210,12 @@ Validation:
 - Configurable nesting limit defaults to one child level for the first release.
 - Issue relationships support `blocks`, `is_blocked_by`, `relates_to`, and `duplicates`.
 - Relationship creation must prevent invalid self-links and duplicate inverse links.
+- The issue detail view must provide a searchable relationship picker for linking any authorized existing issue as a parent, child/subtask, blocker, blocked issue, related issue, or duplicate.
+- Search results must show project key, issue key, title, status, and relationship conflicts without loading the entire issue catalogue into the browser.
+- Parent changes must prevent hierarchy cycles and respect the configured nesting limit.
+- Directional relationships must render reciprocally: adding `A blocks B` displays `B is blocked by A`; symmetric relationships such as `relates_to` must not create duplicate rows.
+- Removing a relationship removes only that link and must never delete either issue.
+- Cross-project relationships may be allowed only when the authenticated actor can access both projects; parent/subtask links remain same-project in the initial release.
 
 ### 6.6 Checklists
 
@@ -217,7 +223,13 @@ Validation:
 - Checklist items support text, checked state, order, optional assignee, and optional due date.
 - Checklist progress is displayed on cards and issue details.
 - Checklist items are lightweight completion criteria and do not receive issue keys.
-- Converting a checklist item into a subtask may be added later without losing its history.
+- Each checklist item and supported description bullet must expose a keyboard- and touch-accessible quick-action menu with **Create linked subtask**, **Link existing subtask**, **Unlink subtask**, and the normal edit/delete actions allowed by its state.
+- Creating a subtask from a checklist item or bullet preserves its text, records a bidirectional link, and opens the new subtask without losing the parent's navigation context.
+- A checklist item may link to at most one subtask in the initial release, and a subtask may link back to at most one checklist item.
+- A linked checklist item and subtask share one completion outcome: closing/completing the subtask checks the checklist item, and checking the checklist item completes the linked subtask.
+- Reopening either side must reopen/uncheck the other side. This synchronization must be transactional, idempotent, audited, and protected against recursive update loops.
+- Linking an already completed checklist item to an open subtask, or the reverse, must require the user to choose which current state wins before synchronization begins.
+- Deleting or unlinking either side must not silently delete the other record.
 - AI-generated checklist suggestions are a future enhancement and require explicit user review before persistence.
 
 ### 6.7 Comments and activity
@@ -286,7 +298,19 @@ The database stores metadata only; binary content stays in Supabase Storage.
 - Image gallery with preview, captions, download, and authorized deletion.
 - Copy issue link and issue key.
 - Unsaved-change warning before navigation.
+- Closing the issue detail drawer, modal, or full-page view must return to the exact originating screen rather than a fixed default route.
+- Origin restoration includes project, view (overview/backlog/board/calendar/search), sprint, filters, sorting, pagination, selected grouping, and practical scroll position.
+- Direct links with no safe internal origin fall back to the selected project's board or backlog; untrusted external return URLs must never be followed.
+- Opening another issue or subtask from issue details pushes an internal navigation stack; Close and browser Back return one level at a time.
+- View state should live in the URL where practical, and scroll restoration occurs after the originating collection loads.
 - Mobile layout must allow all essential operations without horizontal scrolling.
+
+### 7.4.1 Website design-system reuse
+
+- The production workspace must use the repository's Tailwind CSS configuration and responsive/dark-mode conventions.
+- Reuse suitable website assets and components, including local fonts, theme switching, authenticated layout patterns, buttons, form treatments, focus behavior, drawers, dialogs, and icons.
+- The standalone HTML prototype is a review artifact only; its embedded CSS must not become a parallel production design system.
+- Issueboard-specific primitives may be introduced when existing website components cannot satisfy dense application UI, accessibility, or mobile behavior, but they must use shared Tailwind tokens and conventions.
 
 ### 7.5 Search and filtering
 
