@@ -1,0 +1,2308 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Issueboard layout prototype</title>
+    <style>
+      :root {
+        --canvas: #f3f5f2;
+        --surface: #ffffff;
+        --surface-2: #f8faf8;
+        --ink: #18211b;
+        --muted: #68736c;
+        --line: #dce3de;
+        --line-strong: #c8d2cb;
+        --green: #19734b;
+        --green-2: #e0f3e8;
+        --green-3: #0f5738;
+        --amber: #a65d12;
+        --amber-bg: #fff0d7;
+        --red: #a9363e;
+        --red-bg: #fde8e9;
+        --blue: #3067a7;
+        --blue-bg: #e8f0fb;
+        --violet: #7355a6;
+        --violet-bg: #f0ebfa;
+        --shadow: 0 16px 45px rgba(30, 48, 37, 0.08);
+        --radius: 16px;
+        --sidebar: 248px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        color-scheme: light;
+      }
+      body {
+        margin: 0;
+        background: var(--canvas);
+        color: var(--ink);
+        font-family:
+          Inter,
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
+          sans-serif;
+        font-size: 14px;
+      }
+      button,
+      input,
+      select,
+      textarea {
+        font: inherit;
+      }
+      button {
+        color: inherit;
+      }
+      a {
+        color: inherit;
+      }
+      .app {
+        min-height: 100vh;
+        display: grid;
+        grid-template-columns: var(--sidebar) 1fr;
+      }
+      .sidebar {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        padding: 24px 16px;
+        background: #102b20;
+        color: #e9f3ed;
+        overflow-y: auto;
+      }
+      .brand {
+        display: flex;
+        gap: 11px;
+        align-items: center;
+        padding: 0 8px 24px;
+      }
+      .brand-mark {
+        width: 34px;
+        height: 34px;
+        border-radius: 11px;
+        display: grid;
+        place-items: center;
+        color: #123323;
+        background: #74d69c;
+        font-weight: 900;
+        letter-spacing: -1px;
+      }
+      .brand strong {
+        display: block;
+        font-size: 15px;
+      }
+      .brand small {
+        display: block;
+        margin-top: 2px;
+        color: #9db7a7;
+        font-size: 11px;
+      }
+      .project-switcher {
+        width: 100%;
+        border: 1px solid #315044;
+        background: #17372a;
+        color: #f3f8f5;
+        border-radius: 12px;
+        padding: 11px 12px;
+        text-align: left;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .project-switcher small {
+        color: #9db7a7;
+        display: block;
+        margin-bottom: 2px;
+      }
+      .nav-label {
+        margin: 25px 10px 8px;
+        color: #789486;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      .nav {
+        display: grid;
+        gap: 4px;
+      }
+      .nav button {
+        width: 100%;
+        border: 0;
+        background: transparent;
+        color: #bad0c2;
+        border-radius: 10px;
+        padding: 10px 11px;
+        text-align: left;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        cursor: pointer;
+      }
+      .nav button:hover,
+      .nav button.active {
+        color: #fff;
+        background: #214635;
+      }
+      .nav button.active {
+        box-shadow: inset 3px 0 #72d399;
+      }
+      .nav-icon {
+        width: 18px;
+        text-align: center;
+        opacity: 0.9;
+      }
+      .sidebar-foot {
+        margin-top: 28px;
+        padding: 14px 10px 0;
+        border-top: 1px solid #29483b;
+        color: #9db7a7;
+        font-size: 12px;
+      }
+      .admin {
+        display: flex;
+        gap: 9px;
+        align-items: center;
+        margin-top: 13px;
+      }
+      .avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: #d9a45f;
+        display: grid;
+        place-items: center;
+        color: #2d1c0b;
+        font-weight: 800;
+      }
+      .shell {
+        min-width: 0;
+      }
+      .mobile-head {
+        display: none;
+      }
+      .topbar {
+        min-height: 72px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 18px;
+        padding: 16px 28px;
+        background: rgba(255, 255, 255, 0.86);
+        border-bottom: 1px solid var(--line);
+        backdrop-filter: blur(12px);
+        position: sticky;
+        top: 0;
+        z-index: 20;
+      }
+      .crumb {
+        color: var(--muted);
+        font-size: 12px;
+        margin-bottom: 3px;
+      }
+      .topbar h1 {
+        margin: 0;
+        font-size: 20px;
+        letter-spacing: -0.02em;
+      }
+      .top-actions {
+        display: flex;
+        gap: 9px;
+        align-items: center;
+      }
+      .content {
+        padding: 26px 28px 50px;
+        max-width: 1640px;
+        margin: auto;
+      }
+      .screen {
+        display: none;
+        animation: enter 0.18s ease-out;
+      }
+      .screen.active {
+        display: block;
+      }
+      @keyframes enter {
+        from {
+          opacity: 0.55;
+          transform: translateY(3px);
+        }
+      }
+      .btn {
+        border: 1px solid var(--line-strong);
+        background: var(--surface);
+        border-radius: 10px;
+        min-height: 38px;
+        padding: 8px 13px;
+        font-weight: 700;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+      }
+      .btn:hover {
+        border-color: #9dad9f;
+        background: #f8faf8;
+      }
+      .btn.primary {
+        background: var(--green);
+        color: white;
+        border-color: var(--green);
+      }
+      .btn.primary:hover {
+        background: var(--green-3);
+      }
+      .btn.quiet {
+        border-color: transparent;
+        background: transparent;
+        color: var(--muted);
+      }
+      .btn.danger {
+        color: var(--red);
+        border-color: #e5b5b8;
+        background: #fffafa;
+      }
+      .icon-btn {
+        width: 38px;
+        padding: 0;
+      }
+      .page-intro {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        align-items: flex-end;
+        margin-bottom: 22px;
+      }
+      .page-intro h2 {
+        font-size: 27px;
+        margin: 0 0 6px;
+        letter-spacing: -0.035em;
+      }
+      .page-intro p {
+        margin: 0;
+        color: var(--muted);
+        max-width: 720px;
+      }
+      .toolbar {
+        display: flex;
+        gap: 9px;
+        align-items: center;
+        flex-wrap: wrap;
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: var(--surface);
+        margin-bottom: 18px;
+      }
+      .search {
+        min-width: 230px;
+        flex: 1;
+        position: relative;
+      }
+      .search input,
+      .control {
+        width: 100%;
+        min-height: 38px;
+        padding: 8px 11px;
+        border: 1px solid var(--line-strong);
+        background: #fff;
+        border-radius: 9px;
+        color: var(--ink);
+        outline: none;
+      }
+      .search input:focus,
+      .control:focus {
+        border-color: var(--green);
+        box-shadow: 0 0 0 3px rgba(25, 115, 75, 0.12);
+      }
+      .select {
+        width: auto;
+        min-width: 130px;
+      }
+      .surface {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+      }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+        margin-bottom: 20px;
+      }
+      .stat {
+        padding: 17px;
+        position: relative;
+        overflow: hidden;
+      }
+      .stat:after {
+        content: '';
+        position: absolute;
+        width: 65px;
+        height: 65px;
+        right: -18px;
+        bottom: -25px;
+        border-radius: 50%;
+        background: var(--green-2);
+      }
+      .stat-label {
+        color: var(--muted);
+        font-weight: 700;
+        font-size: 12px;
+      }
+      .stat-value {
+        font-size: 30px;
+        font-weight: 800;
+        margin: 5px 0 3px;
+        letter-spacing: -0.04em;
+      }
+      .stat-note {
+        font-size: 11px;
+        color: var(--green);
+        font-weight: 700;
+      }
+      .grid-2 {
+        display: grid;
+        grid-template-columns: minmax(0, 1.6fr) minmax(270px, 0.75fr);
+        gap: 18px;
+      }
+      .panel-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        padding: 17px 18px;
+        border-bottom: 1px solid var(--line);
+      }
+      .panel-head h3 {
+        margin: 0;
+        font-size: 15px;
+      }
+      .panel-head span {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .issue-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .issue-row {
+        padding: 14px 18px;
+        border-bottom: 1px solid #ebefec;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 12px;
+        align-items: center;
+      }
+      .issue-row:last-child {
+        border-bottom: 0;
+      }
+      .type {
+        width: 27px;
+        height: 27px;
+        border-radius: 8px;
+        display: grid;
+        place-items: center;
+        color: var(--blue);
+        background: var(--blue-bg);
+        font-weight: 900;
+        font-size: 11px;
+      }
+      .type.bug {
+        color: var(--red);
+        background: var(--red-bg);
+      }
+      .issue-title {
+        font-weight: 750;
+        line-height: 1.35;
+      }
+      .issue-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        color: var(--muted);
+        font-size: 11px;
+        margin-top: 5px;
+      }
+      .priority {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--amber);
+        display: inline-block;
+      }
+      .priority.high {
+        background: var(--red);
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        border-radius: 999px;
+        padding: 4px 8px;
+        background: #edf2ee;
+        color: #4e5e54;
+        font-size: 11px;
+        font-weight: 750;
+      }
+      .pill.green {
+        background: var(--green-2);
+        color: var(--green-3);
+      }
+      .pill.blue {
+        background: var(--blue-bg);
+        color: var(--blue);
+      }
+      .pill.amber {
+        background: var(--amber-bg);
+        color: var(--amber);
+      }
+      .pill.red {
+        background: var(--red-bg);
+        color: var(--red);
+      }
+      .progress {
+        height: 7px;
+        border-radius: 99px;
+        overflow: hidden;
+        background: #e6ebe7;
+      }
+      .progress > span {
+        display: block;
+        height: 100%;
+        background: var(--green);
+        border-radius: inherit;
+      }
+      .activity {
+        padding: 8px 17px 16px;
+      }
+      .activity-item {
+        display: grid;
+        grid-template-columns: 28px 1fr;
+        gap: 10px;
+        padding: 11px 0;
+      }
+      .activity-item + .activity-item {
+        border-top: 1px solid #edf0ee;
+      }
+      .activity-item p {
+        margin: 0;
+        line-height: 1.4;
+      }
+      .activity-item small {
+        color: var(--muted);
+        display: block;
+        margin-top: 3px;
+      }
+
+      /* Backlog */
+      .sprint {
+        margin-bottom: 14px;
+        overflow: hidden;
+      }
+      .sprint-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        padding: 14px 16px;
+        background: var(--surface-2);
+        border-bottom: 1px solid var(--line);
+      }
+      .sprint-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+      }
+      .sprint-title strong {
+        font-size: 14px;
+      }
+      .sprint-title span {
+        color: var(--muted);
+        font-size: 11px;
+      }
+      .sprint-metrics {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .metric-dot {
+        width: 20px;
+        height: 7px;
+        border-radius: 10px;
+        background: #cbd5ce;
+      }
+      .metric-dot.done {
+        background: #48a878;
+      }
+      .metric-dot.work {
+        background: #4a7ebd;
+      }
+      .backlog-row {
+        display: grid;
+        grid-template-columns: 24px 28px minmax(240px, 1fr) 95px 75px 90px 34px;
+        align-items: center;
+        gap: 9px;
+        padding: 11px 14px;
+        border-bottom: 1px solid #edf0ee;
+      }
+      .backlog-row:last-child {
+        border-bottom: 0;
+      }
+      .drag {
+        color: #a4afa7;
+        cursor: grab;
+        letter-spacing: -2px;
+      }
+      .inline-create {
+        width: 100%;
+        border: 0;
+        background: #fbfcfb;
+        color: var(--muted);
+        padding: 12px 17px;
+        text-align: left;
+        cursor: pointer;
+      }
+      .inline-create:hover {
+        color: var(--green);
+      }
+
+      /* Board */
+      .board {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(240px, 1fr));
+        gap: 13px;
+        overflow-x: auto;
+        padding-bottom: 12px;
+      }
+      .column {
+        background: #eaeeeb;
+        border-radius: 15px;
+        min-height: 570px;
+        padding: 11px;
+      }
+      .column-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 3px 3px 12px;
+      }
+      .column-head strong {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      .count {
+        min-width: 22px;
+        height: 22px;
+        display: grid;
+        place-items: center;
+        border-radius: 7px;
+        background: #d6ddd8;
+        font-size: 11px;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid #dbe2dd;
+        border-radius: 12px;
+        padding: 13px;
+        margin-bottom: 9px;
+        box-shadow: 0 4px 12px rgba(34, 55, 42, 0.04);
+        cursor: pointer;
+      }
+      .card:hover {
+        border-color: #9db9a8;
+        box-shadow: 0 8px 20px rgba(34, 55, 42, 0.08);
+      }
+      .card-top {
+        display: flex;
+        justify-content: space-between;
+        color: var(--muted);
+        font-size: 10px;
+        margin-bottom: 8px;
+      }
+      .card h4 {
+        font-size: 13px;
+        line-height: 1.4;
+        margin: 0 0 11px;
+      }
+      .card-labels {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-bottom: 12px;
+      }
+      .label {
+        font-size: 9px;
+        border-radius: 5px;
+        padding: 3px 6px;
+        background: var(--violet-bg);
+        color: var(--violet);
+        font-weight: 800;
+      }
+      .card-foot {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: var(--muted);
+        font-size: 10px;
+      }
+      .mini-avatar {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: #eed1a9;
+        color: #573d1f;
+        font-weight: 800;
+      }
+      .quick-card {
+        border: 1px dashed #bac6be;
+        border-radius: 10px;
+        background: transparent;
+        color: #66746b;
+        width: 100%;
+        padding: 10px;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      /* Calendar */
+      .calendar {
+        overflow: hidden;
+      }
+      .calendar-head {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        background: var(--surface-2);
+        border-bottom: 1px solid var(--line);
+      }
+      .calendar-head div {
+        padding: 10px;
+        text-align: center;
+        color: var(--muted);
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+      .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(110px, 1fr));
+      }
+      .day {
+        min-height: 126px;
+        padding: 9px;
+        border-right: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+      }
+      .day:nth-child(7n) {
+        border-right: 0;
+      }
+      .day.muted {
+        background: #fafbfa;
+        color: #adb6b0;
+      }
+      .day.today {
+        background: #f5fbf7;
+      }
+      .day-number {
+        font-size: 11px;
+        font-weight: 800;
+        margin-bottom: 7px;
+      }
+      .day.today .day-number {
+        display: grid;
+        place-items: center;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: var(--green);
+        color: white;
+      }
+      .event {
+        padding: 5px 6px;
+        border-radius: 6px;
+        background: var(--blue-bg);
+        color: var(--blue);
+        font-size: 9px;
+        font-weight: 750;
+        margin-bottom: 4px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+      .event.due {
+        background: var(--red-bg);
+        color: var(--red);
+      }
+
+      /* Reports */
+      .report-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+      }
+      .chart {
+        padding: 18px;
+        min-height: 280px;
+      }
+      .chart h3 {
+        margin: 0;
+        font-size: 15px;
+      }
+      .chart-sub {
+        color: var(--muted);
+        margin: 5px 0 22px;
+        font-size: 11px;
+      }
+      .donut-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 34px;
+        padding: 12px;
+      }
+      .donut {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background: conic-gradient(#19734b 0 42%, #3976b7 42% 66%, #d6903e 66% 85%, #dce3de 85%);
+        position: relative;
+      }
+      .donut:after {
+        content: '24\A issues';
+        white-space: pre;
+        position: absolute;
+        inset: 29px;
+        border-radius: 50%;
+        background: white;
+        display: grid;
+        place-items: center;
+        text-align: center;
+        font-weight: 800;
+        line-height: 1.3;
+      }
+      .legend {
+        display: grid;
+        gap: 10px;
+      }
+      .legend-row {
+        display: grid;
+        grid-template-columns: 10px 1fr auto;
+        gap: 8px;
+        align-items: center;
+        font-size: 11px;
+      }
+      .swatch {
+        width: 9px;
+        height: 9px;
+        border-radius: 3px;
+        background: var(--green);
+      }
+      .bars {
+        height: 190px;
+        display: flex;
+        align-items: flex-end;
+        gap: 15px;
+        padding: 15px 6px 0;
+        border-bottom: 1px solid var(--line);
+        background: repeating-linear-gradient(to top, transparent 0 45px, #edf0ee 46px);
+      }
+      .bar {
+        flex: 1;
+        min-width: 20px;
+        background: #90bea5;
+        border-radius: 6px 6px 0 0;
+        position: relative;
+      }
+      .bar.done {
+        background: var(--green);
+      }
+      .bar span {
+        position: absolute;
+        bottom: -22px;
+        width: 100%;
+        text-align: center;
+        color: var(--muted);
+        font-size: 9px;
+      }
+
+      /* Settings */
+      .settings-layout {
+        display: grid;
+        grid-template-columns: 220px minmax(0, 1fr);
+        gap: 18px;
+      }
+      .settings-nav {
+        padding: 9px;
+        height: max-content;
+      }
+      .settings-nav button {
+        border: 0;
+        width: 100%;
+        background: transparent;
+        padding: 10px;
+        border-radius: 9px;
+        text-align: left;
+        cursor: pointer;
+        color: var(--muted);
+      }
+      .settings-nav button.active {
+        color: var(--green-3);
+        background: var(--green-2);
+        font-weight: 800;
+      }
+      .settings-main {
+        padding: 22px;
+      }
+      .settings-main h3 {
+        margin: 0 0 5px;
+      }
+      .settings-main > p {
+        color: var(--muted);
+        margin: 0 0 23px;
+      }
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+      .field {
+        display: grid;
+        gap: 6px;
+      }
+      .field.full {
+        grid-column: 1/-1;
+      }
+      .field label {
+        font-size: 11px;
+        font-weight: 800;
+        color: #445148;
+      }
+      textarea.control {
+        min-height: 90px;
+        resize: vertical;
+      }
+      .status-config {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        overflow: hidden;
+        margin-top: 22px;
+      }
+      .status-row {
+        display: grid;
+        grid-template-columns: 24px 14px 1fr 110px 70px;
+        gap: 10px;
+        padding: 12px;
+        border-bottom: 1px solid var(--line);
+        align-items: center;
+      }
+      .status-row:last-child {
+        border-bottom: 0;
+      }
+      .color-dot {
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        background: var(--green);
+      }
+
+      /* Issue */
+      .issue-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.65fr) 330px;
+        gap: 18px;
+      }
+      .issue-main,
+      .issue-side {
+        padding: 22px;
+      }
+      .issue-key {
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 800;
+      }
+      .issue-main h2 {
+        font-size: 25px;
+        margin: 8px 0 12px;
+        letter-spacing: -0.03em;
+      }
+      .issue-description {
+        line-height: 1.7;
+        color: #37443b;
+      }
+      .section-title {
+        margin: 28px 0 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .section-title h3 {
+        font-size: 14px;
+        margin: 0;
+      }
+      .check-item {
+        display: grid;
+        grid-template-columns: 20px 1fr auto;
+        gap: 8px;
+        align-items: center;
+        padding: 9px 0;
+        border-bottom: 1px solid #edf0ee;
+      }
+      .check-item input {
+        accent-color: var(--green);
+      }
+      .subtask {
+        display: grid;
+        grid-template-columns: 27px 1fr auto;
+        gap: 10px;
+        align-items: center;
+        padding: 10px;
+        background: var(--surface-2);
+        border-radius: 9px;
+        margin-bottom: 6px;
+      }
+      .attachment-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+      }
+      .attachment {
+        aspect-ratio: 4/3;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        position: relative;
+        background: linear-gradient(135deg, #dfeee5, #9bc6ad);
+      }
+      .attachment:nth-child(2) {
+        background: linear-gradient(135deg, #f1e5ce, #cf9e61);
+      }
+      .attachment:after {
+        content: 'Private image preview';
+        position: absolute;
+        inset: auto 7px 7px;
+        padding: 6px;
+        color: white;
+        font-size: 9px;
+        border-radius: 6px;
+        background: rgba(16, 34, 25, 0.72);
+      }
+      .timeline-item {
+        padding: 10px 0 10px 18px;
+        border-left: 2px solid #d9e3dc;
+        position: relative;
+        color: #455248;
+      }
+      .timeline-item:before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--green);
+        position: absolute;
+        left: -5px;
+        top: 15px;
+      }
+      .timeline-item small {
+        display: block;
+        color: var(--muted);
+        margin-top: 3px;
+      }
+      .property {
+        display: grid;
+        grid-template-columns: 100px 1fr;
+        gap: 10px;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #edf0ee;
+      }
+      .property > span:first-child {
+        color: var(--muted);
+        font-size: 11px;
+      }
+      .upload-box {
+        border: 1px dashed #9db8a7;
+        background: #f4faf6;
+        border-radius: 11px;
+        padding: 15px;
+        margin-top: 10px;
+      }
+      .upload-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        align-items: center;
+      }
+      .upload-meta {
+        font-size: 10px;
+        color: var(--muted);
+        margin-top: 6px;
+      }
+
+      /* Integrations/system */
+      .integration-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+      }
+      .integration-card {
+        padding: 20px;
+      }
+      .integration-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        gap: 12px;
+      }
+      .integration-title h3 {
+        margin: 0 0 5px;
+      }
+      .integration-title p {
+        color: var(--muted);
+        margin: 0;
+        font-size: 11px;
+      }
+      .health {
+        margin-top: 18px;
+        border-top: 1px solid var(--line);
+        padding-top: 13px;
+        display: grid;
+        gap: 9px;
+      }
+      .health-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 11px;
+      }
+      .ok {
+        color: var(--green);
+        font-weight: 800;
+      }
+      .warning-banner {
+        border: 1px solid #e7c38f;
+        background: #fff6e6;
+        border-radius: 14px;
+        padding: 16px;
+        display: flex;
+        gap: 13px;
+        margin-bottom: 18px;
+      }
+      .warning-banner strong {
+        display: block;
+        margin-bottom: 4px;
+      }
+      .warning-banner p {
+        margin: 0;
+        color: #735125;
+      }
+      .storage-meter {
+        margin: 18px 0;
+      }
+      .storage-head {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 7px;
+        font-size: 11px;
+        font-weight: 750;
+      }
+
+      /* Modal */
+      .modal-backdrop {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(11, 24, 17, 0.62);
+        z-index: 50;
+        padding: 20px;
+        overflow-y: auto;
+      }
+      .modal-backdrop.open {
+        display: grid;
+        place-items: start center;
+      }
+      .modal {
+        width: min(720px, 100%);
+        background: white;
+        border-radius: 18px;
+        margin: 4vh auto;
+        box-shadow: 0 28px 80px rgba(0, 0, 0, 0.25);
+        overflow: hidden;
+      }
+      .modal-head,
+      .modal-foot {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 14px;
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--line);
+      }
+      .modal-head h2 {
+        margin: 0;
+        font-size: 18px;
+      }
+      .modal-body {
+        padding: 20px;
+      }
+      .modal-foot {
+        border: 0;
+        border-top: 1px solid var(--line);
+      }
+      .compression-preview {
+        display: grid;
+        grid-template-columns: 72px 1fr auto;
+        gap: 12px;
+        align-items: center;
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-radius: 11px;
+        margin-top: 10px;
+      }
+      .preview-thumb {
+        width: 72px;
+        height: 55px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #b7ddc5, #4f916d);
+      }
+
+      /* Prototype helper */
+      .prototype-note {
+        position: fixed;
+        right: 16px;
+        bottom: 15px;
+        background: #142d22;
+        color: white;
+        border-radius: 10px;
+        padding: 9px 12px;
+        font-size: 10px;
+        z-index: 30;
+        box-shadow: var(--shadow);
+      }
+      .desktop-only {
+        display: inline-flex;
+      }
+
+      @media (max-width: 1050px) {
+        :root {
+          --sidebar: 210px;
+        }
+        .stats {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .grid-2,
+        .issue-layout {
+          grid-template-columns: 1fr;
+        }
+        .board {
+          grid-template-columns: repeat(4, 270px);
+        }
+        .backlog-row {
+          grid-template-columns: 20px 26px minmax(220px, 1fr) 80px 70px 34px;
+        }
+        .backlog-row > :nth-child(6) {
+          display: none;
+        }
+      }
+      @media (max-width: 760px) {
+        .app {
+          display: block;
+        }
+        .sidebar {
+          display: none;
+          position: fixed;
+          z-index: 60;
+          width: min(290px, 86vw);
+          box-shadow: 20px 0 50px rgba(0, 0, 0, 0.25);
+        }
+        .sidebar.open {
+          display: block;
+        }
+        .mobile-head {
+          display: flex;
+        }
+        .topbar {
+          padding: 12px 14px;
+          min-height: 62px;
+        }
+        .topbar .crumb {
+          display: none;
+        }
+        .top-actions .desktop-only {
+          display: none;
+        }
+        .content {
+          padding: 19px 14px 60px;
+        }
+        .page-intro {
+          align-items: start;
+        }
+        .page-intro h2 {
+          font-size: 23px;
+        }
+        .page-intro p {
+          font-size: 12px;
+        }
+        .stats {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 9px;
+        }
+        .stat {
+          padding: 13px;
+        }
+        .stat-value {
+          font-size: 24px;
+        }
+        .toolbar {
+          align-items: stretch;
+        }
+        .search {
+          min-width: 100%;
+        }
+        .select {
+          flex: 1;
+          min-width: 105px;
+        }
+        .page-intro .btn:not(.primary) {
+          display: none;
+        }
+        .backlog-row {
+          grid-template-columns: 16px 25px 1fr 34px;
+        }
+        .backlog-row > :nth-child(4),
+        .backlog-row > :nth-child(5),
+        .backlog-row > :nth-child(6) {
+          display: none;
+        }
+        .sprint-head {
+          align-items: start;
+        }
+        .sprint-metrics {
+          display: none;
+        }
+        .calendar {
+          overflow-x: auto;
+        }
+        .calendar-head,
+        .calendar-grid {
+          min-width: 770px;
+        }
+        .report-grid,
+        .integration-grid,
+        .form-grid,
+        .settings-layout {
+          grid-template-columns: 1fr;
+        }
+        .settings-nav {
+          display: flex;
+          overflow-x: auto;
+        }
+        .settings-nav button {
+          width: auto;
+          white-space: nowrap;
+        }
+        .issue-main,
+        .issue-side,
+        .settings-main {
+          padding: 16px;
+        }
+        .attachment-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .modal-backdrop {
+          padding: 0;
+        }
+        .modal {
+          border-radius: 16px 16px 0 0;
+          margin: auto 0 0;
+          width: 100%;
+        }
+        .compression-preview {
+          grid-template-columns: 55px 1fr;
+        }
+        .compression-preview .btn {
+          grid-column: 1/-1;
+        }
+        .prototype-note {
+          display: none;
+        }
+      }
+      @media (max-width: 430px) {
+        .stats {
+          grid-template-columns: 1fr 1fr;
+        }
+        .stat-note {
+          display: none;
+        }
+        .page-intro {
+          gap: 10px;
+        }
+        .topbar h1 {
+          font-size: 17px;
+        }
+        .donut-wrap {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar" id="sidebar">
+        <div class="brand">
+          <div class="brand-mark">IB</div>
+          <div><strong>Issueboard</strong><small>SinghBuildsTech workspace</small></div>
+        </div>
+        <button class="project-switcher">
+          <span><small>Current project</small><strong>Portfolio Website</strong></span
+          ><span>⌄</span>
+        </button>
+        <div class="nav-label">Plan and deliver</div>
+        <nav class="nav">
+          <button class="active" data-screen="overview"><span class="nav-icon">⌂</span>Overview</button>
+          <button data-screen="backlog"><span class="nav-icon">☷</span>Backlog</button>
+          <button data-screen="board"><span class="nav-icon">▦</span>Sprint board</button>
+          <button data-screen="calendar"><span class="nav-icon">□</span>Calendar</button>
+          <button data-screen="reports"><span class="nav-icon">↗</span>Reports</button>
+        </nav>
+        <div class="nav-label">Workspace</div>
+        <nav class="nav">
+          <button data-screen="issue"><span class="nav-icon">✓</span>Issue detail</button>
+          <button data-screen="projects"><span class="nav-icon">◇</span>Projects</button>
+          <button data-screen="settings"><span class="nav-icon">⚙</span>Project settings</button>
+          <button data-screen="integrations"><span class="nav-icon">⌁</span>Integrations & health</button>
+        </nav>
+        <div class="sidebar-foot">
+          Private administrator workspace
+          <div class="admin">
+            <div class="avatar">SS</div>
+            <div><strong>Sukhdeep</strong><small>Administrator</small></div>
+          </div>
+        </div>
+      </aside>
+
+      <main class="shell">
+        <header class="topbar">
+          <div class="mobile-head">
+            <button class="btn icon-btn" id="menuButton" aria-label="Open navigation">☰</button>
+          </div>
+          <div>
+            <div class="crumb">Issueboard / Portfolio Website</div>
+            <h1 id="screenTitle">Overview</h1>
+          </div>
+          <div class="top-actions">
+            <button class="btn icon-btn desktop-only" aria-label="Search">⌕</button
+            ><button class="btn primary" data-modal-open>＋ Create issue</button>
+          </div>
+        </header>
+
+        <div class="content">
+          <section class="screen active" id="overview">
+            <div class="page-intro">
+              <div>
+                <h2>Good afternoon, Sukhdeep</h2>
+                <p>Here is what is moving across Portfolio Website this sprint.</p>
+              </div>
+              <button class="btn">Manage projects</button>
+            </div>
+            <div class="stats">
+              <article class="surface stat">
+                <div class="stat-label">Open issues</div>
+                <div class="stat-value">24</div>
+                <div class="stat-note">4 created this week</div>
+              </article>
+              <article class="surface stat">
+                <div class="stat-label">Sprint progress</div>
+                <div class="stat-value">62%</div>
+                <div class="stat-note">18 of 29 points complete</div>
+              </article>
+              <article class="surface stat">
+                <div class="stat-label">Due soon</div>
+                <div class="stat-value">5</div>
+                <div class="stat-note">2 need attention today</div>
+              </article>
+              <article class="surface stat">
+                <div class="stat-label">Unassigned</div>
+                <div class="stat-value">3</div>
+                <div class="stat-note">Across active work</div>
+              </article>
+            </div>
+            <div class="grid-2">
+              <article class="surface">
+                <div class="panel-head">
+                  <div>
+                    <h3>Needs your attention</h3>
+                    <span>Priority, age, and due-date signals</span>
+                  </div>
+                  <button class="btn quiet">View backlog →</button>
+                </div>
+                <ul class="issue-list">
+                  <li class="issue-row">
+                    <span class="type bug">B</span>
+                    <div>
+                      <div class="issue-title">Image compression fails for portrait screenshots</div>
+                      <div class="issue-meta">
+                        <span>PORT-66</span><span><i class="priority high"></i> Highest</span><span>Due today</span
+                        ><span>▣ 2/4</span>
+                      </div>
+                    </div>
+                    <span class="pill blue">In progress</span>
+                  </li>
+                  <li class="issue-row">
+                    <span class="type">S</span>
+                    <div>
+                      <div class="issue-title">Plan private project workspace navigation</div>
+                      <div class="issue-meta">
+                        <span>PORT-71</span><span><i class="priority"></i> Medium</span><span>Updated 2h ago</span>
+                      </div>
+                    </div>
+                    <span class="pill">To do</span>
+                  </li>
+                  <li class="issue-row">
+                    <span class="type bug">B</span>
+                    <div>
+                      <div class="issue-title">Restore unsaved editor content after provider outage</div>
+                      <div class="issue-meta">
+                        <span>PORT-73</span><span><i class="priority high"></i> High</span><span>Overdue 1d</span>
+                      </div>
+                    </div>
+                    <span class="pill red">Blocked</span>
+                  </li>
+                  <li class="issue-row">
+                    <span class="type">T</span>
+                    <div>
+                      <div class="issue-title">Configure Slack Block Kit project selector</div>
+                      <div class="issue-meta">
+                        <span>PORT-74</span><span><i class="priority"></i> Medium</span><span>▱ 1 attachment</span>
+                      </div>
+                    </div>
+                    <span class="pill amber">Review</span>
+                  </li>
+                </ul>
+              </article>
+              <article class="surface">
+                <div class="panel-head">
+                  <div>
+                    <h3>Active sprint</h3>
+                    <span>Sprint 04 · Sep 7–20</span>
+                  </div>
+                  <span class="pill green">8 days left</span>
+                </div>
+                <div style="padding: 18px">
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 8px">
+                    <strong>18 / 29 points</strong><span style="color: var(--muted)">62%</span>
+                  </div>
+                  <div class="progress"><span style="width: 62%"></span></div>
+                </div>
+                <div class="activity">
+                  <div class="activity-item">
+                    <div class="mini-avatar">SS</div>
+                    <div>
+                      <p><strong>PORT-68</strong> moved to Done</p>
+                      <small>19 minutes ago</small>
+                    </div>
+                  </div>
+                  <div class="activity-item">
+                    <div class="mini-avatar" style="background: #cee4f6">SL</div>
+                    <div>
+                      <p><strong>PORT-74</strong> created from Slack</p>
+                      <small>2 hours ago</small>
+                    </div>
+                  </div>
+                  <div class="activity-item">
+                    <div class="mini-avatar">SS</div>
+                    <div>
+                      <p>Added three issues to Sprint 04</p>
+                      <small>Yesterday</small>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section class="screen" id="backlog">
+            <div class="page-intro">
+              <div>
+                <h2>Backlog</h2>
+                <p>Shape upcoming work, rank priorities, and commit issues to a sprint.</p>
+              </div>
+              <button class="btn">＋ Create sprint</button>
+            </div>
+            <div class="toolbar">
+              <div class="search">
+                <input aria-label="Search backlog" placeholder="Search issue key, title, or description…" />
+              </div>
+              <select class="control select">
+                <option>All types</option></select
+              ><select class="control select">
+                <option>All priorities</option></select
+              ><select class="control select">
+                <option>Assignee: Any</option></select
+              ><button class="btn quiet">Clear</button>
+            </div>
+            <article class="surface sprint">
+              <div class="sprint-head">
+                <div class="sprint-title">
+                  <strong>⌄ Sprint 04</strong><span>7 Sep – 20 Sep · 29 points · 9 issues</span>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center">
+                  <div class="sprint-metrics">
+                    <i class="metric-dot done"></i><i class="metric-dot done"></i><i class="metric-dot work"></i
+                    ><i class="metric-dot"></i>
+                  </div>
+                  <span class="pill green">Active</span><button class="btn">Complete sprint</button>
+                </div>
+              </div>
+              <div class="backlog-row">
+                <span class="drag">⠿</span><span class="type bug">B</span>
+                <div>
+                  <strong>Image compression fails for portrait screenshots</strong>
+                  <div class="issue-meta"><span>PORT-66</span><span class="label">upload</span></div>
+                </div>
+                <span class="pill blue">In progress</span><span><i class="priority high"></i> Highest</span
+                ><span>5 pts</span><span class="mini-avatar">SS</span>
+              </div>
+              <div class="backlog-row">
+                <span class="drag">⠿</span><span class="type">S</span>
+                <div>
+                  <strong>Responsive backlog and board navigation</strong>
+                  <div class="issue-meta"><span>PORT-69</span><span class="label">frontend</span></div>
+                </div>
+                <span class="pill">To do</span><span><i class="priority"></i> Medium</span><span>3 pts</span
+                ><span class="mini-avatar">SS</span>
+              </div>
+              <div class="backlog-row">
+                <span class="drag">⠿</span><span class="type">T</span>
+                <div>
+                  <strong>Slack request signature verification</strong>
+                  <div class="issue-meta"><span>PORT-70</span><span class="label">security</span></div>
+                </div>
+                <span class="pill amber">Review</span><span><i class="priority high"></i> High</span><span>3 pts</span
+                ><span class="mini-avatar">SS</span>
+              </div>
+              <button class="inline-create" data-modal-open>＋ Create issue in Sprint 04</button>
+            </article>
+            <article class="surface sprint">
+              <div class="sprint-head">
+                <div class="sprint-title">
+                  <strong>⌄ Sprint 05</strong><span>21 Sep – 4 Oct · 13 points · 4 issues</span>
+                </div>
+                <div><span class="pill">Planned</span> <button class="btn">Start sprint</button></div>
+              </div>
+              <div class="backlog-row">
+                <span class="drag">⠿</span><span class="type">S</span>
+                <div>
+                  <strong>Sprint completion and carry-over dialog</strong>
+                  <div class="issue-meta"><span>PORT-76</span></div>
+                </div>
+                <span class="pill">To do</span><span><i class="priority"></i> Medium</span><span>5 pts</span
+                ><span class="mini-avatar">SS</span>
+              </div>
+              <div class="backlog-row">
+                <span class="drag">⠿</span><span class="type bug">B</span>
+                <div>
+                  <strong>Prevent duplicate Slack retries</strong>
+                  <div class="issue-meta"><span>PORT-77</span></div>
+                </div>
+                <span class="pill">To do</span><span><i class="priority high"></i> High</span><span>3 pts</span
+                ><span class="mini-avatar">SS</span>
+              </div>
+              <button class="inline-create" data-modal-open>＋ Create issue in Sprint 05</button>
+            </article>
+            <article class="surface sprint">
+              <div class="sprint-head">
+                <div class="sprint-title"><strong>⌄ Backlog</strong><span>12 issues · 31 estimated points</span></div>
+                <button class="btn quiet">•••</button>
+              </div>
+              <div class="backlog-row">
+                <span class="drag">⠿</span><span class="type">T</span>
+                <div>
+                  <strong>Saved filters for repeated planning views</strong>
+                  <div class="issue-meta"><span>PORT-81</span></div>
+                </div>
+                <span class="pill">Backlog</span><span><i class="priority"></i> Low</span><span>2 pts</span
+                ><span class="mini-avatar">SS</span>
+              </div>
+              <button class="inline-create" data-modal-open>＋ Create issue in backlog</button>
+            </article>
+          </section>
+
+          <section class="screen" id="board">
+            <div class="page-intro">
+              <div>
+                <h2>Sprint 04 board</h2>
+                <p>September foundation · 7 Sep–20 Sep · 8 days remaining</p>
+              </div>
+              <div><button class="btn">Sprint details</button> <button class="btn">Complete sprint</button></div>
+            </div>
+            <div class="toolbar">
+              <div class="search"><input placeholder="Filter this board…" /></div>
+              <select class="control select">
+                <option>All assignees</option></select
+              ><select class="control select">
+                <option>All types</option></select
+              ><button class="btn">Only my work</button><button class="btn quiet">Clear</button>
+            </div>
+            <div class="board">
+              <div class="column">
+                <div class="column-head"><strong>To do</strong><span class="count">3</span></div>
+                <article class="card" data-screen-link="issue">
+                  <div class="card-top"><span>PORT-69 · STORY</span><i class="priority"></i></div>
+                  <h4>Responsive backlog and board navigation</h4>
+                  <div class="card-labels"><span class="label">frontend</span><span class="label">mobile</span></div>
+                  <div class="card-foot"><span>▣ 1/4 &nbsp; ▱ 2</span><span class="mini-avatar">SS</span></div>
+                </article>
+                <article class="card">
+                  <div class="card-top"><span>PORT-72 · TASK</span><i class="priority"></i></div>
+                  <h4>Configure database row-level security policies</h4>
+                  <div class="card-labels"><span class="label">security</span></div>
+                  <div class="card-foot"><span>3 points</span><span class="mini-avatar">SS</span></div>
+                </article>
+                <button class="quick-card" data-modal-open>＋ Quick create</button>
+              </div>
+              <div class="column">
+                <div class="column-head"><strong>In progress</strong><span class="count">2</span></div>
+                <article class="card" data-screen-link="issue">
+                  <div class="card-top"><span>PORT-66 · BUG</span><i class="priority high"></i></div>
+                  <h4>Image compression fails for portrait screenshots</h4>
+                  <div class="card-labels"><span class="label">upload</span><span class="label">high impact</span></div>
+                  <div class="card-foot"><span>▣ 2/4 &nbsp; ▱ 2</span><span class="mini-avatar">SS</span></div>
+                </article>
+                <article class="card">
+                  <div class="card-top"><span>PORT-71 · STORY</span><i class="priority"></i></div>
+                  <h4>Private project workspace navigation</h4>
+                  <div class="card-foot"><span>5 points</span><span class="mini-avatar">SS</span></div>
+                </article>
+                <button class="quick-card" data-modal-open>＋ Quick create</button>
+              </div>
+              <div class="column">
+                <div class="column-head"><strong>Review</strong><span class="count">2</span></div>
+                <article class="card">
+                  <div class="card-top"><span>PORT-70 · TASK</span><i class="priority high"></i></div>
+                  <h4>Slack request signature verification</h4>
+                  <div class="card-labels"><span class="label">security</span><span class="label">slack</span></div>
+                  <div class="card-foot"><span>▣ 4/4</span><span class="mini-avatar">SS</span></div>
+                </article>
+                <button class="quick-card" data-modal-open>＋ Quick create</button>
+              </div>
+              <div class="column">
+                <div class="column-head"><strong>Done</strong><span class="count">2</span></div>
+                <article class="card">
+                  <div class="card-top"><span>PORT-68 · TASK</span><i class="priority"></i></div>
+                  <h4>Define issue-management requirements</h4>
+                  <div class="card-labels"><span class="label">documentation</span></div>
+                  <div class="card-foot"><span>3 points</span><span class="mini-avatar">SS</span></div>
+                </article>
+                <button class="quick-card" data-modal-open>＋ Quick create</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="screen" id="calendar">
+            <div class="page-intro">
+              <div>
+                <h2>Calendar</h2>
+                <p>Due dates and sprint boundaries for Portfolio Website.</p>
+              </div>
+              <div>
+                <button class="btn">Today</button> <button class="btn">‹</button> <button class="btn">›</button>
+              </div>
+            </div>
+            <div class="toolbar">
+              <strong style="font-size: 16px">September 2026</strong><span style="flex: 1"></span
+              ><span class="pill blue">Issue due date</span><span class="pill green">Sprint boundary</span
+              ><span class="pill red">Overdue</span>
+            </div>
+            <article class="surface calendar">
+              <div class="calendar-head">
+                <div>Mon</div>
+                <div>Tue</div>
+                <div>Wed</div>
+                <div>Thu</div>
+                <div>Fri</div>
+                <div>Sat</div>
+                <div>Sun</div>
+              </div>
+              <div class="calendar-grid">
+                <div class="day muted"><div class="day-number">31</div></div>
+                <div class="day"><div class="day-number">1</div></div>
+                <div class="day">
+                  <div class="day-number">2</div>
+                  <div class="event">PORT-65 Auth hardening</div>
+                </div>
+                <div class="day"><div class="day-number">3</div></div>
+                <div class="day"><div class="day-number">4</div></div>
+                <div class="day"><div class="day-number">5</div></div>
+                <div class="day"><div class="day-number">6</div></div>
+                <div class="day">
+                  <div class="day-number">7</div>
+                  <div class="event" style="background: var(--green-2); color: var(--green)">Sprint 04 starts</div>
+                </div>
+                <div class="day today"><div class="day-number">8</div></div>
+                <div class="day">
+                  <div class="day-number">9</div>
+                  <div class="event due">PORT-66 Image pipeline</div>
+                </div>
+                <div class="day"><div class="day-number">10</div></div>
+                <div class="day">
+                  <div class="day-number">11</div>
+                  <div class="event">PORT-69 Navigation</div>
+                </div>
+                <div class="day"><div class="day-number">12</div></div>
+                <div class="day"><div class="day-number">13</div></div>
+                <div class="day">
+                  <div class="day-number">14</div>
+                  <div class="event">PORT-70 Slack security</div>
+                </div>
+                <div class="day"><div class="day-number">15</div></div>
+                <div class="day">
+                  <div class="day-number">16</div>
+                  <div class="event">PORT-72 RLS policies</div>
+                </div>
+                <div class="day"><div class="day-number">17</div></div>
+                <div class="day"><div class="day-number">18</div></div>
+                <div class="day"><div class="day-number">19</div></div>
+                <div class="day">
+                  <div class="day-number">20</div>
+                  <div class="event" style="background: var(--green-2); color: var(--green)">Sprint 04 ends</div>
+                </div>
+                <div class="day">
+                  <div class="day-number">21</div>
+                  <div class="event" style="background: var(--green-2); color: var(--green)">Sprint 05 starts</div>
+                </div>
+                <div class="day"><div class="day-number">22</div></div>
+                <div class="day"><div class="day-number">23</div></div>
+                <div class="day">
+                  <div class="day-number">24</div>
+                  <div class="event">PORT-76 Carry-over flow</div>
+                </div>
+                <div class="day"><div class="day-number">25</div></div>
+                <div class="day"><div class="day-number">26</div></div>
+                <div class="day"><div class="day-number">27</div></div>
+              </div>
+            </article>
+          </section>
+
+          <section class="screen" id="reports">
+            <div class="page-intro">
+              <div>
+                <h2>Reports</h2>
+                <p>Understand flow and sprint outcomes without turning sparse data into vanity metrics.</p>
+              </div>
+              <select class="control select">
+                <option>Sprint 04</option>
+              </select>
+            </div>
+            <div class="stats">
+              <article class="surface stat">
+                <div class="stat-label">Committed</div>
+                <div class="stat-value">29</div>
+                <div class="stat-note">Story points</div>
+              </article>
+              <article class="surface stat">
+                <div class="stat-label">Completed</div>
+                <div class="stat-value">18</div>
+                <div class="stat-note">62% of commitment</div>
+              </article>
+              <article class="surface stat">
+                <div class="stat-label">Cycle time</div>
+                <div class="stat-value">2.4d</div>
+                <div class="stat-note">Median for completed work</div>
+              </article>
+              <article class="surface stat">
+                <div class="stat-label">Carry-over risk</div>
+                <div class="stat-value">8</div>
+                <div class="stat-note">Points still not started</div>
+              </article>
+            </div>
+            <div class="report-grid">
+              <article class="surface chart">
+                <h3>Work by status</h3>
+                <p class="chart-sub">Current issue distribution in Sprint 04</p>
+                <div class="donut-wrap">
+                  <div class="donut"></div>
+                  <div class="legend">
+                    <div class="legend-row"><i class="swatch"></i><span>Done</span><strong>10</strong></div>
+                    <div class="legend-row">
+                      <i class="swatch" style="background: #3976b7"></i><span>In progress</span><strong>6</strong>
+                    </div>
+                    <div class="legend-row">
+                      <i class="swatch" style="background: #d6903e"></i><span>Review</span><strong>4</strong>
+                    </div>
+                    <div class="legend-row">
+                      <i class="swatch" style="background: #dce3de"></i><span>To do</span><strong>4</strong>
+                    </div>
+                  </div>
+                </div>
+              </article>
+              <article class="surface chart">
+                <h3>Created vs completed</h3>
+                <p class="chart-sub">Last six weeks</p>
+                <div class="bars">
+                  <div class="bar" style="height: 42%"><span>W32</span></div>
+                  <div class="bar done" style="height: 32%"><span>W32</span></div>
+                  <div class="bar" style="height: 68%"><span>W33</span></div>
+                  <div class="bar done" style="height: 55%"><span>W33</span></div>
+                  <div class="bar" style="height: 52%"><span>W34</span></div>
+                  <div class="bar done" style="height: 75%"><span>W34</span></div>
+                  <div class="bar" style="height: 81%"><span>W35</span></div>
+                  <div class="bar done" style="height: 63%"><span>W35</span></div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section class="screen" id="issue">
+            <div class="page-intro">
+              <div>
+                <h2>Issue detail</h2>
+                <p>One focused place for the work, its context, progress, and history.</p>
+              </div>
+              <div><button class="btn">•••</button> <button class="btn primary">Save changes</button></div>
+            </div>
+            <div class="issue-layout">
+              <article class="surface issue-main">
+                <span class="issue-key">PORT-66 · BUG</span>
+                <h2>Image compression fails for portrait screenshots</h2>
+                <div class="issue-description">
+                  <p>
+                    Portrait screenshots larger than 4 MB must be resized and compressed in the browser before direct
+                    upload to private Supabase Storage.
+                  </p>
+                  <ul>
+                    <li>Keep the longest edge below 1920 pixels.</li>
+                    <li>Show original and compressed byte sizes.</li>
+                    <li>Never send image bytes through a Vercel Function.</li>
+                  </ul>
+                </div>
+                <div class="section-title">
+                  <h3>Checklist <span class="pill green">2 of 4</span></h3>
+                  <button class="btn quiet">＋ Add item</button>
+                </div>
+                <div class="progress"><span style="width: 50%"></span></div>
+                <label class="check-item"
+                  ><input type="checkbox" checked /><span>Validate MIME type and decoded dimensions</span
+                  ><small>SS</small></label
+                ><label class="check-item"
+                  ><input type="checkbox" checked /><span>Compress in a Web Worker</span><small>SS</small></label
+                ><label class="check-item"
+                  ><input type="checkbox" /><span>Create signed direct-upload authorization</span
+                  ><small>SS</small></label
+                ><label class="check-item"
+                  ><input type="checkbox" /><span>Verify stored object during finalization</span
+                  ><small>SS</small></label
+                >
+                <div class="section-title">
+                  <h3>Subtasks <span class="pill">1 of 3</span></h3>
+                  <button class="btn quiet">＋ Add subtask</button>
+                </div>
+                <div class="subtask">
+                  <span class="type">T</span>
+                  <div><strong>PORT-82</strong> Add compression preview UI</div>
+                  <span class="pill green">Done</span>
+                </div>
+                <div class="subtask">
+                  <span class="type">T</span>
+                  <div><strong>PORT-83</strong> Signed upload authorization endpoint</div>
+                  <span class="pill blue">In progress</span>
+                </div>
+                <div class="subtask">
+                  <span class="type">T</span>
+                  <div><strong>PORT-84</strong> Orphaned upload cleanup</div>
+                  <span class="pill">To do</span>
+                </div>
+                <div class="section-title">
+                  <h3>Images and attachments</h3>
+                  <button class="btn quiet">＋ Add images</button>
+                </div>
+                <div class="attachment-grid">
+                  <div class="attachment"></div>
+                  <div class="attachment"></div>
+                </div>
+                <div class="upload-box">
+                  <div class="upload-row">
+                    <div>
+                      <strong>portrait-bug.webp</strong>
+                      <div class="upload-meta">4.8 MB → 742 KB · 84% smaller · ready for direct upload</div>
+                    </div>
+                    <span class="pill green">Compressed</span>
+                  </div>
+                  <div class="progress" style="margin-top: 10px"><span style="width: 74%"></span></div>
+                </div>
+                <div class="section-title">
+                  <h3>Activity and comments</h3>
+                  <button class="btn quiet">Newest first ⌄</button>
+                </div>
+                <textarea class="control" placeholder="Write a comment…"></textarea>
+                <div class="timeline-item">
+                  <strong>Sukhdeep</strong> completed “Compress in a Web Worker”<small>Today at 13:42</small>
+                </div>
+                <div class="timeline-item">
+                  <strong>Slack integration</strong> added an image<small>Today at 11:06</small>
+                </div>
+                <div class="timeline-item">
+                  <strong>Sukhdeep</strong> moved this issue from To do to In progress<small>Yesterday at 17:25</small>
+                </div>
+              </article>
+              <aside class="surface issue-side">
+                <div class="property"><span>Status</span><span class="pill blue">In progress</span></div>
+                <div class="property">
+                  <span>Priority</span><strong><i class="priority high"></i> Highest</strong>
+                </div>
+                <div class="property">
+                  <span>Assignee</span
+                  ><span style="display: flex; align-items: center; gap: 7px"
+                    ><i class="mini-avatar">SS</i> Sukhdeep</span
+                  >
+                </div>
+                <div class="property"><span>Sprint</span><strong>Sprint 04</strong></div>
+                <div class="property"><span>Estimate</span><strong>5 points</strong></div>
+                <div class="property"><span>Due date</span><strong style="color: var(--red)">9 Sep 2026</strong></div>
+                <div class="property">
+                  <span>Labels</span><span><i class="label">upload</i> <i class="label">frontend</i></span>
+                </div>
+                <div class="property"><span>Reporter</span><strong>Sukhdeep</strong></div>
+                <div class="property"><span>Source</span><span class="pill">Website</span></div>
+                <div class="property"><span>Created</span><strong>7 Sep 2026</strong></div>
+                <button class="btn" style="width: 100%; margin-top: 18px">Copy private issue link</button>
+              </aside>
+            </div>
+          </section>
+
+          <section class="screen" id="projects">
+            <div class="page-intro">
+              <div>
+                <h2>Projects</h2>
+                <p>Separate workflows and planning while keeping one private workspace.</p>
+              </div>
+              <button class="btn primary">＋ New project</button>
+            </div>
+            <div class="report-grid">
+              <article class="surface integration-card">
+                <div class="integration-title">
+                  <div>
+                    <span class="pill green">PORT</span>
+                    <h3 style="margin-top: 12px">Portfolio Website</h3>
+                    <p>Website, publishing, issueboard, and platform work.</p>
+                  </div>
+                  <button class="btn quiet">•••</button>
+                </div>
+                <div class="stats" style="grid-template-columns: repeat(3, 1fr); margin: 22px 0 0">
+                  <div><strong>24</strong><small style="display: block; color: var(--muted)">Open</small></div>
+                  <div><strong>1</strong><small style="display: block; color: var(--muted)">Active sprint</small></div>
+                  <div><strong>62%</strong><small style="display: block; color: var(--muted)">Progress</small></div>
+                </div>
+              </article>
+              <article
+                class="surface integration-card"
+                style="border-style: dashed; display: grid; place-items: center; text-align: center; min-height: 190px"
+              >
+                <div>
+                  <div style="font-size: 32px; color: var(--green)">＋</div>
+                  <strong>Create another project</strong>
+                  <p style="color: var(--muted); font-size: 11px">
+                    Choose a key, workflow, and default issue settings.
+                  </p>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section class="screen" id="settings">
+            <div class="page-intro">
+              <div>
+                <h2>Project settings</h2>
+                <p>Configure Portfolio Website without weakening shared security rules.</p>
+              </div>
+              <button class="btn primary">Save settings</button>
+            </div>
+            <div class="settings-layout">
+              <nav class="surface settings-nav">
+                <button class="active">Details</button><button>Workflow</button><button>Issue types</button
+                ><button>Priorities</button><button>Labels</button><button>Access</button><button>Danger zone</button>
+              </nav>
+              <article class="surface settings-main">
+                <h3>Project details</h3>
+                <p>Names, defaults, and dates shown throughout the workspace.</p>
+                <div class="form-grid">
+                  <div class="field">
+                    <label>Project name</label><input class="control" value="Portfolio Website" />
+                  </div>
+                  <div class="field"><label>Project key</label><input class="control" value="PORT" disabled /></div>
+                  <div class="field full">
+                    <label>Description</label
+                    ><textarea class="control">Website, publishing, issueboard, and platform work.</textarea>
+                  </div>
+                  <div class="field">
+                    <label>Default issue type</label
+                    ><select class="control">
+                      <option>Task</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label>Default priority</label
+                    ><select class="control">
+                      <option>Medium</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="section-title">
+                  <h3>Workflow statuses</h3>
+                  <button class="btn quiet">＋ Add status</button>
+                </div>
+                <div class="status-config">
+                  <div class="status-row">
+                    <span class="drag">⠿</span><i class="color-dot" style="background: #87938b"></i
+                    ><strong>Backlog</strong><span class="pill">Backlog</span><small>WIP —</small>
+                  </div>
+                  <div class="status-row">
+                    <span class="drag">⠿</span><i class="color-dot" style="background: #66746b"></i
+                    ><strong>To do</strong><span class="pill">To do</span><small>WIP 8</small>
+                  </div>
+                  <div class="status-row">
+                    <span class="drag">⠿</span><i class="color-dot" style="background: #3976b7"></i
+                    ><strong>In progress</strong><span class="pill blue">In progress</span><small>WIP 4</small>
+                  </div>
+                  <div class="status-row">
+                    <span class="drag">⠿</span><i class="color-dot" style="background: #d6903e"></i
+                    ><strong>Review</strong><span class="pill amber">In progress</span><small>WIP 3</small>
+                  </div>
+                  <div class="status-row">
+                    <span class="drag">⠿</span><i class="color-dot"></i><strong>Done</strong
+                    ><span class="pill green">Done</span><small>WIP —</small>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section class="screen" id="integrations">
+            <div class="page-intro">
+              <div>
+                <h2>Integrations and health</h2>
+                <p>Private configuration state, capacity, and recovery guidance.</p>
+              </div>
+              <button class="btn">Run health check</button>
+            </div>
+            <div class="warning-banner">
+              <div style="font-size: 23px">!</div>
+              <div>
+                <strong>Free Plan availability</strong>
+                <p>
+                  Supabase can pause low-activity projects. Provider unavailability is shown as maintenance—not as an
+                  empty board. Upgrade for availability-sensitive use.
+                </p>
+              </div>
+            </div>
+            <div class="integration-grid">
+              <article class="surface integration-card">
+                <div class="integration-title">
+                  <div>
+                    <span class="pill green">Connected</span>
+                    <h3 style="margin-top: 12px">Supabase</h3>
+                    <p>PostgreSQL and private issue attachments</p>
+                  </div>
+                  <button class="btn">Configure</button>
+                </div>
+                <div class="storage-meter">
+                  <div class="storage-head"><span>Private storage</span><span>184 MB / 1 GB</span></div>
+                  <div class="progress"><span style="width: 18.4%"></span></div>
+                </div>
+                <div class="health">
+                  <div class="health-row"><span>Database</span><span class="ok">● Ready</span></div>
+                  <div class="health-row"><span>Private bucket</span><span class="ok">● Ready</span></div>
+                  <div class="health-row"><span>Schema</span><strong>v1 · current</strong></div>
+                  <div class="health-row"><span>Last checked</span><strong>Just now</strong></div>
+                </div>
+              </article>
+              <article class="surface integration-card">
+                <div class="integration-title">
+                  <div>
+                    <span class="pill green">Connected</span>
+                    <h3 style="margin-top: 12px">Slack</h3>
+                    <p>Structured issue creation from mobile and desktop</p>
+                  </div>
+                  <button class="btn">Configure</button>
+                </div>
+                <div class="health">
+                  <div class="health-row"><span>Request signatures</span><span class="ok">● Enforced</span></div>
+                  <div class="health-row"><span>Allowed workspace</span><strong>1 configured</strong></div>
+                  <div class="health-row"><span>Allowed users</span><strong>1 configured</strong></div>
+                  <div class="health-row"><span>Last issue</span><strong>PORT-74 · 2h ago</strong></div>
+                </div>
+              </article>
+              <article class="surface integration-card">
+                <div class="integration-title">
+                  <div>
+                    <span class="pill blue">Website</span>
+                    <h3 style="margin-top: 12px">Image pipeline</h3>
+                    <p>Browser compression and signed direct uploads</p>
+                  </div>
+                  <button class="btn">Test upload</button>
+                </div>
+                <div class="health">
+                  <div class="health-row"><span>Compression target</span><strong>1 MB / 1920 px</strong></div>
+                  <div class="health-row"><span>Upload route</span><span class="ok">● Direct</span></div>
+                  <div class="health-row"><span>Pending cleanup</span><strong>0 objects</strong></div>
+                </div>
+              </article>
+              <article class="surface integration-card">
+                <div class="integration-title">
+                  <div>
+                    <span class="pill">Deferred</span>
+                    <h3 style="margin-top: 12px">Discord</h3>
+                    <p>Optional adapter after Slack acceptance</p>
+                  </div>
+                  <button class="btn" disabled>Not configured</button>
+                </div>
+                <div class="health">
+                  <div class="health-row"><span>Runtime access</span><strong>Disabled</strong></div>
+                  <div class="health-row"><span>Priority</span><strong>Future</strong></div>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <div class="modal-backdrop" id="issueModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal">
+        <header class="modal-head">
+          <div>
+            <div class="crumb">Portfolio Website</div>
+            <h2 id="modalTitle">Create issue</h2>
+          </div>
+          <button class="btn icon-btn" data-modal-close aria-label="Close">×</button>
+        </header>
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="field">
+              <label>Issue type</label
+              ><select class="control">
+                <option>Task</option>
+                <option>Bug</option>
+                <option>Story</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Priority</label
+              ><select class="control">
+                <option>Medium</option>
+                <option>High</option>
+              </select>
+            </div>
+            <div class="field full">
+              <label>Title</label><input class="control" placeholder="What needs to be done?" />
+            </div>
+            <div class="field full">
+              <label>Description</label
+              ><textarea class="control" placeholder="Add context, expected outcome, and acceptance notes…"></textarea>
+            </div>
+            <div class="field">
+              <label>Sprint</label
+              ><select class="control">
+                <option>Backlog</option>
+                <option>Sprint 04</option>
+                <option>Sprint 05</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Estimate</label
+              ><select class="control">
+                <option>Not estimated</option>
+                <option>1 point</option>
+                <option>2 points</option>
+                <option>3 points</option>
+                <option>5 points</option>
+              </select>
+            </div>
+            <div class="field full">
+              <label>Images</label>
+              <div class="upload-box">
+                <strong>Drop images here or choose from device</strong>
+                <div class="upload-meta">JPEG, PNG, or WebP · compressed in your browser before direct upload</div>
+              </div>
+              <div class="compression-preview">
+                <div class="preview-thumb"></div>
+                <div>
+                  <strong>mobile-screenshot.webp</strong>
+                  <div class="upload-meta">5.2 MB → 816 KB · 84% smaller</div>
+                  <div class="progress" style="margin-top: 7px"><span style="width: 100%"></span></div>
+                </div>
+                <button class="btn">Remove</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <footer class="modal-foot">
+          <small style="color: var(--muted)">Images upload only after the issue is securely created.</small>
+          <div>
+            <button class="btn" data-modal-close>Cancel</button> <button class="btn primary">Create issue</button>
+          </div>
+        </footer>
+      </div>
+    </div>
+    <div class="prototype-note">Clickable layout prototype · use the sidebar and Create issue buttons</div>
+    <script>
+      const titles = {
+        overview: 'Overview',
+        backlog: 'Backlog',
+        board: 'Sprint board',
+        calendar: 'Calendar',
+        reports: 'Reports',
+        issue: 'Issue detail',
+        projects: 'Projects',
+        settings: 'Project settings',
+        integrations: 'Integrations and health'
+      };
+      const sidebar = document.getElementById('sidebar');
+      const showScreen = (name) => {
+        document.querySelectorAll('.screen').forEach((screen) => screen.classList.toggle('active', screen.id === name));
+        document
+          .querySelectorAll('[data-screen]')
+          .forEach((button) => button.classList.toggle('active', button.dataset.screen === name));
+        document.getElementById('screenTitle').textContent = titles[name] || 'Issueboard';
+        sidebar.classList.remove('open');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+      document
+        .querySelectorAll('[data-screen]')
+        .forEach((button) => button.addEventListener('click', () => showScreen(button.dataset.screen)));
+      document
+        .querySelectorAll('[data-screen-link]')
+        .forEach((card) => card.addEventListener('click', () => showScreen(card.dataset.screenLink)));
+      document.getElementById('menuButton').addEventListener('click', () => sidebar.classList.toggle('open'));
+      const modal = document.getElementById('issueModal');
+      document
+        .querySelectorAll('[data-modal-open]')
+        .forEach((button) => button.addEventListener('click', () => modal.classList.add('open')));
+      document
+        .querySelectorAll('[data-modal-close]')
+        .forEach((button) => button.addEventListener('click', () => modal.classList.remove('open')));
+      modal.addEventListener('click', (event) => {
+        if (event.target === modal) modal.classList.remove('open');
+      });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          modal.classList.remove('open');
+          sidebar.classList.remove('open');
+        }
+      });
+    </script>
+  </body>
+</html>
