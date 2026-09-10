@@ -20,13 +20,18 @@ const surface = 'rounded-2xl border border-slate-200 bg-white shadow-sm dark:bor
 const control =
   'mt-1.5 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-normal outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/15 disabled:bg-slate-100 disabled:text-slate-500 dark:border-slate-700 dark:bg-slate-950 dark:disabled:bg-slate-800';
 
-const PageIntro = ({ title, description, action, icon: Icon }) => (
+const PageIntro = ({ title, description, action, icon: Icon, onAction, actionDisabled = false }) => (
   <div className='mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
     <div>
       <h2 className='text-xl font-bold tracking-tight'>{title}</h2>
       <p className='mt-1 text-sm text-slate-500 dark:text-slate-400'>{description}</p>
     </div>
-    <button type='button' className='button inline-flex w-fit items-center gap-2 text-sm'>
+    <button
+      type='button'
+      onClick={onAction}
+      disabled={actionDisabled}
+      className='button inline-flex w-fit items-center gap-2 text-sm disabled:cursor-wait disabled:opacity-60'
+    >
       <Icon aria-hidden='true' /> {action}
     </button>
   </div>
@@ -328,164 +333,229 @@ const IntegrationCard = ({ icon: Icon, name, description, status, statusTone = '
   </article>
 );
 
-export const IntegrationsHealthView = () => (
-  <section>
-    <PageIntro
-      title='Integrations and health'
-      description='Private configuration state, capacity, and recovery guidance.'
-      action='Run health check'
-      icon={FiRefreshCw}
-    />
-    <div className='mb-5 flex gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-amber-950 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-100'>
-      <FiAlertTriangle className='mt-0.5 shrink-0 text-xl' aria-hidden='true' />
-      <div>
-        <strong className='text-sm'>Free Plan availability</strong>
-        <p className='mt-1 text-sm leading-5 text-amber-900/75 dark:text-amber-100/70'>
-          Supabase can pause low-activity projects. Provider unavailability is shown as maintenance—not as an empty
-          board. Upgrade for availability-sensitive use.
-        </p>
-      </div>
-    </div>
-    <div className='grid gap-4 xl:grid-cols-2'>
-      <IntegrationCard
-        icon={FiDatabase}
-        name='Supabase'
-        description='PostgreSQL and private issue attachments'
-        status='Connected'
-        action='Configure'
-      >
-        <div className='mb-4'>
-          <div className='mb-2 flex justify-between text-xs'>
-            <span className='text-slate-500'>Private storage</span>
-            <strong>184 MB / 1 GB</strong>
-          </div>
-          <div className='h-2 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800'>
-            <span className='block h-full w-[18.4%] rounded-full bg-emerald-500' />
+export const IntegrationsHealthView = () => {
+  const [health, setHealth] = useState(null);
+  const [checking, setChecking] = useState(false);
+
+  const runHealthCheck = async () => {
+    setChecking(true);
+    try {
+      const response = await fetch('/api/issueboard/health', { headers: { Accept: 'application/json' } });
+      const payload = await response.json();
+      setHealth(payload);
+    } catch {
+      setHealth({
+        ok: false,
+        status: 'unavailable',
+        error: { message: 'The health check could not be reached.' },
+        components: {}
+      });
+    } finally {
+      setChecking(false);
+    }
+  };
+
+  const databaseStatus = health?.components?.database?.status;
+  const storageStatus = health?.components?.storage?.status;
+  const schemaStatus = health?.components?.schema?.status;
+  const supabaseStatus = health
+    ? health.ok
+      ? 'Connected'
+      : health.status === 'unconfigured'
+        ? 'Not configured'
+        : 'Unavailable'
+    : 'Not checked';
+
+  return (
+    <section>
+      <PageIntro
+        title='Integrations and health'
+        description='Private configuration state, capacity, and recovery guidance.'
+        action={checking ? 'Checking…' : 'Run health check'}
+        icon={FiRefreshCw}
+        onAction={runHealthCheck}
+        actionDisabled={checking}
+      />
+      {health && (
+        <div
+          className={`mb-5 flex gap-3 rounded-2xl border p-4 ${health.ok ? 'border-emerald-200 bg-emerald-50 text-emerald-950 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-100' : 'border-rose-200 bg-rose-50 text-rose-950 dark:border-rose-900 dark:bg-rose-950/40 dark:text-rose-100'}`}
+          role='status'
+        >
+          {health.ok ? (
+            <FiCheck className='mt-0.5 shrink-0 text-xl' />
+          ) : (
+            <FiAlertTriangle className='mt-0.5 shrink-0 text-xl' />
+          )}
+          <div>
+            <strong className='text-sm'>
+              {health.ok ? 'All issueboard services are ready' : 'Issueboard services need attention'}
+            </strong>
+            <p className='mt-1 text-xs opacity-75'>
+              {health.error?.message || `Checked ${new Date(health.checkedAt).toLocaleString()}`}
+            </p>
+            {health.requestId && <p className='mt-1 text-[10px] opacity-60'>Request ID: {health.requestId}</p>}
           </div>
         </div>
-        <HealthRow label='Database' value='Ready' healthy />
-        <HealthRow label='Private bucket' value='Ready' healthy />
-        <HealthRow label='Schema' value='v1 · current' />
-        <HealthRow label='Last checked' value='Just now' />
-      </IntegrationCard>
-      <IntegrationCard
-        icon={FiSlack}
-        name='Slack'
-        description='Structured issue creation from mobile and desktop'
-        status='Connected'
-        action='Configure'
-      >
-        <HealthRow label='Request signatures' value='Enforced' healthy />
-        <HealthRow label='Allowed workspace' value='1 configured' />
-        <HealthRow label='Allowed users' value='1 configured' />
-        <HealthRow label='Last issue' value='PORT-74 · 2h ago' />
-      </IntegrationCard>
-      <IntegrationCard
-        icon={FiImage}
-        name='Image pipeline'
-        description='Browser compression and signed direct uploads'
-        status='Website'
-        statusTone='blue'
-        action='Test upload'
-      >
-        <HealthRow label='Compression target' value='1 MB / 1920 px' />
-        <HealthRow label='Upload route' value='Direct' healthy />
-        <HealthRow label='Pending cleanup' value='0 objects' />
-      </IntegrationCard>
-      <IntegrationCard
-        icon={FiCloud}
-        name='Discord'
-        description='Optional adapter after Slack acceptance'
-        status='Deferred'
-        statusTone='gray'
-        action='Not configured'
-      >
-        <HealthRow label='Runtime access' value='Disabled' />
-        <HealthRow label='Priority' value='Future' />
-      </IntegrationCard>
-      <div className='xl:col-span-2'>
-        <IntegrationCard
-          icon={FiCode}
-          name='Issue API'
-          description='Create issues directly from approved services and automation'
-          status='Planned'
-          statusTone='blue'
-          action='View specification'
-        >
-          <div className='grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,.85fr)]'>
-            <div>
-              <div className='flex flex-wrap items-center gap-2 rounded-xl bg-slate-950 px-3 py-2.5 font-mono text-xs text-slate-100'>
-                <span className='rounded bg-emerald-500/20 px-1.5 py-0.5 font-bold text-emerald-300'>POST</span>
-                <span>/api/issues</span>
-              </div>
-              <p className='mt-3 text-xs leading-5 text-slate-500'>
-                Server-to-server requests will require a scoped credential, idempotency key, JSON content type, and
-                project authorization. Credentials will never be exposed in browser code.
-              </p>
-              <div className='mt-4 grid gap-2 sm:grid-cols-2'>
-                <HealthRow label='Authentication' value='Bearer API key' />
-                <HealthRow label='Idempotency' value='Required header' />
-                <HealthRow label='Request format' value='application/json' />
-                <HealthRow label='Attachment bytes' value='Not accepted' />
-              </div>
-            </div>
-            <div>
-              <h4 className='text-xs font-bold uppercase tracking-wide text-slate-500'>Request parameters</h4>
-              <div className='mt-2 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800'>
-                {[
-                  ['projectKey', 'string', 'Required', 'Target project key'],
-                  ['title', 'string', 'Required', 'Issue title'],
-                  ['issueType', 'string', 'Required', 'Task, story, bug, or epic'],
-                  ['description', 'markdown', 'Optional', 'Description and checklist'],
-                  ['priority', 'string', 'Optional', 'Defaults to project setting'],
-                  ['labels', 'string[]', 'Optional', 'Unknown labels are created'],
-                  ['sprintId', 'uuid', 'Optional', 'Target sprint'],
-                  ['parentIssueKey', 'string', 'Optional', 'Parent for a subtask'],
-                  ['relationships', 'object[]', 'Optional', 'Links, blocks, or blocked by']
-                ].map(([name, type, requirement, detail]) => (
-                  <div
-                    key={name}
-                    className='grid grid-cols-[minmax(7rem,1fr)_auto] gap-x-3 border-b border-slate-100 px-3 py-2 last:border-0 dark:border-slate-800'
-                  >
-                    <code className='min-w-0 break-all text-xs font-semibold text-emerald-700 dark:text-emerald-300'>
-                      {name}
-                    </code>
-                    <span
-                      className={`text-[10px] font-bold ${requirement === 'Required' ? 'text-rose-600 dark:text-rose-300' : 'text-slate-400'}`}
-                    >
-                      {requirement}
-                    </span>
-                    <span className='text-[10px] text-slate-400'>{type}</span>
-                    <span className='text-right text-[10px] text-slate-500'>{detail}</span>
-                  </div>
-                ))}
-              </div>
-              <p className='mt-3 flex gap-2 text-xs leading-5 text-slate-500'>
-                <FiLock className='mt-0.5 shrink-0' />
-                Images will use the existing signed direct-upload authorization and finalize flow; image bodies will not
-                pass through this API or Vercel functions.
-              </p>
-            </div>
-          </div>
-        </IntegrationCard>
-      </div>
-    </div>
-    <div className={`${surface} mt-4 grid gap-4 p-5 md:grid-cols-[1fr_auto] md:items-center`}>
-      <div className='flex gap-3'>
-        <FiShield className='mt-0.5 shrink-0 text-emerald-700' />
+      )}
+      <div className='mb-5 flex gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-amber-950 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-100'>
+        <FiAlertTriangle className='mt-0.5 shrink-0 text-xl' aria-hidden='true' />
         <div>
-          <strong className='text-sm'>Recovery checklist</strong>
-          <p className='mt-1 text-sm text-slate-500'>
-            Resume Supabase, verify schema and bucket access, then test one signed upload before reopening mutations.
+          <strong className='text-sm'>Free Plan availability</strong>
+          <p className='mt-1 text-sm leading-5 text-amber-900/75 dark:text-amber-100/70'>
+            Supabase can pause low-activity projects. Provider unavailability is shown as maintenance—not as an empty
+            board. Upgrade for availability-sensitive use.
           </p>
         </div>
       </div>
-      <button
-        type='button'
-        className='inline-flex w-fit items-center gap-2 rounded-lg px-3 py-2 text-xs font-bold text-emerald-700 hover:bg-emerald-50 dark:text-emerald-300 dark:hover:bg-emerald-950'
-      >
-        Open operations guide <FiExternalLink />
-      </button>
-    </div>
-  </section>
-);
+      <div className='grid gap-4 xl:grid-cols-2'>
+        <IntegrationCard
+          icon={FiDatabase}
+          name='Supabase'
+          description='PostgreSQL and private issue attachments'
+          status={supabaseStatus}
+          statusTone={health?.ok ? 'green' : health ? 'gray' : 'blue'}
+          action='Configure'
+        >
+          <div className='mb-4'>
+            <div className='mb-2 flex justify-between text-xs'>
+              <span className='text-slate-500'>Private storage</span>
+              <strong>184 MB / 1 GB</strong>
+            </div>
+            <div className='h-2 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800'>
+              <span className='block h-full w-[18.4%] rounded-full bg-emerald-500' />
+            </div>
+          </div>
+          <HealthRow label='Database' value={databaseStatus || 'Not checked'} healthy={databaseStatus === 'ready'} />
+          <HealthRow
+            label='Private bucket'
+            value={storageStatus || 'Not checked'}
+            healthy={storageStatus === 'ready'}
+          />
+          <HealthRow label='Schema' value={schemaStatus || 'Not checked'} healthy={schemaStatus === 'current'} />
+          <HealthRow
+            label='Last checked'
+            value={health?.checkedAt ? new Date(health.checkedAt).toLocaleTimeString() : 'Not checked'}
+          />
+        </IntegrationCard>
+        <IntegrationCard
+          icon={FiSlack}
+          name='Slack'
+          description='Structured issue creation from mobile and desktop'
+          status='Connected'
+          action='Configure'
+        >
+          <HealthRow label='Request signatures' value='Enforced' healthy />
+          <HealthRow label='Allowed workspace' value='1 configured' />
+          <HealthRow label='Allowed users' value='1 configured' />
+          <HealthRow label='Last issue' value='PORT-74 · 2h ago' />
+        </IntegrationCard>
+        <IntegrationCard
+          icon={FiImage}
+          name='Image pipeline'
+          description='Browser compression and signed direct uploads'
+          status='Website'
+          statusTone='blue'
+          action='Test upload'
+        >
+          <HealthRow label='Compression target' value='1 MB / 1920 px' />
+          <HealthRow label='Upload route' value='Direct' healthy />
+          <HealthRow label='Pending cleanup' value='0 objects' />
+        </IntegrationCard>
+        <IntegrationCard
+          icon={FiCloud}
+          name='Discord'
+          description='Optional adapter after Slack acceptance'
+          status='Deferred'
+          statusTone='gray'
+          action='Not configured'
+        >
+          <HealthRow label='Runtime access' value='Disabled' />
+          <HealthRow label='Priority' value='Future' />
+        </IntegrationCard>
+        <div className='xl:col-span-2'>
+          <IntegrationCard
+            icon={FiCode}
+            name='Issue API'
+            description='Create issues directly from approved services and automation'
+            status='Planned'
+            statusTone='blue'
+            action='View specification'
+          >
+            <div className='grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,.85fr)]'>
+              <div>
+                <div className='flex flex-wrap items-center gap-2 rounded-xl bg-slate-950 px-3 py-2.5 font-mono text-xs text-slate-100'>
+                  <span className='rounded bg-emerald-500/20 px-1.5 py-0.5 font-bold text-emerald-300'>POST</span>
+                  <span>/api/issues</span>
+                </div>
+                <p className='mt-3 text-xs leading-5 text-slate-500'>
+                  Server-to-server requests will require a scoped credential, idempotency key, JSON content type, and
+                  project authorization. Credentials will never be exposed in browser code.
+                </p>
+                <div className='mt-4 grid gap-2 sm:grid-cols-2'>
+                  <HealthRow label='Authentication' value='Bearer API key' />
+                  <HealthRow label='Idempotency' value='Required header' />
+                  <HealthRow label='Request format' value='application/json' />
+                  <HealthRow label='Attachment bytes' value='Not accepted' />
+                </div>
+              </div>
+              <div>
+                <h4 className='text-xs font-bold uppercase tracking-wide text-slate-500'>Request parameters</h4>
+                <div className='mt-2 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800'>
+                  {[
+                    ['projectKey', 'string', 'Required', 'Target project key'],
+                    ['title', 'string', 'Required', 'Issue title'],
+                    ['issueType', 'string', 'Required', 'Task, story, bug, or epic'],
+                    ['description', 'markdown', 'Optional', 'Description and checklist'],
+                    ['priority', 'string', 'Optional', 'Defaults to project setting'],
+                    ['labels', 'string[]', 'Optional', 'Unknown labels are created'],
+                    ['sprintId', 'uuid', 'Optional', 'Target sprint'],
+                    ['parentIssueKey', 'string', 'Optional', 'Parent for a subtask'],
+                    ['relationships', 'object[]', 'Optional', 'Links, blocks, or blocked by']
+                  ].map(([name, type, requirement, detail]) => (
+                    <div
+                      key={name}
+                      className='grid grid-cols-[minmax(7rem,1fr)_auto] gap-x-3 border-b border-slate-100 px-3 py-2 last:border-0 dark:border-slate-800'
+                    >
+                      <code className='min-w-0 break-all text-xs font-semibold text-emerald-700 dark:text-emerald-300'>
+                        {name}
+                      </code>
+                      <span
+                        className={`text-[10px] font-bold ${requirement === 'Required' ? 'text-rose-600 dark:text-rose-300' : 'text-slate-400'}`}
+                      >
+                        {requirement}
+                      </span>
+                      <span className='text-[10px] text-slate-400'>{type}</span>
+                      <span className='text-right text-[10px] text-slate-500'>{detail}</span>
+                    </div>
+                  ))}
+                </div>
+                <p className='mt-3 flex gap-2 text-xs leading-5 text-slate-500'>
+                  <FiLock className='mt-0.5 shrink-0' />
+                  Images will use the existing signed direct-upload authorization and finalize flow; image bodies will
+                  not pass through this API or Vercel functions.
+                </p>
+              </div>
+            </div>
+          </IntegrationCard>
+        </div>
+      </div>
+      <div className={`${surface} mt-4 grid gap-4 p-5 md:grid-cols-[1fr_auto] md:items-center`}>
+        <div className='flex gap-3'>
+          <FiShield className='mt-0.5 shrink-0 text-emerald-700' />
+          <div>
+            <strong className='text-sm'>Recovery checklist</strong>
+            <p className='mt-1 text-sm text-slate-500'>
+              Resume Supabase, verify schema and bucket access, then test one signed upload before reopening mutations.
+            </p>
+          </div>
+        </div>
+        <button
+          type='button'
+          className='inline-flex w-fit items-center gap-2 rounded-lg px-3 py-2 text-xs font-bold text-emerald-700 hover:bg-emerald-50 dark:text-emerald-300 dark:hover:bg-emerald-950'
+        >
+          Open operations guide <FiExternalLink />
+        </button>
+      </div>
+    </section>
+  );
+};

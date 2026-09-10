@@ -52,3 +52,5 @@ components/TableOfContents.jsx
 .embold/vscode-logs.log
 __mocks__/fileMock.js
 .pre-commit-config.yaml
+/supabase/.temp/
+.next-broken-issueboard-debug/
