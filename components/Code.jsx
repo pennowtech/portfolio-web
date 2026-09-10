@@ -10,7 +10,7 @@ const parseLineRanges = (value = '') =>
     return Array.from({ length: Math.max(0, end - start + 1) }, (_, index) => start + index);
   });
 
-function Code({ node, inline, className, ...props }) {
+function Code({ node, inline, className, hideCopy = false, ...props }) {
   const { resolvedTheme } = useTheme();
   const [copied, setCopied] = React.useState(false);
   const isDark = resolvedTheme === 'dark';
@@ -52,13 +52,15 @@ function Code({ node, inline, className, ...props }) {
 
   return (
     <div className='relative group'>
-      <button
-        type='button'
-        onClick={handleCopy}
-        className='absolute right-2 top-2 z-10 rounded-lg border border-slate-300 bg-slate-800/80 px-2.5 py-1 text-xs font-semibold text-slate-200 backdrop-blur-sm transition duration-200 hover:bg-slate-700 hover:text-white dark:border-slate-700 opacity-90 group-hover:opacity-100'
-      >
-        {copied ? '✓ Copied' : 'Copy'}
-      </button>
+      {!hideCopy && (
+        <button
+          type='button'
+          onClick={handleCopy}
+          className='absolute right-2 top-2 z-10 rounded-lg border border-slate-300 bg-slate-800/80 px-2.5 py-1 text-xs font-semibold text-slate-200 backdrop-blur-sm transition duration-200 hover:bg-slate-700 hover:text-white dark:border-slate-700 opacity-90 group-hover:opacity-100'
+        >
+          {copied ? '✓ Copied' : 'Copy'}
+        </button>
+      )}
       <SyntaxHighlighter
         style={codeTheme}
         language={language}

@@ -1,9 +1,21 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
-import { FiCheckSquare, FiImage, FiMoreHorizontal, FiSearch, FiX } from 'react-icons/fi';
+import {
+  FiBookmark,
+  FiCheckSquare,
+  FiChevronDown,
+  FiImage,
+  FiLayers,
+  FiMoreHorizontal,
+  FiSearch,
+  FiZap,
+  FiX
+} from 'react-icons/fi';
+import { FaBug } from 'react-icons/fa';
 import IssueboardShell from './IssueboardShell';
-import { boardStatuses, issueboardIssues, issueboardProject } from '@utils/issueboardFixtures';
+import MarkdownEditor from './MarkdownEditor';
+import { boardStatuses, boardSubtasks, issueboardIssues, issueboardProject } from '@utils/issueboardFixtures';
 import { issueHref } from '@utils/issueboardNavigation';
 
 const validViews = ['overview', 'backlog', 'board', 'calendar', 'reports', 'projects', 'settings'];
@@ -24,11 +36,85 @@ const badgeClass = (status) => {
   return 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200';
 };
 
-const IssueMeta = ({ issue }) => (
+const priorityClass = (priority) => {
+  if (priority === 'Highest') return 'text-rose-700 dark:text-rose-300';
+  if (priority === 'High') return 'text-orange-700 dark:text-orange-300';
+  if (priority === 'Low') return 'text-sky-700 dark:text-sky-300';
+  return 'text-amber-700 dark:text-amber-300';
+};
+
+const labelPalette = [
+  'bg-violet-100 text-violet-800 dark:bg-violet-950 dark:text-violet-200',
+  'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-200',
+  'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200',
+  'bg-pink-100 text-pink-800 dark:bg-pink-950 dark:text-pink-200',
+  'bg-cyan-100 text-cyan-800 dark:bg-cyan-950 dark:text-cyan-200',
+  'bg-orange-100 text-orange-800 dark:bg-orange-950 dark:text-orange-200'
+];
+
+const knownLabelColors = {
+  bug: 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-200',
+  enhancement: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-200',
+  security: 'bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-200',
+  documentation: 'bg-teal-100 text-teal-800 dark:bg-teal-950 dark:text-teal-200'
+};
+
+const labelClass = (label) => {
+  const normalized = label.trim().toLowerCase();
+  if (knownLabelColors[normalized]) return knownLabelColors[normalized];
+  const hash = [...normalized].reduce((total, character) => total + character.charCodeAt(0), 0);
+  return labelPalette[hash % labelPalette.length];
+};
+
+const LabelPill = ({ label }) => (
+  <span
+    className={`inline-flex h-4 items-center rounded-full px-2 text-[10px] font-bold leading-none ${labelClass(label)}`}
+  >
+    {label}
+  </span>
+);
+
+const CreatorAvatar = ({ creator }) => (
+  <span
+    className='inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-slate-800 text-center text-[9px] font-extrabold leading-none text-white ring-2 ring-white dark:bg-emerald-700 dark:ring-slate-900'
+    title={`Created by ${creator?.name || 'Unknown'}`}
+    aria-label={`Created by ${creator?.name || 'Unknown'}`}
+  >
+    {creator?.initials || '?'}
+  </span>
+);
+
+const typePresentation = {
+  Bug: { Icon: FaBug, className: 'text-rose-600 dark:text-rose-300' },
+  Story: { Icon: FiBookmark, className: 'text-emerald-600 dark:text-emerald-300' },
+  Task: { Icon: FiCheckSquare, className: 'text-blue-600 dark:text-blue-300' },
+  Epic: { Icon: FiZap, className: 'text-violet-600 dark:text-violet-300' },
+  Subtask: { Icon: FiLayers, className: 'text-cyan-600 dark:text-cyan-300' }
+};
+
+const TypeIcon = ({ type }) => {
+  const presentation = typePresentation[type] || typePresentation.Task;
+  const { Icon } = presentation;
+  return (
+    <span
+      className={`inline-flex size-5 shrink-0 items-center justify-center ${presentation.className}`}
+      title={type}
+      aria-label={type}
+    >
+      <Icon className='size-3.5' aria-hidden='true' />
+    </span>
+  );
+};
+
+const IssueMeta = ({ issue, showPriority = true }) => (
   <div className='mt-2 flex flex-wrap items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400'>
     <span>{issue.key}</span>
-    <span>•</span>
-    <span>{issue.priority}</span>
+    {showPriority && (
+      <>
+        <span>•</span>
+        <span className={`font-bold ${priorityClass(issue.priority)}`}>{issue.priority}</span>
+      </>
+    )}
     <span>•</span>
     <span>{issue.estimate} points</span>
     {issue.checklist && (
@@ -78,9 +164,17 @@ const Filters = () => (
 
 const Overview = ({ returnTo }) => (
   <>
-    <div className='mb-6'>
-      <h2 className='text-2xl font-bold tracking-tight md:text-3xl'>Good afternoon, Sukhdeep</h2>
-      <p className='mt-1 text-sm text-slate-500'>Here is what is moving across Portfolio Website this sprint.</p>
+    <div className='mb-6 flex flex-wrap items-end justify-between gap-3'>
+      <div>
+        <h2 className='text-2xl font-bold tracking-tight md:text-3xl'>Good afternoon, Sukhdeep</h2>
+        <p className='mt-1 text-sm text-slate-500'>Here is what is moving across Portfolio Website this sprint.</p>
+      </div>
+      <Link
+        href='/admin/issues?view=projects'
+        className='rounded-lg border border-slate-300 px-3 py-2 text-xs font-bold hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800'
+      >
+        Manage projects
+      </Link>
     </div>
     <div className='mb-5 grid grid-cols-2 gap-3 xl:grid-cols-4'>
       {[
@@ -110,13 +204,19 @@ const Overview = ({ returnTo }) => (
             key={issue.key}
             issue={issue}
             returnTo={returnTo}
-            className='grid grid-cols-[1fr_auto] gap-3 border-b border-slate-100 px-5 py-4 last:border-0 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800/60'
+            className='grid grid-cols-[auto_1fr_auto] items-center gap-3 border-b border-slate-100 px-4 py-2.5 last:border-0 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800/60'
           >
+            <CreatorAvatar creator={issue.creator} />
             <div>
-              <strong className='text-sm'>{issue.title}</strong>
+              <div className='flex items-center gap-2'>
+                <TypeIcon type={issue.type} />
+                <strong className='text-sm'>{issue.title}</strong>
+              </div>
               <IssueMeta issue={issue} />
             </div>
-            <span className={`h-fit rounded-full px-2 py-1 text-[10px] font-bold ${badgeClass(issue.status)}`}>
+            <span
+              className={`inline-flex h-5 items-center whitespace-nowrap rounded-full px-2.5 text-[10px] font-bold ${badgeClass(issue.status)}`}
+            >
               {issue.status}
             </span>
           </IssueLink>
@@ -160,9 +260,17 @@ const Overview = ({ returnTo }) => (
 
 const Backlog = ({ returnTo }) => (
   <>
-    <div className='mb-6'>
-      <h2 className='text-2xl font-bold tracking-tight md:text-3xl'>Backlog</h2>
-      <p className='mt-1 text-sm text-slate-500'>Rank work and commit it to upcoming sprints.</p>
+    <div className='mb-6 flex flex-wrap items-end justify-between gap-3'>
+      <div>
+        <h2 className='text-2xl font-bold tracking-tight md:text-3xl'>Backlog</h2>
+        <p className='mt-1 text-sm text-slate-500'>Rank work and commit it to upcoming sprints.</p>
+      </div>
+      <button
+        type='button'
+        className='rounded-lg border border-slate-300 px-3 py-2 text-xs font-bold hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800'
+      >
+        + Create sprint
+      </button>
     </div>
     <Filters />
     {['Sprint 04', 'Sprint 05', 'Backlog'].map((group, groupIndex) => (
@@ -189,18 +297,22 @@ const Backlog = ({ returnTo }) => (
             key={issue.key}
             issue={issue}
             returnTo={returnTo}
-            className='grid grid-cols-[auto_1fr_auto] items-center gap-3 border-b border-slate-100 px-4 py-3 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800/50'
+            className='grid grid-cols-[auto_auto_1fr_auto] items-center gap-3 border-b border-slate-100 px-4 py-2 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800/50'
           >
             <span className='cursor-grab text-slate-400'>⠿</span>
+            <CreatorAvatar creator={issue.creator} />
             <div>
-              <strong className='text-sm'>{issue.title}</strong>
-              <IssueMeta issue={issue} />
+              <div className='flex items-center gap-2'>
+                <TypeIcon type={issue.type} />
+                <strong className='text-sm'>{issue.title}</strong>
+              </div>
+              <IssueMeta issue={issue} showPriority={false} />
             </div>
-            <span
-              className={`hidden rounded-full px-2 py-1 text-[10px] font-bold sm:block ${badgeClass(issue.status)}`}
-            >
-              {issue.status}
-            </span>
+            <div className='hidden max-w-48 flex-wrap justify-end gap-1 sm:flex'>
+              {issue.labels.map((label) => (
+                <LabelPill key={label} label={label} />
+              ))}
+            </div>
           </IssueLink>
         ))}
         <button
@@ -214,63 +326,275 @@ const Backlog = ({ returnTo }) => (
   </>
 );
 
-const Board = ({ returnTo }) => (
-  <>
-    <div className='mb-6'>
-      <h2 className='text-2xl font-bold tracking-tight md:text-3xl'>Sprint 04 board</h2>
-      <p className='mt-1 text-sm text-slate-500'>September foundation · 8 days remaining</p>
-    </div>
-    <Filters />
-    <div className='grid grid-cols-[repeat(4,minmax(16rem,1fr))] gap-3 overflow-x-auto pb-4'>
-      {boardStatuses.map((status) => {
-        const issues = issueboardIssues.filter((issue) => issue.status === status);
-        return (
-          <section key={status} className='min-h-[34rem] rounded-2xl bg-slate-200/70 p-3 dark:bg-slate-900'>
-            <header className='mb-3 flex items-center justify-between px-1'>
-              <strong className='text-xs uppercase tracking-wider'>{status}</strong>
-              <span className='grid size-6 place-items-center rounded-md bg-slate-300 text-[10px] dark:bg-slate-800'>
-                {issues.length}
+const workStateClass = (workState) => {
+  if (workState === 'Blocked') return 'border-rose-300 bg-rose-50 dark:border-rose-800 dark:bg-rose-950/40';
+  if (workState === 'Rejected')
+    return 'border-slate-300 bg-slate-100 opacity-75 dark:border-slate-700 dark:bg-slate-800';
+  return 'border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950';
+};
+
+const ParentIssueCard = ({ issue, returnTo, onStateChange }) => {
+  const [checklistOpen, setChecklistOpen] = useState(false);
+  const [stateMenuOpen, setStateMenuOpen] = useState(false);
+  const workState = issue.workState || 'Normal';
+  const stateDotClass = {
+    Normal: 'bg-emerald-500',
+    Blocked: 'bg-rose-500',
+    Rejected: 'bg-slate-500'
+  };
+  return (
+    <article className={`rounded-xl border p-3 shadow-sm ${workStateClass(issue.workState)}`}>
+      <div className='flex items-start justify-between gap-2'>
+        <IssueLink issue={issue} returnTo={returnTo} className='min-w-0 flex-1'>
+          <span className='flex items-center gap-2 text-[10px] text-slate-500'>
+            <TypeIcon type={issue.type} /> {issue.key}
+          </span>
+          <h3 className='mt-2 text-sm font-normal leading-snug'>{issue.title}</h3>
+        </IssueLink>
+        <span className={`shrink-0 text-[10px] font-bold ${priorityClass(issue.priority)}`}>{issue.priority}</span>
+      </div>
+      <div
+        className='relative mt-2 inline-block'
+        onBlur={(event) => {
+          if (!event.currentTarget.contains(event.relatedTarget)) setStateMenuOpen(false);
+        }}
+      >
+        <button
+          type='button'
+          onClick={() => setStateMenuOpen((open) => !open)}
+          aria-label={`State for ${issue.key}`}
+          aria-haspopup='listbox'
+          aria-expanded={stateMenuOpen}
+          className='inline-flex h-6 items-center gap-1.5 rounded-md bg-transparent px-1.5 text-[10px] font-semibold text-slate-600 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/30 dark:text-slate-300 dark:hover:bg-slate-800'
+        >
+          <span className={`size-1.5 rounded-full ${stateDotClass[workState]}`} aria-hidden='true' />
+          <span>{workState}</span>
+          <FiChevronDown className={`ml-1 size-3 transition ${stateMenuOpen ? 'rotate-180' : ''}`} aria-hidden='true' />
+        </button>
+        {stateMenuOpen && (
+          <div
+            role='listbox'
+            aria-label={`Choose state for ${issue.key}`}
+            className='absolute left-0 top-7 z-30 w-28 rounded-lg bg-white p-0.5 shadow-lg dark:bg-slate-900'
+          >
+            {['Normal', 'Blocked', 'Rejected'].map((state) => (
+              <button
+                key={state}
+                type='button'
+                role='option'
+                aria-selected={workState === state}
+                onClick={() => {
+                  onStateChange(state);
+                  setStateMenuOpen(false);
+                }}
+                className={`flex h-6 w-full items-center gap-1.5 rounded-md px-2 text-left text-[10px] font-semibold leading-none transition hover:bg-slate-100 dark:hover:bg-slate-800 ${workState === state ? 'bg-slate-100 text-slate-950 dark:bg-slate-800 dark:text-white' : 'text-slate-600 dark:text-slate-300'}`}
+              >
+                <span className={`size-1.5 rounded-full ${stateDotClass[state]}`} aria-hidden='true' />
+                {state}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+      <div className='mt-3 flex items-center justify-between text-[10px] text-slate-500'>
+        <div className='flex items-center gap-3'>
+          <button
+            type='button'
+            className='inline-flex items-center gap-1 rounded px-1 py-0.5 hover:bg-slate-100 dark:hover:bg-slate-800'
+            onClick={() => setChecklistOpen((current) => !current)}
+            aria-expanded={checklistOpen}
+          >
+            <FiCheckSquare aria-hidden='true' /> {issue.checklist}
+            <FiChevronDown className={`transition ${checklistOpen ? 'rotate-180' : ''}`} aria-hidden='true' />
+          </button>
+          <span>{issue.estimate} points</span>
+        </div>
+        <CreatorAvatar creator={issue.creator} />
+      </div>
+      {checklistOpen && (
+        <ul className='mt-2 space-y-1 border-t border-slate-100 pt-2 text-[11px] dark:border-slate-800'>
+          {issue.checklistItems?.map((item) => (
+            <li key={item.text} className='flex items-center gap-2 leading-5'>
+              <FiCheckSquare className={`shrink-0 ${item.done ? 'text-emerald-600' : 'text-slate-300'}`} />
+              <span className={item.done ? 'text-slate-400 line-through' : ''}>{item.text}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </article>
+  );
+};
+
+const Board = ({ returnTo }) => {
+  const [parentIssues, setParentIssues] = useState(() =>
+    issueboardIssues.map((issue) => ({ ...issue, workState: 'Normal' }))
+  );
+  const [subtasks, setSubtasks] = useState(boardSubtasks);
+  const [quickCreateParent, setQuickCreateParent] = useState(null);
+  const [quickTitle, setQuickTitle] = useState('');
+
+  const moveSubtask = (key, status) => {
+    setSubtasks((current) => current.map((subtask) => (subtask.key === key ? { ...subtask, status } : subtask)));
+  };
+
+  const setParentWorkState = (key, workState) => {
+    setParentIssues((current) => current.map((issue) => (issue.key === key ? { ...issue, workState } : issue)));
+  };
+
+  const createSubtask = (event) => {
+    event.preventDefault();
+    const title = quickTitle.trim();
+    if (!title) return;
+    setSubtasks((current) => [
+      ...current,
+      {
+        key: `PORT-${86 + current.length}`,
+        parentKey: quickCreateParent,
+        type: 'Subtask',
+        title,
+        status: 'To do',
+        creator: { name: 'Local development', initials: 'LD' }
+      }
+    ]);
+    setQuickTitle('');
+    setQuickCreateParent(null);
+  };
+
+  return (
+    <>
+      <div className='mb-6 flex flex-wrap items-end justify-between gap-3'>
+        <div>
+          <h2 className='text-2xl font-bold tracking-tight md:text-3xl'>Sprint 04 board</h2>
+          <p className='mt-1 text-sm text-slate-500'>September foundation · 8 days remaining</p>
+        </div>
+        <div className='flex gap-2'>
+          <button
+            type='button'
+            className='rounded-lg border border-slate-300 px-3 py-2 text-xs font-bold dark:border-slate-700'
+          >
+            Sprint details
+          </button>
+          <button
+            type='button'
+            className='rounded-lg border border-slate-300 px-3 py-2 text-xs font-bold dark:border-slate-700'
+          >
+            Complete sprint
+          </button>
+        </div>
+      </div>
+      <Filters />
+      <div className='overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800'>
+        <div className='min-w-[90rem]'>
+          <div className='grid grid-cols-[repeat(6,minmax(15rem,1fr))] bg-slate-100 dark:bg-slate-900'>
+            <header className='flex items-center justify-between border-r border-slate-200 p-3 dark:border-slate-800'>
+              <strong className='issueboard-swimlane-title text-xs  tracking-wider'>Parent issue</strong>
+              <span className='inline-flex size-6 items-center justify-center rounded-md bg-slate-300 text-[10px] leading-none dark:bg-slate-800'>
+                {parentIssues.length}
               </span>
             </header>
-            {issues.map((issue) => (
-              <IssueLink
-                key={issue.key}
-                issue={issue}
-                returnTo={returnTo}
-                className='mb-2 block rounded-xl border border-slate-200 bg-white p-3 shadow-sm transition hover:-translate-y-0.5 hover:border-emerald-400 hover:shadow-md dark:border-slate-800 dark:bg-slate-950'
+            {boardStatuses.map((status) => (
+              <header
+                key={status}
+                className='flex items-center justify-between border-r border-slate-200 p-3 last:border-r-0 dark:border-slate-800'
               >
-                <div className='flex justify-between text-[10px] text-slate-500'>
-                  <span>
-                    {issue.key} · {issue.type}
-                  </span>
-                  <span>{issue.priority}</span>
-                </div>
-                <h3 className='my-2 text-sm font-bold leading-snug'>{issue.title}</h3>
-                <div className='flex flex-wrap gap-1'>
-                  {issue.labels.map((label) => (
-                    <span
-                      key={label}
-                      className='rounded bg-violet-100 px-1.5 py-0.5 text-[9px] font-bold text-violet-700 dark:bg-violet-950 dark:text-violet-200'
-                    >
-                      {label}
-                    </span>
-                  ))}
-                </div>
-                <IssueMeta issue={issue} />
-              </IssueLink>
+                <strong className='issueboard-swimlane-title text-xs  tracking-wider'>{status}</strong>
+                <span className='inline-flex size-6 items-center justify-center rounded-md bg-slate-300 text-[10px] leading-none dark:bg-slate-800'>
+                  {subtasks.filter((subtask) => subtask.status === status).length}
+                </span>
+              </header>
             ))}
-            <button
-              type='button'
-              className='w-full rounded-lg border border-dashed border-slate-400 px-3 py-2 text-left text-xs text-slate-500'
+          </div>
+          {parentIssues.map((issue) => (
+            <section
+              key={issue.key}
+              className='grid grid-cols-[repeat(6,minmax(15rem,1fr))] border-t border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950'
             >
-              ＋ Quick create
-            </button>
-          </section>
-        );
-      })}
-    </div>
-  </>
-);
+              <div className='border-r border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-900/70'>
+                <ParentIssueCard
+                  issue={issue}
+                  returnTo={returnTo}
+                  onStateChange={(workState) => setParentWorkState(issue.key, workState)}
+                />
+              </div>
+              {boardStatuses.map((status) => {
+                const relatedSubtasks = subtasks.filter(
+                  (subtask) => subtask.parentKey === issue.key && subtask.status === status
+                );
+                return (
+                  <div
+                    key={status}
+                    className='min-h-44 border-r border-slate-200 p-3 last:border-r-0 dark:border-slate-800'
+                    onDragOver={(event) => event.preventDefault()}
+                    onDrop={(event) => moveSubtask(event.dataTransfer.getData('text/plain'), status)}
+                  >
+                    {relatedSubtasks.map((subtask) => (
+                      <article
+                        key={subtask.key}
+                        draggable
+                        onDragStart={(event) => event.dataTransfer.setData('text/plain', subtask.key)}
+                        className='mb-2 rounded-xl border border-slate-200 bg-white p-3 shadow-sm transition hover:border-emerald-400 hover:shadow-md dark:border-slate-800 dark:bg-slate-950'
+                      >
+                        <div className='text-[10px] text-slate-500'>
+                          <span className='flex items-center gap-2'>
+                            <TypeIcon type={subtask.type} /> {subtask.key}
+                          </span>
+                        </div>
+                        <h3 className='my-2 text-sm font-normal leading-snug'>{subtask.title}</h3>
+                        <div className='mt-3 flex items-center justify-end text-[10px] text-slate-500'>
+                          <CreatorAvatar creator={subtask.creator} />
+                        </div>
+                      </article>
+                    ))}
+                    {status === 'To do' &&
+                      (quickCreateParent === issue.key ? (
+                        <form
+                          className='rounded-xl border border-dashed border-slate-400 bg-white p-2 dark:bg-slate-900'
+                          onSubmit={createSubtask}
+                        >
+                          <input
+                            autoFocus
+                            value={quickTitle}
+                            onChange={(event) => setQuickTitle(event.target.value)}
+                            className='w-full bg-transparent px-1 py-1 text-xs outline-none'
+                            placeholder='Subtask title'
+                          />
+                          <div className='mt-2 flex justify-end gap-1'>
+                            <button
+                              type='button'
+                              className='h-6 px-2 text-[10px] leading-none'
+                              onClick={() => setQuickCreateParent(null)}
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              type='submit'
+                              className='h-6 rounded bg-emerald-700 px-2 text-[10px] font-bold leading-none text-white'
+                            >
+                              Create
+                            </button>
+                          </div>
+                        </form>
+                      ) : (
+                        <button
+                          type='button'
+                          onClick={() => setQuickCreateParent(issue.key)}
+                          title={`Add subtask to ${issue.key}`}
+                          aria-label={`Add subtask to ${issue.key}`}
+                          className='inline-flex size-7 items-center justify-center rounded-lg border border-dashed border-slate-300 text-base leading-none text-slate-500 hover:border-emerald-500 hover:text-emerald-700'
+                        >
+                          +
+                        </button>
+                      ))}
+                  </div>
+                );
+              })}
+            </section>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+};
 
 const PlaceholderView = ({ view }) => (
   <section className='rounded-2xl border border-slate-200 bg-white p-7 shadow-sm dark:border-slate-800 dark:bg-slate-900'>
@@ -285,85 +609,102 @@ const PlaceholderView = ({ view }) => (
   </section>
 );
 
-const CreateIssueModal = ({ onClose }) => (
-  <div
-    className='fixed inset-0 z-50 flex items-end justify-center bg-slate-950/60 p-0 sm:items-center sm:p-4'
-    role='dialog'
-    aria-modal='true'
-    aria-labelledby='create-issue-title'
-  >
-    <button
-      type='button'
-      aria-label='Close create issue dialog'
-      className='absolute inset-0 h-full w-full'
-      onClick={onClose}
-    />
-    <div className='relative max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-t-2xl bg-white shadow-2xl sm:rounded-2xl dark:bg-slate-900'>
-      <header className='flex items-center justify-between border-b border-slate-200 p-5 dark:border-slate-800'>
-        <div>
-          <span className='text-[10px] text-slate-500'>Portfolio Website</span>
-          <h2 id='create-issue-title' className='text-lg font-bold'>
-            Create issue
-          </h2>
-        </div>
-        <button
-          type='button'
-          onClick={onClose}
-          className='grid size-9 place-items-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800'
-        >
-          <FiX />
-        </button>
-      </header>
-      <div className='grid gap-4 p-5 sm:grid-cols-2'>
-        {[
-          ['Issue type', 'Task'],
-          ['Priority', 'Medium'],
-          ['Sprint', 'Backlog'],
-          ['Estimate', 'Not estimated']
-        ].map(([label, value]) => (
-          <label key={label} className='grid gap-1.5 text-xs font-bold'>
-            {label}
-            <select className='rounded-lg border border-slate-300 bg-transparent p-2.5 font-normal dark:border-slate-700'>
-              <option>{value}</option>
-            </select>
+const CreateIssueModal = ({ onClose }) => {
+  const [description, setDescription] = useState('\n\n### Checklist\n\n- [ ] ');
+  return (
+    <div
+      className='fixed inset-0 z-50 flex items-end justify-center bg-slate-950/60 p-0 sm:items-center sm:p-4'
+      role='dialog'
+      aria-modal='true'
+      aria-labelledby='create-issue-title'
+    >
+      <button
+        type='button'
+        aria-label='Close create issue dialog'
+        className='absolute inset-0 h-full w-full'
+        onClick={onClose}
+      />
+      <div className='relative max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-t-2xl bg-white shadow-2xl sm:rounded-2xl dark:bg-slate-900'>
+        <header className='flex items-center justify-between border-b border-slate-200 p-5 dark:border-slate-800'>
+          <div>
+            <span className='text-[10px] text-slate-500'>Portfolio Website</span>
+            <h2 id='create-issue-title' className='text-lg font-bold'>
+              Create issue
+            </h2>
+          </div>
+          <button
+            type='button'
+            onClick={onClose}
+            className='grid size-9 place-items-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800'
+          >
+            <FiX />
+          </button>
+        </header>
+        <div className='grid gap-4 p-5 sm:grid-cols-2'>
+          {[
+            ['Issue type', 'Task'],
+            ['Priority', 'Medium'],
+            ['Sprint', 'Backlog'],
+            ['Estimate', 'Not estimated']
+          ].map(([label, value]) => (
+            <label key={label} className='grid gap-1.5 text-xs font-bold'>
+              {label}
+              <select className='rounded-lg border border-slate-300 bg-transparent p-2.5 font-normal dark:border-slate-700'>
+                <option>{value}</option>
+              </select>
+            </label>
+          ))}
+          <label className='grid gap-1.5 text-xs font-bold sm:col-span-2'>
+            Title
+            <input
+              className='rounded-lg border border-slate-300 bg-transparent p-2.5 font-normal dark:border-slate-700'
+              placeholder='What needs to be done?'
+            />
           </label>
-        ))}
-        <label className='grid gap-1.5 text-xs font-bold sm:col-span-2'>
-          Title
-          <input
-            className='rounded-lg border border-slate-300 bg-transparent p-2.5 font-normal dark:border-slate-700'
-            placeholder='What needs to be done?'
-          />
-        </label>
-        <label className='grid gap-1.5 text-xs font-bold sm:col-span-2'>
-          Description
-          <textarea
-            className='min-h-28 rounded-lg border border-slate-300 bg-transparent p-2.5 font-normal dark:border-slate-700'
-            placeholder='Add context and expected outcome…'
-          />
-        </label>
-        <div className='rounded-xl border border-dashed border-emerald-400 bg-emerald-50 p-4 text-xs sm:col-span-2 dark:bg-emerald-950/40'>
-          <strong>Images will be compressed in your browser</strong>
-          <p className='mt-1 text-slate-500'>
-            JPEG, PNG, or WebP · target 1 MB / 1920 px · direct upload to private Supabase Storage
-          </p>
+          <div className='grid gap-1.5 text-xs font-bold sm:col-span-2'>
+            <span>Description and checklist</span>
+            <MarkdownEditor
+              value={description}
+              onChange={setDescription}
+              placeholder='Describe the issue, then add checklist items below…'
+              ariaLabel='New issue description and checklist'
+              minHeight='min-h-48'
+            />
+            <span className='font-normal text-slate-500'>Checklist items use Markdown task syntax: - [ ] item</span>
+          </div>
+          <label className='grid gap-1.5 text-xs font-bold sm:col-span-2'>
+            Labels
+            <input
+              className='rounded-lg border border-slate-300 bg-transparent p-2.5 font-normal dark:border-slate-700'
+              placeholder='bug, enhancement, frontend…'
+            />
+            <span className='font-normal text-slate-500'>
+              New label names are created automatically with a readable color.
+            </span>
+          </label>
+          <div className='rounded-xl border border-dashed border-emerald-400 bg-emerald-50 p-4 text-xs sm:col-span-2 dark:bg-emerald-950/40'>
+            <strong>Images will be compressed in your browser</strong>
+            <p className='mt-1 text-slate-500'>
+              JPEG, PNG, or WebP · target 1 MB / 1920 px · direct upload to private Supabase Storage
+            </p>
+          </div>
         </div>
+        <footer className='flex justify-end gap-2 border-t border-slate-200 p-4 dark:border-slate-800'>
+          <button
+            type='button'
+            onClick={onClose}
+            className='rounded-lg border border-slate-300 px-4 py-2 text-sm font-bold dark:border-slate-700'
+          >
+            Cancel
+          </button>
+          <button type='button' className='button'>
+            Create issue
+          </button>
+        </footer>
       </div>
-      <footer className='flex justify-end gap-2 border-t border-slate-200 p-4 dark:border-slate-800'>
-        <button
-          type='button'
-          onClick={onClose}
-          className='rounded-lg border border-slate-300 px-4 py-2 text-sm font-bold dark:border-slate-700'
-        >
-          Cancel
-        </button>
-        <button type='button' className='button'>
-          Create issue
-        </button>
-      </footer>
     </div>
-  </div>
-);
+  );
+};
 
 const IssueboardWorkspace = ({ adminEmail }) => {
   const router = useRouter();
