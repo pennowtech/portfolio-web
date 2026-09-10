@@ -17,6 +17,7 @@ export default defineConfig([
   },
   globalIgnores([
     '.next/**',
+    '.next-*-issueboard-debug/**',
     'out/**',
     '.vercel/**',
     'playwright-report/**',

@@ -1,3 +1,5 @@
+const path = require('path');
+
 const sanitizeAuthUrl = (name) => {
   let val = process.env[name];
   if (typeof val === 'string') {
@@ -28,12 +30,15 @@ if (!process.env.NEXTAUTH_URL) {
 }
 
 module.exports = {
+  turbopack: {
+    root: path.resolve(__dirname)
+  },
   i18n: {
     locales: ['en', 'de'],
     defaultLocale: 'en',
     localeDetection: false
   },
-  allowedDevOrigins: ['192.168.0.79'],
+  allowedDevOrigins: ['192.168.0.79', '10.96.36.234'],
   images: {
     remotePatterns: [
       {
