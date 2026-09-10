@@ -16,6 +16,7 @@ import { FaBug } from 'react-icons/fa';
 import IssueboardShell from './IssueboardShell';
 import { IntegrationsHealthView, ProjectSettingsView } from './IssueboardAdminViews';
 import ReportsView from './IssueboardReports';
+import ProjectsView from './IssueboardProjects';
 import MarkdownEditor from './MarkdownEditor';
 import { boardStatuses, boardSubtasks, issueboardIssues, issueboardProject } from '@utils/issueboardFixtures';
 import { issueHref } from '@utils/issueboardNavigation';
@@ -733,9 +734,10 @@ const IssueboardWorkspace = ({ adminEmail }) => {
       {view === 'backlog' && <Backlog returnTo={returnTo} />}
       {view === 'board' && <Board returnTo={returnTo} />}
       {view === 'reports' && <ReportsView />}
+      {view === 'projects' && <ProjectsView />}
       {view === 'integrations' && <IntegrationsHealthView />}
       {view === 'settings' && <ProjectSettingsView />}
-      {!['overview', 'backlog', 'board', 'reports', 'integrations', 'settings'].includes(view) && (
+      {!['overview', 'backlog', 'board', 'reports', 'projects', 'integrations', 'settings'].includes(view) && (
         <PlaceholderView view={view} />
       )}
       {createOpen && <CreateIssueModal onClose={() => setCreateOpen(false)} />}
