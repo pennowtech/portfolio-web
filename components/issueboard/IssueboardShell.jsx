@@ -7,6 +7,7 @@ import {
   FiCalendar,
   FiChevronDown,
   FiColumns,
+  FiCpu,
   FiFolder,
   FiHome,
   FiList,
@@ -25,6 +26,7 @@ const navigation = [
   { view: 'calendar', label: 'Calendar', icon: FiCalendar },
   { view: 'reports', label: 'Reports', icon: FiActivity },
   { view: 'projects', label: 'Projects', icon: FiFolder },
+  { view: 'integrations', label: 'Integrations & health', icon: FiCpu },
   { view: 'settings', label: 'Settings', icon: FiSettings }
 ];
 

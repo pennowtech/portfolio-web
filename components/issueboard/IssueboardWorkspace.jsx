@@ -14,11 +14,12 @@ import {
 } from 'react-icons/fi';
 import { FaBug } from 'react-icons/fa';
 import IssueboardShell from './IssueboardShell';
+import { IntegrationsHealthView, ProjectSettingsView } from './IssueboardAdminViews';
 import MarkdownEditor from './MarkdownEditor';
 import { boardStatuses, boardSubtasks, issueboardIssues, issueboardProject } from '@utils/issueboardFixtures';
 import { issueHref } from '@utils/issueboardNavigation';
 
-const validViews = ['overview', 'backlog', 'board', 'calendar', 'reports', 'projects', 'settings'];
+const validViews = ['overview', 'backlog', 'board', 'calendar', 'reports', 'projects', 'integrations', 'settings'];
 const viewTitles = {
   overview: 'Overview',
   backlog: 'Backlog',
@@ -26,6 +27,7 @@ const viewTitles = {
   calendar: 'Calendar',
   reports: 'Reports',
   projects: 'Projects',
+  integrations: 'Integrations and health',
   settings: 'Project settings'
 };
 
@@ -729,7 +731,9 @@ const IssueboardWorkspace = ({ adminEmail }) => {
       {view === 'overview' && <Overview returnTo={returnTo} />}
       {view === 'backlog' && <Backlog returnTo={returnTo} />}
       {view === 'board' && <Board returnTo={returnTo} />}
-      {!['overview', 'backlog', 'board'].includes(view) && <PlaceholderView view={view} />}
+      {view === 'integrations' && <IntegrationsHealthView />}
+      {view === 'settings' && <ProjectSettingsView />}
+      {!['overview', 'backlog', 'board', 'integrations', 'settings'].includes(view) && <PlaceholderView view={view} />}
       {createOpen && <CreateIssueModal onClose={() => setCreateOpen(false)} />}
     </IssueboardShell>
   );
