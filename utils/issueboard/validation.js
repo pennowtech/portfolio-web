@@ -68,6 +68,33 @@ export const labelNameSchema = z
   })
   .strict();
 
+export const createSprintSchema = z
+  .object({
+    name: z.string().trim().min(1, 'Sprint name is required.').max(100),
+    goal: z.string().trim().max(2000).default('')
+  })
+  .strict();
+
+export const startSprintSchema = z
+  .object({
+    startsAt: z.string().datetime({ offset: true }),
+    endsAt: z.string().datetime({ offset: true }),
+    force: z.boolean().default(false)
+  })
+  .strict();
+
+export const completeSprintSchema = z
+  .object({
+    destinationSprintId: z.string().uuid().optional()
+  })
+  .strict();
+
+export const setIssueSprintSchema = z
+  .object({
+    sprintId: z.string().uuid().nullable()
+  })
+  .strict();
+
 export const validationErrorResponse = (error) => ({
   code: 'VALIDATION_ERROR',
   message: 'Check the submitted project fields.',
