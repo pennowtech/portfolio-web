@@ -18,8 +18,9 @@ import { IntegrationsHealthView, ProjectSettingsView } from './IssueboardAdminVi
 import ReportsView from './IssueboardReports';
 import ProjectsView from './IssueboardProjects';
 import MarkdownEditor from './MarkdownEditor';
-import { boardStatuses, boardSubtasks, issueboardIssues, issueboardProject } from '@utils/issueboardFixtures';
+import { boardStatuses, boardSubtasks, issueboardIssues } from '@utils/issueboardFixtures';
 import { issueHref } from '@utils/issueboardNavigation';
+import { useIssueboardData } from '@utils/issueboard/useIssueboardData';
 
 const validViews = ['overview', 'backlog', 'board', 'calendar', 'reports', 'projects', 'integrations', 'settings'];
 const viewTitles = {
@@ -70,6 +71,32 @@ const labelClass = (label) => {
   return labelPalette[hash % labelPalette.length];
 };
 
+const capitalize = (value) => (value ? value.charAt(0).toUpperCase() + value.slice(1) : value);
+
+const initialsFromName = (name) => {
+  const parts = (name || '').trim().split(/\s+/).filter(Boolean);
+  if (!parts.length) return '?';
+  return (parts[0][0] + (parts[1]?.[0] || '')).toUpperCase();
+};
+
+// Adapts a real issueService record onto the presentational shape this prototype UI
+// was built around. Fields with no backend yet (labels, checklist, attachments) are
+// left empty rather than faked.
+const toDisplayIssue = (issue) => ({
+  key: issue.key,
+  type: capitalize(issue.type),
+  title: issue.title,
+  status: issue.status?.name || 'Backlog',
+  priority: capitalize(issue.priority),
+  estimate: issue.storyPoints ?? undefined,
+  labels: [],
+  checklist: null,
+  checklistItems: [],
+  attachments: 0,
+  creator: { name: issue.reporter, initials: initialsFromName(issue.reporter) },
+  due: issue.dueAt ? new Date(issue.dueAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : undefined
+});
+
 const LabelPill = ({ label }) => (
   <span
     className={`inline-flex h-4 items-center rounded-full px-2 text-[10px] font-bold leading-none ${labelClass(label)}`}
@@ -119,8 +146,12 @@ const IssueMeta = ({ issue, showPriority = true }) => (
         <span className={`font-bold ${priorityClass(issue.priority)}`}>{issue.priority}</span>
       </>
     )}
-    <span>•</span>
-    <span>{issue.estimate} points</span>
+    {typeof issue.estimate === 'number' && (
+      <>
+        <span>•</span>
+        <span>{issue.estimate} points</span>
+      </>
+    )}
     {issue.checklist && (
       <span className='inline-flex items-center gap-1'>
         <FiCheckSquare /> {issue.checklist}
@@ -166,49 +197,145 @@ const Filters = () => (
   </div>
 );
 
-const Overview = ({ returnTo }) => (
-  <>
-    <div className='mb-6 flex flex-wrap items-end justify-between gap-3'>
-      <div>
-        <h2 className='text-2xl font-bold tracking-tight md:text-3xl'>Good afternoon, Sukhdeep</h2>
-        <p className='mt-1 text-sm text-slate-500'>Here is what is moving across Portfolio Website this sprint.</p>
-      </div>
-      <Link
-        href='/admin/issues?view=projects'
-        className='rounded-lg border border-slate-300 px-3 py-2 text-xs font-bold hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800'
-      >
-        Manage projects
-      </Link>
-    </div>
-    <div className='mb-5 grid grid-cols-2 gap-3 xl:grid-cols-4'>
-      {[
-        ['Open issues', '24', '4 created this week'],
-        ['Sprint progress', '62%', '18 of 29 points'],
-        ['Due soon', '5', '2 need attention today'],
-        ['Unassigned', '3', 'Across active work']
-      ].map(([label, value, note]) => (
-        <article
-          key={label}
-          className='rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900'
+const DatastoreUnavailableNotice = ({ error }) => (
+  <div className='rounded-2xl border border-amber-300 bg-amber-50 p-5 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-200'>
+    <strong className='block'>Issue management is temporarily unavailable</strong>
+    <p className='mt-1 text-xs leading-5'>
+      {error || 'The database or storage could not be reached.'} Nothing was lost — try again shortly.
+    </p>
+  </div>
+);
+
+const NoProjectsNotice = () => (
+  <div className='rounded-2xl border border-dashed border-slate-300 bg-white p-7 text-center dark:border-slate-700 dark:bg-slate-900'>
+    <h3 className='font-bold'>No projects yet</h3>
+    <p className='mx-auto mt-1 max-w-sm text-sm text-slate-500'>Create your first project to start tracking issues.</p>
+    <Link href='/admin/issues?view=projects' className='button mt-4 inline-flex items-center justify-center text-sm'>
+      Create a project
+    </Link>
+  </div>
+);
+
+const Overview = ({ returnTo, data }) => {
+  const { status, project, issues, error, loadedAt } = data;
+  if (status === 'loading') return null;
+  if (status === 'unavailable') return <DatastoreUnavailableNotice error={error} />;
+  if (status === 'no-projects') return <NoProjectsNotice />;
+
+  const openIssues = issues.filter((issue) => issue.status?.category !== 'done');
+  const unassigned = openIssues.filter((issue) => !issue.assignee);
+  const dueSoon = openIssues.filter((issue) => {
+    if (!issue.dueAt) return false;
+    const daysUntilDue = (new Date(issue.dueAt).getTime() - loadedAt) / 86_400_000;
+    return daysUntilDue <= 3;
+  });
+  const attention = [...openIssues]
+    .sort((a, b) => a.priority.localeCompare(b.priority))
+    .slice(0, 4)
+    .map(toDisplayIssue);
+
+  return (
+    <>
+      <div className='mb-6 flex flex-wrap items-end justify-between gap-3'>
+        <div>
+          <h2 className='text-2xl font-bold tracking-tight md:text-3xl'>{project.name}</h2>
+          <p className='mt-1 text-sm text-slate-500'>Here is what is moving across {project.key} right now.</p>
+        </div>
+        <Link
+          href='/admin/issues?view=projects'
+          className='rounded-lg border border-slate-300 px-3 py-2 text-xs font-bold hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800'
         >
-          <p className='text-xs font-semibold text-slate-500'>{label}</p>
-          <strong className='my-1 block text-3xl tracking-tight'>{value}</strong>
-          <span className='text-[11px] font-semibold text-emerald-700 dark:text-emerald-400'>{note}</span>
-        </article>
-      ))}
-    </div>
-    <div className='grid gap-5 xl:grid-cols-[minmax(0,1.6fr)_minmax(18rem,.7fr)]'>
-      <section className='overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900'>
-        <header className='border-b border-slate-200 px-5 py-4 dark:border-slate-800'>
-          <h3 className='font-bold'>Needs your attention</h3>
-          <p className='text-xs text-slate-500'>Priority, age, and due-date signals</p>
+          Manage projects
+        </Link>
+      </div>
+      <div className='mb-5 grid grid-cols-2 gap-3 xl:grid-cols-4'>
+        {[
+          ['Open issues', openIssues.length],
+          ['Total issues', issues.length],
+          ['Due soon', dueSoon.length],
+          ['Unassigned', unassigned.length]
+        ].map(([label, value]) => (
+          <article
+            key={label}
+            className='rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900'
+          >
+            <p className='text-xs font-semibold text-slate-500'>{label}</p>
+            <strong className='my-1 block text-3xl tracking-tight'>{value}</strong>
+          </article>
+        ))}
+      </div>
+      <div className='grid gap-5 xl:grid-cols-[minmax(0,1.6fr)_minmax(18rem,.7fr)]'>
+        <section className='overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900'>
+          <header className='border-b border-slate-200 px-5 py-4 dark:border-slate-800'>
+            <h3 className='font-bold'>Needs your attention</h3>
+            <p className='text-xs text-slate-500'>Priority, age, and due-date signals</p>
+          </header>
+          {attention.length === 0 && <p className='px-4 py-6 text-sm text-slate-500'>No open issues yet.</p>}
+          {attention.map((issue) => (
+            <IssueLink
+              key={issue.key}
+              issue={issue}
+              returnTo={returnTo}
+              className='grid grid-cols-[auto_1fr_auto] items-center gap-3 border-b border-slate-100 px-4 py-2.5 last:border-0 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800/60'
+            >
+              <CreatorAvatar creator={issue.creator} />
+              <div>
+                <div className='flex items-center gap-2'>
+                  <TypeIcon type={issue.type} />
+                  <strong className='text-sm'>{issue.title}</strong>
+                </div>
+                <IssueMeta issue={issue} />
+              </div>
+              <span
+                className={`inline-flex h-5 items-center whitespace-nowrap rounded-full px-2.5 text-[10px] font-bold ${badgeClass(issue.status)}`}
+              >
+                {issue.status}
+              </span>
+            </IssueLink>
+          ))}
+        </section>
+        <aside className='rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900'>
+          <h3 className='font-bold'>Active sprint</h3>
+          <p className='mt-1 text-xs text-slate-500'>Sprint planning has not started for {project.key} yet.</p>
+        </aside>
+      </div>
+    </>
+  );
+};
+
+const Backlog = ({ returnTo, data, onCreateIssue }) => {
+  const { status, issues, error } = data;
+  if (status === 'loading') return null;
+  if (status === 'unavailable') return <DatastoreUnavailableNotice error={error} />;
+  if (status === 'no-projects') return <NoProjectsNotice />;
+
+  const displayIssues = [...issues].sort((a, b) => a.rank.localeCompare(b.rank)).map(toDisplayIssue);
+
+  return (
+    <>
+      <div className='mb-6 flex flex-wrap items-end justify-between gap-3'>
+        <div>
+          <h2 className='text-2xl font-bold tracking-tight md:text-3xl'>Backlog</h2>
+          <p className='mt-1 text-sm text-slate-500'>Ranked work not yet committed to a sprint.</p>
+        </div>
+      </div>
+      <Filters />
+      <section className='mb-4 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900'>
+        <header className='flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-800 dark:bg-slate-900'>
+          <div>
+            <strong>Backlog</strong>
+            <span className='ml-2 text-xs text-slate-500'>{displayIssues.length} issues</span>
+          </div>
         </header>
-        {issueboardIssues.slice(0, 4).map((issue) => (
+        {displayIssues.length === 0 && (
+          <p className='px-4 py-6 text-sm text-slate-500'>No issues yet. Create the first one below.</p>
+        )}
+        {displayIssues.map((issue) => (
           <IssueLink
             key={issue.key}
             issue={issue}
             returnTo={returnTo}
-            className='grid grid-cols-[auto_1fr_auto] items-center gap-3 border-b border-slate-100 px-4 py-2.5 last:border-0 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800/60'
+            className='grid grid-cols-[auto_1fr_auto] items-center gap-3 border-b border-slate-100 px-4 py-2 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800/50'
           >
             <CreatorAvatar creator={issue.creator} />
             <div>
@@ -216,7 +343,7 @@ const Overview = ({ returnTo }) => (
                 <TypeIcon type={issue.type} />
                 <strong className='text-sm'>{issue.title}</strong>
               </div>
-              <IssueMeta issue={issue} />
+              <IssueMeta issue={issue} showPriority />
             </div>
             <span
               className={`inline-flex h-5 items-center whitespace-nowrap rounded-full px-2.5 text-[10px] font-bold ${badgeClass(issue.status)}`}
@@ -225,110 +352,17 @@ const Overview = ({ returnTo }) => (
             </span>
           </IssueLink>
         ))}
-      </section>
-      <aside className='rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900'>
-        <div className='flex justify-between'>
-          <div>
-            <h3 className='font-bold'>Active sprint</h3>
-            <p className='text-xs text-slate-500'>
-              {issueboardProject.sprint} · {issueboardProject.sprintDates}
-            </p>
-          </div>
-          <span className='h-fit rounded-full bg-emerald-100 px-2 py-1 text-[10px] font-bold text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200'>
-            8 days left
-          </span>
-        </div>
-        <div className='mt-7 flex justify-between text-xs'>
-          <strong>18 / 29 points</strong>
-          <span>62%</span>
-        </div>
-        <div className='mt-2 h-2 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800'>
-          <div className='h-full w-[62%] rounded-full bg-emerald-600' />
-        </div>
-        <div className='mt-7 space-y-4 border-t border-slate-200 pt-5 text-xs dark:border-slate-800'>
-          <p>
-            <strong>PORT-68</strong> moved to Done
-            <br />
-            <span className='text-slate-500'>19 minutes ago</span>
-          </p>
-          <p>
-            <strong>PORT-74</strong> created from Slack
-            <br />
-            <span className='text-slate-500'>2 hours ago</span>
-          </p>
-        </div>
-      </aside>
-    </div>
-  </>
-);
-
-const Backlog = ({ returnTo }) => (
-  <>
-    <div className='mb-6 flex flex-wrap items-end justify-between gap-3'>
-      <div>
-        <h2 className='text-2xl font-bold tracking-tight md:text-3xl'>Backlog</h2>
-        <p className='mt-1 text-sm text-slate-500'>Rank work and commit it to upcoming sprints.</p>
-      </div>
-      <button
-        type='button'
-        className='rounded-lg border border-slate-300 px-3 py-2 text-xs font-bold hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800'
-      >
-        + Create sprint
-      </button>
-    </div>
-    <Filters />
-    {['Sprint 04', 'Sprint 05', 'Backlog'].map((group, groupIndex) => (
-      <section
-        key={group}
-        className='mb-4 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900'
-      >
-        <header className='flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-800 dark:bg-slate-900'>
-          <div>
-            <strong>{group}</strong>
-            <span className='ml-2 text-xs text-slate-500'>
-              {groupIndex === 0 ? 'Active · 29 points' : groupIndex === 1 ? 'Planned · 13 points' : '12 issues'}
-            </span>
-          </div>
-          <button
-            type='button'
-            className='rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-bold dark:border-slate-700'
-          >
-            {groupIndex === 0 ? 'Complete sprint' : groupIndex === 1 ? 'Start sprint' : '•••'}
-          </button>
-        </header>
-        {issueboardIssues.slice(groupIndex * 2, groupIndex * 2 + 3).map((issue) => (
-          <IssueLink
-            key={issue.key}
-            issue={issue}
-            returnTo={returnTo}
-            className='grid grid-cols-[auto_auto_1fr_auto] items-center gap-3 border-b border-slate-100 px-4 py-2 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800/50'
-          >
-            <span className='cursor-grab text-slate-400'>⠿</span>
-            <CreatorAvatar creator={issue.creator} />
-            <div>
-              <div className='flex items-center gap-2'>
-                <TypeIcon type={issue.type} />
-                <strong className='text-sm'>{issue.title}</strong>
-              </div>
-              <IssueMeta issue={issue} showPriority={false} />
-            </div>
-            <div className='hidden max-w-48 flex-wrap justify-end gap-1 sm:flex'>
-              {issue.labels.map((label) => (
-                <LabelPill key={label} label={label} />
-              ))}
-            </div>
-          </IssueLink>
-        ))}
         <button
           type='button'
+          onClick={onCreateIssue}
           className='w-full px-5 py-3 text-left text-xs font-semibold text-slate-500 hover:bg-slate-50 hover:text-emerald-700 dark:hover:bg-slate-800'
         >
-          ＋ Create issue in {group}
+          ＋ Create issue
         </button>
       </section>
-    ))}
-  </>
-);
+    </>
+  );
+};
 
 const workStateClass = (workState) => {
   if (workState === 'Blocked') return 'border-rose-300 bg-rose-50 dark:border-rose-800 dark:bg-rose-950/40';
@@ -613,8 +647,29 @@ const PlaceholderView = ({ view }) => (
   </section>
 );
 
-const CreateIssueModal = ({ onClose }) => {
+const CreateIssueModal = ({ project, onCreate, onClose }) => {
   const [description, setDescription] = useState('\n\n### Checklist\n\n- [ ] ');
+  const [title, setTitle] = useState('');
+  const [issueType, setIssueType] = useState('task');
+  const [priority, setPriority] = useState('medium');
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState(null);
+
+  const submit = async (event) => {
+    event.preventDefault();
+    if (submitting) return;
+    setError(null);
+    setSubmitting(true);
+    try {
+      await onCreate({ projectKey: project.key, issueType, title, description, priority });
+      onClose();
+    } catch (submitError) {
+      setError(submitError.message || 'Could not create the issue.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <div
       className='fixed inset-0 z-50 flex items-end justify-center bg-slate-950/60 p-0 sm:items-center sm:p-4'
@@ -628,10 +683,13 @@ const CreateIssueModal = ({ onClose }) => {
         className='absolute inset-0 h-full w-full'
         onClick={onClose}
       />
-      <div className='relative max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-t-2xl bg-white shadow-2xl sm:rounded-2xl dark:bg-slate-900'>
+      <form
+        onSubmit={submit}
+        className='relative max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-t-2xl bg-white shadow-2xl sm:rounded-2xl dark:bg-slate-900'
+      >
         <header className='flex items-center justify-between border-b border-slate-200 p-5 dark:border-slate-800'>
           <div>
-            <span className='text-[10px] text-slate-500'>Portfolio Website</span>
+            <span className='text-[10px] text-slate-500'>{project.name}</span>
             <h2 id='create-issue-title' className='text-lg font-bold'>
               Create issue
             </h2>
@@ -645,22 +703,42 @@ const CreateIssueModal = ({ onClose }) => {
           </button>
         </header>
         <div className='grid gap-4 p-5 sm:grid-cols-2'>
-          {[
-            ['Issue type', 'Task'],
-            ['Priority', 'Medium'],
-            ['Sprint', 'Backlog'],
-            ['Estimate', 'Not estimated']
-          ].map(([label, value]) => (
-            <label key={label} className='grid gap-1.5 text-xs font-bold'>
-              {label}
-              <select className='rounded-lg border border-slate-300 bg-transparent p-2.5 font-normal dark:border-slate-700'>
-                <option>{value}</option>
-              </select>
-            </label>
-          ))}
+          <label className='grid gap-1.5 text-xs font-bold'>
+            Issue type
+            <select
+              value={issueType}
+              onChange={(event) => setIssueType(event.target.value)}
+              className='rounded-lg border border-slate-300 bg-transparent p-2.5 font-normal dark:border-slate-700'
+            >
+              {['task', 'story', 'bug', 'epic', 'feature', 'improvement', 'research'].map((type) => (
+                <option key={type} value={type}>
+                  {capitalize(type)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className='grid gap-1.5 text-xs font-bold'>
+            Priority
+            <select
+              value={priority}
+              onChange={(event) => setPriority(event.target.value)}
+              className='rounded-lg border border-slate-300 bg-transparent p-2.5 font-normal dark:border-slate-700'
+            >
+              {['highest', 'high', 'medium', 'low', 'lowest'].map((level) => (
+                <option key={level} value={level}>
+                  {capitalize(level)}
+                </option>
+              ))}
+            </select>
+          </label>
           <label className='grid gap-1.5 text-xs font-bold sm:col-span-2'>
             Title
             <input
+              required
+              minLength={3}
+              maxLength={200}
+              value={title}
+              onChange={(event) => setTitle(event.target.value)}
               className='rounded-lg border border-slate-300 bg-transparent p-2.5 font-normal dark:border-slate-700'
               placeholder='What needs to be done?'
             />
@@ -674,24 +752,25 @@ const CreateIssueModal = ({ onClose }) => {
               ariaLabel='New issue description and checklist'
               minHeight='min-h-48'
             />
-            <span className='font-normal text-slate-500'>Checklist items use Markdown task syntax: - [ ] item</span>
-          </div>
-          <label className='grid gap-1.5 text-xs font-bold sm:col-span-2'>
-            Labels
-            <input
-              className='rounded-lg border border-slate-300 bg-transparent p-2.5 font-normal dark:border-slate-700'
-              placeholder='bug, enhancement, frontend…'
-            />
             <span className='font-normal text-slate-500'>
-              New label names are created automatically with a readable color.
+              Checklist items are not saved yet — this workspace stores the description as Markdown.
             </span>
-          </label>
+          </div>
           <div className='rounded-xl border border-dashed border-emerald-400 bg-emerald-50 p-4 text-xs sm:col-span-2 dark:bg-emerald-950/40'>
             <strong>Images will be compressed in your browser</strong>
             <p className='mt-1 text-slate-500'>
-              JPEG, PNG, or WebP · target 1 MB / 1920 px · direct upload to private Supabase Storage
+              JPEG, PNG, or WebP · target 1 MB / 1920 px · direct upload to private Supabase Storage — coming in a later
+              slice.
             </p>
           </div>
+          {error && (
+            <p
+              role='alert'
+              className='rounded-lg border border-rose-300 bg-rose-50 p-3 text-xs font-semibold text-rose-800 sm:col-span-2 dark:border-rose-800 dark:bg-rose-950/40 dark:text-rose-200'
+            >
+              {error}
+            </p>
+          )}
         </div>
         <footer className='flex justify-end gap-2 border-t border-slate-200 p-4 dark:border-slate-800'>
           <button
@@ -701,11 +780,15 @@ const CreateIssueModal = ({ onClose }) => {
           >
             Cancel
           </button>
-          <button type='button' className='button'>
-            Create issue
+          <button
+            type='submit'
+            disabled={submitting}
+            className='button disabled:cursor-not-allowed disabled:opacity-60'
+          >
+            {submitting ? 'Creating…' : 'Create issue'}
           </button>
         </footer>
-      </div>
+      </form>
     </div>
   );
 };
@@ -715,6 +798,7 @@ const IssueboardWorkspace = ({ adminEmail }) => {
   const [createOpen, setCreateOpen] = useState(false);
   const view = validViews.includes(router.query.view) ? router.query.view : 'overview';
   const returnTo = useMemo(() => router.asPath, [router.asPath]);
+  const data = useIssueboardData();
 
   useEffect(() => {
     const key = `issueboard-scroll:${router.asPath}`;
@@ -728,10 +812,12 @@ const IssueboardWorkspace = ({ adminEmail }) => {
       adminEmail={adminEmail}
       currentView={view}
       title={viewTitles[view]}
-      onCreate={() => setCreateOpen(true)}
+      onCreate={() => data.project && setCreateOpen(true)}
     >
-      {view === 'overview' && <Overview returnTo={returnTo} />}
-      {view === 'backlog' && <Backlog returnTo={returnTo} />}
+      {view === 'overview' && <Overview returnTo={returnTo} data={data} />}
+      {view === 'backlog' && (
+        <Backlog returnTo={returnTo} data={data} onCreateIssue={() => data.project && setCreateOpen(true)} />
+      )}
       {view === 'board' && <Board returnTo={returnTo} />}
       {view === 'reports' && <ReportsView />}
       {view === 'projects' && <ProjectsView />}
@@ -740,7 +826,9 @@ const IssueboardWorkspace = ({ adminEmail }) => {
       {!['overview', 'backlog', 'board', 'reports', 'projects', 'integrations', 'settings'].includes(view) && (
         <PlaceholderView view={view} />
       )}
-      {createOpen && <CreateIssueModal onClose={() => setCreateOpen(false)} />}
+      {createOpen && data.project && (
+        <CreateIssueModal project={data.project} onCreate={data.createIssue} onClose={() => setCreateOpen(false)} />
+      )}
     </IssueboardShell>
   );
 };

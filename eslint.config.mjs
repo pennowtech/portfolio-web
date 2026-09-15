@@ -15,6 +15,12 @@ export default defineConfig([
       'no-console': ['error', { allow: ['warn', 'error'] }]
     }
   },
+  {
+    files: ['scripts/**'],
+    rules: {
+      'no-console': 'off'
+    }
+  },
   globalIgnores([
     '.next/**',
     '.next-*-issueboard-debug/**',

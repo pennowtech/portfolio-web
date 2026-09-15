@@ -4,6 +4,7 @@ const { applyNextAuthUrlDefaults } = require('./utils/resolveAuthUrl');
 applyNextAuthUrlDefaults();
 
 module.exports = {
+  outputFileTracingRoot: path.resolve(__dirname),
   turbopack: {
     root: path.resolve(__dirname)
   },

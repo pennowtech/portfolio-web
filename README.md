@@ -33,6 +33,7 @@ Technical and operational guides live in [docs](docs/README.md):
 - [Custom domain setup](docs/DOMAIN_NAME.md)
 - [Porkbun DNS and email forwarding](docs/PORKBUN.md)
 - [Publishing articles](docs/ARTICLE_PUBLISHING.md)
+- [Supabase setup and CLI network workaround](docs/SUPABASE.md)
 - [Notion, contact form, Analytics, and deployment guides](docs/README.md)
 
 ## Contact

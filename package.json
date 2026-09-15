@@ -11,6 +11,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "db:migrate": "node scripts/db-migrate.mjs",
+    "db:migrate:dry-run": "node scripts/db-migrate.mjs --dry-run",
     "prepare": "husky",
     "commit": "git add . && git-cz"
   },
@@ -122,6 +124,7 @@
     "husky": "^9.1.7",
     "inquirer": "^12.11.1",
     "lint-staged": "^17.2.0",
+    "pg": "^8.23.0",
     "prettier": "^3.9.6",
     "serve": "^14.2.6"
   }
