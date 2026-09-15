@@ -1,36 +1,7 @@
 const path = require('path');
+const { applyNextAuthUrlDefaults } = require('./utils/resolveAuthUrl');
 
-const sanitizeAuthUrl = (name) => {
-  let val = process.env[name];
-  if (typeof val === 'string') {
-    val = val.trim();
-    if (!val) {
-      delete process.env[name];
-      return;
-    }
-    if (!/^https?:\/\//i.test(val)) {
-      val = `https://${val}`;
-    }
-    try {
-      new URL(val);
-      process.env[name] = val;
-    } catch {
-      delete process.env[name];
-    }
-  }
-};
-
-['NEXTAUTH_URL', 'NEXTAUTH_URL_INTERNAL', 'VERCEL_URL'].forEach(sanitizeAuthUrl);
-
-if (!process.env.NEXTAUTH_URL) {
-  if (process.env.VERCEL_ENV === 'preview' && process.env.VERCEL_URL) {
-    process.env.NEXTAUTH_URL = process.env.VERCEL_URL;
-  } else if (process.env.NODE_ENV === 'development') {
-    process.env.NEXTAUTH_URL = 'http://localhost:3000';
-  } else {
-    process.env.NEXTAUTH_URL = 'https://singhbuildstech.com';
-  }
-}
+applyNextAuthUrlDefaults();
 
 module.exports = {
   turbopack: {

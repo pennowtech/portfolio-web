@@ -1,39 +1,7 @@
 import GoogleProvider from 'next-auth/providers/google';
+import { applyNextAuthUrlDefaults } from './resolveAuthUrl';
 
-// Vercel / environment settings may expose empty strings or domain names without protocols.
-// NextAuth requires valid absolute URLs (or inferring VERCEL_URL with protocol) and throws
-// TypeError: Invalid URL if given relative paths, empty strings, or un-prefixed hostnames.
-const sanitizeAuthUrl = (name) => {
-  let val = process.env[name];
-  if (typeof val === 'string') {
-    val = val.trim();
-    if (!val) {
-      delete process.env[name];
-      return;
-    }
-    if (!/^https?:\/\//i.test(val)) {
-      val = `https://${val}`;
-    }
-    try {
-      new URL(val);
-      process.env[name] = val;
-    } catch {
-      delete process.env[name];
-    }
-  }
-};
-
-['NEXTAUTH_URL', 'NEXTAUTH_URL_INTERNAL', 'VERCEL_URL'].forEach(sanitizeAuthUrl);
-
-if (!process.env.NEXTAUTH_URL) {
-  if (process.env.VERCEL_ENV === 'preview' && process.env.VERCEL_URL) {
-    process.env.NEXTAUTH_URL = process.env.VERCEL_URL;
-  } else if (process.env.NODE_ENV === 'development') {
-    process.env.NEXTAUTH_URL = 'http://localhost:3000';
-  } else {
-    process.env.NEXTAUTH_URL = 'https://singhbuildstech.com';
-  }
-}
+applyNextAuthUrlDefaults();
 
 const normalizeEmail = (value) =>
   String(value || '')
