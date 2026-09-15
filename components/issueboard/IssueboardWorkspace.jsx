@@ -18,7 +18,6 @@ import { IntegrationsHealthView, ProjectSettingsView } from './IssueboardAdminVi
 import ReportsView from './IssueboardReports';
 import ProjectsView from './IssueboardProjects';
 import MarkdownEditor from './MarkdownEditor';
-import { boardStatuses, boardSubtasks, issueboardIssues } from '@utils/issueboardFixtures';
 import { issueHref } from '@utils/issueboardNavigation';
 import { useIssueboardData } from '@utils/issueboard/useIssueboardData';
 
@@ -427,270 +426,122 @@ const Backlog = ({ returnTo, data, onCreateIssue }) => {
   );
 };
 
-const workStateClass = (workState) => {
-  if (workState === 'Blocked') return 'border-rose-300 bg-rose-50 dark:border-rose-800 dark:bg-rose-950/40';
-  if (workState === 'Rejected')
-    return 'border-slate-300 bg-slate-100 opacity-75 dark:border-slate-700 dark:bg-slate-800';
-  return 'border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950';
-};
-
-const ParentIssueCard = ({ issue, returnTo, onStateChange }) => {
-  const [checklistOpen, setChecklistOpen] = useState(false);
-  const [stateMenuOpen, setStateMenuOpen] = useState(false);
-  const workState = issue.workState || 'Normal';
-  const stateDotClass = {
-    Normal: 'bg-emerald-500',
-    Blocked: 'bg-rose-500',
-    Rejected: 'bg-slate-500'
-  };
-  return (
-    <article className={`rounded-xl border p-3 shadow-sm ${workStateClass(issue.workState)}`}>
-      <div className='flex items-start justify-between gap-2'>
-        <IssueLink issue={issue} returnTo={returnTo} className='min-w-0 flex-1'>
-          <span className='flex items-center gap-2 text-[10px] text-slate-500'>
-            <TypeIcon type={issue.type} /> {issue.key}
-          </span>
-          <h3 className='mt-2 text-sm font-normal leading-snug'>{issue.title}</h3>
-        </IssueLink>
-        <span className={`shrink-0 text-[10px] font-bold ${priorityClass(issue.priority)}`}>{issue.priority}</span>
+const BoardCard = ({ issue, returnTo, statuses, onMove, onDragStart }) => (
+  <article
+    draggable
+    onDragStart={onDragStart}
+    className='mb-2 rounded-xl border border-slate-200 bg-white p-3 shadow-sm transition hover:border-emerald-400 hover:shadow-md dark:border-slate-800 dark:bg-slate-950'
+  >
+    <IssueLink issue={issue} returnTo={returnTo}>
+      <div className='flex items-center gap-2 text-[10px] text-slate-500'>
+        <TypeIcon type={issue.type} /> {issue.key}
       </div>
-      <div
-        className='relative mt-2 inline-block'
-        onBlur={(event) => {
-          if (!event.currentTarget.contains(event.relatedTarget)) setStateMenuOpen(false);
-        }}
+      <h3 className='my-2 text-sm font-normal leading-snug'>{issue.title}</h3>
+    </IssueLink>
+    <div className='mb-2 flex flex-wrap gap-1'>
+      {issue.labels?.map((label) => (
+        <LabelPill key={label.id} label={label} />
+      ))}
+    </div>
+    <div className='flex items-center justify-between gap-2'>
+      <span className={`text-[10px] font-bold ${priorityClass(issue.priority)}`}>{issue.priority}</span>
+      <CreatorAvatar creator={issue.creator} />
+    </div>
+    <label className='mt-2 block'>
+      <span className='sr-only'>Move {issue.key} to a different status</span>
+      <select
+        value={issue.statusId}
+        onChange={(event) => onMove(event.target.value)}
+        className='w-full rounded-lg border border-slate-200 bg-slate-50 px-1.5 py-1 text-[10px] dark:border-slate-800 dark:bg-slate-900'
       >
-        <button
-          type='button'
-          onClick={() => setStateMenuOpen((open) => !open)}
-          aria-label={`State for ${issue.key}`}
-          aria-haspopup='listbox'
-          aria-expanded={stateMenuOpen}
-          className='inline-flex h-6 items-center gap-1.5 rounded-md bg-transparent px-1.5 text-[10px] font-semibold text-slate-600 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/30 dark:text-slate-300 dark:hover:bg-slate-800'
-        >
-          <span className={`size-1.5 rounded-full ${stateDotClass[workState]}`} aria-hidden='true' />
-          <span>{workState}</span>
-          <FiChevronDown className={`ml-1 size-3 transition ${stateMenuOpen ? 'rotate-180' : ''}`} aria-hidden='true' />
-        </button>
-        {stateMenuOpen && (
-          <div
-            role='listbox'
-            aria-label={`Choose state for ${issue.key}`}
-            className='absolute left-0 top-7 z-30 w-28 rounded-lg bg-white p-0.5 shadow-lg dark:bg-slate-900'
-          >
-            {['Normal', 'Blocked', 'Rejected'].map((state) => (
-              <button
-                key={state}
-                type='button'
-                role='option'
-                aria-selected={workState === state}
-                onClick={() => {
-                  onStateChange(state);
-                  setStateMenuOpen(false);
-                }}
-                className={`flex h-6 w-full items-center gap-1.5 rounded-md px-2 text-left text-[10px] font-semibold leading-none transition hover:bg-slate-100 dark:hover:bg-slate-800 ${workState === state ? 'bg-slate-100 text-slate-950 dark:bg-slate-800 dark:text-white' : 'text-slate-600 dark:text-slate-300'}`}
-              >
-                <span className={`size-1.5 rounded-full ${stateDotClass[state]}`} aria-hidden='true' />
-                {state}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-      <div className='mt-3 flex items-center justify-between text-[10px] text-slate-500'>
-        <div className='flex items-center gap-3'>
-          <button
-            type='button'
-            className='inline-flex items-center gap-1 rounded px-1 py-0.5 hover:bg-slate-100 dark:hover:bg-slate-800'
-            onClick={() => setChecklistOpen((current) => !current)}
-            aria-expanded={checklistOpen}
-          >
-            <FiCheckSquare aria-hidden='true' /> {issue.checklist}
-            <FiChevronDown className={`transition ${checklistOpen ? 'rotate-180' : ''}`} aria-hidden='true' />
-          </button>
-          <span>{issue.estimate} points</span>
-        </div>
-        <CreatorAvatar creator={issue.creator} />
-      </div>
-      {checklistOpen && (
-        <ul className='mt-2 space-y-1 border-t border-slate-100 pt-2 text-[11px] dark:border-slate-800'>
-          {issue.checklistItems?.map((item) => (
-            <li key={item.text} className='flex items-center gap-2 leading-5'>
-              <FiCheckSquare className={`shrink-0 ${item.done ? 'text-emerald-600' : 'text-slate-300'}`} />
-              <span className={item.done ? 'text-slate-400 line-through' : ''}>{item.text}</span>
-            </li>
-          ))}
-        </ul>
-      )}
-    </article>
-  );
-};
+        {statuses.map((status) => (
+          <option key={status.id} value={status.id}>
+            Move to: {status.name}
+          </option>
+        ))}
+      </select>
+    </label>
+  </article>
+);
 
-const Board = ({ returnTo }) => {
-  const [parentIssues, setParentIssues] = useState(() =>
-    issueboardIssues.map((issue) => ({ ...issue, workState: 'Normal' }))
-  );
-  const [subtasks, setSubtasks] = useState(boardSubtasks);
-  const [quickCreateParent, setQuickCreateParent] = useState(null);
-  const [quickTitle, setQuickTitle] = useState('');
+const Board = ({ returnTo, data, moveIssueStatus }) => {
+  const { status, issues, statuses, error } = data;
+  const [moveError, setMoveError] = useState(null);
+  const [dragIssueKey, setDragIssueKey] = useState(null);
 
-  const moveSubtask = (key, status) => {
-    setSubtasks((current) => current.map((subtask) => (subtask.key === key ? { ...subtask, status } : subtask)));
-  };
+  if (status === 'loading') return null;
+  if (status === 'unavailable') return <DatastoreUnavailableNotice error={error} />;
+  if (status === 'no-projects') return <NoProjectsNotice />;
+  if (statuses.length === 0)
+    return <p className='px-4 py-6 text-sm text-slate-500'>This project has no workflow statuses configured.</p>;
 
-  const setParentWorkState = (key, workState) => {
-    setParentIssues((current) => current.map((issue) => (issue.key === key ? { ...issue, workState } : issue)));
-  };
-
-  const createSubtask = (event) => {
-    event.preventDefault();
-    const title = quickTitle.trim();
-    if (!title) return;
-    setSubtasks((current) => [
-      ...current,
-      {
-        key: `PORT-${86 + current.length}`,
-        parentKey: quickCreateParent,
-        type: 'Subtask',
-        title,
-        status: 'To do',
-        creator: { name: 'Local development', initials: 'LD' }
-      }
-    ]);
-    setQuickTitle('');
-    setQuickCreateParent(null);
+  const activeIssues = issues.filter((issue) => !issue.archivedAt);
+  const move = async (issue, statusId) => {
+    if (statusId === issue.status?.id) return;
+    setMoveError(null);
+    try {
+      await moveIssueStatus(issue, statusId);
+    } catch (moveErr) {
+      setMoveError(moveErr.message);
+    }
   };
 
   return (
     <>
       <div className='mb-6 flex flex-wrap items-end justify-between gap-3'>
         <div>
-          <h2 className='text-2xl font-bold tracking-tight md:text-3xl'>Sprint 04 board</h2>
-          <p className='mt-1 text-sm text-slate-500'>September foundation · 8 days remaining</p>
-        </div>
-        <div className='flex gap-2'>
-          <button
-            type='button'
-            className='rounded-lg border border-slate-300 px-3 py-2 text-xs font-bold dark:border-slate-700'
-          >
-            Sprint details
-          </button>
-          <button
-            type='button'
-            className='rounded-lg border border-slate-300 px-3 py-2 text-xs font-bold dark:border-slate-700'
-          >
-            Complete sprint
-          </button>
+          <h2 className='text-2xl font-bold tracking-tight md:text-3xl'>Board</h2>
+          <p className='mt-1 text-sm text-slate-500'>Continuous flow · all open issues by status.</p>
         </div>
       </div>
       <Filters />
+      {moveError && (
+        <p className='mb-3 rounded-lg border border-rose-300 bg-rose-50 p-2 text-xs font-semibold text-rose-800 dark:border-rose-800 dark:bg-rose-950/40 dark:text-rose-200'>
+          {moveError}
+        </p>
+      )}
       <div className='overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800'>
-        <div className='min-w-[90rem]'>
-          <div className='grid grid-cols-[repeat(6,minmax(15rem,1fr))] bg-slate-100 dark:bg-slate-900'>
-            <header className='flex items-center justify-between border-r border-slate-200 p-3 dark:border-slate-800'>
-              <strong className='issueboard-swimlane-title text-xs  tracking-wider'>Parent issue</strong>
-              <span className='inline-flex size-6 items-center justify-center rounded-md bg-slate-300 text-[10px] leading-none dark:bg-slate-800'>
-                {parentIssues.length}
-              </span>
-            </header>
-            {boardStatuses.map((status) => (
-              <header
-                key={status}
-                className='flex items-center justify-between border-r border-slate-200 p-3 last:border-r-0 dark:border-slate-800'
-              >
-                <strong className='issueboard-swimlane-title text-xs  tracking-wider'>{status}</strong>
-                <span className='inline-flex size-6 items-center justify-center rounded-md bg-slate-300 text-[10px] leading-none dark:bg-slate-800'>
-                  {subtasks.filter((subtask) => subtask.status === status).length}
-                </span>
-              </header>
-            ))}
-          </div>
-          {parentIssues.map((issue) => (
-            <section
-              key={issue.key}
-              className='grid grid-cols-[repeat(6,minmax(15rem,1fr))] border-t border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950'
-            >
-              <div className='border-r border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-900/70'>
-                <ParentIssueCard
-                  issue={issue}
-                  returnTo={returnTo}
-                  onStateChange={(workState) => setParentWorkState(issue.key, workState)}
-                />
-              </div>
-              {boardStatuses.map((status) => {
-                const relatedSubtasks = subtasks.filter(
-                  (subtask) => subtask.parentKey === issue.key && subtask.status === status
-                );
-                return (
-                  <div
-                    key={status}
-                    className='min-h-44 border-r border-slate-200 p-3 last:border-r-0 dark:border-slate-800'
-                    onDragOver={(event) => event.preventDefault()}
-                    onDrop={(event) => moveSubtask(event.dataTransfer.getData('text/plain'), status)}
+        <div
+          className='grid min-w-[75rem]'
+          style={{ gridTemplateColumns: `repeat(${statuses.length}, minmax(15rem, 1fr))` }}
+        >
+          {statuses.map((columnStatus) => {
+            const columnIssues = activeIssues.filter((issue) => issue.status?.id === columnStatus.id);
+            const overLimit = columnStatus.wipLimit && columnIssues.length > columnStatus.wipLimit;
+            return (
+              <div key={columnStatus.id} className='border-r border-slate-200 last:border-r-0 dark:border-slate-800'>
+                <header className='flex items-center justify-between border-b border-slate-200 bg-slate-100 p-3 dark:border-slate-800 dark:bg-slate-900'>
+                  <strong className='text-xs tracking-wider'>{columnStatus.name}</strong>
+                  <span
+                    className={`inline-flex h-6 items-center justify-center rounded-md px-1.5 text-[10px] leading-none ${overLimit ? 'bg-rose-200 text-rose-900 dark:bg-rose-900 dark:text-rose-100' : 'bg-slate-300 dark:bg-slate-800'}`}
                   >
-                    {relatedSubtasks.map((subtask) => (
-                      <article
-                        key={subtask.key}
-                        draggable
-                        onDragStart={(event) => event.dataTransfer.setData('text/plain', subtask.key)}
-                        className='mb-2 rounded-xl border border-slate-200 bg-white p-3 shadow-sm transition hover:border-emerald-400 hover:shadow-md dark:border-slate-800 dark:bg-slate-950'
-                      >
-                        <div className='text-[10px] text-slate-500'>
-                          <span className='flex items-center gap-2'>
-                            <TypeIcon type={subtask.type} /> {subtask.key}
-                          </span>
-                        </div>
-                        <h3 className='my-2 text-sm font-normal leading-snug'>{subtask.title}</h3>
-                        <div className='mt-3 flex items-center justify-end text-[10px] text-slate-500'>
-                          <CreatorAvatar creator={subtask.creator} />
-                        </div>
-                      </article>
-                    ))}
-                    {status === 'To do' &&
-                      (quickCreateParent === issue.key ? (
-                        <form
-                          className='rounded-xl border border-dashed border-slate-400 bg-white p-2 dark:bg-slate-900'
-                          onSubmit={createSubtask}
-                        >
-                          <input
-                            autoFocus
-                            value={quickTitle}
-                            onChange={(event) => setQuickTitle(event.target.value)}
-                            className='w-full bg-transparent px-1 py-1 text-xs outline-none'
-                            placeholder='Subtask title'
-                          />
-                          <div className='mt-2 flex justify-end gap-1'>
-                            <button
-                              type='button'
-                              className='h-6 px-2 text-[10px] leading-none'
-                              onClick={() => setQuickCreateParent(null)}
-                            >
-                              Cancel
-                            </button>
-                            <button
-                              type='submit'
-                              className='h-6 rounded bg-emerald-700 px-2 text-[10px] font-bold leading-none text-white'
-                            >
-                              Create
-                            </button>
-                          </div>
-                        </form>
-                      ) : (
-                        <button
-                          type='button'
-                          onClick={() => setQuickCreateParent(issue.key)}
-                          title={`Add subtask to ${issue.key}`}
-                          aria-label={`Add subtask to ${issue.key}`}
-                          className='inline-flex size-7 items-center justify-center rounded-lg border border-dashed border-slate-300 text-base leading-none text-slate-500 hover:border-emerald-500 hover:text-emerald-700'
-                        >
-                          +
-                        </button>
-                      ))}
-                  </div>
-                );
-              })}
-            </section>
-          ))}
+                    {columnIssues.length}
+                    {columnStatus.wipLimit ? ` / ${columnStatus.wipLimit}` : ''}
+                  </span>
+                </header>
+                <div
+                  className='min-h-44 bg-white p-3 dark:bg-slate-950'
+                  onDragOver={(event) => event.preventDefault()}
+                  onDrop={() => {
+                    const issue = activeIssues.find((entry) => entry.key === dragIssueKey);
+                    if (issue) move(issue, columnStatus.id);
+                    setDragIssueKey(null);
+                  }}
+                >
+                  {columnIssues.map((issue) => (
+                    <BoardCard
+                      key={issue.key}
+                      issue={{ ...toDisplayIssue(issue), statusId: issue.status?.id }}
+                      returnTo={returnTo}
+                      statuses={statuses}
+                      onMove={(statusId) => move(issue, statusId)}
+                      onDragStart={() => setDragIssueKey(issue.key)}
+                    />
+                  ))}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </>
@@ -881,7 +732,7 @@ const IssueboardWorkspace = ({ adminEmail }) => {
       {view === 'backlog' && (
         <Backlog returnTo={returnTo} data={data} onCreateIssue={() => data.project && setCreateOpen(true)} />
       )}
-      {view === 'board' && <Board returnTo={returnTo} />}
+      {view === 'board' && <Board returnTo={returnTo} data={data} moveIssueStatus={data.moveIssueStatus} />}
       {view === 'reports' && <ReportsView />}
       {view === 'projects' && <ProjectsView />}
       {view === 'integrations' && <IntegrationsHealthView />}

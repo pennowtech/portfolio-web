@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
-const initialState = { status: 'loading', project: null, issues: [], error: null };
+const initialState = { status: 'loading', project: null, issues: [], statuses: [], error: null };
 
 const jsonFetch = async (url, init) => {
   const response = await fetch(url, {
@@ -33,29 +33,39 @@ export const useIssueboardData = () => {
 
       const project = projectsPayload.projects[0] || null;
       if (!project) {
-        setState({ status: 'no-projects', project: null, issues: [], error: null });
+        setState({ status: 'no-projects', project: null, issues: [], statuses: [], error: null });
         return;
       }
 
-      const { ok: issuesOk, payload: issuesPayload } = await jsonFetch(
-        `/api/issueboard/issues?projectKey=${encodeURIComponent(project.key)}`
-      );
-      if (!issuesOk || !issuesPayload?.ok) {
+      const [issuesResult, statusesResult] = await Promise.all([
+        jsonFetch(`/api/issueboard/issues?projectKey=${encodeURIComponent(project.key)}`),
+        jsonFetch(`/api/issueboard/projects/${encodeURIComponent(project.key)}/statuses`)
+      ]);
+      if (!issuesResult.ok || !issuesResult.payload?.ok) {
         setState({
           status: 'unavailable',
           project,
           issues: [],
-          error: issuesPayload?.error?.message || 'Issue management is temporarily unavailable.'
+          statuses: [],
+          error: issuesResult.payload?.error?.message || 'Issue management is temporarily unavailable.'
         });
         return;
       }
 
-      setState({ status: 'ready', project, issues: issuesPayload.issues, error: null, loadedAt: Date.now() });
+      setState({
+        status: 'ready',
+        project,
+        issues: issuesResult.payload.issues,
+        statuses: statusesResult.ok && statusesResult.payload?.ok ? statusesResult.payload.statuses : [],
+        error: null,
+        loadedAt: Date.now()
+      });
     } catch {
       setState({
         status: 'unavailable',
         project: null,
         issues: [],
+        statuses: [],
         error: 'Issue management could not be reached. Check your connection and try again.'
       });
     }
@@ -81,5 +91,30 @@ export const useIssueboardData = () => {
     return payload.issue;
   }, []);
 
-  return { ...state, reload: load, createIssue };
+  const moveIssueStatus = useCallback(async (issue, statusId) => {
+    const { ok, payload } = await jsonFetch(`/api/issueboard/issues/${encodeURIComponent(issue.key)}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: issue.title,
+        description: issue.description,
+        priority: issue.priority,
+        assignee: issue.assignee || undefined,
+        statusId,
+        expectedUpdatedAt: issue.updatedAt
+      })
+    });
+    if (!ok || !payload?.ok) {
+      const error = new Error(payload?.error?.message || 'Could not move the issue.');
+      error.code = payload?.error?.code;
+      throw error;
+    }
+    setState((current) => ({
+      ...current,
+      issues: current.issues.map((entry) => (entry.id === payload.issue.id ? payload.issue : entry))
+    }));
+    return payload.issue;
+  }, []);
+
+  return { ...state, reload: load, createIssue, moveIssueStatus };
 };
