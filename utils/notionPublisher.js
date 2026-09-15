@@ -41,6 +41,9 @@ const setProperty = (properties, schema, name, expectedType, value) => {
     case 'date':
       properties[name] = value ? { date: { start: value } } : { date: null };
       break;
+    case 'url':
+      properties[name] = { url: value || null };
+      break;
     default:
       break;
   }
@@ -177,7 +180,9 @@ export const updateNotionArticle = async (pageId, article) => {
   setProperty(properties, schema, 'category', 'select', article.category);
   setProperty(properties, schema, 'Published', 'checkbox', article.published);
   setProperty(properties, schema, 'Posted on', 'date', article.publicationDate || null);
-  setProperty(properties, schema, 'Slug', 'rich_text', article.slug);
+  // Slug is a read-only Notion formula (falls back to a slugified Name when URL is empty), so the
+  // editor's chosen slug is applied via the URL property, which the formula treats as an override.
+  setProperty(properties, schema, 'URL', 'url', article.slug);
 
   const storedMarkdown = `${article.markdown}${
     article.coverCredit
@@ -198,7 +203,10 @@ export const updateNotionArticle = async (pageId, article) => {
   };
   if (sourceBlock) await notion.blocks.update({ block_id: sourceBlock.id, code });
   else await notion.blocks.children.append({ block_id: pageId, children: [{ object: 'block', type: 'code', code }] });
-  return { id: page.id, url: page.url, slug: article.slug, published: article.published };
+  // Read the real formula-computed slug back rather than trusting the submitted one, so the
+  // "view article" link always matches what /blog/[blog] will actually find.
+  const realSlug = page.properties?.Slug?.formula?.string || article.slug;
+  return { id: page.id, url: page.url, slug: realSlug, published: article.published };
 };
 
 export const createNotionArticle = async ({
@@ -236,7 +244,9 @@ export const createNotionArticle = async ({
   setProperty(properties, schema, 'category', 'select', category);
   setProperty(properties, schema, 'Published', 'checkbox', published);
   setProperty(properties, schema, 'Posted on', 'date', publicationDate || null);
-  setProperty(properties, schema, 'Slug', 'rich_text', slug);
+  // Slug is a read-only Notion formula (falls back to a slugified Name when URL is empty), so the
+  // editor's chosen slug is applied via the URL property, which the formula treats as an override.
+  setProperty(properties, schema, 'URL', 'url', slug);
 
   if (!properties.Name) throw new Error('The Notion articles database must contain a Name title property.');
 
@@ -262,5 +272,8 @@ export const createNotionArticle = async ({
     ]
   });
 
-  return { id: page.id, url: page.url, slug, published };
+  // Read the real formula-computed slug back rather than trusting the submitted one, so the
+  // "view article" link always matches what /blog/[blog] will actually find.
+  const realSlug = page.properties?.Slug?.formula?.string || slug;
+  return { id: page.id, url: page.url, slug: realSlug, published };
 };
