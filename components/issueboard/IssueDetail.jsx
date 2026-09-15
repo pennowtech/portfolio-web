@@ -40,11 +40,13 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
   const [subtasks, setSubtasks] = useState(() => boardSubtasks.filter((subtask) => subtask.parentKey === issueKey));
   const [description, setDescription] = useState(initialDescription);
   const [descriptionEditing, setDescriptionEditing] = useState(false);
-  const [comment, setComment] = useState('');
-  const [existingComment, setExistingComment] = useState(
-    'Compression now preserves the original orientation and reports the **final file size**.'
-  );
-  const [existingCommentEditing, setExistingCommentEditing] = useState(false);
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState('');
+  const [postingComment, setPostingComment] = useState(false);
+  const [commentError, setCommentError] = useState(null);
+  const [editingCommentId, setEditingCommentId] = useState(null);
+  const [editingCommentBody, setEditingCommentBody] = useState('');
+  const [savingCommentEdit, setSavingCommentEdit] = useState(false);
   const [newChecklistItem, setNewChecklistItem] = useState('');
   const [checklistEditorOpen, setChecklistEditorOpen] = useState(false);
   const [menuFor, setMenuFor] = useState(null);
@@ -69,11 +71,70 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
     setStatusId(payload.issue.status?.id || '');
     setAssignee(payload.issue.assignee || '');
     setDescription(payload.issue.description || '');
+
+    const commentsResult = await jsonFetch(`/api/issueboard/issues/${encodeURIComponent(issueKey)}/comments`);
+    if (commentsResult.ok && commentsResult.payload?.ok) setComments(commentsResult.payload.comments);
   }, [issueKey]);
 
   useEffect(() => {
     load();
   }, [load]);
+
+  const postComment = async (event) => {
+    event.preventDefault();
+    const body = newComment.trim();
+    if (!body || postingComment) return;
+    setPostingComment(true);
+    setCommentError(null);
+    const { ok, payload } = await jsonFetch(`/api/issueboard/issues/${encodeURIComponent(issueKey)}/comments`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ body })
+    });
+    if (!ok || !payload?.ok) {
+      setCommentError(payload?.error?.message || 'Could not post the comment.');
+      setPostingComment(false);
+      return;
+    }
+    setComments((current) => [...current, payload.comment]);
+    setNewComment('');
+    setPostingComment(false);
+  };
+
+  const beginEditComment = (targetComment) => {
+    setEditingCommentId(targetComment.id);
+    setEditingCommentBody(targetComment.body);
+  };
+
+  const saveCommentEdit = async () => {
+    const body = editingCommentBody.trim();
+    if (!body || savingCommentEdit) return;
+    setSavingCommentEdit(true);
+    setCommentError(null);
+    const { ok, payload } = await jsonFetch(`/api/issueboard/comments/${editingCommentId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ body })
+    });
+    if (!ok || !payload?.ok) {
+      setCommentError(payload?.error?.message || 'Could not save the comment.');
+      setSavingCommentEdit(false);
+      return;
+    }
+    setComments((current) => current.map((entry) => (entry.id === payload.comment.id ? payload.comment : entry)));
+    setEditingCommentId(null);
+    setSavingCommentEdit(false);
+  };
+
+  const removeComment = async (commentId) => {
+    setCommentError(null);
+    const { ok, payload } = await jsonFetch(`/api/issueboard/comments/${commentId}`, { method: 'DELETE' });
+    if (!ok || !payload?.ok) {
+      setCommentError(payload?.error?.message || 'Could not delete the comment.');
+      return;
+    }
+    setComments((current) => current.filter((entry) => entry.id !== commentId));
+  };
 
   const saveChanges = async () => {
     if (!data.issue || saving) return;
@@ -407,41 +468,80 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
               </span>
             </button>
           </div>
-          <SectionHeading title='Activity and comments' />
-          <MarkdownEditor
-            value={comment}
-            onChange={setComment}
-            placeholder='Write a comment using Markdown…'
-            ariaLabel='Comment'
-            minHeight='min-h-24'
-          />
-          <div className='mt-4 border-l-2 border-slate-200 pl-4 text-sm dark:border-slate-700'>
-            <div className='flex items-start justify-between gap-3'>
-              <div className='min-w-0 flex-1'>
-                <p className='mb-1'>
-                  <strong>Sukhdeep</strong> commented
-                </p>
-                {existingCommentEditing ? (
-                  <MarkdownEditor
-                    value={existingComment}
-                    onChange={setExistingComment}
-                    ariaLabel='Edit comment'
-                    minHeight='min-h-20'
-                  />
-                ) : (
-                  <MarkdownPreview compact>{existingComment}</MarkdownPreview>
-                )}
-                <span className='text-xs text-slate-500'>Today at 13:42</span>
-              </div>
+          <SectionHeading title='Activity and comments' count={comments.length ? String(comments.length) : null} />
+          <form onSubmit={postComment}>
+            <MarkdownEditor
+              value={newComment}
+              onChange={setNewComment}
+              placeholder='Write a comment using Markdown…'
+              ariaLabel='Comment'
+              minHeight='min-h-24'
+            />
+            <div className='mt-2 flex items-center justify-end gap-2'>
+              {commentError && (
+                <span className='text-xs font-semibold text-rose-600 dark:text-rose-300'>{commentError}</span>
+              )}
               <button
-                type='button'
-                onClick={() => setExistingCommentEditing((editing) => !editing)}
-                className='rounded px-2 py-1 text-xs font-semibold text-emerald-700 hover:bg-emerald-50 dark:text-emerald-400'
+                type='submit'
+                disabled={postingComment || !newComment.trim()}
+                className='button text-xs disabled:cursor-not-allowed disabled:opacity-60'
               >
-                {existingCommentEditing ? 'Done' : 'Edit'}
+                {postingComment ? 'Posting…' : 'Post comment'}
               </button>
             </div>
-          </div>
+          </form>
+          {comments.map((entry) => (
+            <div key={entry.id} className='mt-4 border-l-2 border-slate-200 pl-4 text-sm dark:border-slate-700'>
+              <div className='flex items-start justify-between gap-3'>
+                <div className='min-w-0 flex-1'>
+                  <p className='mb-1'>
+                    <strong>{entry.author}</strong> commented
+                  </p>
+                  {editingCommentId === entry.id ? (
+                    <MarkdownEditor
+                      value={editingCommentBody}
+                      onChange={setEditingCommentBody}
+                      ariaLabel='Edit comment'
+                      minHeight='min-h-20'
+                    />
+                  ) : (
+                    <MarkdownPreview compact>{entry.body}</MarkdownPreview>
+                  )}
+                  <span className='text-xs text-slate-500'>
+                    {new Date(entry.createdAt).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}
+                    {entry.editedAt && ' · edited'}
+                  </span>
+                </div>
+                <div className='flex shrink-0 gap-1'>
+                  {editingCommentId === entry.id ? (
+                    <button
+                      type='button'
+                      onClick={saveCommentEdit}
+                      disabled={savingCommentEdit}
+                      className='rounded px-2 py-1 text-xs font-semibold text-emerald-700 hover:bg-emerald-50 disabled:opacity-60 dark:text-emerald-400'
+                    >
+                      {savingCommentEdit ? 'Saving…' : 'Done'}
+                    </button>
+                  ) : (
+                    <button
+                      type='button'
+                      onClick={() => beginEditComment(entry)}
+                      className='rounded px-2 py-1 text-xs font-semibold text-emerald-700 hover:bg-emerald-50 dark:text-emerald-400'
+                    >
+                      Edit
+                    </button>
+                  )}
+                  <button
+                    type='button'
+                    onClick={() => removeComment(entry.id)}
+                    className='rounded px-2 py-1 text-xs font-semibold text-rose-600 hover:bg-rose-50 dark:text-rose-300'
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
         </article>
         <aside className='h-fit rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900'>
           <label className='grid grid-cols-[6rem_1fr] items-center gap-3 border-b border-slate-100 py-3 text-sm dark:border-slate-800'>
