@@ -3,6 +3,9 @@ import { useTheme } from 'next-themes';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { a11yDark, a11yLight } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 
+const SyntaxHighlighterComponent =
+  typeof SyntaxHighlighter === 'function' ? SyntaxHighlighter : SyntaxHighlighter?.default || SyntaxHighlighter;
+
 const parseLineRanges = (value = '') =>
   value.split(',').flatMap((part) => {
     const [start, end = start] = part.split('-').map(Number);
@@ -59,7 +62,7 @@ function Code({ node, inline, className, ...props }) {
       >
         {copied ? '✓ Copied' : 'Copy'}
       </button>
-      <SyntaxHighlighter
+      <SyntaxHighlighterComponent
         style={codeTheme}
         language={language}
         PreTag='div'
@@ -73,7 +76,7 @@ function Code({ node, inline, className, ...props }) {
         lineProps={lineProps}
       >
         {codeString}
-      </SyntaxHighlighter>
+      </SyntaxHighlighterComponent>
     </div>
   );
 }

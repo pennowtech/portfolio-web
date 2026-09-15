@@ -3,9 +3,13 @@ const vercelUrl = rawVercelUrl
   ? /^https?:\/\//i.test(rawVercelUrl)
     ? rawVercelUrl
     : `https://${rawVercelUrl}`
-  : 'https://portfolio-web-wheat.vercel.app';
+  : 'https://singhbuildstech.com';
 
-export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || vercelUrl).replace(/\/+$/, '');
+const isPreview = process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview' || process.env.VERCEL_ENV === 'preview';
+
+export const SITE_URL = (
+  process.env.NEXT_PUBLIC_SITE_URL || (isPreview ? vercelUrl : 'https://singhbuildstech.com')
+).replace(/\/+$/, '');
 
 export const absoluteUrl = (value = '/') => {
   if (/^https?:\/\//i.test(value)) return value;
