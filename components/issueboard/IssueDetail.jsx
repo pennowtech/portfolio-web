@@ -1,10 +1,18 @@
 import { useRouter } from 'next/router';
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FiArrowLeft, FiCheck, FiLayers, FiMoreHorizontal, FiPaperclip, FiPlus, FiTrash2, FiX } from 'react-icons/fi';
 import IssueboardShell from './IssueboardShell';
 import MarkdownEditor, { MarkdownPreview } from './MarkdownEditor';
-import { boardSubtasks, issueboardIssues } from '@utils/issueboardFixtures';
+import { boardSubtasks } from '@utils/issueboardFixtures';
 import { getSafeIssueboardReturnTo } from '@utils/issueboardNavigation';
+
+const capitalize = (value) => (value ? value.charAt(0).toUpperCase() + value.slice(1) : value);
+
+const jsonFetch = async (url, init) => {
+  const response = await fetch(url, { ...init, headers: { Accept: 'application/json', ...(init?.headers || {}) } });
+  const payload = await response.json().catch(() => null);
+  return { ok: response.ok, status: response.status, payload };
+};
 
 const initialChecklist = [
   { id: 'mime', text: 'Validate MIME type and decoded dimensions', done: true },
@@ -21,9 +29,15 @@ const initialDescription = `Portrait screenshots larger than **4 MB** must be re
 
 const IssueDetail = ({ adminEmail, issueKey }) => {
   const router = useRouter();
-  const issue = issueboardIssues.find((entry) => entry.key === issueKey) || issueboardIssues[0];
+  const [data, setData] = useState({ status: 'loading', issue: null, statuses: [], error: null });
+  const [title, setTitle] = useState('');
+  const [priority, setPriority] = useState('medium');
+  const [statusId, setStatusId] = useState('');
+  const [assignee, setAssignee] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState(null);
   const [checklist, setChecklist] = useState(initialChecklist);
-  const [subtasks, setSubtasks] = useState(() => boardSubtasks.filter((subtask) => subtask.parentKey === issue.key));
+  const [subtasks, setSubtasks] = useState(() => boardSubtasks.filter((subtask) => subtask.parentKey === issueKey));
   const [description, setDescription] = useState(initialDescription);
   const [descriptionEditing, setDescriptionEditing] = useState(false);
   const [comment, setComment] = useState('');
@@ -37,6 +51,56 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
   const [relationshipOpen, setRelationshipOpen] = useState(false);
   const returnTo = useMemo(() => getSafeIssueboardReturnTo(router.query.returnTo), [router.query.returnTo]);
 
+  const load = useCallback(async () => {
+    setData((current) => ({ ...current, status: 'loading', error: null }));
+    const { ok, status, payload } = await jsonFetch(`/api/issueboard/issues/${encodeURIComponent(issueKey)}`);
+    if (!ok || !payload?.ok) {
+      setData({
+        status: status === 404 ? 'not-found' : 'unavailable',
+        issue: null,
+        statuses: [],
+        error: payload?.error?.message || 'Issue management is temporarily unavailable.'
+      });
+      return;
+    }
+    setData({ status: 'ready', issue: payload.issue, statuses: payload.statuses, error: null });
+    setTitle(payload.issue.title);
+    setPriority(payload.issue.priority);
+    setStatusId(payload.issue.status?.id || '');
+    setAssignee(payload.issue.assignee || '');
+    setDescription(payload.issue.description || '');
+  }, [issueKey]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const saveChanges = async () => {
+    if (!data.issue || saving) return;
+    setSaving(true);
+    setSaveError(null);
+    const { ok, payload } = await jsonFetch(`/api/issueboard/issues/${encodeURIComponent(issueKey)}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title,
+        description,
+        priority,
+        assignee: assignee || undefined,
+        statusId,
+        expectedUpdatedAt: data.issue.updatedAt
+      })
+    });
+    if (!ok || !payload?.ok) {
+      setSaveError(payload?.error?.message || 'Could not save changes.');
+      setSaving(false);
+      return;
+    }
+    setData((current) => ({ ...current, issue: payload.issue }));
+    setSaving(false);
+  };
+
+  const issue = data.issue;
   const closeIssue = () => router.push(returnTo);
   const setChecklistCompletion = (id, done) => {
     setChecklist((items) => items.map((item) => (item.id === id ? { ...item, done } : item)));
@@ -85,6 +149,32 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
     setDescriptionEditing(false);
   };
 
+  if (data.status === 'loading') {
+    return <IssueboardShell adminEmail={adminEmail} currentView='' title={issueKey} />;
+  }
+
+  if (data.status === 'not-found') {
+    return (
+      <IssueboardShell adminEmail={adminEmail} currentView='' title={issueKey}>
+        <div className='rounded-2xl border border-dashed border-slate-300 bg-white p-7 text-center dark:border-slate-700 dark:bg-slate-900'>
+          <h2 className='font-bold'>Issue not found</h2>
+          <p className='mt-1 text-sm text-slate-500'>{issueKey} does not exist or was deleted.</p>
+        </div>
+      </IssueboardShell>
+    );
+  }
+
+  if (data.status === 'unavailable') {
+    return (
+      <IssueboardShell adminEmail={adminEmail} currentView='' title={issueKey}>
+        <div className='rounded-2xl border border-amber-300 bg-amber-50 p-5 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-200'>
+          <strong className='block'>Issue management is temporarily unavailable</strong>
+          <p className='mt-1 text-xs leading-5'>{data.error}</p>
+        </div>
+      </IssueboardShell>
+    );
+  }
+
   return (
     <IssueboardShell adminEmail={adminEmail} currentView='' title={issue.key}>
       <div className='mb-5 flex flex-wrap items-center justify-between gap-3'>
@@ -95,24 +185,35 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
         >
           <FiArrowLeft /> Close issue
         </button>
-        <div className='flex gap-2'>
+        <div className='flex items-center gap-2'>
+          {saveError && <span className='text-xs font-semibold text-rose-600 dark:text-rose-300'>{saveError}</span>}
           <button
             type='button'
             className='rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-bold dark:border-slate-700 dark:bg-slate-900'
           >
             Archive
           </button>
-          <button type='button' className='button'>
-            Save changes
+          <button
+            type='button'
+            onClick={saveChanges}
+            disabled={saving}
+            className='button disabled:cursor-not-allowed disabled:opacity-60'
+          >
+            {saving ? 'Saving…' : 'Save changes'}
           </button>
         </div>
       </div>
       <div className='grid gap-5 xl:grid-cols-[minmax(0,1.7fr)_21rem]'>
         <article className='rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:p-7 dark:border-slate-800 dark:bg-slate-900'>
           <span className='text-xs font-bold uppercase tracking-wider text-slate-500'>
-            {issue.key} · {issue.type}
+            {issue.key} · {capitalize(issue.type)}
           </span>
-          <h2 className='my-3 text-2xl font-bold tracking-tight md:text-3xl'>{issue.title}</h2>
+          <input
+            value={title}
+            onChange={(event) => setTitle(event.target.value)}
+            aria-label='Issue title'
+            className='my-3 w-full rounded-lg border border-transparent bg-transparent text-2xl font-bold tracking-tight outline-none focus:border-slate-300 focus:bg-white md:text-3xl dark:focus:border-slate-700 dark:focus:bg-slate-950'
+          />
           <div className='mb-2 flex items-center justify-between'>
             <h3 className='text-sm font-semibold'>Description</h3>
             <button
@@ -317,37 +418,59 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
           </div>
         </article>
         <aside className='h-fit rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900'>
+          <label className='grid grid-cols-[6rem_1fr] items-center gap-3 border-b border-slate-100 py-3 text-sm dark:border-slate-800'>
+            <span className='text-xs text-slate-500'>Status</span>
+            <select
+              value={statusId}
+              onChange={(event) => setStatusId(event.target.value)}
+              className='rounded-lg border border-slate-300 bg-transparent p-1.5 text-sm dark:border-slate-700'
+            >
+              {data.statuses.map((status) => (
+                <option key={status.id} value={status.id}>
+                  {status.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className='grid grid-cols-[6rem_1fr] items-center gap-3 border-b border-slate-100 py-3 text-sm dark:border-slate-800'>
+            <span className='text-xs text-slate-500'>Priority</span>
+            <select
+              value={priority}
+              onChange={(event) => setPriority(event.target.value)}
+              className='rounded-lg border border-slate-300 bg-transparent p-1.5 text-sm dark:border-slate-700'
+            >
+              {['highest', 'high', 'medium', 'low', 'lowest'].map((level) => (
+                <option key={level} value={level}>
+                  {capitalize(level)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className='grid grid-cols-[6rem_1fr] items-center gap-3 border-b border-slate-100 py-3 text-sm dark:border-slate-800'>
+            <span className='text-xs text-slate-500'>Assignee</span>
+            <input
+              value={assignee}
+              onChange={(event) => setAssignee(event.target.value)}
+              placeholder='Unassigned'
+              className='rounded-lg border border-slate-300 bg-transparent p-1.5 text-sm dark:border-slate-700'
+            />
+          </label>
           {[
-            ['Status', issue.status],
-            ['Priority', issue.priority],
-            ['Assignee', 'Sukhdeep'],
-            ['Sprint', 'Sprint 04'],
-            ['Estimate', `${issue.estimate} points`],
-            ['Due date', issue.due || '20 Sep 2026'],
-            ['Labels', issue.labels],
-            ['Reporter', issue.creator?.name || 'Sukhdeep'],
-            ['Source', 'Website'],
-            ['Created', '7 Sep 2026']
+            ['Estimate', typeof issue.storyPoints === 'number' ? `${issue.storyPoints} points` : 'Not estimated'],
+            [
+              'Due date',
+              issue.dueAt ? new Date(issue.dueAt).toLocaleDateString(undefined, { dateStyle: 'medium' }) : 'None'
+            ],
+            ['Reporter', issue.reporter],
+            ['Source', capitalize(issue.source)],
+            ['Created', new Date(issue.createdAt).toLocaleDateString(undefined, { dateStyle: 'medium' })]
           ].map(([label, value]) => (
             <div
               key={label}
               className='grid grid-cols-[6rem_1fr] gap-3 border-b border-slate-100 py-3 text-sm last:border-0 dark:border-slate-800'
             >
               <span className='text-xs text-slate-500'>{label}</span>
-              {label === 'Labels' ? (
-                <span className='flex flex-wrap gap-1'>
-                  {value.map((item, index) => (
-                    <span
-                      key={item}
-                      className={`inline-flex h-4 items-center rounded-full px-2 text-[10px] font-bold ${index % 2 === 0 ? 'bg-violet-100 text-violet-800 dark:bg-violet-950 dark:text-violet-200' : 'bg-cyan-100 text-cyan-800 dark:bg-cyan-950 dark:text-cyan-200'}`}
-                    >
-                      {item}
-                    </span>
-                  ))}
-                </span>
-              ) : (
-                <strong>{value}</strong>
-              )}
+              <strong>{value}</strong>
             </div>
           ))}
         </aside>
