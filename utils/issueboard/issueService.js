@@ -4,7 +4,8 @@ import { getProjectByKey } from './projectService';
 const ISSUE_SELECT =
   'id,issue_number,issue_type,title,description,priority,work_state,reporter,assignee,story_points,' +
   'start_at,due_at,completed_at,rank,source,parent_issue_id,archived_at,created_at,updated_at,' +
-  'status:issueboard_statuses(id,name,category)';
+  'status:issueboard_statuses(id,name,category),' +
+  'issueboard_issue_labels(label:issueboard_labels(id,name,background_color,text_color))';
 
 const toIssue = (projectKey) => (row) => ({
   id: row.id,
@@ -26,7 +27,13 @@ const toIssue = (projectKey) => (row) => ({
   parentIssueId: row.parent_issue_id,
   archivedAt: row.archived_at,
   createdAt: row.created_at,
-  updatedAt: row.updated_at
+  updatedAt: row.updated_at,
+  labels: (row.issueboard_issue_labels || []).map((entry) => ({
+    id: entry.label.id,
+    name: entry.label.name,
+    backgroundColor: entry.label.background_color,
+    textColor: entry.label.text_color
+  }))
 });
 
 export const listIssues = async ({ projectKey, includeArchived = false }) => {

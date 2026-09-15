@@ -48,29 +48,6 @@ const priorityClass = (priority) => {
   return 'text-amber-700 dark:text-amber-300';
 };
 
-const labelPalette = [
-  'bg-violet-100 text-violet-800 dark:bg-violet-950 dark:text-violet-200',
-  'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-200',
-  'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200',
-  'bg-pink-100 text-pink-800 dark:bg-pink-950 dark:text-pink-200',
-  'bg-cyan-100 text-cyan-800 dark:bg-cyan-950 dark:text-cyan-200',
-  'bg-orange-100 text-orange-800 dark:bg-orange-950 dark:text-orange-200'
-];
-
-const knownLabelColors = {
-  bug: 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-200',
-  enhancement: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-200',
-  security: 'bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-200',
-  documentation: 'bg-teal-100 text-teal-800 dark:bg-teal-950 dark:text-teal-200'
-};
-
-const labelClass = (label) => {
-  const normalized = label.trim().toLowerCase();
-  if (knownLabelColors[normalized]) return knownLabelColors[normalized];
-  const hash = [...normalized].reduce((total, character) => total + character.charCodeAt(0), 0);
-  return labelPalette[hash % labelPalette.length];
-};
-
 const capitalize = (value) => (value ? value.charAt(0).toUpperCase() + value.slice(1) : value);
 
 const initialsFromName = (name) => {
@@ -89,7 +66,7 @@ const toDisplayIssue = (issue) => ({
   status: issue.status?.name || 'Backlog',
   priority: capitalize(issue.priority),
   estimate: issue.storyPoints ?? undefined,
-  labels: [],
+  labels: issue.labels || [],
   checklist: null,
   checklistItems: [],
   attachments: 0,
@@ -99,9 +76,10 @@ const toDisplayIssue = (issue) => ({
 
 const LabelPill = ({ label }) => (
   <span
-    className={`inline-flex h-4 items-center rounded-full px-2 text-[10px] font-bold leading-none ${labelClass(label)}`}
+    className='inline-flex h-4 items-center rounded-full px-2 text-[10px] font-bold leading-none'
+    style={{ backgroundColor: label.backgroundColor, color: label.textColor }}
   >
-    {label}
+    {label.name}
   </span>
 );
 
@@ -162,6 +140,9 @@ const IssueMeta = ({ issue, showPriority = true }) => (
         <FiImage /> {issue.attachments}
       </span>
     )}
+    {issue.labels?.map((label) => (
+      <LabelPill key={label.id} label={label} />
+    ))}
   </div>
 );
 

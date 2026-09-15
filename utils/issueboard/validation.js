@@ -62,6 +62,12 @@ export const commentBodySchema = z
   })
   .strict();
 
+export const labelNameSchema = z
+  .object({
+    name: z.string().trim().min(1, 'Label name cannot be empty.').max(50, 'Label name must be at most 50 characters.')
+  })
+  .strict();
+
 export const validationErrorResponse = (error) => ({
   code: 'VALIDATION_ERROR',
   message: 'Check the submitted project fields.',
