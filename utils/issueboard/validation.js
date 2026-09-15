@@ -35,6 +35,21 @@ export const createIssueSchema = z
   })
   .strict();
 
+export const updateIssueSchema = z
+  .object({
+    title: z
+      .string()
+      .trim()
+      .min(3, 'Title must be at least 3 characters.')
+      .max(200, 'Title must be at most 200 characters.'),
+    description: z.string().trim().max(20000).default(''),
+    priority: z.enum(['highest', 'high', 'medium', 'low', 'lowest']),
+    assignee: z.string().trim().max(200).optional(),
+    statusId: z.string().uuid(),
+    expectedUpdatedAt: z.string().datetime({ offset: true })
+  })
+  .strict();
+
 export const validationErrorResponse = (error) => ({
   code: 'VALIDATION_ERROR',
   message: 'Check the submitted project fields.',

@@ -77,3 +77,26 @@ export const createIssue = async (
   if (error) throw error;
   return getIssueByKey(projectKey, data.issue_number);
 };
+
+export const updateIssue = async (
+  projectKey,
+  issueNumber,
+  { title, description, priority, assignee, statusId, expectedUpdatedAt },
+  actor
+) => {
+  const current = await getIssueByKey(projectKey, issueNumber);
+  if (!current) return null;
+
+  const { error } = await getIssueboardSupabaseAdmin().rpc('issueboard_update_issue', {
+    issue_id_input: current.id,
+    title_input: title,
+    description_input: description,
+    priority_input: priority,
+    assignee_input: assignee ?? null,
+    status_id_input: statusId,
+    expected_updated_at_input: expectedUpdatedAt,
+    actor_input: actor
+  });
+  if (error) throw error;
+  return getIssueByKey(projectKey, issueNumber);
+};

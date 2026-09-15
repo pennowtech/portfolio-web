@@ -38,6 +38,23 @@ export const getProjectByKey = async (projectKey) => {
   return data ? toProject(data) : null;
 };
 
+export const listStatuses = async (projectId) => {
+  const { data, error } = await getIssueboardSupabaseAdmin()
+    .from('issueboard_statuses')
+    .select('id,name,category,color,position,wip_limit')
+    .eq('project_id', projectId)
+    .order('position');
+  if (error) throw error;
+  return data.map((status) => ({
+    id: status.id,
+    name: status.name,
+    category: status.category,
+    color: status.color,
+    position: status.position,
+    wipLimit: status.wip_limit
+  }));
+};
+
 export const createProject = async ({ projectKey, name, description, defaultIssueType }, actor) => {
   const { data, error } = await getIssueboardSupabaseAdmin().rpc('issueboard_create_project', {
     project_key_input: projectKey,
