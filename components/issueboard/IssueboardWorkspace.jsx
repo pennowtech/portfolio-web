@@ -156,25 +156,71 @@ const IssueLink = ({ issue, returnTo, children, className = '' }) => (
   </Link>
 );
 
-const Filters = () => (
+const issueTypes = ['task', 'story', 'bug', 'epic', 'feature', 'improvement', 'research', 'subtask'];
+const priorities = ['highest', 'high', 'medium', 'low', 'lowest'];
+
+const Filters = ({
+  search = '',
+  onSearchChange,
+  type = '',
+  onTypeChange,
+  priority = '',
+  onPriorityChange,
+  assignee = '',
+  onAssigneeChange,
+  availableAssignees = []
+}) => (
   <div className='mb-5 flex flex-wrap gap-2 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-800 dark:bg-slate-900'>
     <label className='relative min-w-[15rem] flex-1'>
       <FiSearch className='absolute left-3 top-3 text-slate-400' />
       <span className='sr-only'>Search issues</span>
       <input
+        value={search}
+        onChange={(event) => onSearchChange?.(event.target.value)}
         className='w-full rounded-lg border border-slate-300 bg-transparent py-2 pl-9 pr-3 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 dark:border-slate-700'
         placeholder='Search issue key, title, or description…'
       />
     </label>
-    {['All types', 'All priorities', 'All assignees'].map((label) => (
-      <button
-        type='button'
-        key={label}
-        className='rounded-lg border border-slate-300 px-3 py-2 text-xs font-semibold hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800'
-      >
-        {label} ▾
-      </button>
-    ))}
+    <select
+      value={type}
+      onChange={(event) => onTypeChange?.(event.target.value)}
+      className='rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold dark:border-slate-700 dark:bg-slate-900'
+      aria-label='Filter by type'
+    >
+      <option value=''>All types</option>
+      {issueTypes.map((value) => (
+        <option key={value} value={value}>
+          {capitalize(value)}
+        </option>
+      ))}
+    </select>
+    <select
+      value={priority}
+      onChange={(event) => onPriorityChange?.(event.target.value)}
+      className='rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold dark:border-slate-700 dark:bg-slate-900'
+      aria-label='Filter by priority'
+    >
+      <option value=''>All priorities</option>
+      {priorities.map((value) => (
+        <option key={value} value={value}>
+          {capitalize(value)}
+        </option>
+      ))}
+    </select>
+    <select
+      value={assignee}
+      onChange={(event) => onAssigneeChange?.(event.target.value)}
+      className='rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold dark:border-slate-700 dark:bg-slate-900'
+      aria-label='Filter by assignee'
+    >
+      <option value=''>All assignees</option>
+      <option value='__unassigned__'>Unassigned</option>
+      {availableAssignees.map((value) => (
+        <option key={value} value={value}>
+          {value}
+        </option>
+      ))}
+    </select>
   </div>
 );
 
@@ -286,11 +332,33 @@ const Overview = ({ returnTo, data }) => {
 
 const Backlog = ({ returnTo, data, onCreateIssue }) => {
   const { status, issues, error } = data;
+  const [search, setSearch] = useState('');
+  const [typeFilter, setTypeFilter] = useState('');
+  const [priorityFilter, setPriorityFilter] = useState('');
+  const [assigneeFilter, setAssigneeFilter] = useState('');
+
   if (status === 'loading') return null;
   if (status === 'unavailable') return <DatastoreUnavailableNotice error={error} />;
   if (status === 'no-projects') return <NoProjectsNotice />;
 
-  const displayIssues = [...issues].sort((a, b) => a.rank.localeCompare(b.rank)).map(toDisplayIssue);
+  const availableAssignees = [...new Set(issues.map((issue) => issue.assignee).filter(Boolean))].sort();
+  const normalizedSearch = search.trim().toLowerCase();
+  const filteredIssues = issues.filter((issue) => {
+    if (typeFilter && issue.type !== typeFilter) return false;
+    if (priorityFilter && issue.priority !== priorityFilter) return false;
+    if (assigneeFilter === '__unassigned__' && issue.assignee) return false;
+    if (assigneeFilter && assigneeFilter !== '__unassigned__' && issue.assignee !== assigneeFilter) return false;
+    if (
+      normalizedSearch &&
+      !issue.key.toLowerCase().includes(normalizedSearch) &&
+      !issue.title.toLowerCase().includes(normalizedSearch) &&
+      !issue.description?.toLowerCase().includes(normalizedSearch)
+    )
+      return false;
+    return true;
+  });
+  const displayIssues = [...filteredIssues].sort((a, b) => a.rank.localeCompare(b.rank)).map(toDisplayIssue);
+  const filtersActive = Boolean(search || typeFilter || priorityFilter || assigneeFilter);
 
   return (
     <>
@@ -300,16 +368,30 @@ const Backlog = ({ returnTo, data, onCreateIssue }) => {
           <p className='mt-1 text-sm text-slate-500'>Ranked work not yet committed to a sprint.</p>
         </div>
       </div>
-      <Filters />
+      <Filters
+        search={search}
+        onSearchChange={setSearch}
+        type={typeFilter}
+        onTypeChange={setTypeFilter}
+        priority={priorityFilter}
+        onPriorityChange={setPriorityFilter}
+        assignee={assigneeFilter}
+        onAssigneeChange={setAssigneeFilter}
+        availableAssignees={availableAssignees}
+      />
       <section className='mb-4 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900'>
         <header className='flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-800 dark:bg-slate-900'>
           <div>
             <strong>Backlog</strong>
-            <span className='ml-2 text-xs text-slate-500'>{displayIssues.length} issues</span>
+            <span className='ml-2 text-xs text-slate-500'>
+              {displayIssues.length} {filtersActive ? `of ${issues.length} issues` : 'issues'}
+            </span>
           </div>
         </header>
         {displayIssues.length === 0 && (
-          <p className='px-4 py-6 text-sm text-slate-500'>No issues yet. Create the first one below.</p>
+          <p className='px-4 py-6 text-sm text-slate-500'>
+            {filtersActive ? 'No issues match these filters.' : 'No issues yet. Create the first one below.'}
+          </p>
         )}
         {displayIssues.map((issue) => (
           <IssueLink
