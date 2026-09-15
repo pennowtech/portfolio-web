@@ -20,6 +20,8 @@
 # misc
 .DS_Store
 *.pem
+# public CA cert (not a secret), needed by scripts/db-migrate.mjs
+!supabase/certs/supabase-root-ca.pem
 
 # debug
 npm-debug.log*
