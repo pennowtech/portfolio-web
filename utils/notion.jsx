@@ -162,6 +162,29 @@ const findPageBySlug = async (slug) => {
   return null;
 };
 
+const PUBLISHED_PAGES_CACHE_TTL_MS = 60_000;
+let publishedPagesCache;
+
+/**
+ * The full-DB scan (`getData`) is the most expensive Notion call this module makes, and both
+ * `getPublishedBlogPosts` and the prev/next-post fallback in `getSingleBlogPost` need it. Caching
+ * it for a short window means a burst of ISR requests within the same server invocation pays for
+ * the scan once instead of once per page.
+ */
+const getAllPublishedPages = () => {
+  const now = Date.now();
+  if (publishedPagesCache && now - publishedPagesCache.timestamp < PUBLISHED_PAGES_CACHE_TTL_MS) {
+    return publishedPagesCache.promise;
+  }
+
+  const promise = getData({ next_cursor: undefined }, 0, []).catch((error) => {
+    publishedPagesCache = undefined;
+    throw error;
+  });
+  publishedPagesCache = { promise, timestamp: now };
+  return promise;
+};
+
 /**
  * This function retrieves data from a Notion database. will continue to make additional
  * requests to the Notion API until either the desired number of entries is reached or there
@@ -210,10 +233,9 @@ async function getData(response, postsCount, data) {
  */
 export const getPublishedBlogPosts = async (postsCount) => {
   try {
-    const response = { has_more: true };
-    const fetchedData = await getData(response, postsCount, []);
+    const fetchedData = await getAllPublishedPages();
 
-    return fetchedData.map((res) => pageToPostTransformer(res));
+    return (postsCount ? fetchedData.slice(0, postsCount) : fetchedData).map((res) => pageToPostTransformer(res));
   } catch (error) {
     const detail = error.cause?.message || error.cause || error.message;
     console.warn(`Unable to load published Notion posts: ${error.message} (${detail})`);
@@ -288,7 +310,7 @@ export const getSingleBlogPost = async (slug) => {
 
   // If not found via exact formula match (e.g. case difference), fallback to scan
   if (!page) {
-    publishedPages = await getData({ next_cursor: undefined }, 0, []);
+    publishedPages = await getAllPublishedPages();
     pageIndex = publishedPages.findIndex((result) => getPageSlug(result).toLowerCase() === slug.toLowerCase());
     page = publishedPages[pageIndex];
   }
@@ -304,7 +326,7 @@ export const getSingleBlogPost = async (slug) => {
   try {
     if (!postMeta.infoPrevNextPost.prevPostLink || !postMeta.infoPrevNextPost.nextPostLink) {
       if (!publishedPages.length) {
-        publishedPages = await getData({ next_cursor: undefined }, 0, []);
+        publishedPages = await getAllPublishedPages();
         pageIndex = publishedPages.findIndex((result) => getPageSlug(result).toLowerCase() === slug.toLowerCase());
       }
       if (pageIndex !== -1) {
