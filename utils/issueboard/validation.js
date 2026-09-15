@@ -56,6 +56,12 @@ export const setArchivedSchema = z
   })
   .strict();
 
+export const commentBodySchema = z
+  .object({
+    body: z.string().trim().min(1, 'Comment cannot be empty.').max(50000, 'Comment is too long.')
+  })
+  .strict();
+
 export const validationErrorResponse = (error) => ({
   code: 'VALIDATION_ERROR',
   message: 'Check the submitted project fields.',
