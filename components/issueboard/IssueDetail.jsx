@@ -161,6 +161,44 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
     setSaving(false);
   };
 
+  const [newLabelName, setNewLabelName] = useState('');
+  const [labelBusy, setLabelBusy] = useState(false);
+  const [labelError, setLabelError] = useState(null);
+
+  const addLabel = async (event) => {
+    event.preventDefault();
+    const name = newLabelName.trim();
+    if (!name || labelBusy) return;
+    setLabelBusy(true);
+    setLabelError(null);
+    const { ok, payload } = await jsonFetch(`/api/issueboard/issues/${encodeURIComponent(issueKey)}/labels`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name })
+    });
+    if (!ok || !payload?.ok) {
+      setLabelError(payload?.error?.message || 'Could not add the label.');
+      setLabelBusy(false);
+      return;
+    }
+    setData((current) => ({ ...current, issue: { ...current.issue, labels: payload.labels } }));
+    setNewLabelName('');
+    setLabelBusy(false);
+  };
+
+  const removeLabel = async (labelId) => {
+    setLabelError(null);
+    const { ok, payload } = await jsonFetch(
+      `/api/issueboard/issues/${encodeURIComponent(issueKey)}/labels/${labelId}`,
+      { method: 'DELETE' }
+    );
+    if (!ok || !payload?.ok) {
+      setLabelError(payload?.error?.message || 'Could not remove the label.');
+      return;
+    }
+    setData((current) => ({ ...current, issue: { ...current.issue, labels: payload.labels } }));
+  };
+
   const [archiving, setArchiving] = useState(false);
   const toggleArchived = async () => {
     if (!data.issue || archiving) return;
@@ -581,6 +619,46 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
               className='rounded-lg border border-slate-300 bg-transparent p-1.5 text-sm dark:border-slate-700'
             />
           </label>
+          <div className='grid grid-cols-[6rem_1fr] gap-3 border-b border-slate-100 py-3 text-sm dark:border-slate-800'>
+            <span className='text-xs text-slate-500'>Labels</span>
+            <div>
+              <div className='flex flex-wrap gap-1'>
+                {issue.labels?.map((label) => (
+                  <span
+                    key={label.id}
+                    className='inline-flex h-5 items-center gap-1 rounded-full px-2 text-[10px] font-bold'
+                    style={{ backgroundColor: label.backgroundColor, color: label.textColor }}
+                  >
+                    {label.name}
+                    <button
+                      type='button'
+                      onClick={() => removeLabel(label.id)}
+                      aria-label={`Remove label ${label.name}`}
+                      className='leading-none opacity-70 hover:opacity-100'
+                    >
+                      <FiX className='size-2.5' />
+                    </button>
+                  </span>
+                ))}
+              </div>
+              <form onSubmit={addLabel} className='mt-1.5 flex gap-1'>
+                <input
+                  value={newLabelName}
+                  onChange={(event) => setNewLabelName(event.target.value)}
+                  placeholder='Add label…'
+                  className='min-w-0 flex-1 rounded-lg border border-slate-300 bg-transparent p-1 text-xs dark:border-slate-700'
+                />
+                <button
+                  type='submit'
+                  disabled={labelBusy || !newLabelName.trim()}
+                  className='rounded-lg border border-slate-300 px-2 text-xs font-bold disabled:opacity-60 dark:border-slate-700'
+                >
+                  Add
+                </button>
+              </form>
+              {labelError && <p className='mt-1 text-xs text-rose-600 dark:text-rose-300'>{labelError}</p>}
+            </div>
+          </div>
           {[
             ['Estimate', typeof issue.storyPoints === 'number' ? `${issue.storyPoints} points` : 'Not estimated'],
             [
