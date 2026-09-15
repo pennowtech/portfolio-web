@@ -100,6 +100,25 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
     setSaving(false);
   };
 
+  const [archiving, setArchiving] = useState(false);
+  const toggleArchived = async () => {
+    if (!data.issue || archiving) return;
+    setArchiving(true);
+    setSaveError(null);
+    const { ok, payload } = await jsonFetch(`/api/issueboard/issues/${encodeURIComponent(issueKey)}/archive`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ archived: !data.issue.archivedAt })
+    });
+    if (!ok || !payload?.ok) {
+      setSaveError(payload?.error?.message || 'Could not update the archived state.');
+      setArchiving(false);
+      return;
+    }
+    setData((current) => ({ ...current, issue: payload.issue }));
+    setArchiving(false);
+  };
+
   const issue = data.issue;
   const closeIssue = () => router.push(returnTo);
   const setChecklistCompletion = (id, done) => {
@@ -187,11 +206,18 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
         </button>
         <div className='flex items-center gap-2'>
           {saveError && <span className='text-xs font-semibold text-rose-600 dark:text-rose-300'>{saveError}</span>}
+          {issue.archivedAt && (
+            <span className='rounded-full bg-slate-200 px-2.5 py-1 text-[10px] font-bold text-slate-700 dark:bg-slate-800 dark:text-slate-300'>
+              Archived
+            </span>
+          )}
           <button
             type='button'
-            className='rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-bold dark:border-slate-700 dark:bg-slate-900'
+            onClick={toggleArchived}
+            disabled={archiving}
+            className='rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-bold disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900'
           >
-            Archive
+            {archiving ? '…' : issue.archivedAt ? 'Restore' : 'Archive'}
           </button>
           <button
             type='button'

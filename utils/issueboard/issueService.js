@@ -29,16 +29,18 @@ const toIssue = (projectKey) => (row) => ({
   updatedAt: row.updated_at
 });
 
-export const listIssues = async ({ projectKey }) => {
+export const listIssues = async ({ projectKey, includeArchived = false }) => {
   const project = await getProjectByKey(projectKey);
   if (!project) return null;
 
-  const { data, error } = await getIssueboardSupabaseAdmin()
+  let query = getIssueboardSupabaseAdmin()
     .from('issueboard_issues')
     .select(ISSUE_SELECT)
     .eq('project_id', project.id)
-    .is('deleted_at', null)
-    .order('rank');
+    .is('deleted_at', null);
+  if (!includeArchived) query = query.is('archived_at', null);
+
+  const { data, error } = await query.order('rank');
   if (error) throw error;
   return data.map(toIssue(project.key));
 };
@@ -95,6 +97,19 @@ export const updateIssue = async (
     assignee_input: assignee ?? null,
     status_id_input: statusId,
     expected_updated_at_input: expectedUpdatedAt,
+    actor_input: actor
+  });
+  if (error) throw error;
+  return getIssueByKey(projectKey, issueNumber);
+};
+
+export const setIssueArchived = async (projectKey, issueNumber, archived, actor) => {
+  const current = await getIssueByKey(projectKey, issueNumber);
+  if (!current) return null;
+
+  const { error } = await getIssueboardSupabaseAdmin().rpc('issueboard_set_issue_archived', {
+    issue_id_input: current.id,
+    archived_input: archived,
     actor_input: actor
   });
   if (error) throw error;

@@ -50,6 +50,12 @@ export const updateIssueSchema = z
   })
   .strict();
 
+export const setArchivedSchema = z
+  .object({
+    archived: z.boolean()
+  })
+  .strict();
+
 export const validationErrorResponse = (error) => ({
   code: 'VALIDATION_ERROR',
   message: 'Check the submitted project fields.',
