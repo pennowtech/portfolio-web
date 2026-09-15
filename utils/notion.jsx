@@ -51,11 +51,13 @@ const getStoredMarkdown = async (pageId) => {
   let startCursor;
 
   do {
-    const response = await notion.blocks.children.list({
-      block_id: pageId,
-      page_size: 100,
-      start_cursor: startCursor
-    });
+    const response = await withRetry(() =>
+      notion.blocks.children.list({
+        block_id: pageId,
+        page_size: 100,
+        start_cursor: startCursor
+      })
+    );
     blocks.push(...response.results);
     startCursor = response.has_more ? response.next_cursor : undefined;
   } while (startCursor);
@@ -71,19 +73,35 @@ const getStoredMarkdown = async (pageId) => {
     .join('');
 };
 
+const withRetry = async (fn, retries = 2, delayMs = 1000) => {
+  for (let attempt = 1; attempt <= retries + 1; attempt += 1) {
+    try {
+      return await fn();
+    } catch (error) {
+      if (attempt > retries) throw error;
+      await new Promise((resolve) => setTimeout(resolve, delayMs * attempt));
+    }
+  }
+};
+
 let dataSourceIdPromise;
 
 const getDataSourceId = async () => {
   if (!dataSourceIdPromise) {
-    dataSourceIdPromise = notion.databases
-      .retrieve({ database_id: databaseId })
-      .then((database) => database.data_sources?.[0]?.id)
-      .then((dataSourceId) => {
-        if (!dataSourceId) {
-          throw new Error(`No data source found for Notion database ${databaseId}`);
-        }
-        return dataSourceId;
-      });
+    dataSourceIdPromise = withRetry(() =>
+      notion.databases
+        .retrieve({ database_id: databaseId })
+        .then((database) => database.data_sources?.[0]?.id)
+        .then((dataSourceId) => {
+          if (!dataSourceId) {
+            throw new Error(`No data source found for Notion database ${databaseId}`);
+          }
+          return dataSourceId;
+        })
+    ).catch((error) => {
+      dataSourceIdPromise = null;
+      throw error;
+    });
   }
 
   return dataSourceIdPromise;
@@ -97,27 +115,25 @@ export const getNotionDatabase = async () => {
 };
 
 const pageToPostTransformer = (page, isPrevNextPostIteration = false) => {
-  let imgUrl = page.cover?.type === 'file' ? page.cover?.file.url : page.cover?.external?.url;
+  let imgUrl = page.cover?.type === 'file' ? page.cover?.file?.url : page.cover?.external?.url;
   imgUrl = imgUrl || '';
-
-  // const description = page.properties.Description.rich_text[0] ? page.properties.Description.rich_text[0].plain_text : '';
 
   return {
     id: page.id,
     thumbnailUrl: imgUrl,
-    title: page.properties.Name.title[0].plain_text,
-    tags: page.properties.Tags.multi_select,
-    categories: page.properties.category.select,
-    description: page.properties.Description.rich_text[0]?.plain_text ?? '',
+    title: page.properties?.Name?.title?.[0]?.plain_text ?? '',
+    tags: page.properties?.Tags?.multi_select ?? [],
+    categories: page.properties?.category?.select ?? null,
+    description: page.properties?.Description?.rich_text?.[0]?.plain_text ?? '',
     date: dayjs(getPageDate(page)).format('LL'),
     slug: getPageSlug(page),
     infoPrevNextPost: {
-      nextPostLink: page.properties.NextPostLink.rich_text[0]?.plain_text ?? '',
-      nextPostTitle: page.properties.NextPostTitle.rich_text[0]?.plain_text ?? '',
-      nextPostImg: page.properties.NextPostImg.rich_text[0]?.plain_text ?? '',
-      prevPostLink: page.properties.PrevPostLink.rich_text[0]?.plain_text ?? '',
-      prevPostTitle: page.properties.PrevPostTitle.rich_text[0]?.plain_text ?? '',
-      prevPostImg: page.properties.PrevPostImg.rich_text[0]?.plain_text ?? ''
+      nextPostLink: page.properties?.NextPostLink?.rich_text?.[0]?.plain_text ?? '',
+      nextPostTitle: page.properties?.NextPostTitle?.rich_text?.[0]?.plain_text ?? '',
+      nextPostImg: page.properties?.NextPostImg?.rich_text?.[0]?.plain_text ?? '',
+      prevPostLink: page.properties?.PrevPostLink?.rich_text?.[0]?.plain_text ?? '',
+      prevPostTitle: page.properties?.PrevPostTitle?.rich_text?.[0]?.plain_text ?? '',
+      prevPostImg: page.properties?.PrevPostImg?.rich_text?.[0]?.plain_text ?? ''
     }
   };
 };
@@ -155,23 +171,26 @@ const findPageBySlug = async (slug) => {
  * returned is determined by the `postsCount` parameter
  */
 async function getData(response, postsCount, data) {
-  const newResponse = await notion.dataSources.query({
-    data_source_id: await getDataSourceId(),
-    filter: {
-      property: 'Published',
-      checkbox: {
-        equals: true
-      }
-    },
-    page_size: postsCount ? Math.min(postsCount, 100) : 100,
-    sorts: [
-      {
-        property: 'Posted on',
-        direction: 'descending'
-      }
-    ],
-    start_cursor: response.next_cursor
-  });
+  const dataSourceId = await getDataSourceId();
+  const newResponse = await withRetry(() =>
+    notion.dataSources.query({
+      data_source_id: dataSourceId,
+      filter: {
+        property: 'Published',
+        checkbox: {
+          equals: true
+        }
+      },
+      page_size: postsCount ? Math.min(postsCount, 100) : 100,
+      sorts: [
+        {
+          property: 'Posted on',
+          direction: 'descending'
+        }
+      ],
+      start_cursor: response.next_cursor
+    })
+  );
 
   data = [...data, ...newResponse.results];
 
@@ -196,7 +215,8 @@ export const getPublishedBlogPosts = async (postsCount) => {
 
     return fetchedData.map((res) => pageToPostTransformer(res));
   } catch (error) {
-    console.warn(`Unable to load published Notion posts: ${error.message}`);
+    const detail = error.cause?.message || error.cause || error.message;
+    console.warn(`Unable to load published Notion posts: ${error.message} (${detail})`);
     return [];
   }
 };
@@ -218,7 +238,7 @@ export const getAllTagsFromPosts = async (posts) => {
 
 export const getPage = async (pageId) => {
   const n2m = new NotionToMarkdown({ notionClient: notion });
-  const response = await notion.pages.retrieve({ page_id: pageId });
+  const response = await withRetry(() => notion.pages.retrieve({ page_id: pageId }));
   const page = response;
 
   const storedMarkdown = await getStoredMarkdown(page.id);
@@ -234,9 +254,44 @@ export const getPage = async (pageId) => {
 
 export const getSingleBlogPost = async (slug) => {
   const n2m = new NotionToMarkdown({ notionClient: notion });
-  const publishedPages = await getData({ next_cursor: undefined }, 0, []);
-  const pageIndex = publishedPages.findIndex((result) => getPageSlug(result).toLowerCase() === slug.toLowerCase());
-  const page = publishedPages[pageIndex];
+  const dataSourceId = await getDataSourceId();
+
+  // Try direct query first for maximum performance (~300ms vs multi-second whole-DB scan)
+  const queryResponse = await withRetry(() =>
+    notion.dataSources.query({
+      data_source_id: dataSourceId,
+      filter: {
+        and: [
+          {
+            property: 'Published',
+            checkbox: {
+              equals: true
+            }
+          },
+          {
+            property: 'Slug',
+            formula: {
+              string: {
+                equals: slug
+              }
+            }
+          }
+        ]
+      },
+      page_size: 1
+    })
+  );
+
+  let page = queryResponse.results[0];
+  let publishedPages = [];
+  let pageIndex = -1;
+
+  // If not found via exact formula match (e.g. case difference), fallback to scan
+  if (!page) {
+    publishedPages = await getData({ next_cursor: undefined }, 0, []);
+    pageIndex = publishedPages.findIndex((result) => getPageSlug(result).toLowerCase() === slug.toLowerCase());
+    page = publishedPages[pageIndex];
+  }
 
   if (!page) throw new Error(`No Notion page found for slug "${slug}"`);
 
@@ -244,19 +299,33 @@ export const getSingleBlogPost = async (slug) => {
   const mdBlocks = storedMarkdown === null ? await n2m.pageToMarkdown(page.id) : [];
   const markdown = storedMarkdown ?? toMarkdownText(n2m.toMarkdownString(mdBlocks));
   const postMeta = pageToPostTransformer(page);
-  const olderPost = publishedPages[pageIndex + 1] ? pageToPostTransformer(publishedPages[pageIndex + 1]) : null;
-  const newerPost = pageIndex > 0 ? pageToPostTransformer(publishedPages[pageIndex - 1]) : null;
 
-  if (!postMeta.infoPrevNextPost.prevPostLink && olderPost) {
-    postMeta.infoPrevNextPost.prevPostLink = olderPost.slug;
-    postMeta.infoPrevNextPost.prevPostTitle = olderPost.title;
-    postMeta.infoPrevNextPost.prevPostImg = olderPost.thumbnailUrl;
-  }
+  // Gracefully populate previous / next post links if not already present
+  try {
+    if (!postMeta.infoPrevNextPost.prevPostLink || !postMeta.infoPrevNextPost.nextPostLink) {
+      if (!publishedPages.length) {
+        publishedPages = await getData({ next_cursor: undefined }, 0, []);
+        pageIndex = publishedPages.findIndex((result) => getPageSlug(result).toLowerCase() === slug.toLowerCase());
+      }
+      if (pageIndex !== -1) {
+        const olderPost = publishedPages[pageIndex + 1] ? pageToPostTransformer(publishedPages[pageIndex + 1]) : null;
+        const newerPost = pageIndex > 0 ? pageToPostTransformer(publishedPages[pageIndex - 1]) : null;
 
-  if (!postMeta.infoPrevNextPost.nextPostLink && newerPost) {
-    postMeta.infoPrevNextPost.nextPostLink = newerPost.slug;
-    postMeta.infoPrevNextPost.nextPostTitle = newerPost.title;
-    postMeta.infoPrevNextPost.nextPostImg = newerPost.thumbnailUrl;
+        if (!postMeta.infoPrevNextPost.prevPostLink && olderPost) {
+          postMeta.infoPrevNextPost.prevPostLink = olderPost.slug;
+          postMeta.infoPrevNextPost.prevPostTitle = olderPost.title;
+          postMeta.infoPrevNextPost.prevPostImg = olderPost.thumbnailUrl;
+        }
+
+        if (!postMeta.infoPrevNextPost.nextPostLink && newerPost) {
+          postMeta.infoPrevNextPost.nextPostLink = newerPost.slug;
+          postMeta.infoPrevNextPost.nextPostTitle = newerPost.title;
+          postMeta.infoPrevNextPost.nextPostImg = newerPost.thumbnailUrl;
+        }
+      }
+    }
+  } catch (adjacentErr) {
+    console.warn(`Unable to resolve adjacent posts for slug "${slug}": ${adjacentErr.message}`);
   }
 
   postMeta.readingTime = readingTime(markdown);

@@ -22,11 +22,14 @@ const sanitizeAuthUrl = (name) => {
 
 ['NEXTAUTH_URL', 'NEXTAUTH_URL_INTERNAL', 'VERCEL_URL'].forEach(sanitizeAuthUrl);
 
-if (!process.env.NEXTAUTH_URL && process.env.VERCEL_URL) {
-  process.env.NEXTAUTH_URL = process.env.VERCEL_URL;
-}
 if (!process.env.NEXTAUTH_URL) {
-  process.env.NEXTAUTH_URL = 'https://singhbuildstech.com';
+  if (process.env.VERCEL_ENV === 'preview' && process.env.VERCEL_URL) {
+    process.env.NEXTAUTH_URL = process.env.VERCEL_URL;
+  } else if (process.env.NODE_ENV === 'development') {
+    process.env.NEXTAUTH_URL = 'http://localhost:3000';
+  } else {
+    process.env.NEXTAUTH_URL = 'https://singhbuildstech.com';
+  }
 }
 
 module.exports = {
@@ -75,6 +78,12 @@ module.exports = {
       {
         source: '/:path*',
         has: [{ type: 'host', value: 'www.singhbuildstech.com' }],
+        destination: 'https://singhbuildstech.com/:path*',
+        permanent: true
+      },
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'portfolio-web-wheat.vercel.app' }],
         destination: 'https://singhbuildstech.com/:path*',
         permanent: true
       }

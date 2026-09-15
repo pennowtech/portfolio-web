@@ -23,13 +23,11 @@ export default async function handler(req, res) {
   res.setHeader('X-Request-Id', requestId);
 
   if (!isIssueboardSupabaseConfigured()) {
-    return res
-      .status(503)
-      .json({
-        ok: false,
-        requestId,
-        error: { code: 'DATASTORE_UNAVAILABLE', message: 'Issue management storage is not configured.' }
-      });
+    return res.status(503).json({
+      ok: false,
+      requestId,
+      error: { code: 'DATASTORE_UNAVAILABLE', message: 'Issue management storage is not configured.' }
+    });
   }
 
   if (req.method === 'GET') {
@@ -53,24 +51,20 @@ export default async function handler(req, res) {
       windowSeconds: 60
     });
     if (!allowed)
-      return res
-        .status(429)
-        .json({
-          ok: false,
-          requestId,
-          error: { code: 'RATE_LIMITED', message: 'Too many project creation attempts. Try again shortly.' }
-        });
+      return res.status(429).json({
+        ok: false,
+        requestId,
+        error: { code: 'RATE_LIMITED', message: 'Too many project creation attempts. Try again shortly.' }
+      });
     const project = await createProject(parsed.data, actor.email);
     return res.status(201).json({ ok: true, requestId, project });
   } catch (error) {
     if (error?.code === '23505')
-      return res
-        .status(409)
-        .json({
-          ok: false,
-          requestId,
-          error: { code: 'PROJECT_KEY_EXISTS', message: 'That project key is already in use.' }
-        });
+      return res.status(409).json({
+        ok: false,
+        requestId,
+        error: { code: 'PROJECT_KEY_EXISTS', message: 'That project key is already in use.' }
+      });
     return sendDatastoreError(res, requestId, error);
   }
 }

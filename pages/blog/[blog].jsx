@@ -2,10 +2,6 @@ import React from 'react';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-import emoji from 'remark-emoji';
-import rehypeSlug from 'rehype-slug';
-import rehypeAutolinkHeadings from 'rehype-autolink-headings';
-
 import { getPublishedBlogPosts, getSingleBlogPost } from '@utils/notion';
 import dynamic from 'next/dynamic';
 import HeaderMain from '@components/HeaderMain';
@@ -56,27 +52,31 @@ export const getStaticProps = async (context) => {
 
   // TODO(dummy-content): Remove this branch with the local Markdown fixture.
   if (blog === DUMMY_ARTICLE_SLUG) {
-    const markdown = await fs.readFile(path.join(process.cwd(), 'posts', `${DUMMY_ARTICLE_SLUG}.md`), 'utf8');
-    const [firstPublishedPost] = await getPublishedBlogPosts(1);
-    const postMeta = {
-      ...DUMMY_ARTICLE,
-      infoPrevNextPost: firstPublishedPost
-        ? {
-            prevPostLink: firstPublishedPost.slug,
-            prevPostTitle: firstPublishedPost.title,
-            prevPostImg: firstPublishedPost.thumbnailUrl
-          }
-        : {}
-    };
+    try {
+      const markdown = await fs.readFile(path.join(process.cwd(), 'posts', `${DUMMY_ARTICLE_SLUG}.md`), 'utf8');
+      const [firstPublishedPost] = await getPublishedBlogPosts(1);
+      const postMeta = {
+        ...DUMMY_ARTICLE,
+        infoPrevNextPost: firstPublishedPost
+          ? {
+              prevPostLink: firstPublishedPost.slug,
+              prevPostTitle: firstPublishedPost.title,
+              prevPostImg: firstPublishedPost.thumbnailUrl
+            }
+          : {}
+      };
 
-    return {
-      props: {
-        markdown,
-        postMeta,
-        compiledMDSource: markdown
-      },
-      revalidate: 60
-    };
+      return {
+        props: {
+          markdown,
+          postMeta,
+          compiledMDSource: markdown
+        },
+        revalidate: 60
+      };
+    } catch {
+      return { notFound: true, revalidate: 60 };
+    }
   }
 
   let post;
@@ -86,14 +86,6 @@ export const getStaticProps = async (context) => {
     return { notFound: true, revalidate: 60 };
   }
 
-  const options = {
-    mdxOptions: {
-      // remarkPlugins: [remarkToc],
-      remarkPlugins: [emoji],
-      rehypePlugins: [rehypeSlug, [rehypeAutolinkHeadings, { behavior: 'before' }]]
-    }
-  };
-  // const compiledMDSource = await serialize(post.markdown, options);
   const compiledMDSource = post.markdown;
 
   return {
