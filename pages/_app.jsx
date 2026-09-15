@@ -2,6 +2,7 @@ import React from 'react';
 
 import Head from 'next/head';
 import Router from 'next/router';
+import { useRouter } from 'next/router';
 import { ThemeProvider } from 'next-themes';
 
 import nProgress from 'nprogress';
@@ -18,6 +19,9 @@ Router.events.on('routeChangeComplete', () => nProgress.done());
 Router.events.on('routeChangeError', () => nProgress.done());
 
 function MyApp({ Component, pageProps }) {
+  const router = useRouter();
+  const isIssueboard = router.pathname.startsWith('/admin/issues');
+
   return (
     <LanguageProvider>
       <Analytics />
@@ -33,8 +37,8 @@ function MyApp({ Component, pageProps }) {
           <main className='main flex-1'>
             <Component {...pageProps} />
           </main>
-          <Footer />
-          <PrivacyConsent />
+          {!isIssueboard && <Footer />}
+          {!isIssueboard && <PrivacyConsent />}
         </div>
       </ThemeProvider>
     </LanguageProvider>

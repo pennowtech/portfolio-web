@@ -17,6 +17,113 @@ body {
     'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace !important;
 }
 
+.issueboard-markdown .cm-editor,
+.issueboard-markdown .cm-editor .cm-scroller,
+.issueboard-markdown .cm-editor .cm-content,
+.issueboard-markdown .cm-editor .cm-line,
+.issueboard-markdown .cm-editor .cm-gutters,
+.issueboard-markdown .cm-editor .cm-tooltip-autocomplete {
+  font-family: inherit !important;
+}
+
+.issueboard-markdown .cm-editor,
+.issueboard-markdown .cm-content,
+.issueboard-markdown .cm-line,
+.issueboard-markdown-preview {
+  font-weight: 400;
+}
+
+.issueboard-markdown .cm-scroller,
+.issueboard-markdown .cm-content,
+.issueboard-markdown .cm-line,
+.issueboard-markdown-preview {
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.issueboard-markdown .cm-line {
+  white-space: pre-wrap !important;
+  word-break: break-word;
+}
+
+.issueboard-markdown-preview pre,
+.issueboard-markdown-preview pre * {
+  font-family:
+    'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace !important;
+}
+
+.issueboard-checkbox,
+.issueboard-markdown-preview input[type='checkbox'] {
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 1rem;
+  appearance: none;
+  border: 1.5px solid rgb(148 163 184);
+  border-radius: 0.3rem;
+  background-color: rgb(255 255 255);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 0.7rem 0.7rem;
+  cursor: pointer;
+  transition:
+    border-color 120ms ease,
+    background-color 120ms ease,
+    box-shadow 120ms ease,
+    transform 120ms ease;
+  vertical-align: -0.15em;
+}
+
+.issueboard-checkbox:hover:not(:disabled),
+.issueboard-markdown-preview input[type='checkbox']:hover:not(:disabled) {
+  border-color: rgb(5 150 105);
+  transform: translateY(-1px);
+}
+
+.issueboard-checkbox:checked,
+.issueboard-markdown-preview input[type='checkbox']:checked {
+  border-color: rgb(5 150 105);
+  background-color: rgb(5 150 105);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='m2.3 6.2 2.2 2.2 5.2-5.1' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+.issueboard-checkbox:focus-visible,
+.issueboard-markdown-preview input[type='checkbox']:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgb(16 185 129 / 22%);
+}
+
+.issueboard-checkbox:disabled,
+.issueboard-markdown-preview input[type='checkbox']:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
+.issueboard-markdown-preview .contains-task-list {
+  padding-left: 0;
+  list-style: none;
+}
+
+.issueboard-markdown-preview .task-list-item {
+  padding-left: 0;
+}
+
+.dark .issueboard-checkbox,
+.dark .issueboard-markdown-preview input[type='checkbox'] {
+  border-color: rgb(100 116 139);
+  background-color: rgb(15 23 42);
+}
+
+.dark .issueboard-checkbox:checked,
+.dark .issueboard-markdown-preview input[type='checkbox']:checked {
+  border-color: rgb(52 211 153);
+  background-color: rgb(5 150 105);
+}
+
+.issueboard-swimlane-title {
+  font-family:
+    'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+}
+
 @font-face {
   font-family: 'JetBrains Mono';
   src: url('/fonts/jetbrains-mono-400.ttf') format('truetype');

@@ -43,7 +43,7 @@ const ImageComponent = ({ node, ...props }) => (
   <img {...props} className='h-auto max-w-full rounded-lg' alt={props.alt || ''} loading='lazy' />
 );
 
-const MDXComponents = {
+export const articleMarkdownComponents = {
   youtube: YTComponent,
   linkedin: LinkedInEmbed,
   twitter: TwitterEmbed,
@@ -73,7 +73,7 @@ const Article = ({ mdxSource }) => (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
       rehypePlugins={[rehypeRaw, rehypeSlug, [rehypeAutolinkHeadings, { behavior: 'wrap' }]]}
-      components={MDXComponents}
+      components={articleMarkdownComponents}
     >
       {mdxSource}
     </ReactMarkdown>
