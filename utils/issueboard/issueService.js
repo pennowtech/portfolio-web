@@ -3,7 +3,7 @@ import { getProjectByKey } from './projectService';
 
 const ISSUE_SELECT =
   'id,issue_number,issue_type,title,description,priority,work_state,reporter,assignee,story_points,' +
-  'start_at,due_at,completed_at,rank,source,parent_issue_id,archived_at,created_at,updated_at,' +
+  'sprint_id,start_at,due_at,completed_at,rank,source,parent_issue_id,archived_at,created_at,updated_at,' +
   'status:issueboard_statuses(id,name,category),' +
   'issueboard_issue_labels(label:issueboard_labels(id,name,background_color,text_color))';
 
@@ -19,6 +19,7 @@ const toIssue = (projectKey) => (row) => ({
   reporter: row.reporter,
   assignee: row.assignee,
   storyPoints: row.story_points,
+  sprintId: row.sprint_id,
   startAt: row.start_at,
   dueAt: row.due_at,
   completedAt: row.completed_at,
@@ -104,6 +105,19 @@ export const updateIssue = async (
     assignee_input: assignee ?? null,
     status_id_input: statusId,
     expected_updated_at_input: expectedUpdatedAt,
+    actor_input: actor
+  });
+  if (error) throw error;
+  return getIssueByKey(projectKey, issueNumber);
+};
+
+export const setIssueSprint = async (projectKey, issueNumber, sprintId, actor) => {
+  const current = await getIssueByKey(projectKey, issueNumber);
+  if (!current) return null;
+
+  const { error } = await getIssueboardSupabaseAdmin().rpc('issueboard_set_issue_sprint', {
+    issue_id_input: current.id,
+    sprint_id_input: sprintId ?? null,
     actor_input: actor
   });
   if (error) throw error;
