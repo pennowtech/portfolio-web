@@ -786,7 +786,7 @@ const BoardCard = ({ issue, returnTo, statuses, onMove, onDragStart }) => (
 );
 
 const Board = ({ returnTo, data, moveIssueStatus }) => {
-  const { status, issues, statuses, error } = data;
+  const { status, issues, statuses, sprints, error } = data;
   const [moveError, setMoveError] = useState(null);
   const [dragIssueKey, setDragIssueKey] = useState(null);
 
@@ -796,7 +796,10 @@ const Board = ({ returnTo, data, moveIssueStatus }) => {
   if (statuses.length === 0)
     return <p className='px-4 py-6 text-sm text-slate-500'>This project has no workflow statuses configured.</p>;
 
-  const activeIssues = issues.filter((issue) => !issue.archivedAt);
+  const activeSprint = sprints.find((sprint) => sprint.state === 'active');
+  const activeIssues = issues.filter(
+    (issue) => !issue.archivedAt && (!activeSprint || issue.sprintId === activeSprint.id)
+  );
   const move = async (issue, statusId) => {
     if (statusId === issue.status?.id) return;
     setMoveError(null);
@@ -811,8 +814,14 @@ const Board = ({ returnTo, data, moveIssueStatus }) => {
     <>
       <div className='mb-6 flex flex-wrap items-end justify-between gap-3'>
         <div>
-          <h2 className='text-2xl font-bold tracking-tight md:text-3xl'>Board</h2>
-          <p className='mt-1 text-sm text-slate-500'>Continuous flow · all open issues by status.</p>
+          <h2 className='text-2xl font-bold tracking-tight md:text-3xl'>
+            {activeSprint ? activeSprint.name : 'Board'}
+          </h2>
+          <p className='mt-1 text-sm text-slate-500'>
+            {activeSprint
+              ? `Active sprint · ${new Date(activeSprint.startsAt).toLocaleDateString()} – ${new Date(activeSprint.endsAt).toLocaleDateString()}`
+              : 'Continuous flow · all open issues by status.'}
+          </p>
         </div>
       </div>
       <Filters />
