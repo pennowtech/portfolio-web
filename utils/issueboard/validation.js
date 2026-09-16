@@ -86,6 +86,16 @@ export const checklistItemCompleteSchema = z
   })
   .strict();
 
+export const createRelationshipSchema = z
+  .object({
+    targetIssueKey: z
+      .string()
+      .trim()
+      .regex(/^[A-Z][A-Z0-9]{1,9}-\d{1,10}$/i, 'Provide a valid issue key.'),
+    relationshipType: z.enum(['relates_to', 'blocks', 'duplicates'])
+  })
+  .strict();
+
 export const createSprintSchema = z
   .object({
     name: z.string().trim().min(1, 'Sprint name is required.').max(100),
