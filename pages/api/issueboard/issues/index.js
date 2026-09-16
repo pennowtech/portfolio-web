@@ -86,6 +86,15 @@ export default async function handler(req, res) {
         requestId,
         error: { code: 'INVALID_PARENT_ISSUE', message: 'The selected parent issue was not found in this project.' }
       });
+    if (error?.message?.includes('NESTING_LIMIT'))
+      return res.status(400).json({
+        ok: false,
+        requestId,
+        error: {
+          code: 'NESTING_LIMIT',
+          message: 'That issue is already a subtask. Only one level of nesting is supported.'
+        }
+      });
     return sendDatastoreError(res, requestId, error);
   }
 }

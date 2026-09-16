@@ -124,6 +124,22 @@ export const setIssueSprint = async (projectKey, issueNumber, sprintId, actor) =
   return getIssueByKey(projectKey, issueNumber);
 };
 
+export const listSubtasks = async (projectKey, issueNumber) => {
+  const project = await getProjectByKey(projectKey);
+  if (!project) return null;
+  const parent = await getIssueByKey(projectKey, issueNumber);
+  if (!parent) return null;
+
+  const { data, error } = await getIssueboardSupabaseAdmin()
+    .from('issueboard_issues')
+    .select(ISSUE_SELECT)
+    .eq('parent_issue_id', parent.id)
+    .is('deleted_at', null)
+    .order('rank');
+  if (error) throw error;
+  return data.map(toIssue(project.key));
+};
+
 export const setIssueArchived = async (projectKey, issueNumber, archived, actor) => {
   const current = await getIssueByKey(projectKey, issueNumber);
   if (!current) return null;
