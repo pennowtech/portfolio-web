@@ -14,13 +14,6 @@ const jsonFetch = async (url, init) => {
   return { ok: response.ok, status: response.status, payload };
 };
 
-const initialChecklist = [
-  { id: 'mime', text: 'Validate MIME type and decoded dimensions', done: true },
-  { id: 'worker', text: 'Compress in a Web Worker', done: true },
-  { id: 'signed', text: 'Create signed direct-upload authorization', done: false },
-  { id: 'verify', text: 'Verify stored object during finalization', done: false }
-];
-
 const initialDescription = `Portrait screenshots larger than **4 MB** must be resized and compressed in the browser before direct upload to private Supabase Storage.
 
 - Keep the longest edge below 1920 pixels.
@@ -36,7 +29,10 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
   const [assignee, setAssignee] = useState('');
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(null);
-  const [checklist, setChecklist] = useState(initialChecklist);
+  const [checklistId, setChecklistId] = useState(null);
+  const [checklist, setChecklist] = useState([]);
+  const [checklistBusy, setChecklistBusy] = useState(false);
+  const [checklistError, setChecklistError] = useState(null);
   const [subtasks, setSubtasks] = useState([]);
   const [newSubtaskTitle, setNewSubtaskTitle] = useState('');
   const [addingSubtask, setAddingSubtask] = useState(false);
@@ -81,6 +77,13 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
 
     const subtasksResult = await jsonFetch(`/api/issueboard/issues/${encodeURIComponent(issueKey)}/subtasks`);
     if (subtasksResult.ok && subtasksResult.payload?.ok) setSubtasks(subtasksResult.payload.subtasks);
+
+    const checklistsResult = await jsonFetch(`/api/issueboard/issues/${encodeURIComponent(issueKey)}/checklists`);
+    if (checklistsResult.ok && checklistsResult.payload?.ok) {
+      const firstChecklist = checklistsResult.payload.checklists[0];
+      setChecklistId(firstChecklist?.id || null);
+      setChecklist(firstChecklist?.items || []);
+    }
   }, [issueKey]);
 
   useEffect(() => {
@@ -227,12 +230,29 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
 
   const issue = data.issue;
   const closeIssue = () => router.push(returnTo);
-  const setChecklistCompletion = (id, done) => {
+  const setChecklistCompletion = async (id, done) => {
     setChecklist((items) => items.map((item) => (item.id === id ? { ...item, done } : item)));
+    setChecklistError(null);
+    const { ok, payload } = await jsonFetch(`/api/issueboard/checklist-items/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ isComplete: done })
+    });
+    if (!ok || !payload?.ok) {
+      setChecklist((items) => items.map((item) => (item.id === id ? { ...item, done: !done } : item)));
+      setChecklistError(payload?.error?.message || 'Could not update the checklist item.');
+    }
   };
-  const deleteChecklistItem = (id) => {
-    setChecklist((items) => items.filter((item) => item.id !== id));
+  const deleteChecklistItem = async (id) => {
     setMenuFor(null);
+    const previous = checklist;
+    setChecklist((items) => items.filter((item) => item.id !== id));
+    setChecklistError(null);
+    const { ok, payload } = await jsonFetch(`/api/issueboard/checklist-items/${id}`, { method: 'DELETE' });
+    if (!ok || !payload?.ok) {
+      setChecklist(previous);
+      setChecklistError(payload?.error?.message || 'Could not delete the checklist item.');
+    }
   };
   const createSubtask = async (title) => {
     setSubtaskError(null);
@@ -266,32 +286,41 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
     if (!title || subtaskBusy) return;
     createSubtask(title);
   };
-  const addChecklistItem = () => {
-    if (!newChecklistItem.trim()) return;
-    setChecklist((items) => [...items, { id: `checklist-${Date.now()}`, text: newChecklistItem.trim(), done: false }]);
+  const addChecklistItem = async () => {
+    const body = newChecklistItem.trim();
+    if (!body || checklistBusy) return;
+    setChecklistBusy(true);
+    setChecklistError(null);
+    let targetChecklistId = checklistId;
+    if (!targetChecklistId) {
+      const created = await jsonFetch(`/api/issueboard/issues/${encodeURIComponent(issueKey)}/checklists`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: 'Checklist' })
+      });
+      if (!created.ok || !created.payload?.ok) {
+        setChecklistError(created.payload?.error?.message || 'Could not create the checklist.');
+        setChecklistBusy(false);
+        return;
+      }
+      targetChecklistId = created.payload.checklist.id;
+      setChecklistId(targetChecklistId);
+    }
+    const { ok, payload } = await jsonFetch(`/api/issueboard/checklists/${targetChecklistId}/items`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ body })
+    });
+    setChecklistBusy(false);
+    if (!ok || !payload?.ok) {
+      setChecklistError(payload?.error?.message || 'Could not add the checklist item.');
+      return;
+    }
+    setChecklist((items) => [...items, payload.item]);
     setNewChecklistItem('');
   };
-  const beginIssueEdit = () => {
-    const checklistMarkdown = checklist.map((item) => `- [${item.done ? 'x' : ' '}] ${item.text}`).join('\n');
-    setDescription(`${description.trimEnd()}\n\n### Checklist\n\n${checklistMarkdown}`);
-    setDescriptionEditing(true);
-  };
-  const finishIssueEdit = () => {
-    const marker = /\n#{1,6}\s+Checklist\s*\n/i;
-    const match = marker.exec(description);
-    if (match) {
-      const descriptionText = description.slice(0, match.index).trimEnd();
-      const checklistText = description.slice(match.index + match[0].length);
-      const parsedItems = [...checklistText.matchAll(/^\s*[-*]\s+\[([ xX])\]\s+(.+)$/gm)].map((item, index) => ({
-        id: checklist[index]?.id || `checklist-${Date.now()}-${index}`,
-        text: item[2].trim(),
-        done: item[1].toLowerCase() === 'x'
-      }));
-      setDescription(descriptionText);
-      setChecklist(parsedItems);
-    }
-    setDescriptionEditing(false);
-  };
+  const beginIssueEdit = () => setDescriptionEditing(true);
+  const finishIssueEdit = () => setDescriptionEditing(false);
 
   if (data.status === 'loading') {
     return <IssueboardShell adminEmail={adminEmail} currentView='' title={issueKey} />;
@@ -393,34 +422,38 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
             <>
               <SectionHeading
                 title='Checklist'
-                count={`${checklist.filter((item) => item.done).length} of ${checklist.length}`}
+                count={`${checklist.filter((item) => item.isComplete).length} of ${checklist.length}`}
                 action='Add item'
                 normalTitle
                 onAction={() => setChecklistEditorOpen((open) => !open)}
               />
-              <div className='mb-3 h-2 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800'>
-                <div
-                  className='h-full rounded-full bg-emerald-600'
-                  style={{ width: `${(checklist.filter((item) => item.done).length / checklist.length) * 100}%` }}
-                />
-              </div>
+              {checklist.length > 0 && (
+                <div className='mb-3 h-2 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800'>
+                  <div
+                    className='h-full rounded-full bg-emerald-600'
+                    style={{
+                      width: `${(checklist.filter((item) => item.isComplete).length / checklist.length) * 100}%`
+                    }}
+                  />
+                </div>
+              )}
               <div className='divide-y divide-slate-100 dark:divide-slate-800'>
                 {checklist.map((item) => (
                   <div key={item.id} className='group relative flex min-h-8 items-center gap-2 py-1 text-sm leading-5'>
                     <input
                       type='checkbox'
-                      checked={item.done}
+                      checked={item.isComplete}
                       onChange={(event) => setChecklistCompletion(item.id, event.target.checked)}
                       className='issueboard-checkbox'
                     />
                     <div className='min-w-0 flex-1'>
-                      <div className={item.done ? 'text-slate-400 line-through' : ''}>
-                        <MarkdownPreview compact>{item.text}</MarkdownPreview>
+                      <div className={item.isComplete ? 'text-slate-400 line-through' : ''}>
+                        <MarkdownPreview compact>{item.body}</MarkdownPreview>
                       </div>
                     </div>
                     <button
                       type='button'
-                      aria-label={`Open actions for ${item.text}`}
+                      aria-label={`Open actions for ${item.body}`}
                       onClick={() => setMenuFor(menuFor === item.id ? null : item.id)}
                       className='grid size-6 place-items-center rounded hover:bg-slate-100 dark:hover:bg-slate-800'
                     >
@@ -428,7 +461,7 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
                     </button>
                     {menuFor === item.id && (
                       <QuickMenu
-                        onCreate={() => createSubtask(item.text)}
+                        onCreate={() => createSubtask(item.body)}
                         onDelete={() => deleteChecklistItem(item.id)}
                       />
                     )}
@@ -454,6 +487,9 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
                     className='h-7 min-w-0 flex-1 border-0 bg-transparent p-0 text-sm leading-5 outline-none placeholder:text-slate-400 focus:ring-0'
                   />
                 </div>
+              )}
+              {checklistError && (
+                <p className='mt-1 text-xs font-semibold text-rose-600 dark:text-rose-300'>{checklistError}</p>
               )}
             </>
           )}

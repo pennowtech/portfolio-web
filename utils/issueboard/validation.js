@@ -68,6 +68,24 @@ export const labelNameSchema = z
   })
   .strict();
 
+export const checklistTitleSchema = z
+  .object({
+    title: z.string().trim().min(1, 'Checklist title is required.').max(200)
+  })
+  .strict();
+
+export const checklistItemBodySchema = z
+  .object({
+    body: z.string().trim().min(1, 'Item text cannot be empty.').max(1000)
+  })
+  .strict();
+
+export const checklistItemCompleteSchema = z
+  .object({
+    isComplete: z.boolean()
+  })
+  .strict();
+
 export const createSprintSchema = z
   .object({
     name: z.string().trim().min(1, 'Sprint name is required.').max(100),
