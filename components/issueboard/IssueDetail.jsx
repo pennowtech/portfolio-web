@@ -1,10 +1,20 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FiArrowLeft, FiCheck, FiLayers, FiMoreHorizontal, FiPaperclip, FiPlus, FiTrash2, FiX } from 'react-icons/fi';
+import imageCompression from 'browser-image-compression';
 import IssueboardShell from './IssueboardShell';
 import MarkdownEditor, { MarkdownPreview } from './MarkdownEditor';
 import { getSafeIssueboardReturnTo, issueHref } from '@utils/issueboardNavigation';
+
+const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+const MAX_COMPRESSED_BYTES = 1_048_576;
+
+const formatBytes = (bytes) => {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+};
 
 const capitalize = (value) => (value ? value.charAt(0).toUpperCase() + value.slice(1) : value);
 
@@ -57,6 +67,11 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
   const [relationshipResults, setRelationshipResults] = useState([]);
   const [relationshipBusy, setRelationshipBusy] = useState(false);
   const [relationshipError, setRelationshipError] = useState(null);
+  const [attachments, setAttachments] = useState([]);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState(null);
+  const [uploadStats, setUploadStats] = useState(null);
+  const fileInputRef = useRef(null);
   const returnTo = useMemo(() => getSafeIssueboardReturnTo(router.query.returnTo), [router.query.returnTo]);
 
   const load = useCallback(async () => {
@@ -94,6 +109,9 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
     const relationshipsResult = await jsonFetch(`/api/issueboard/issues/${encodeURIComponent(issueKey)}/relationships`);
     if (relationshipsResult.ok && relationshipsResult.payload?.ok)
       setRelationships(relationshipsResult.payload.relationships);
+
+    const attachmentsResult = await jsonFetch(`/api/issueboard/issues/${encodeURIComponent(issueKey)}/attachments`);
+    if (attachmentsResult.ok && attachmentsResult.payload?.ok) setAttachments(attachmentsResult.payload.attachments);
   }, [issueKey]);
 
   useEffect(() => {
@@ -257,6 +275,103 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
     if (!ok || !payload?.ok) {
       setRelationships(previous);
       setRelationshipError(payload?.error?.message || 'Could not remove the relationship.');
+    }
+  };
+
+  const uploadImage = async (file) => {
+    if (uploading) return;
+    setUploadError(null);
+    setUploadStats(null);
+
+    if (!ACCEPTED_TYPES.includes(file.type)) {
+      setUploadError('Only JPEG, PNG, or WebP images are accepted.');
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const compressed = await imageCompression(file, {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
+        fileType: file.type,
+        exifOrientation: 1 // normalize orientation; strips EXIF by re-encoding via canvas
+      });
+
+      // Client-side trust boundary is an optimization only -- re-check what we
+      // actually got before requesting an upload authorization (§3.4).
+      if (!ACCEPTED_TYPES.includes(compressed.type) || compressed.size > MAX_COMPRESSED_BYTES) {
+        setUploadError('The compressed image is still too large. Try a smaller source image.');
+        return;
+      }
+
+      // Confirm the compressed result actually decodes as an image before upload.
+      await new Promise((resolve, reject) => {
+        const probe = new Image();
+        const objectUrl = URL.createObjectURL(compressed);
+        probe.onload = () => {
+          URL.revokeObjectURL(objectUrl);
+          resolve();
+        };
+        probe.onerror = () => {
+          URL.revokeObjectURL(objectUrl);
+          reject(new Error('Compressed image failed to decode.'));
+        };
+        probe.src = objectUrl;
+      });
+
+      setUploadStats({ originalSize: file.size, compressedSize: compressed.size });
+
+      const authResult = await jsonFetch(`/api/issueboard/issues/${encodeURIComponent(issueKey)}/attachments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ originalFilename: file.name, mimeType: compressed.type, byteSize: compressed.size })
+      });
+      if (!authResult.ok || !authResult.payload?.ok) {
+        setUploadError(authResult.payload?.error?.message || 'Could not authorize the upload.');
+        return;
+      }
+      const { attachmentId, signedUrl } = authResult.payload;
+
+      const putResponse = await fetch(signedUrl, {
+        method: 'PUT',
+        headers: { 'Content-Type': compressed.type },
+        body: compressed
+      });
+      if (!putResponse.ok) {
+        setUploadError('The upload did not complete. Try again.');
+        return;
+      }
+
+      const finalizeResult = await jsonFetch(
+        `/api/issueboard/issues/${encodeURIComponent(issueKey)}/attachments/${attachmentId}/finalize`,
+        { method: 'POST' }
+      );
+      if (!finalizeResult.ok || !finalizeResult.payload?.ok) {
+        setUploadError(finalizeResult.payload?.error?.message || 'The image could not be verified after upload.');
+        return;
+      }
+
+      const listResult = await jsonFetch(`/api/issueboard/issues/${encodeURIComponent(issueKey)}/attachments`);
+      if (listResult.ok && listResult.payload?.ok) setAttachments(listResult.payload.attachments);
+    } catch {
+      setUploadError('Could not compress or upload that image.');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const removeAttachment = async (attachmentId) => {
+    setUploadError(null);
+    const previous = attachments;
+    setAttachments((current) => current.filter((entry) => entry.id !== attachmentId));
+    const { ok, payload } = await jsonFetch(
+      `/api/issueboard/issues/${encodeURIComponent(issueKey)}/attachments/${attachmentId}`,
+      { method: 'DELETE' }
+    );
+    if (!ok || !payload?.ok) {
+      setAttachments(previous);
+      setUploadError(payload?.error?.message || 'Could not delete the image.');
     }
   };
 
@@ -677,18 +792,55 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
             </div>
           )}
 
-          <SectionHeading title='Images and attachments' action='Add images' />
+          <SectionHeading
+            title='Images and attachments'
+            action='Add images'
+            onAction={() => fileInputRef.current?.click()}
+          />
+          <input
+            ref={fileInputRef}
+            type='file'
+            accept='image/jpeg,image/png,image/webp'
+            className='hidden'
+            onChange={(event) => {
+              const file = event.target.files?.[0];
+              event.target.value = '';
+              if (file) uploadImage(file);
+            }}
+          />
+          {uploadStats && !uploadError && (
+            <p className='mb-2 text-xs text-slate-500'>
+              Compressed {formatBytes(uploadStats.originalSize)} → {formatBytes(uploadStats.compressedSize)} (
+              {Math.round((1 - uploadStats.compressedSize / uploadStats.originalSize) * 100)}% smaller)
+            </p>
+          )}
+          {uploadError && <p className='mb-2 text-xs font-semibold text-rose-600 dark:text-rose-300'>{uploadError}</p>}
           <div className='grid grid-cols-2 gap-3 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6'>
-            <div className='aspect-[4/3] rounded-xl bg-gradient-to-br from-emerald-100 to-emerald-500 p-3 text-xs font-bold text-emerald-950'>
-              Private image preview
-            </div>
+            {attachments.map((attachment) => (
+              <div
+                key={attachment.id}
+                className='group relative aspect-[4/3] overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800'
+              >
+                <img src={attachment.url} alt={attachment.displayName} className='size-full object-cover' />
+                <button
+                  type='button'
+                  onClick={() => removeAttachment(attachment.id)}
+                  aria-label={`Delete ${attachment.displayName}`}
+                  className='absolute right-1 top-1 hidden rounded bg-slate-950/70 p-1 text-white group-hover:block'
+                >
+                  <FiTrash2 className='size-3.5' />
+                </button>
+              </div>
+            ))}
             <button
               type='button'
-              className='grid aspect-[4/3] place-items-center rounded-xl border border-dashed border-emerald-400 text-center text-xs font-bold text-emerald-700'
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading}
+              className='grid aspect-[4/3] place-items-center rounded-xl border border-dashed border-emerald-400 text-center text-xs font-bold text-emerald-700 disabled:opacity-60'
             >
               <span>
                 <FiPaperclip className='mx-auto mb-2' />
-                Compress and upload
+                {uploading ? 'Uploading…' : 'Compress and upload'}
               </span>
             </button>
           </div>
