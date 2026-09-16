@@ -1,10 +1,10 @@
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FiArrowLeft, FiCheck, FiLayers, FiMoreHorizontal, FiPaperclip, FiPlus, FiTrash2, FiX } from 'react-icons/fi';
 import IssueboardShell from './IssueboardShell';
 import MarkdownEditor, { MarkdownPreview } from './MarkdownEditor';
-import { boardSubtasks } from '@utils/issueboardFixtures';
-import { getSafeIssueboardReturnTo } from '@utils/issueboardNavigation';
+import { getSafeIssueboardReturnTo, issueHref } from '@utils/issueboardNavigation';
 
 const capitalize = (value) => (value ? value.charAt(0).toUpperCase() + value.slice(1) : value);
 
@@ -37,7 +37,11 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(null);
   const [checklist, setChecklist] = useState(initialChecklist);
-  const [subtasks, setSubtasks] = useState(() => boardSubtasks.filter((subtask) => subtask.parentKey === issueKey));
+  const [subtasks, setSubtasks] = useState([]);
+  const [newSubtaskTitle, setNewSubtaskTitle] = useState('');
+  const [addingSubtask, setAddingSubtask] = useState(false);
+  const [subtaskBusy, setSubtaskBusy] = useState(false);
+  const [subtaskError, setSubtaskError] = useState(null);
   const [description, setDescription] = useState(initialDescription);
   const [descriptionEditing, setDescriptionEditing] = useState(false);
   const [comments, setComments] = useState([]);
@@ -74,6 +78,9 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
 
     const commentsResult = await jsonFetch(`/api/issueboard/issues/${encodeURIComponent(issueKey)}/comments`);
     if (commentsResult.ok && commentsResult.payload?.ok) setComments(commentsResult.payload.comments);
+
+    const subtasksResult = await jsonFetch(`/api/issueboard/issues/${encodeURIComponent(issueKey)}/subtasks`);
+    if (subtasksResult.ok && subtasksResult.payload?.ok) setSubtasks(subtasksResult.payload.subtasks);
   }, [issueKey]);
 
   useEffect(() => {
@@ -227,18 +234,37 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
     setChecklist((items) => items.filter((item) => item.id !== id));
     setMenuFor(null);
   };
-  const createSubtask = (title) => {
-    setSubtasks((items) => [
-      ...items,
-      {
-        key: `PORT-${90 + items.length}`,
-        parentKey: issue.key,
+  const createSubtask = async (title) => {
+    setSubtaskError(null);
+    setSubtaskBusy(true);
+    const { ok, payload } = await jsonFetch('/api/issueboard/issues', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        projectKey: issueKey.split('-')[0],
+        issueType: 'task',
         title,
-        status: 'To do',
-        priority: 'Medium'
-      }
-    ]);
+        description: '',
+        priority: 'medium',
+        parentIssueId: issue.id
+      })
+    });
+    setSubtaskBusy(false);
+    if (!ok || !payload?.ok) {
+      setSubtaskError(payload?.error?.message || 'Could not create the subtask.');
+      return;
+    }
+    setSubtasks((items) => [...items, payload.issue]);
     setMenuFor(null);
+    setAddingSubtask(false);
+    setNewSubtaskTitle('');
+  };
+
+  const submitNewSubtask = (event) => {
+    event.preventDefault();
+    const title = newSubtaskTitle.trim();
+    if (!title || subtaskBusy) return;
+    createSubtask(title);
   };
   const addChecklistItem = () => {
     if (!newChecklistItem.trim()) return;
@@ -434,30 +460,58 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
 
           <SectionHeading
             title='Subtasks'
-            count={`${subtasks.filter((subtask) => subtask.status === 'Done').length} of ${subtasks.length}`}
+            count={`${subtasks.filter((subtask) => subtask.status?.category === 'done').length} of ${subtasks.length}`}
             action='Add subtask'
+            onAction={() => setAddingSubtask((open) => !open)}
           />
-          <div className='overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800'>
-            {subtasks.map((subtask) => (
-              <div
-                key={subtask.key}
-                className='grid min-h-10 grid-cols-[auto_1fr_auto] items-center gap-3 border-b border-slate-100 px-3 py-1.5 text-sm last:border-0 dark:border-slate-800'
-              >
-                <span className='grid size-5 place-items-center text-cyan-600' title='Subtask' aria-label='Subtask'>
-                  <FiLayers className='size-3.5' />
-                </span>
-                <div className='min-w-0 truncate'>
-                  <strong className='mr-2 text-xs'>{subtask.key}</strong>
-                  <span>{subtask.title}</span>
-                </div>
-                <span
-                  className={`inline-flex h-5 items-center rounded-full px-2 text-[10px] font-bold ${subtask.status === 'Done' ? 'bg-emerald-100 text-emerald-800' : subtask.status === 'In progress' ? 'bg-blue-100 text-blue-800' : 'bg-slate-100 text-slate-700'}`}
+          {subtasks.length > 0 && (
+            <div className='overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800'>
+              {subtasks.map((subtask) => (
+                <Link
+                  key={subtask.key}
+                  href={issueHref(subtask.key, `/admin/issues/${issueKey}`)}
+                  className='grid min-h-10 grid-cols-[auto_1fr_auto] items-center gap-3 border-b border-slate-100 px-3 py-1.5 text-sm last:border-0 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800/50'
                 >
-                  {subtask.status}
-                </span>
-              </div>
-            ))}
-          </div>
+                  <span className='grid size-5 place-items-center text-cyan-600' title='Subtask' aria-label='Subtask'>
+                    <FiLayers className='size-3.5' />
+                  </span>
+                  <div className='min-w-0 truncate'>
+                    <strong className='mr-2 text-xs'>{subtask.key}</strong>
+                    <span>{subtask.title}</span>
+                  </div>
+                  <span
+                    className={`inline-flex h-5 items-center rounded-full px-2 text-[10px] font-bold ${subtask.status?.category === 'done' ? 'bg-emerald-100 text-emerald-800' : subtask.status?.category === 'in_progress' ? 'bg-blue-100 text-blue-800' : 'bg-slate-100 text-slate-700'}`}
+                  >
+                    {subtask.status?.name}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          )}
+          {addingSubtask && (
+            <form onSubmit={submitNewSubtask} className='mt-2 flex gap-2'>
+              <input
+                autoFocus
+                value={newSubtaskTitle}
+                onChange={(event) => setNewSubtaskTitle(event.target.value)}
+                placeholder='Subtask title'
+                className='min-w-0 flex-1 rounded-lg border border-slate-300 bg-transparent p-2 text-sm dark:border-slate-700'
+              />
+              <button type='submit' disabled={subtaskBusy} className='button text-xs disabled:opacity-60'>
+                {subtaskBusy ? 'Creating…' : 'Create'}
+              </button>
+              <button
+                type='button'
+                onClick={() => setAddingSubtask(false)}
+                className='rounded-lg px-3 py-2 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800'
+              >
+                Cancel
+              </button>
+            </form>
+          )}
+          {subtaskError && (
+            <p className='mt-1 text-xs font-semibold text-rose-600 dark:text-rose-300'>{subtaskError}</p>
+          )}
 
           <div className='mt-8 flex items-center justify-between'>
             <h3 className='font-bold'>Relationships</h3>
