@@ -63,6 +63,8 @@ const toDisplayIssue = (issue) => ({
   type: capitalize(issue.type),
   title: issue.title,
   status: issue.status?.name || 'Backlog',
+  statusId: issue.status?.id,
+  sprintId: issue.sprintId,
   priority: capitalize(issue.priority),
   estimate: issue.storyPoints ?? undefined,
   labels: issue.labels || [],
@@ -329,12 +331,298 @@ const Overview = ({ returnTo, data }) => {
   );
 };
 
+const NewSprintForm = ({ onCreate, onClose }) => {
+  const [name, setName] = useState('');
+  const [goal, setGoal] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState(null);
+
+  const submit = async (event) => {
+    event.preventDefault();
+    if (submitting || !name.trim()) return;
+    setSubmitting(true);
+    setError(null);
+    try {
+      await onCreate({ name, goal });
+      onClose();
+    } catch (submitError) {
+      setError(submitError.message);
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <form
+      onSubmit={submit}
+      className='mb-4 flex flex-wrap items-end gap-2 rounded-2xl border border-dashed border-slate-300 bg-white p-3 dark:border-slate-700 dark:bg-slate-900'
+    >
+      <label className='grid gap-1 text-xs font-bold'>
+        Sprint name
+        <input
+          autoFocus
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+          className='rounded-lg border border-slate-300 bg-transparent p-1.5 text-sm font-normal dark:border-slate-700'
+          placeholder='Sprint 1'
+        />
+      </label>
+      <label className='grid gap-1 text-xs font-bold'>
+        Goal (optional)
+        <input
+          value={goal}
+          onChange={(event) => setGoal(event.target.value)}
+          className='rounded-lg border border-slate-300 bg-transparent p-1.5 text-sm font-normal dark:border-slate-700'
+          placeholder='What are we trying to ship?'
+        />
+      </label>
+      <button type='submit' disabled={submitting} className='button text-xs disabled:opacity-60'>
+        {submitting ? 'Creating…' : 'Create sprint'}
+      </button>
+      <button
+        type='button'
+        onClick={onClose}
+        className='rounded-lg px-3 py-2 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800'
+      >
+        Cancel
+      </button>
+      {error && <p className='w-full text-xs font-semibold text-rose-600 dark:text-rose-300'>{error}</p>}
+    </form>
+  );
+};
+
+const StartSprintForm = ({ onStart, onClose }) => {
+  const [startsAt, setStartsAt] = useState('');
+  const [endsAt, setEndsAt] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState(null);
+  const [emptyConfirm, setEmptyConfirm] = useState(false);
+
+  useEffect(() => {
+    setStartsAt(new Date().toISOString().slice(0, 10));
+    setEndsAt(new Date(Date.now() + 14 * 86_400_000).toISOString().slice(0, 10));
+  }, []);
+
+  const submit = async (event, force = false) => {
+    event?.preventDefault();
+    if (submitting) return;
+    setSubmitting(true);
+    setError(null);
+    try {
+      await onStart({ startsAt: new Date(startsAt).toISOString(), endsAt: new Date(endsAt).toISOString(), force });
+      onClose();
+    } catch (submitError) {
+      if (submitError.code === 'EMPTY_SPRINT') {
+        setEmptyConfirm(true);
+        setSubmitting(false);
+        return;
+      }
+      setError(submitError.message);
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <form
+      onSubmit={submit}
+      className='mt-3 flex flex-wrap items-end gap-2 border-t border-slate-200 pt-3 dark:border-slate-800'
+    >
+      <label className='grid gap-1 text-xs font-bold'>
+        Starts
+        <input
+          type='date'
+          value={startsAt}
+          onChange={(event) => setStartsAt(event.target.value)}
+          className='rounded-lg border border-slate-300 bg-transparent p-1.5 text-sm font-normal dark:border-slate-700'
+        />
+      </label>
+      <label className='grid gap-1 text-xs font-bold'>
+        Ends
+        <input
+          type='date'
+          value={endsAt}
+          onChange={(event) => setEndsAt(event.target.value)}
+          className='rounded-lg border border-slate-300 bg-transparent p-1.5 text-sm font-normal dark:border-slate-700'
+        />
+      </label>
+      {emptyConfirm ? (
+        <button
+          type='button'
+          onClick={(event) => submit(event, true)}
+          disabled={submitting}
+          className='rounded-lg bg-rose-600 px-3 py-2 text-xs font-bold text-white disabled:opacity-60'
+        >
+          No issues planned -- start anyway?
+        </button>
+      ) : (
+        <button type='submit' disabled={submitting} className='button text-xs disabled:opacity-60'>
+          {submitting ? 'Starting…' : 'Start sprint'}
+        </button>
+      )}
+      <button
+        type='button'
+        onClick={onClose}
+        className='rounded-lg px-3 py-2 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800'
+      >
+        Cancel
+      </button>
+      {error && <p className='w-full text-xs font-semibold text-rose-600 dark:text-rose-300'>{error}</p>}
+    </form>
+  );
+};
+
+const IssueRow = ({ issue, returnTo, sprintOptions, onMoveSprint }) => (
+  <div className='grid grid-cols-[auto_1fr_auto_auto] items-center gap-3 border-b border-slate-100 px-4 py-2 last:border-0 dark:border-slate-800'>
+    <CreatorAvatar creator={issue.creator} />
+    <IssueLink issue={issue} returnTo={returnTo}>
+      <div className='flex items-center gap-2'>
+        <TypeIcon type={issue.type} />
+        <strong className='text-sm'>{issue.title}</strong>
+      </div>
+      <IssueMeta issue={issue} showPriority />
+    </IssueLink>
+    <span
+      className={`inline-flex h-5 items-center whitespace-nowrap rounded-full px-2.5 text-[10px] font-bold ${badgeClass(issue.status)}`}
+    >
+      {issue.status}
+    </span>
+    <select
+      value={issue.sprintId || ''}
+      onChange={(event) => onMoveSprint(event.target.value || null)}
+      aria-label={`Move ${issue.key} to a different sprint`}
+      className='rounded-lg border border-slate-200 bg-slate-50 px-1.5 py-1 text-[10px] dark:border-slate-800 dark:bg-slate-900'
+    >
+      <option value=''>Backlog</option>
+      {sprintOptions.map((sprint) => (
+        <option key={sprint.id} value={sprint.id}>
+          {sprint.name}
+        </option>
+      ))}
+    </select>
+  </div>
+);
+
+const SprintSection = ({
+  sprint,
+  issues,
+  returnTo,
+  sprintOptions,
+  onMoveSprint,
+  onCreateIssue,
+  onStart,
+  onComplete,
+  onCancel
+}) => {
+  const [starting, setStarting] = useState(false);
+  const [actionError, setActionError] = useState(null);
+  const [busy, setBusy] = useState(false);
+
+  const complete = async () => {
+    setBusy(true);
+    setActionError(null);
+    try {
+      await onComplete();
+    } catch (error) {
+      setActionError(error.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const cancel = async () => {
+    setBusy(true);
+    setActionError(null);
+    try {
+      await onCancel();
+    } catch (error) {
+      setActionError(error.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <section className='mb-4 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900'>
+      <header className='flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-800 dark:bg-slate-900'>
+        <div>
+          <strong>{sprint.name}</strong>
+          {sprint.goal && <span className='ml-2 text-xs text-slate-500'>{sprint.goal}</span>}
+          <span
+            className={`ml-2 inline-flex h-5 items-center rounded-full px-2 text-[10px] font-bold ${sprint.state === 'active' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200' : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200'}`}
+          >
+            {sprint.state}
+          </span>
+          <span className='ml-2 text-xs text-slate-500'>{issues.length} issues</span>
+        </div>
+        <div className='flex gap-2'>
+          {sprint.state === 'planned' && !starting && (
+            <button
+              type='button'
+              onClick={() => setStarting(true)}
+              className='rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-bold dark:border-slate-700'
+            >
+              Start sprint
+            </button>
+          )}
+          {sprint.state === 'active' && (
+            <button
+              type='button'
+              onClick={complete}
+              disabled={busy}
+              className='rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-bold disabled:opacity-60 dark:border-slate-700'
+            >
+              {busy ? '…' : 'Complete sprint'}
+            </button>
+          )}
+          {sprint.state === 'planned' && (
+            <button
+              type='button'
+              onClick={cancel}
+              disabled={busy}
+              className='rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-bold text-rose-600 disabled:opacity-60 dark:border-slate-700'
+            >
+              Cancel
+            </button>
+          )}
+        </div>
+      </header>
+      {actionError && <p className='px-4 py-2 text-xs font-semibold text-rose-600 dark:text-rose-300'>{actionError}</p>}
+      {issues.length === 0 && <p className='px-4 py-6 text-sm text-slate-500'>No issues in this sprint yet.</p>}
+      {issues.map((issue) => (
+        <IssueRow
+          key={issue.key}
+          issue={issue}
+          returnTo={returnTo}
+          sprintOptions={sprintOptions}
+          onMoveSprint={(sprintId) => onMoveSprint(issue, sprintId)}
+        />
+      ))}
+      {sprint.state === 'planned' && (
+        <button
+          type='button'
+          onClick={onCreateIssue}
+          className='w-full px-5 py-3 text-left text-xs font-semibold text-slate-500 hover:bg-slate-50 hover:text-emerald-700 dark:hover:bg-slate-800'
+        >
+          ＋ Create issue
+        </button>
+      )}
+      {starting && (
+        <div className='px-4 pb-4'>
+          <StartSprintForm onStart={onStart} onClose={() => setStarting(false)} />
+        </div>
+      )}
+    </section>
+  );
+};
+
 const Backlog = ({ returnTo, data, onCreateIssue }) => {
-  const { status, issues, error } = data;
+  const { status, issues, sprints, error, moveIssueSprint, createSprint, startSprint, completeSprint, cancelSprint } =
+    data;
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
   const [priorityFilter, setPriorityFilter] = useState('');
   const [assigneeFilter, setAssigneeFilter] = useState('');
+  const [creatingSprint, setCreatingSprint] = useState(false);
+  const [moveError, setMoveError] = useState(null);
 
   if (status === 'loading') return null;
   if (status === 'unavailable') return <DatastoreUnavailableNotice error={error} />;
@@ -343,6 +631,7 @@ const Backlog = ({ returnTo, data, onCreateIssue }) => {
   const availableAssignees = [...new Set(issues.map((issue) => issue.assignee).filter(Boolean))].sort();
   const normalizedSearch = search.trim().toLowerCase();
   const filteredIssues = issues.filter((issue) => {
+    if (issue.archivedAt) return false;
     if (typeFilter && issue.type !== typeFilter) return false;
     if (priorityFilter && issue.priority !== priorityFilter) return false;
     if (assigneeFilter === '__unassigned__' && issue.assignee) return false;
@@ -356,16 +645,40 @@ const Backlog = ({ returnTo, data, onCreateIssue }) => {
       return false;
     return true;
   });
-  const displayIssues = [...filteredIssues].sort((a, b) => a.rank.localeCompare(b.rank)).map(toDisplayIssue);
   const filtersActive = Boolean(search || typeFilter || priorityFilter || assigneeFilter);
+  const byRank = (a, b) => a.rank.localeCompare(b.rank);
+  const toRows = (list) => [...list].sort(byRank).map(toDisplayIssue);
+
+  const openSprints = [...sprints]
+    .filter((sprint) => sprint.state === 'planned' || sprint.state === 'active')
+    .sort((a, b) => (a.state === 'active' ? -1 : b.state === 'active' ? 1 : b.sequence - a.sequence));
+  const backlogIssues = toRows(filteredIssues.filter((issue) => !issue.sprintId));
+
+  const handleMoveSprint = async (issue, sprintId) => {
+    setMoveError(null);
+    try {
+      await moveIssueSprint(issue, sprintId);
+    } catch (moveErr) {
+      setMoveError(moveErr.message);
+    }
+  };
 
   return (
     <>
       <div className='mb-6 flex flex-wrap items-end justify-between gap-3'>
         <div>
           <h2 className='text-2xl font-bold tracking-tight md:text-3xl'>Backlog</h2>
-          <p className='mt-1 text-sm text-slate-500'>Ranked work not yet committed to a sprint.</p>
+          <p className='mt-1 text-sm text-slate-500'>Plan sprints and rank work not yet committed to one.</p>
         </div>
+        {!creatingSprint && (
+          <button
+            type='button'
+            onClick={() => setCreatingSprint(true)}
+            className='rounded-lg border border-slate-300 px-3 py-2 text-xs font-bold hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800'
+          >
+            + Create sprint
+          </button>
+        )}
       </div>
       <Filters
         search={search}
@@ -378,41 +691,49 @@ const Backlog = ({ returnTo, data, onCreateIssue }) => {
         onAssigneeChange={setAssigneeFilter}
         availableAssignees={availableAssignees}
       />
+      {moveError && (
+        <p className='mb-3 rounded-lg border border-rose-300 bg-rose-50 p-2 text-xs font-semibold text-rose-800 dark:border-rose-800 dark:bg-rose-950/40 dark:text-rose-200'>
+          {moveError}
+        </p>
+      )}
+      {creatingSprint && <NewSprintForm onCreate={createSprint} onClose={() => setCreatingSprint(false)} />}
+      {openSprints.map((sprint) => (
+        <SprintSection
+          key={sprint.id}
+          sprint={sprint}
+          issues={toRows(filteredIssues.filter((issue) => issue.sprintId === sprint.id))}
+          returnTo={returnTo}
+          sprintOptions={openSprints.filter((entry) => entry.id !== sprint.id)}
+          onMoveSprint={handleMoveSprint}
+          onCreateIssue={onCreateIssue}
+          onStart={(input) => startSprint(sprint.id, input)}
+          onComplete={() => completeSprint(sprint.id, null)}
+          onCancel={() => cancelSprint(sprint.id)}
+        />
+      ))}
       <section className='mb-4 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900'>
         <header className='flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-800 dark:bg-slate-900'>
           <div>
             <strong>Backlog</strong>
             <span className='ml-2 text-xs text-slate-500'>
-              {displayIssues.length} {filtersActive ? `of ${issues.length} issues` : 'issues'}
+              {backlogIssues.length}{' '}
+              {filtersActive ? `of ${issues.filter((i) => !i.sprintId).length} issues` : 'issues'}
             </span>
           </div>
         </header>
-        {displayIssues.length === 0 && (
+        {backlogIssues.length === 0 && (
           <p className='px-4 py-6 text-sm text-slate-500'>
             {filtersActive ? 'No issues match these filters.' : 'No issues yet. Create the first one below.'}
           </p>
         )}
-        {displayIssues.map((issue) => (
-          <IssueLink
+        {backlogIssues.map((issue) => (
+          <IssueRow
             key={issue.key}
             issue={issue}
             returnTo={returnTo}
-            className='grid grid-cols-[auto_1fr_auto] items-center gap-3 border-b border-slate-100 px-4 py-2 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800/50'
-          >
-            <CreatorAvatar creator={issue.creator} />
-            <div>
-              <div className='flex items-center gap-2'>
-                <TypeIcon type={issue.type} />
-                <strong className='text-sm'>{issue.title}</strong>
-              </div>
-              <IssueMeta issue={issue} showPriority />
-            </div>
-            <span
-              className={`inline-flex h-5 items-center whitespace-nowrap rounded-full px-2.5 text-[10px] font-bold ${badgeClass(issue.status)}`}
-            >
-              {issue.status}
-            </span>
-          </IssueLink>
+            sprintOptions={openSprints}
+            onMoveSprint={(sprintId) => handleMoveSprint(issue, sprintId)}
+          />
         ))}
         <button
           type='button'
@@ -531,7 +852,7 @@ const Board = ({ returnTo, data, moveIssueStatus }) => {
                   {columnIssues.map((issue) => (
                     <BoardCard
                       key={issue.key}
-                      issue={{ ...toDisplayIssue(issue), statusId: issue.status?.id }}
+                      issue={toDisplayIssue(issue)}
                       returnTo={returnTo}
                       statuses={statuses}
                       onMove={(statusId) => move(issue, statusId)}
