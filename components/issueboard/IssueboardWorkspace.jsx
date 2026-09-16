@@ -1063,7 +1063,7 @@ const IssueboardWorkspace = ({ adminEmail }) => {
         <Backlog returnTo={returnTo} data={data} onCreateIssue={() => data.project && setCreateOpen(true)} />
       )}
       {view === 'board' && <Board returnTo={returnTo} data={data} moveIssueStatus={data.moveIssueStatus} />}
-      {view === 'reports' && <ReportsView />}
+      {view === 'reports' && <ReportsView project={data.project} />}
       {view === 'projects' && <ProjectsView />}
       {view === 'integrations' && <IntegrationsHealthView />}
       {view === 'settings' && <ProjectSettingsView />}
