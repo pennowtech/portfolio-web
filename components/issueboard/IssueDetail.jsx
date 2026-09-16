@@ -51,6 +51,12 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
   const [checklistEditorOpen, setChecklistEditorOpen] = useState(false);
   const [menuFor, setMenuFor] = useState(null);
   const [relationshipOpen, setRelationshipOpen] = useState(false);
+  const [relationships, setRelationships] = useState([]);
+  const [relationshipType, setRelationshipType] = useState('relates_to');
+  const [relationshipSearch, setRelationshipSearch] = useState('');
+  const [relationshipResults, setRelationshipResults] = useState([]);
+  const [relationshipBusy, setRelationshipBusy] = useState(false);
+  const [relationshipError, setRelationshipError] = useState(null);
   const returnTo = useMemo(() => getSafeIssueboardReturnTo(router.query.returnTo), [router.query.returnTo]);
 
   const load = useCallback(async () => {
@@ -84,6 +90,10 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
       setChecklistId(firstChecklist?.id || null);
       setChecklist(firstChecklist?.items || []);
     }
+
+    const relationshipsResult = await jsonFetch(`/api/issueboard/issues/${encodeURIComponent(issueKey)}/relationships`);
+    if (relationshipsResult.ok && relationshipsResult.payload?.ok)
+      setRelationships(relationshipsResult.payload.relationships);
   }, [issueKey]);
 
   useEffect(() => {
@@ -207,6 +217,47 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
       return;
     }
     setData((current) => ({ ...current, issue: { ...current.issue, labels: payload.labels } }));
+  };
+
+  useEffect(() => {
+    if (!relationshipOpen) return undefined;
+    const timeout = setTimeout(async () => {
+      const { ok, payload } = await jsonFetch(
+        `/api/issueboard/issues/${encodeURIComponent(issueKey)}/search-related?q=${encodeURIComponent(relationshipSearch)}`
+      );
+      if (ok && payload?.ok) setRelationshipResults(payload.results);
+    }, 250);
+    return () => clearTimeout(timeout);
+  }, [relationshipSearch, relationshipOpen, issueKey]);
+
+  const addRelationship = async (targetIssueKey) => {
+    setRelationshipBusy(true);
+    setRelationshipError(null);
+    const { ok, payload } = await jsonFetch(`/api/issueboard/issues/${encodeURIComponent(issueKey)}/relationships`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ targetIssueKey, relationshipType })
+    });
+    setRelationshipBusy(false);
+    if (!ok || !payload?.ok) {
+      setRelationshipError(payload?.error?.message || 'Could not create the relationship.');
+      return;
+    }
+    setRelationships(payload.relationships);
+    setRelationshipSearch('');
+    setRelationshipResults([]);
+    setRelationshipOpen(false);
+  };
+
+  const removeRelationship = async (relationshipId) => {
+    setRelationshipError(null);
+    const previous = relationships;
+    setRelationships((current) => current.filter((entry) => entry.id !== relationshipId));
+    const { ok, payload } = await jsonFetch(`/api/issueboard/relationships/${relationshipId}`, { method: 'DELETE' });
+    if (!ok || !payload?.ok) {
+      setRelationships(previous);
+      setRelationshipError(payload?.error?.message || 'Could not remove the relationship.');
+    }
   };
 
   const [archiving, setArchiving] = useState(false);
@@ -559,25 +610,70 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
               <FiPlus /> Link issue
             </button>
           </div>
+          {relationships.length > 0 && (
+            <div className='mt-3 divide-y divide-slate-100 rounded-xl border border-slate-200 dark:divide-slate-800 dark:border-slate-800'>
+              {relationships.map((rel) => (
+                <div key={rel.id} className='flex items-center justify-between gap-3 px-3 py-2 text-sm'>
+                  <span>
+                    <span className='text-xs text-slate-500'>{rel.label}</span>{' '}
+                    <Link
+                      href={issueHref(rel.issue.key, `/admin/issues/${issueKey}`)}
+                      className='font-semibold text-emerald-700 hover:underline dark:text-emerald-400'
+                    >
+                      {rel.issue.key}
+                    </Link>{' '}
+                    {rel.issue.title}
+                  </span>
+                  <button
+                    type='button'
+                    onClick={() => removeRelationship(rel.id)}
+                    aria-label={`Remove relationship with ${rel.issue.key}`}
+                    className='shrink-0 rounded px-2 py-1 text-xs font-semibold text-rose-600 hover:bg-rose-50 dark:text-rose-300 dark:hover:bg-rose-950'
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
           {relationshipOpen && (
             <div className='mt-3 rounded-xl border border-slate-200 p-3 dark:border-slate-800'>
               <label className='text-xs font-bold'>
                 Relationship
-                <select className='ml-2 rounded-lg border border-slate-300 bg-transparent px-2 py-1.5 dark:border-slate-700'>
-                  <option>is blocked by</option>
-                  <option>blocks</option>
-                  <option>relates to</option>
-                  <option>duplicates</option>
-                  <option>parent of</option>
+                <select
+                  value={relationshipType}
+                  onChange={(event) => setRelationshipType(event.target.value)}
+                  className='ml-2 rounded-lg border border-slate-300 bg-transparent px-2 py-1.5 dark:border-slate-700'
+                >
+                  <option value='blocks'>blocks</option>
+                  <option value='relates_to'>relates to</option>
+                  <option value='duplicates'>duplicates</option>
                 </select>
               </label>
               <input
+                autoFocus
+                value={relationshipSearch}
+                onChange={(event) => setRelationshipSearch(event.target.value)}
                 className='mt-3 w-full rounded-lg border border-slate-300 bg-transparent p-2.5 text-sm dark:border-slate-700'
-                placeholder='Search key or title…'
+                placeholder='Search issue title…'
               />
-              <div className='mt-2 rounded-lg bg-slate-50 p-3 text-xs dark:bg-slate-950'>
-                <strong>PORT-72</strong> Configure database row-level security policies
-              </div>
+              {relationshipResults.map((result) => (
+                <button
+                  key={result.id}
+                  type='button'
+                  disabled={relationshipBusy}
+                  onClick={() => addRelationship(result.key)}
+                  className='mt-2 flex w-full items-center justify-between gap-2 rounded-lg bg-slate-50 p-3 text-left text-xs hover:bg-slate-100 disabled:opacity-60 dark:bg-slate-950 dark:hover:bg-slate-900'
+                >
+                  <span>
+                    <strong>{result.key}</strong> {result.title}
+                  </span>
+                  {result.status && <span className='text-slate-500'>{result.status.name}</span>}
+                </button>
+              ))}
+              {relationshipError && (
+                <p className='mt-2 text-xs font-semibold text-rose-600 dark:text-rose-300'>{relationshipError}</p>
+              )}
             </div>
           )}
 
