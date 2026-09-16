@@ -96,6 +96,14 @@ export const createRelationshipSchema = z
   })
   .strict();
 
+export const authorizeUploadSchema = z
+  .object({
+    originalFilename: z.string().trim().min(1).max(200),
+    mimeType: z.enum(['image/jpeg', 'image/png', 'image/webp']),
+    byteSize: z.number().int().positive().max(1_048_576)
+  })
+  .strict();
+
 export const createSprintSchema = z
   .object({
     name: z.string().trim().min(1, 'Sprint name is required.').max(100),
