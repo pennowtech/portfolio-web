@@ -60,6 +60,8 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
   const [newChecklistItem, setNewChecklistItem] = useState('');
   const [checklistEditorOpen, setChecklistEditorOpen] = useState(false);
   const [menuFor, setMenuFor] = useState(null);
+  const [linkPickerFor, setLinkPickerFor] = useState(null);
+  const [resolutionPromptFor, setResolutionPromptFor] = useState(null);
   const [relationshipOpen, setRelationshipOpen] = useState(false);
   const [relationships, setRelationships] = useState([]);
   const [relationshipType, setRelationshipType] = useState('relates_to');
@@ -396,18 +398,25 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
 
   const issue = data.issue;
   const closeIssue = () => router.push(returnTo);
-  const setChecklistCompletion = async (id, done) => {
-    setChecklist((items) => items.map((item) => (item.id === id ? { ...item, done } : item)));
+  const reloadSubtasks = async () => {
+    const { ok, payload } = await jsonFetch(`/api/issueboard/issues/${encodeURIComponent(issueKey)}/subtasks`);
+    if (ok && payload?.ok) setSubtasks(payload.subtasks);
+  };
+  const setChecklistCompletion = async (id, isComplete) => {
+    const target = checklist.find((item) => item.id === id);
+    setChecklist((items) => items.map((item) => (item.id === id ? { ...item, isComplete } : item)));
     setChecklistError(null);
     const { ok, payload } = await jsonFetch(`/api/issueboard/checklist-items/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ isComplete: done })
+      body: JSON.stringify({ isComplete })
     });
     if (!ok || !payload?.ok) {
-      setChecklist((items) => items.map((item) => (item.id === id ? { ...item, done: !done } : item)));
+      setChecklist((items) => items.map((item) => (item.id === id ? { ...item, isComplete: !isComplete } : item)));
       setChecklistError(payload?.error?.message || 'Could not update the checklist item.');
+      return;
     }
+    if (target?.linkedSubtaskId) reloadSubtasks();
   };
   const deleteChecklistItem = async (id) => {
     setMenuFor(null);
@@ -451,6 +460,68 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
     const title = newSubtaskTitle.trim();
     if (!title || subtaskBusy) return;
     createSubtask(title);
+  };
+
+  const createLinkedSubtaskFromItem = async (itemId) => {
+    setMenuFor(null);
+    setChecklistError(null);
+    setChecklistBusy(true);
+    const { ok, payload } = await jsonFetch(`/api/issueboard/checklist-items/${itemId}/subtask`, { method: 'POST' });
+    setChecklistBusy(false);
+    if (!ok || !payload?.ok) {
+      setChecklistError(payload?.error?.message || 'Could not create a linked subtask.');
+      return;
+    }
+    setChecklist((items) =>
+      items.map((item) =>
+        item.id === itemId
+          ? {
+              ...item,
+              linkedSubtaskId: payload.issue.id,
+              linkedSubtask: {
+                key: payload.issue.key,
+                title: payload.issue.title,
+                statusCategory: payload.issue.status?.category ?? null
+              }
+            }
+          : item
+      )
+    );
+    setSubtasks((items) => [...items, payload.issue]);
+  };
+
+  const linkExistingSubtaskToItem = async (itemId, subtaskKey, resolution) => {
+    setChecklistError(null);
+    const { ok, payload } = await jsonFetch(`/api/issueboard/checklist-items/${itemId}/subtask`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(resolution ? { subtaskKey, resolution } : { subtaskKey })
+    });
+    if (!ok || !payload?.ok) {
+      if (payload?.error?.code === 'RESOLUTION_REQUIRED') {
+        setResolutionPromptFor({ itemId, subtaskKey });
+        return;
+      }
+      setChecklistError(payload?.error?.message || 'Could not link the subtask.');
+      return;
+    }
+    setChecklist((items) => items.map((item) => (item.id === itemId ? payload.item : item)));
+    setResolutionPromptFor(null);
+    setLinkPickerFor(null);
+    if (resolution === 'checklist') reloadSubtasks();
+  };
+
+  const unlinkSubtaskFromItem = async (itemId) => {
+    setMenuFor(null);
+    setChecklistError(null);
+    const { ok, payload } = await jsonFetch(`/api/issueboard/checklist-items/${itemId}/subtask`, {
+      method: 'DELETE'
+    });
+    if (!ok || !payload?.ok) {
+      setChecklistError(payload?.error?.message || 'Could not unlink the subtask.');
+      return;
+    }
+    setChecklist((items) => items.map((item) => (item.id === itemId ? payload.item : item)));
   };
   const addChecklistItem = async () => {
     const body = newChecklistItem.trim();
@@ -604,35 +675,130 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
                 </div>
               )}
               <div className='divide-y divide-slate-100 dark:divide-slate-800'>
-                {checklist.map((item) => (
-                  <div key={item.id} className='group relative flex min-h-8 items-center gap-2 py-1 text-sm leading-5'>
-                    <input
-                      type='checkbox'
-                      checked={item.isComplete}
-                      onChange={(event) => setChecklistCompletion(item.id, event.target.checked)}
-                      className='issueboard-checkbox'
-                    />
-                    <div className='min-w-0 flex-1'>
-                      <div className={item.isComplete ? 'text-slate-400 line-through' : ''}>
-                        <MarkdownPreview compact>{item.body}</MarkdownPreview>
+                {checklist.map((item) => {
+                  const linkedElsewhere = new Set(
+                    checklist.filter((other) => other.id !== item.id).map((other) => other.linkedSubtaskId)
+                  );
+                  const eligibleSubtasks = subtasks.filter(
+                    (subtask) => !linkedElsewhere.has(subtask.id) && subtask.id !== item.linkedSubtaskId
+                  );
+                  return (
+                    <div key={item.id} className='group relative py-1 text-sm leading-5'>
+                      <div className='flex min-h-8 items-center gap-2'>
+                        <input
+                          type='checkbox'
+                          checked={item.isComplete}
+                          onChange={(event) => setChecklistCompletion(item.id, event.target.checked)}
+                          className='issueboard-checkbox'
+                        />
+                        <div className='min-w-0 flex-1'>
+                          <div className={item.isComplete ? 'text-slate-400 line-through' : ''}>
+                            <MarkdownPreview compact>{item.body}</MarkdownPreview>
+                          </div>
+                          {item.linkedSubtask && (
+                            <Link
+                              href={issueHref(item.linkedSubtask.key, `/admin/issues/${issueKey}`)}
+                              className='inline-flex items-center gap-1 text-[11px] font-semibold text-cyan-700 hover:underline dark:text-cyan-400'
+                            >
+                              <FiLayers className='size-3' /> {item.linkedSubtask.key}
+                            </Link>
+                          )}
+                        </div>
+                        <button
+                          type='button'
+                          aria-label={`Open actions for ${item.body}`}
+                          onClick={() => {
+                            setLinkPickerFor(null);
+                            setMenuFor(menuFor === item.id ? null : item.id);
+                          }}
+                          className='grid size-6 place-items-center rounded hover:bg-slate-100 dark:hover:bg-slate-800'
+                        >
+                          <FiMoreHorizontal />
+                        </button>
+                        {menuFor === item.id && (
+                          <QuickMenu
+                            linked={Boolean(item.linkedSubtask)}
+                            onCreateLinked={() => createLinkedSubtaskFromItem(item.id)}
+                            onLinkExisting={() => {
+                              setMenuFor(null);
+                              setLinkPickerFor(item.id);
+                            }}
+                            onUnlink={() => unlinkSubtaskFromItem(item.id)}
+                            onDelete={() => deleteChecklistItem(item.id)}
+                          />
+                        )}
                       </div>
+                      {linkPickerFor === item.id && (
+                        <div className='ml-6 mt-1 flex flex-wrap items-center gap-2 rounded-lg border border-slate-200 p-2 text-xs dark:border-slate-700'>
+                          {eligibleSubtasks.length === 0 ? (
+                            <span className='text-slate-500'>No unlinked subtasks on this issue yet.</span>
+                          ) : (
+                            <select
+                              autoFocus
+                              defaultValue=''
+                              aria-label='Choose a subtask to link'
+                              onChange={(event) => {
+                                if (event.target.value) linkExistingSubtaskToItem(item.id, event.target.value);
+                              }}
+                              className='min-w-0 flex-1 rounded-lg border border-slate-300 bg-transparent p-1.5 dark:border-slate-700'
+                            >
+                              <option value='' disabled>
+                                Choose a subtask…
+                              </option>
+                              {eligibleSubtasks.map((subtask) => (
+                                <option key={subtask.key} value={subtask.key}>
+                                  {subtask.key} — {subtask.title}
+                                </option>
+                              ))}
+                            </select>
+                          )}
+                          <button
+                            type='button'
+                            onClick={() => setLinkPickerFor(null)}
+                            className='rounded-lg px-2 py-1 font-bold hover:bg-slate-100 dark:hover:bg-slate-800'
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      )}
+                      {resolutionPromptFor?.itemId === item.id && (
+                        <div className='ml-6 mt-1 rounded-lg border border-amber-300 bg-amber-50 p-2 text-xs text-amber-900 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-200'>
+                          <p className='mb-2'>
+                            The checklist item and {resolutionPromptFor.subtaskKey} have different completion states.
+                            Which one should win?
+                          </p>
+                          <div className='flex gap-2'>
+                            <button
+                              type='button'
+                              onClick={() =>
+                                linkExistingSubtaskToItem(item.id, resolutionPromptFor.subtaskKey, 'checklist')
+                              }
+                              className='rounded-lg bg-amber-900/10 px-2 py-1 font-bold hover:bg-amber-900/20'
+                            >
+                              Use checklist item state
+                            </button>
+                            <button
+                              type='button'
+                              onClick={() =>
+                                linkExistingSubtaskToItem(item.id, resolutionPromptFor.subtaskKey, 'subtask')
+                              }
+                              className='rounded-lg bg-amber-900/10 px-2 py-1 font-bold hover:bg-amber-900/20'
+                            >
+                              Use subtask state
+                            </button>
+                            <button
+                              type='button'
+                              onClick={() => setResolutionPromptFor(null)}
+                              className='rounded-lg px-2 py-1 font-bold hover:bg-amber-900/10'
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                    <button
-                      type='button'
-                      aria-label={`Open actions for ${item.body}`}
-                      onClick={() => setMenuFor(menuFor === item.id ? null : item.id)}
-                      className='grid size-6 place-items-center rounded hover:bg-slate-100 dark:hover:bg-slate-800'
-                    >
-                      <FiMoreHorizontal />
-                    </button>
-                    {menuFor === item.id && (
-                      <QuickMenu
-                        onCreate={() => createSubtask(item.body)}
-                        onDelete={() => deleteChecklistItem(item.id)}
-                      />
-                    )}
-                  </div>
-                ))}
+                  );
+                })}
               </div>
               {checklistEditorOpen && (
                 <div className='flex min-h-8 items-center gap-2 border-t border-slate-200 py-1 dark:border-slate-800'>
@@ -1048,15 +1214,34 @@ const SectionHeading = ({ title, count, action, normalTitle = false, onAction, e
   </div>
 );
 
-const QuickMenu = ({ onCreate, onDelete }) => (
-  <div className='absolute right-0 top-10 z-20 w-52 rounded-xl border border-slate-200 bg-white p-1.5 text-xs shadow-xl dark:border-slate-700 dark:bg-slate-900'>
-    <button
-      type='button'
-      onClick={onCreate}
-      className='flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left hover:bg-slate-100 dark:hover:bg-slate-800'
-    >
-      <FiCheck /> Create separate subtask
-    </button>
+const QuickMenu = ({ linked, onCreateLinked, onLinkExisting, onUnlink, onDelete }) => (
+  <div className='absolute right-0 top-10 z-20 w-56 rounded-xl border border-slate-200 bg-white p-1.5 text-xs shadow-xl dark:border-slate-700 dark:bg-slate-900'>
+    {linked ? (
+      <button
+        type='button'
+        onClick={onUnlink}
+        className='flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left hover:bg-slate-100 dark:hover:bg-slate-800'
+      >
+        <FiX /> Unlink subtask
+      </button>
+    ) : (
+      <>
+        <button
+          type='button'
+          onClick={onCreateLinked}
+          className='flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left hover:bg-slate-100 dark:hover:bg-slate-800'
+        >
+          <FiCheck /> Create linked subtask
+        </button>
+        <button
+          type='button'
+          onClick={onLinkExisting}
+          className='flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left hover:bg-slate-100 dark:hover:bg-slate-800'
+        >
+          <FiLayers /> Link existing subtask
+        </button>
+      </>
+    )}
     {onDelete && (
       <button
         type='button'

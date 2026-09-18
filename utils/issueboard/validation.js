@@ -86,6 +86,16 @@ export const checklistItemCompleteSchema = z
   })
   .strict();
 
+export const linkChecklistItemSubtaskSchema = z
+  .object({
+    subtaskKey: z
+      .string()
+      .trim()
+      .regex(/^[A-Z][A-Z0-9]{1,9}-\d{1,10}$/i, 'Provide a valid issue key.'),
+    resolution: z.enum(['checklist', 'subtask']).optional()
+  })
+  .strict();
+
 export const createRelationshipSchema = z
   .object({
     targetIssueKey: z

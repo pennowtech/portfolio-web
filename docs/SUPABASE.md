@@ -41,6 +41,23 @@ openssl s_client -starttls postgres -connect db.ceuxvxhgggkitusksrjd.supabase.co
 
 which returns the real `Supabase Root 2021 CA` chain, not a Zscaler-issued certificate.
 
+### Update: direct Postgres access stopped working (no IPv6 route)
+
+On a later session on the same corporate network, `db.<project-ref>.supabase.co:5432` started failing with
+`ENOTFOUND`/`ENETUNREACH` instead of connecting. Diagnosis: the direct host is IPv6-only, and `Get-NetIPConfiguration`
+showed no IPv6 address on any adapter — the machine had no IPv6 route at all (unrelated to Zscaler; a plain
+`dns.resolve6()` still found the AAAA record fine, but the OS network stack had nowhere to route it). The IPv4 session
+pooler (`aws-0-<region>.pooler.supabase.com:5432`) was reachable at the TCP level but got `ECONNRESET` immediately
+after the Postgres startup message — this network's firewall inspects and drops the Postgres wire protocol on 5432 to
+that host, independent of the CLI's Management-API blocking above.
+
+**Fix:** the Supabase Management API's `POST /v1/projects/{ref}/database/query` endpoint runs arbitrary SQL over
+HTTPS/443 — the same transport already confirmed reachable via `curl` — bypassing port 5432 entirely. It needs
+`SUPABASE_ACCESS_TOKEN` (a personal access token, also in `.env.local`) and, since it's a plain Node `fetch` call, the
+same `--use-system-ca` fix noted above for Zscaler's injected root certificate.
+[scripts/db-migrate.mjs](../scripts/db-migrate.mjs) now tries the direct connection first, then the IPv4 pooler (if
+`SUPABASE_DB_POOLER_REGION` is set), then falls back to this HTTPS endpoint automatically — no manual flag needed.
+
 ### The fix: bypass the CLI's Management API for schema changes
 
 [scripts/db-migrate.mjs](../scripts/db-migrate.mjs) applies `supabase/migrations/*.sql` directly against Postgres (port 5432) in filename order, tracking applied files in a `schema_migrations` table — the same effect as `supabase db push`,
