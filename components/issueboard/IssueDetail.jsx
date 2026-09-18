@@ -73,6 +73,7 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState(null);
   const [uploadStats, setUploadStats] = useState(null);
+  const [projects, setProjects] = useState([]);
   const fileInputRef = useRef(null);
   const returnTo = useMemo(() => getSafeIssueboardReturnTo(router.query.returnTo), [router.query.returnTo]);
 
@@ -114,6 +115,9 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
 
     const attachmentsResult = await jsonFetch(`/api/issueboard/issues/${encodeURIComponent(issueKey)}/attachments`);
     if (attachmentsResult.ok && attachmentsResult.payload?.ok) setAttachments(attachmentsResult.payload.attachments);
+
+    const projectsResult = await jsonFetch('/api/issueboard/projects');
+    if (projectsResult.ok && projectsResult.payload?.ok) setProjects(projectsResult.payload.projects);
   }, [issueKey]);
 
   useEffect(() => {
@@ -558,14 +562,29 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
   };
   const beginIssueEdit = () => setDescriptionEditing(true);
   const finishIssueEdit = () => setDescriptionEditing(false);
+  const currentProject = projects.find((project) => project.key === issueKey.split('-')[0]) || null;
 
   if (data.status === 'loading') {
-    return <IssueboardShell adminEmail={adminEmail} currentView='' title={issueKey} />;
+    return (
+      <IssueboardShell
+        adminEmail={adminEmail}
+        currentView=''
+        currentProject={currentProject}
+        projects={projects}
+        title={issueKey}
+      />
+    );
   }
 
   if (data.status === 'not-found') {
     return (
-      <IssueboardShell adminEmail={adminEmail} currentView='' title={issueKey}>
+      <IssueboardShell
+        adminEmail={adminEmail}
+        currentView=''
+        currentProject={currentProject}
+        projects={projects}
+        title={issueKey}
+      >
         <div className='rounded-2xl border border-dashed border-slate-300 bg-white p-7 text-center dark:border-slate-700 dark:bg-slate-900'>
           <h2 className='font-bold'>Issue not found</h2>
           <p className='mt-1 text-sm text-slate-500'>{issueKey} does not exist or was deleted.</p>
@@ -576,7 +595,13 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
 
   if (data.status === 'unavailable') {
     return (
-      <IssueboardShell adminEmail={adminEmail} currentView='' title={issueKey}>
+      <IssueboardShell
+        adminEmail={adminEmail}
+        currentView=''
+        currentProject={currentProject}
+        projects={projects}
+        title={issueKey}
+      >
         <div className='rounded-2xl border border-amber-300 bg-amber-50 p-5 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-200'>
           <strong className='block'>Issue management is temporarily unavailable</strong>
           <p className='mt-1 text-xs leading-5'>{data.error}</p>
@@ -586,7 +611,13 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
   }
 
   return (
-    <IssueboardShell adminEmail={adminEmail} currentView='' title={issue.key}>
+    <IssueboardShell
+      adminEmail={adminEmail}
+      currentView=''
+      currentProject={currentProject}
+      projects={projects}
+      title={issue.key}
+    >
       <div className='mb-5 flex flex-wrap items-center justify-between gap-3'>
         <button
           type='button'

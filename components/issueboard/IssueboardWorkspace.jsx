@@ -1042,7 +1042,8 @@ const IssueboardWorkspace = ({ adminEmail }) => {
   const [createOpen, setCreateOpen] = useState(false);
   const view = validViews.includes(router.query.view) ? router.query.view : 'overview';
   const returnTo = useMemo(() => router.asPath, [router.asPath]);
-  const data = useIssueboardData();
+  const projectKey = typeof router.query.project === 'string' ? router.query.project.toUpperCase() : undefined;
+  const data = useIssueboardData(projectKey);
 
   useEffect(() => {
     const key = `issueboard-scroll:${router.asPath}`;
@@ -1055,6 +1056,8 @@ const IssueboardWorkspace = ({ adminEmail }) => {
     <IssueboardShell
       adminEmail={adminEmail}
       currentView={view}
+      currentProject={data.project}
+      projects={data.projects}
       title={viewTitles[view]}
       onCreate={() => data.project && setCreateOpen(true)}
     >
