@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   FiAlertTriangle,
+  FiArrowDown,
+  FiArrowUp,
   FiCheck,
   FiCloud,
   FiCode,
@@ -8,12 +10,13 @@ import {
   FiExternalLink,
   FiImage,
   FiLock,
-  FiMenu,
   FiPlus,
   FiRefreshCw,
   FiSave,
   FiShield,
-  FiSlack
+  FiSlack,
+  FiTrash2,
+  FiX
 } from 'react-icons/fi';
 
 const surface = 'rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900';
@@ -100,38 +103,280 @@ const DetailsPanel = ({ project, form, onFieldChange, saveError }) => (
   </>
 );
 
-const workflowStatuses = [
-  ['Backlog', 'Backlog', '—', 'bg-slate-400'],
-  ['To do', 'To do', '8', 'bg-slate-500'],
-  ['In progress', 'In progress', '4', 'bg-blue-500'],
-  ['Review', 'In progress', '3', 'bg-amber-500'],
-  ['Testing', 'In progress', '3', 'bg-violet-500'],
-  ['Done', 'Done', '—', 'bg-emerald-500']
+const CATEGORY_OPTIONS = [
+  ['backlog', 'Backlog'],
+  ['todo', 'To do'],
+  ['in_progress', 'In progress'],
+  ['done', 'Done']
 ];
+const categoryLabel = (value) => CATEGORY_OPTIONS.find(([key]) => key === value)?.[1] || value;
+const DEFAULT_STATUS_FORM = { name: '', category: 'todo', color: '#64748b', wipLimit: '' };
+const toStatusPayload = (form) => ({
+  name: form.name.trim(),
+  category: form.category,
+  color: form.color,
+  wipLimit: form.wipLimit === '' ? undefined : Number(form.wipLimit)
+});
 
-const WorkflowPanel = () => (
-  <>
-    <PanelHeading
-      title='Workflow statuses'
-      description='Control the order and work-in-progress limits used by sprint lanes.'
-      action='Add status'
+const StatusEditRow = ({ form, onChange, onSave, onCancel, busy }) => (
+  <div className='grid grid-cols-2 items-center gap-2 border-b border-slate-100 bg-slate-50 px-3 py-2.5 last:border-0 dark:border-slate-800 dark:bg-slate-950 sm:grid-cols-[auto_1fr_9rem_5rem_auto]'>
+    <input
+      type='color'
+      value={form.color}
+      onChange={(event) => onChange({ ...form, color: event.target.value })}
+      className='h-8 w-8 rounded border border-slate-300 dark:border-slate-700'
+      aria-label='Status color'
     />
-    <div className='overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800'>
-      {workflowStatuses.map(([name, category, limit, color]) => (
-        <div
-          key={name}
-          className='grid grid-cols-[auto_auto_1fr_auto] items-center gap-3 border-b border-slate-100 px-3 py-2.5 last:border-0 dark:border-slate-800 sm:grid-cols-[auto_auto_1fr_8rem_5rem]'
-        >
-          <FiMenu className='text-slate-400' aria-hidden='true' />
-          <span className={`size-2.5 rounded-full ${color}`} />
-          <strong className='text-sm'>{name}</strong>
-          <span className='hidden text-xs text-slate-500 sm:block'>{category}</span>
-          <span className='text-right text-xs text-slate-500'>WIP {limit}</span>
-        </div>
+    <input
+      value={form.name}
+      onChange={(event) => onChange({ ...form, name: event.target.value })}
+      placeholder='Status name'
+      className='min-w-0 rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm dark:border-slate-700 dark:bg-slate-900'
+    />
+    <select
+      value={form.category}
+      onChange={(event) => onChange({ ...form, category: event.target.value })}
+      className='rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm dark:border-slate-700 dark:bg-slate-900'
+    >
+      {CATEGORY_OPTIONS.map(([value, label]) => (
+        <option key={value} value={value}>
+          {label}
+        </option>
       ))}
+    </select>
+    <input
+      type='number'
+      min='1'
+      value={form.wipLimit}
+      onChange={(event) => onChange({ ...form, wipLimit: event.target.value })}
+      placeholder='WIP'
+      className='min-w-0 rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm dark:border-slate-700 dark:bg-slate-900'
+    />
+    <div className='col-span-2 flex justify-end gap-1 sm:col-span-1'>
+      <button
+        type='button'
+        onClick={onSave}
+        disabled={busy || !form.name.trim()}
+        className='rounded-lg bg-emerald-700 px-2.5 py-1.5 text-xs font-bold text-white hover:bg-emerald-800 disabled:cursor-wait disabled:opacity-60'
+      >
+        Save
+      </button>
+      <button
+        type='button'
+        onClick={onCancel}
+        disabled={busy}
+        className='rounded-lg px-2 py-1.5 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800'
+      >
+        <FiX />
+      </button>
     </div>
-  </>
+  </div>
 );
+
+const WorkflowPanel = ({ project }) => {
+  const [status, setStatus] = useState('loading');
+  const [statuses, setStatuses] = useState([]);
+  const [error, setError] = useState(null);
+  const [adding, setAdding] = useState(false);
+  const [newForm, setNewForm] = useState(DEFAULT_STATUS_FORM);
+  const [editingId, setEditingId] = useState(null);
+  const [editForm, setEditForm] = useState(DEFAULT_STATUS_FORM);
+  const [busy, setBusy] = useState(false);
+
+  const load = async () => {
+    setStatus('loading');
+    const response = await fetch(`/api/issueboard/projects/${encodeURIComponent(project.key)}/statuses`, {
+      headers: { Accept: 'application/json' }
+    });
+    const payload = await response.json().catch(() => null);
+    if (!response.ok || !payload?.ok) {
+      setError(payload?.error?.message || 'Could not load workflow statuses.');
+      setStatus('error');
+      return;
+    }
+    setStatuses(payload.statuses);
+    setStatus('ready');
+  };
+
+  useEffect(() => {
+    load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [project.key]);
+
+  const createStatus = async () => {
+    setBusy(true);
+    setError(null);
+    const response = await fetch(`/api/issueboard/projects/${encodeURIComponent(project.key)}/statuses`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify(toStatusPayload(newForm))
+    });
+    const payload = await response.json().catch(() => null);
+    setBusy(false);
+    if (!response.ok || !payload?.ok) {
+      setError(payload?.error?.message || 'Could not create the status.');
+      return;
+    }
+    setStatuses((current) => [...current, payload.status]);
+    setAdding(false);
+    setNewForm(DEFAULT_STATUS_FORM);
+  };
+
+  const beginEdit = (targetStatus) => {
+    setEditingId(targetStatus.id);
+    setEditForm({
+      name: targetStatus.name,
+      category: targetStatus.category,
+      color: targetStatus.color,
+      wipLimit: targetStatus.wipLimit ? String(targetStatus.wipLimit) : ''
+    });
+  };
+
+  const saveEdit = async () => {
+    setBusy(true);
+    setError(null);
+    const response = await fetch(`/api/issueboard/statuses/${editingId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify(toStatusPayload(editForm))
+    });
+    const payload = await response.json().catch(() => null);
+    setBusy(false);
+    if (!response.ok || !payload?.ok) {
+      setError(payload?.error?.message || 'Could not save the status.');
+      return;
+    }
+    setStatuses((current) => current.map((entry) => (entry.id === payload.status.id ? payload.status : entry)));
+    setEditingId(null);
+  };
+
+  const deleteStatus = async (statusId) => {
+    setBusy(true);
+    setError(null);
+    const response = await fetch(`/api/issueboard/statuses/${statusId}`, { method: 'DELETE' });
+    const payload = await response.json().catch(() => null);
+    setBusy(false);
+    if (!response.ok || !payload?.ok) {
+      setError(payload?.error?.message || 'Could not delete the status.');
+      return;
+    }
+    setStatuses((current) => current.filter((entry) => entry.id !== statusId));
+  };
+
+  const move = async (index, direction) => {
+    const target = index + direction;
+    if (target < 0 || target >= statuses.length) return;
+    const reordered = [...statuses];
+    [reordered[index], reordered[target]] = [reordered[target], reordered[index]];
+    setStatuses(reordered);
+    setBusy(true);
+    setError(null);
+    const response = await fetch(`/api/issueboard/projects/${encodeURIComponent(project.key)}/statuses/reorder`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ statusIds: reordered.map((entry) => entry.id) })
+    });
+    const payload = await response.json().catch(() => null);
+    setBusy(false);
+    if (!response.ok || !payload?.ok) {
+      setError(payload?.error?.message || 'Could not reorder statuses.');
+      setStatuses(statuses);
+      return;
+    }
+    setStatuses(payload.statuses);
+  };
+
+  return (
+    <>
+      <PanelHeading
+        title='Workflow statuses'
+        description='Control the order and work-in-progress limits used by sprint lanes.'
+        action='Add status'
+        onAction={() => setAdding((open) => !open)}
+      />
+      {status === 'loading' && <p className='text-sm text-slate-500'>Loading…</p>}
+      {status === 'error' && <p className='text-sm font-semibold text-rose-600 dark:text-rose-300'>{error}</p>}
+      {status === 'ready' && (
+        <div className='overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800'>
+          {statuses.map((entry, index) =>
+            editingId === entry.id ? (
+              <StatusEditRow
+                key={entry.id}
+                form={editForm}
+                onChange={setEditForm}
+                onSave={saveEdit}
+                onCancel={() => setEditingId(null)}
+                busy={busy}
+              />
+            ) : (
+              <div
+                key={entry.id}
+                className='grid grid-cols-[auto_auto_1fr_auto] items-center gap-3 border-b border-slate-100 px-3 py-2.5 last:border-0 dark:border-slate-800 sm:grid-cols-[auto_auto_1fr_8rem_5rem_auto]'
+              >
+                <div className='flex flex-col'>
+                  <button
+                    type='button'
+                    onClick={() => move(index, -1)}
+                    disabled={index === 0 || busy}
+                    aria-label={`Move ${entry.name} up`}
+                    className='text-slate-400 hover:text-slate-700 disabled:opacity-30 dark:hover:text-slate-200'
+                  >
+                    <FiArrowUp className='size-3.5' />
+                  </button>
+                  <button
+                    type='button'
+                    onClick={() => move(index, 1)}
+                    disabled={index === statuses.length - 1 || busy}
+                    aria-label={`Move ${entry.name} down`}
+                    className='text-slate-400 hover:text-slate-700 disabled:opacity-30 dark:hover:text-slate-200'
+                  >
+                    <FiArrowDown className='size-3.5' />
+                  </button>
+                </div>
+                <span className='size-2.5 rounded-full' style={{ backgroundColor: entry.color }} />
+                <strong className='truncate text-sm'>{entry.name}</strong>
+                <span className='hidden text-xs text-slate-500 sm:block'>{categoryLabel(entry.category)}</span>
+                <span className='text-right text-xs text-slate-500'>
+                  {entry.wipLimit ? `WIP ${entry.wipLimit}` : '—'}
+                </span>
+                <div className='flex justify-end gap-1'>
+                  <button
+                    type='button'
+                    onClick={() => beginEdit(entry)}
+                    className='rounded-lg px-2 py-1 text-xs font-semibold text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  >
+                    Edit
+                  </button>
+                  <button
+                    type='button'
+                    onClick={() => deleteStatus(entry.id)}
+                    disabled={busy}
+                    aria-label={`Delete ${entry.name}`}
+                    className='rounded-lg p-1.5 text-slate-400 hover:bg-rose-50 hover:text-rose-700 disabled:opacity-50 dark:hover:bg-rose-950'
+                  >
+                    <FiTrash2 className='size-3.5' />
+                  </button>
+                </div>
+              </div>
+            )
+          )}
+          {adding && (
+            <StatusEditRow
+              form={newForm}
+              onChange={setNewForm}
+              onSave={createStatus}
+              onCancel={() => setAdding(false)}
+              busy={busy}
+            />
+          )}
+        </div>
+      )}
+      {status === 'ready' && error && (
+        <p className='mt-2 text-xs font-semibold text-rose-600 dark:text-rose-300'>{error}</p>
+      )}
+    </>
+  );
+};
 
 const SimpleRows = ({ rows, action }) => (
   <div className='space-y-2'>
@@ -156,7 +401,7 @@ const SimpleRows = ({ rows, action }) => (
   </div>
 );
 
-const PanelHeading = ({ title, description, action }) => (
+const PanelHeading = ({ title, description, action, onAction }) => (
   <div className='mb-5 flex items-start justify-between gap-3'>
     <div>
       <h3 className='font-bold'>{title}</h3>
@@ -165,6 +410,7 @@ const PanelHeading = ({ title, description, action }) => (
     {action && (
       <button
         type='button'
+        onClick={onAction}
         className='inline-flex shrink-0 items-center gap-1 rounded-lg px-2 py-1.5 text-xs font-semibold text-emerald-700 hover:bg-emerald-50 dark:text-emerald-300 dark:hover:bg-emerald-950'
       >
         <FiPlus /> {action}
@@ -185,7 +431,7 @@ const SettingsPanel = ({
 }) => {
   if (section === 'Details')
     return <DetailsPanel project={project} form={form} onFieldChange={onFieldChange} saveError={saveError} />;
-  if (section === 'Workflow') return <WorkflowPanel />;
+  if (section === 'Workflow') return <WorkflowPanel project={project} />;
   if (section === 'Issue types')
     return (
       <>
