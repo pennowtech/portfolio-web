@@ -419,6 +419,218 @@ const PanelHeading = ({ title, description, action, onAction }) => (
   </div>
 );
 
+const LABEL_PALETTE = [
+  { backgroundColor: '#ede9fe', textColor: '#5b21b6' },
+  { backgroundColor: '#dbeafe', textColor: '#1e40af' },
+  { backgroundColor: '#d1fae5', textColor: '#065f46' },
+  { backgroundColor: '#fce7f3', textColor: '#9d174d' },
+  { backgroundColor: '#cffafe', textColor: '#155e75' },
+  { backgroundColor: '#ffedd5', textColor: '#9a3412' }
+];
+
+const LabelEditRow = ({ form, onChange, onSave, onCancel, busy }) => (
+  <div className='space-y-2 rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-950'>
+    <input
+      value={form.name}
+      onChange={(event) => onChange({ ...form, name: event.target.value })}
+      placeholder='Label name'
+      className='w-full rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm dark:border-slate-700 dark:bg-slate-900'
+    />
+    <div className='flex flex-wrap items-center gap-2'>
+      {LABEL_PALETTE.map((swatch) => (
+        <button
+          key={swatch.backgroundColor}
+          type='button'
+          onClick={() => onChange({ ...form, backgroundColor: swatch.backgroundColor, textColor: swatch.textColor })}
+          aria-label={`Use color ${swatch.backgroundColor}`}
+          className={`size-6 rounded-full border-2 ${form.backgroundColor === swatch.backgroundColor ? 'border-emerald-600' : 'border-transparent'}`}
+          style={{ backgroundColor: swatch.backgroundColor }}
+        />
+      ))}
+      <div className='ml-auto flex gap-1'>
+        <button
+          type='button'
+          onClick={onSave}
+          disabled={busy || !form.name.trim()}
+          className='rounded-lg bg-emerald-700 px-2.5 py-1.5 text-xs font-bold text-white hover:bg-emerald-800 disabled:cursor-wait disabled:opacity-60'
+        >
+          Save
+        </button>
+        <button
+          type='button'
+          onClick={onCancel}
+          disabled={busy}
+          className='rounded-lg px-2 py-1.5 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800'
+        >
+          <FiX />
+        </button>
+      </div>
+    </div>
+  </div>
+);
+
+const LabelsPanel = ({ project }) => {
+  const [status, setStatus] = useState('loading');
+  const [labels, setLabels] = useState([]);
+  const [error, setError] = useState(null);
+  const [adding, setAdding] = useState(false);
+  const [newName, setNewName] = useState('');
+  const [editingId, setEditingId] = useState(null);
+  const [editForm, setEditForm] = useState(null);
+  const [busy, setBusy] = useState(false);
+
+  const load = async () => {
+    setStatus('loading');
+    const response = await fetch(`/api/issueboard/projects/${encodeURIComponent(project.key)}/labels`, {
+      headers: { Accept: 'application/json' }
+    });
+    const payload = await response.json().catch(() => null);
+    if (!response.ok || !payload?.ok) {
+      setError(payload?.error?.message || 'Could not load labels.');
+      setStatus('error');
+      return;
+    }
+    setLabels(payload.labels);
+    setStatus('ready');
+  };
+
+  useEffect(() => {
+    load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [project.key]);
+
+  const createLabel = async () => {
+    setBusy(true);
+    setError(null);
+    const response = await fetch(`/api/issueboard/projects/${encodeURIComponent(project.key)}/labels`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ name: newName })
+    });
+    const payload = await response.json().catch(() => null);
+    setBusy(false);
+    if (!response.ok || !payload?.ok) {
+      setError(payload?.error?.message || 'Could not create the label.');
+      return;
+    }
+    setLabels((current) => [...current, payload.label].sort((a, b) => a.name.localeCompare(b.name)));
+    setAdding(false);
+    setNewName('');
+  };
+
+  const beginEdit = (label) => {
+    setEditingId(label.id);
+    setEditForm({ name: label.name, backgroundColor: label.backgroundColor, textColor: label.textColor });
+  };
+
+  const saveEdit = async () => {
+    setBusy(true);
+    setError(null);
+    const response = await fetch(`/api/issueboard/labels/${editingId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify(editForm)
+    });
+    const payload = await response.json().catch(() => null);
+    setBusy(false);
+    if (!response.ok || !payload?.ok) {
+      setError(payload?.error?.message || 'Could not save the label.');
+      return;
+    }
+    setLabels((current) =>
+      current
+        .map((entry) => (entry.id === payload.label.id ? payload.label : entry))
+        .sort((a, b) => a.name.localeCompare(b.name))
+    );
+    setEditingId(null);
+  };
+
+  const deleteLabel = async (labelId) => {
+    setBusy(true);
+    setError(null);
+    const response = await fetch(`/api/issueboard/labels/${labelId}`, { method: 'DELETE' });
+    const payload = await response.json().catch(() => null);
+    setBusy(false);
+    if (!response.ok || !payload?.ok) {
+      setError(payload?.error?.message || 'Could not delete the label.');
+      return;
+    }
+    setLabels((current) => current.filter((entry) => entry.id !== labelId));
+  };
+
+  return (
+    <>
+      <PanelHeading
+        title='Labels'
+        description='Reusable categories. API-supplied unknown labels are created automatically.'
+        action='Create label'
+        onAction={() => setAdding((open) => !open)}
+      />
+      {status === 'loading' && <p className='text-sm text-slate-500'>Loading…</p>}
+      {status === 'error' && <p className='text-sm font-semibold text-rose-600 dark:text-rose-300'>{error}</p>}
+      {status === 'ready' && (
+        <div className='space-y-2'>
+          {adding && (
+            <LabelEditRow
+              form={{ name: newName, backgroundColor: LABEL_PALETTE[0].backgroundColor }}
+              onChange={(form) => setNewName(form.name)}
+              onSave={createLabel}
+              onCancel={() => setAdding(false)}
+              busy={busy}
+            />
+          )}
+          {labels.length === 0 && !adding && <p className='text-sm text-slate-500'>No labels yet.</p>}
+          {labels.map((label) =>
+            editingId === label.id ? (
+              <LabelEditRow
+                key={label.id}
+                form={editForm}
+                onChange={setEditForm}
+                onSave={saveEdit}
+                onCancel={() => setEditingId(null)}
+                busy={busy}
+              />
+            ) : (
+              <div
+                key={label.id}
+                className='flex items-center gap-3 rounded-xl border border-slate-200 px-3 py-2.5 dark:border-slate-800'
+              >
+                <span
+                  className='inline-flex rounded-full px-2.5 py-1 text-xs font-bold'
+                  style={{ backgroundColor: label.backgroundColor, color: label.textColor }}
+                >
+                  {label.name}
+                </span>
+                <div className='ml-auto flex gap-1'>
+                  <button
+                    type='button'
+                    onClick={() => beginEdit(label)}
+                    className='rounded-lg px-2 py-1 text-xs font-semibold text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  >
+                    Edit
+                  </button>
+                  <button
+                    type='button'
+                    onClick={() => deleteLabel(label.id)}
+                    disabled={busy}
+                    aria-label={`Delete ${label.name}`}
+                    className='rounded-lg p-1.5 text-slate-400 hover:bg-rose-50 hover:text-rose-700 disabled:opacity-50 dark:hover:bg-rose-950'
+                  >
+                    <FiTrash2 className='size-3.5' />
+                  </button>
+                </div>
+              </div>
+            )
+          )}
+        </div>
+      )}
+      {status === 'ready' && error && (
+        <p className='mt-2 text-xs font-semibold text-rose-600 dark:text-rose-300'>{error}</p>
+      )}
+    </>
+  );
+};
+
 const SettingsPanel = ({
   section,
   project,
@@ -470,25 +682,7 @@ const SettingsPanel = ({
         />
       </>
     );
-  if (section === 'Labels')
-    return (
-      <>
-        <PanelHeading
-          title='Labels'
-          description='Reusable categories. API-supplied unknown labels are created automatically.'
-          action='Create label'
-        />
-        <SimpleRows
-          action='Edit'
-          rows={[
-            { name: 'bug', detail: 'Defect or regression', color: 'bg-rose-500' },
-            { name: 'enhancement', detail: 'Product improvement', color: 'bg-indigo-500' },
-            { name: 'security', detail: 'Security-related work', color: 'bg-amber-500' },
-            { name: 'documentation', detail: 'Content and guides', color: 'bg-teal-500' }
-          ]}
-        />
-      </>
-    );
+  if (section === 'Labels') return <LabelsPanel project={project} />;
   if (section === 'Access')
     return (
       <>
