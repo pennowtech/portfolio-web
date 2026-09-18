@@ -184,7 +184,7 @@ const ProjectCard = ({ project, openCount }) => {
           {menuOpen && (
             <div className='absolute right-0 top-9 z-10 w-40 rounded-xl border border-slate-200 bg-white p-1 text-xs shadow-lg dark:border-slate-700 dark:bg-slate-900'>
               <Link
-                href={workspaceHref('settings')}
+                href={workspaceHref('settings', { project: project.key })}
                 className='flex items-center gap-2 rounded-lg px-2.5 py-2 hover:bg-slate-100 dark:hover:bg-slate-800'
               >
                 <FiSettings /> Project settings
@@ -200,7 +200,7 @@ const ProjectCard = ({ project, openCount }) => {
       <div className='mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4 dark:border-slate-800'>
         <span className='text-[11px] text-slate-500'>Created {new Date(project.createdAt).toLocaleDateString()}</span>
         <Link
-          href={workspaceHref('overview')}
+          href={workspaceHref('overview', { project: project.key })}
           className='inline-flex items-center gap-1 text-xs font-bold text-emerald-700 hover:underline dark:text-emerald-300'
         >
           Open project <FiArrowRight />

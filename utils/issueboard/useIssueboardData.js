@@ -1,6 +1,14 @@
 import { useCallback, useEffect, useState } from 'react';
 
-const initialState = { status: 'loading', project: null, issues: [], statuses: [], sprints: [], error: null };
+const initialState = {
+  status: 'loading',
+  project: null,
+  projects: [],
+  issues: [],
+  statuses: [],
+  sprints: [],
+  error: null
+};
 
 const jsonFetch = async (url, init) => {
   const response = await fetch(url, {
@@ -18,11 +26,13 @@ const throwFromResponse = (payload, fallbackMessage) => {
   throw error;
 };
 
-// Loads the first available project, its issues, statuses, and sprints.
+// Loads the selected project (by key, falling back to the first available
+// one when no key is given or it doesn't match a real project), its issues,
+// statuses, and sprints, alongside the full project list for the switcher.
 // Distinguishes a temporarily unavailable datastore (§3.2) from a workspace
 // that genuinely has no projects yet, so the UI never renders an
 // unavailable board as empty.
-export const useIssueboardData = () => {
+export const useIssueboardData = (projectKey) => {
   const [state, setState] = useState(initialState);
 
   const load = useCallback(async () => {
@@ -33,6 +43,7 @@ export const useIssueboardData = () => {
         setState({
           status: 'unavailable',
           project: null,
+          projects: [],
           issues: [],
           statuses: [],
           sprints: [],
@@ -41,9 +52,18 @@ export const useIssueboardData = () => {
         return;
       }
 
-      const project = projectsPayload.projects[0] || null;
+      const projects = projectsPayload.projects;
+      const project = projects.find((entry) => entry.key === projectKey) || projects[0] || null;
       if (!project) {
-        setState({ status: 'no-projects', project: null, issues: [], statuses: [], sprints: [], error: null });
+        setState({
+          status: 'no-projects',
+          project: null,
+          projects: [],
+          issues: [],
+          statuses: [],
+          sprints: [],
+          error: null
+        });
         return;
       }
 
@@ -56,6 +76,7 @@ export const useIssueboardData = () => {
         setState({
           status: 'unavailable',
           project,
+          projects,
           issues: [],
           statuses: [],
           sprints: [],
@@ -67,6 +88,7 @@ export const useIssueboardData = () => {
       setState({
         status: 'ready',
         project,
+        projects,
         issues: issuesResult.payload.issues,
         statuses: statusesResult.ok && statusesResult.payload?.ok ? statusesResult.payload.statuses : [],
         sprints: sprintsResult.ok && sprintsResult.payload?.ok ? sprintsResult.payload.sprints : [],
@@ -77,13 +99,14 @@ export const useIssueboardData = () => {
       setState({
         status: 'unavailable',
         project: null,
+        projects: [],
         issues: [],
         statuses: [],
         sprints: [],
         error: 'Issue management could not be reached. Check your connection and try again.'
       });
     }
-  }, []);
+  }, [projectKey]);
 
   useEffect(() => {
     load();

@@ -30,63 +30,107 @@ const navigation = [
   { view: 'settings', label: 'Settings', icon: FiSettings }
 ];
 
-const Sidebar = ({ adminEmail, currentView }) => (
-  <aside className='flex h-full w-[17rem] shrink-0 flex-col overflow-y-auto bg-emerald-950 px-4 py-5 text-emerald-50'>
-    <div className='flex items-center gap-3 px-2 pb-6'>
-      <div className='grid size-10 place-items-center rounded-xl bg-emerald-300 font-Inter font-bold text-emerald-950'>
-        IB
+const Sidebar = ({ adminEmail, currentView, currentProject, projects = [] }) => {
+  const [switcherOpen, setSwitcherOpen] = useState(false);
+  const navExtra = currentProject ? { project: currentProject.key } : {};
+
+  return (
+    <aside className='flex h-full w-[17rem] shrink-0 flex-col overflow-y-auto bg-emerald-950 px-4 py-5 text-emerald-50'>
+      <div className='flex items-center gap-3 px-2 pb-6'>
+        <div className='grid size-10 place-items-center rounded-xl bg-emerald-300 font-Inter font-bold text-emerald-950'>
+          IB
+        </div>
+        <div>
+          <strong className='block font-Inter text-base'>Issueboard</strong>
+          <span className='text-xs text-emerald-200/60'>SinghBuildsTech workspace</span>
+        </div>
       </div>
-      <div>
-        <strong className='block font-Inter text-base'>Issueboard</strong>
-        <span className='text-xs text-emerald-200/60'>SinghBuildsTech workspace</span>
-      </div>
-    </div>
-    <button
-      type='button'
-      className='flex w-full items-center justify-between rounded-xl border border-emerald-800 bg-emerald-900/70 px-3 py-2.5 text-left'
-    >
-      <span>
-        <small className='block text-[10px] text-emerald-200/60'>Current project</small>
-        <strong className='text-sm'>Portfolio Website</strong>
-      </span>
-      <FiChevronDown aria-hidden='true' />
-    </button>
-    <p className='mb-2 mt-7 px-2 text-[10px] font-bold uppercase tracking-[.16em] text-emerald-300/50'>
-      Plan and deliver
-    </p>
-    <nav aria-label='Issueboard navigation' className='space-y-1'>
-      {navigation.map(({ view, label, icon: Icon }) => (
-        <Link
-          key={view}
-          href={workspaceHref(view)}
-          className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition ${
-            currentView === view
-              ? 'bg-emerald-800 text-white shadow-[inset_3px_0_0_#6ee7a4]'
-              : 'text-emerald-100/70 hover:bg-emerald-900 hover:text-white'
-          }`}
-        >
-          <Icon aria-hidden='true' />
-          {label}
-        </Link>
-      ))}
-    </nav>
-    <div className='mt-auto border-t border-emerald-800 pt-4'>
-      <p className='truncate text-xs text-emerald-100/60'>{adminEmail}</p>
-      <div className='mt-3 flex items-center justify-between'>
-        <ThemeToggle />
+      <div className='relative'>
         <button
           type='button'
-          onClick={() => signOut({ callbackUrl: '/admin/login' })}
-          className='rounded-lg px-2 py-1 text-xs font-semibold text-emerald-100/70 hover:bg-emerald-900 hover:text-white'
+          onClick={() => setSwitcherOpen((open) => !open)}
+          aria-expanded={switcherOpen}
+          disabled={projects.length === 0}
+          className='flex w-full items-center justify-between rounded-xl border border-emerald-800 bg-emerald-900/70 px-3 py-2.5 text-left disabled:cursor-default'
         >
-          Sign out
+          <span className='min-w-0'>
+            <small className='block text-[10px] text-emerald-200/60'>Current project</small>
+            <strong className='block truncate text-sm'>{currentProject?.name || 'No project'}</strong>
+          </span>
+          {projects.length > 0 && <FiChevronDown aria-hidden='true' className='shrink-0' />}
         </button>
+        {switcherOpen && (
+          <div className='absolute inset-x-0 top-full z-10 mt-1.5 overflow-hidden rounded-xl border border-emerald-800 bg-emerald-900 shadow-xl'>
+            {projects.map((project) => (
+              <Link
+                key={project.key}
+                href={workspaceHref(currentView, { project: project.key })}
+                onClick={() => setSwitcherOpen(false)}
+                className={`flex items-center justify-between gap-2 px-3 py-2.5 text-sm ${
+                  project.key === currentProject?.key
+                    ? 'bg-emerald-800 font-semibold text-white'
+                    : 'text-emerald-100/80 hover:bg-emerald-800/60 hover:text-white'
+                }`}
+              >
+                <span className='min-w-0 truncate'>{project.name}</span>
+                <span className='shrink-0 text-[10px] font-bold uppercase text-emerald-300/70'>{project.key}</span>
+              </Link>
+            ))}
+            <Link
+              href={workspaceHref('projects')}
+              onClick={() => setSwitcherOpen(false)}
+              className='block border-t border-emerald-800 px-3 py-2.5 text-xs font-semibold text-emerald-300 hover:bg-emerald-800/60'
+            >
+              Manage projects
+            </Link>
+          </div>
+        )}
       </div>
-    </div>
-  </aside>
-);
+      <p className='mb-2 mt-7 px-2 text-[10px] font-bold uppercase tracking-[.16em] text-emerald-300/50'>
+        Plan and deliver
+      </p>
+      <nav aria-label='Issueboard navigation' className='space-y-1'>
+        {navigation.map(({ view, label, icon: Icon }) => (
+          <Link
+            key={view}
+            href={workspaceHref(view, navExtra)}
+            className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition ${
+              currentView === view
+                ? 'bg-emerald-800 text-white shadow-[inset_3px_0_0_#6ee7a4]'
+                : 'text-emerald-100/70 hover:bg-emerald-900 hover:text-white'
+            }`}
+          >
+            <Icon aria-hidden='true' />
+            {label}
+          </Link>
+        ))}
+      </nav>
+      <div className='mt-auto border-t border-emerald-800 pt-4'>
+        <p className='truncate text-xs text-emerald-100/60'>{adminEmail}</p>
+        <div className='mt-3 flex items-center justify-between'>
+          <ThemeToggle />
+          <button
+            type='button'
+            onClick={() => signOut({ callbackUrl: '/admin/login' })}
+            className='rounded-lg px-2 py-1 text-xs font-semibold text-emerald-100/70 hover:bg-emerald-900 hover:text-white'
+          >
+            Sign out
+          </button>
+        </div>
+      </div>
+    </aside>
+  );
+};
 
-const IssueboardShell = ({ adminEmail, currentView = 'overview', title, onCreate, children }) => {
+const IssueboardShell = ({
+  adminEmail,
+  currentView = 'overview',
+  currentProject,
+  projects,
+  title,
+  onCreate,
+  children
+}) => {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -106,7 +150,12 @@ const IssueboardShell = ({ adminEmail, currentView = 'overview', title, onCreate
   return (
     <div className='min-h-screen bg-slate-100 font-Inter text-slate-900 dark:bg-slate-950 dark:text-slate-100'>
       <div className='fixed inset-y-0 left-0 z-40 hidden lg:block'>
-        <Sidebar adminEmail={adminEmail} currentView={currentView} />
+        <Sidebar
+          adminEmail={adminEmail}
+          currentView={currentView}
+          currentProject={currentProject}
+          projects={projects}
+        />
       </div>
       {menuOpen && (
         <div className='fixed inset-0 z-50 lg:hidden'>
@@ -117,7 +166,12 @@ const IssueboardShell = ({ adminEmail, currentView = 'overview', title, onCreate
             onClick={() => setMenuOpen(false)}
           />
           <div className='relative h-full w-[min(86vw,17rem)]'>
-            <Sidebar adminEmail={adminEmail} currentView={currentView} />
+            <Sidebar
+              adminEmail={adminEmail}
+              currentView={currentView}
+              currentProject={currentProject}
+              projects={projects}
+            />
             <button
               type='button'
               aria-label='Close menu'
@@ -140,7 +194,9 @@ const IssueboardShell = ({ adminEmail, currentView = 'overview', title, onCreate
             <FiMenu />
           </button>
           <div className='min-w-0 flex-1'>
-            <span className='hidden text-[11px] text-slate-500 sm:block'>Issueboard / Portfolio Website</span>
+            <span className='hidden text-[11px] text-slate-500 sm:block'>
+              Issueboard{currentProject ? ` / ${currentProject.name}` : ''}
+            </span>
             <h1 className='truncate text-lg font-bold tracking-tight'>{title}</h1>
           </div>
           {onCreate && (
