@@ -11,8 +11,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "db:migrate": "node scripts/db-migrate.mjs",
-    "db:migrate:dry-run": "node scripts/db-migrate.mjs --dry-run",
+    "db:migrate": "node --use-system-ca scripts/db-migrate.mjs",
+    "db:migrate:dry-run": "node --use-system-ca scripts/db-migrate.mjs --dry-run",
     "prepare": "husky",
     "commit": "git add . && git-cz"
   },
