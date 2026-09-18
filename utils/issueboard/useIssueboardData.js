@@ -158,6 +158,20 @@ export const useIssueboardData = (projectKey) => {
     return payload.issue;
   }, []);
 
+  const setIssueWorkState = useCallback(async (issue, workState) => {
+    const { ok, payload } = await jsonFetch(`/api/issueboard/issues/${encodeURIComponent(issue.key)}/work-state`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ workState })
+    });
+    if (!ok || !payload?.ok) throwFromResponse(payload, 'Could not update the issue state.');
+    setState((current) => ({
+      ...current,
+      issues: current.issues.map((entry) => (entry.id === payload.issue.id ? payload.issue : entry))
+    }));
+    return payload.issue;
+  }, []);
+
   const createSprint = useCallback(
     async (input) => {
       if (!state.project) throw new Error('No project selected.');
@@ -228,6 +242,7 @@ export const useIssueboardData = (projectKey) => {
     createIssue,
     moveIssueStatus,
     moveIssueSprint,
+    setIssueWorkState,
     createSprint,
     startSprint,
     completeSprint,

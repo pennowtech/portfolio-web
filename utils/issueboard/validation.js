@@ -194,6 +194,12 @@ export const setIssueSprintSchema = z
   })
   .strict();
 
+export const setIssueWorkStateSchema = z
+  .object({
+    workState: z.enum(['normal', 'blocked', 'rejected'])
+  })
+  .strict();
+
 export const validationErrorResponse = (error) => ({
   code: 'VALIDATION_ERROR',
   message: 'Check the submitted project fields.',

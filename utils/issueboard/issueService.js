@@ -124,6 +124,19 @@ export const setIssueSprint = async (projectKey, issueNumber, sprintId, actor) =
   return getIssueByKey(projectKey, issueNumber);
 };
 
+export const setIssueWorkState = async (projectKey, issueNumber, workState, actor) => {
+  const current = await getIssueByKey(projectKey, issueNumber);
+  if (!current) return null;
+
+  const { error } = await getIssueboardSupabaseAdmin().rpc('issueboard_set_issue_work_state', {
+    issue_id_input: current.id,
+    work_state_input: workState,
+    actor_input: actor
+  });
+  if (error) throw error;
+  return getIssueByKey(projectKey, issueNumber);
+};
+
 export const listSubtasks = async (projectKey, issueNumber) => {
   const project = await getProjectByKey(projectKey);
   if (!project) return null;
