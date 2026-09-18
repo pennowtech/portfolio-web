@@ -28,6 +28,25 @@ export const setProjectArchivedSchema = z
   })
   .strict();
 
+const statusFieldsSchema = {
+  name: z.string().trim().min(1).max(50),
+  category: z.enum(['backlog', 'todo', 'in_progress', 'done']),
+  color: z
+    .string()
+    .trim()
+    .regex(/^#[0-9a-f]{6}$/i, 'Use a hex color like #10b981.'),
+  wipLimit: z.number().int().positive().max(999).optional()
+};
+
+export const createStatusSchema = z.object(statusFieldsSchema).strict();
+export const updateStatusSchema = z.object(statusFieldsSchema).strict();
+
+export const reorderStatusesSchema = z
+  .object({
+    statusIds: z.array(z.string().uuid()).min(1)
+  })
+  .strict();
+
 export const createIssueSchema = z
   .object({
     projectKey: z

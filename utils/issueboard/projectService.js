@@ -38,6 +38,15 @@ export const getProjectByKey = async (projectKey) => {
   return data ? toProject(data) : null;
 };
 
+const toStatus = (status) => ({
+  id: status.id,
+  name: status.name,
+  category: status.category,
+  color: status.color,
+  position: status.position,
+  wipLimit: status.wip_limit
+});
+
 export const listStatuses = async (projectId) => {
   const { data, error } = await getIssueboardSupabaseAdmin()
     .from('issueboard_statuses')
@@ -45,14 +54,7 @@ export const listStatuses = async (projectId) => {
     .eq('project_id', projectId)
     .order('position');
   if (error) throw error;
-  return data.map((status) => ({
-    id: status.id,
-    name: status.name,
-    category: status.category,
-    color: status.color,
-    position: status.position,
-    wipLimit: status.wip_limit
-  }));
+  return data.map(toStatus);
 };
 
 export const createProject = async ({ projectKey, name, description, defaultIssueType }, actor) => {
@@ -99,4 +101,61 @@ export const setProjectArchived = async (projectKey, archived, actor) => {
   });
   if (rpcError) throw rpcError;
   return toProject(updated);
+};
+
+export const createStatus = async (projectKey, { name, category, color, wipLimit }, actor) => {
+  const project = await getProjectByKey(projectKey);
+  if (!project) return null;
+
+  const { data, error } = await getIssueboardSupabaseAdmin().rpc('issueboard_create_status', {
+    project_id_input: project.id,
+    name_input: name,
+    category_input: category,
+    color_input: color,
+    wip_limit_input: wipLimit ?? null,
+    actor_input: actor
+  });
+  if (error) throw error;
+  return toStatus(data);
+};
+
+export const updateStatus = async (statusId, { name, category, color, wipLimit }, actor) => {
+  const { data, error } = await getIssueboardSupabaseAdmin().rpc('issueboard_update_status', {
+    status_id_input: statusId,
+    name_input: name,
+    category_input: category,
+    color_input: color,
+    wip_limit_input: wipLimit ?? null,
+    actor_input: actor
+  });
+  if (error) {
+    if (error.message === 'Status not found') return null;
+    throw error;
+  }
+  return toStatus(data);
+};
+
+export const deleteStatus = async (statusId, actor) => {
+  const { error } = await getIssueboardSupabaseAdmin().rpc('issueboard_delete_status', {
+    status_id_input: statusId,
+    actor_input: actor
+  });
+  if (error) {
+    if (error.message === 'Status not found') return false;
+    throw error;
+  }
+  return true;
+};
+
+export const reorderStatuses = async (projectKey, orderedStatusIds, actor) => {
+  const project = await getProjectByKey(projectKey);
+  if (!project) return null;
+
+  const { data, error } = await getIssueboardSupabaseAdmin().rpc('issueboard_reorder_statuses', {
+    project_id_input: project.id,
+    ordered_status_ids: orderedStatusIds,
+    actor_input: actor
+  });
+  if (error) throw error;
+  return data.map(toStatus);
 };
