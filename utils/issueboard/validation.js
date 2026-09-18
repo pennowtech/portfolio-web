@@ -13,6 +13,21 @@ export const createProjectSchema = z
   })
   .strict();
 
+export const updateProjectSchema = z
+  .object({
+    name: z.string().trim().min(2).max(100),
+    description: z.string().trim().max(2000).default(''),
+    defaultIssueType: z.enum(['task', 'story', 'bug', 'epic', 'feature', 'improvement', 'research']),
+    defaultPriority: z.enum(['highest', 'high', 'medium', 'low', 'lowest'])
+  })
+  .strict();
+
+export const setProjectArchivedSchema = z
+  .object({
+    archived: z.boolean()
+  })
+  .strict();
+
 export const createIssueSchema = z
   .object({
     projectKey: z
