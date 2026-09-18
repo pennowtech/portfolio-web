@@ -26,14 +26,16 @@ const PageIntro = ({ title, description, action, icon: Icon, onAction, actionDis
       <h2 className='text-xl font-bold tracking-tight'>{title}</h2>
       <p className='mt-1 text-sm text-slate-500 dark:text-slate-400'>{description}</p>
     </div>
-    <button
-      type='button'
-      onClick={onAction}
-      disabled={actionDisabled}
-      className='button inline-flex w-fit items-center gap-2 text-sm disabled:cursor-wait disabled:opacity-60'
-    >
-      <Icon aria-hidden='true' /> {action}
-    </button>
+    {action && (
+      <button
+        type='button'
+        onClick={onAction}
+        disabled={actionDisabled}
+        className='button inline-flex w-fit items-center gap-2 text-sm disabled:cursor-wait disabled:opacity-60'
+      >
+        <Icon aria-hidden='true' /> {action}
+      </button>
+    )}
   </div>
 );
 
@@ -46,39 +48,55 @@ const Field = ({ label, children, full = false }) => (
   </label>
 );
 
-const DetailsPanel = () => (
+const ISSUE_TYPE_OPTIONS = ['task', 'story', 'bug', 'epic', 'feature', 'improvement', 'research'];
+const PRIORITY_OPTIONS = ['highest', 'high', 'medium', 'low', 'lowest'];
+const capitalize = (value) => value.charAt(0).toUpperCase() + value.slice(1);
+
+const DetailsPanel = ({ project, form, onFieldChange, saveError }) => (
   <>
     <PanelHeading title='Project details' description='Names, defaults, and dates shown throughout the workspace.' />
     <div className='grid gap-4 sm:grid-cols-2'>
       <Field label='Project name'>
-        <input className={control} defaultValue='Portfolio Website' />
+        <input className={control} value={form.name} onChange={(event) => onFieldChange('name', event.target.value)} />
       </Field>
       <Field label='Project key'>
-        <input className={control} defaultValue='PORT' disabled />
+        <input className={control} value={project.key} disabled />
       </Field>
       <Field label='Description' full>
         <textarea
           className={`${control} min-h-24 resize-y`}
-          defaultValue='Website, publishing, issueboard, and platform work.'
+          value={form.description}
+          onChange={(event) => onFieldChange('description', event.target.value)}
         />
       </Field>
       <Field label='Default issue type'>
-        <select className={control} defaultValue='Task'>
-          <option>Task</option>
-          <option>Story</option>
-          <option>Bug</option>
-          <option>Epic</option>
+        <select
+          className={control}
+          value={form.defaultIssueType}
+          onChange={(event) => onFieldChange('defaultIssueType', event.target.value)}
+        >
+          {ISSUE_TYPE_OPTIONS.map((type) => (
+            <option key={type} value={type}>
+              {capitalize(type)}
+            </option>
+          ))}
         </select>
       </Field>
       <Field label='Default priority'>
-        <select className={control} defaultValue='Medium'>
-          <option>Highest</option>
-          <option>High</option>
-          <option>Medium</option>
-          <option>Low</option>
+        <select
+          className={control}
+          value={form.defaultPriority}
+          onChange={(event) => onFieldChange('defaultPriority', event.target.value)}
+        >
+          {PRIORITY_OPTIONS.map((priority) => (
+            <option key={priority} value={priority}>
+              {capitalize(priority)}
+            </option>
+          ))}
         </select>
       </Field>
     </div>
+    {saveError && <p className='mt-4 text-xs font-semibold text-rose-600 dark:text-rose-300'>{saveError}</p>}
   </>
 );
 
@@ -155,8 +173,18 @@ const PanelHeading = ({ title, description, action }) => (
   </div>
 );
 
-const SettingsPanel = ({ section }) => {
-  if (section === 'Details') return <DetailsPanel />;
+const SettingsPanel = ({
+  section,
+  project,
+  form,
+  onFieldChange,
+  saveError,
+  archiveState,
+  onArchive,
+  onCancelArchive
+}) => {
+  if (section === 'Details')
+    return <DetailsPanel project={project} form={form} onFieldChange={onFieldChange} saveError={saveError} />;
   if (section === 'Workflow') return <WorkflowPanel />;
   if (section === 'Issue types')
     return (
@@ -240,32 +268,114 @@ const SettingsPanel = ({ section }) => {
     <>
       <PanelHeading
         title='Danger zone'
-        description='Irreversible project operations are isolated from ordinary settings.'
+        description='Archiving hides the project from the workspace and prevents new work while preserving issues and audit history.'
       />
       <div className='rounded-xl border border-rose-200 p-4 dark:border-rose-900'>
         <strong className='text-sm text-rose-700 dark:text-rose-300'>Archive this project</strong>
         <p className='mt-1 text-sm text-slate-500'>
-          Hide the project and prevent new work while preserving issues and audit history.
+          Hide {project.name} and prevent new work while preserving issues and audit history.
         </p>
-        <button
-          type='button'
-          className='mt-4 rounded-lg border border-rose-300 px-3 py-2 text-xs font-bold text-rose-700 hover:bg-rose-50 dark:border-rose-800 dark:text-rose-300 dark:hover:bg-rose-950'
-        >
-          Archive project
-        </button>
+        {archiveState.error && (
+          <p className='mt-2 text-xs font-semibold text-rose-600 dark:text-rose-300'>{archiveState.error}</p>
+        )}
+        {archiveState.confirming ? (
+          <div className='mt-4 flex flex-wrap items-center gap-2'>
+            <span className='text-xs font-semibold text-rose-700 dark:text-rose-300'>Archive {project.name}?</span>
+            <button
+              type='button'
+              onClick={onArchive}
+              disabled={archiveState.busy}
+              className='rounded-lg bg-rose-700 px-3 py-2 text-xs font-bold text-white hover:bg-rose-800 disabled:cursor-wait disabled:opacity-60'
+            >
+              {archiveState.busy ? 'Archiving…' : 'Yes, archive it'}
+            </button>
+            <button
+              type='button'
+              onClick={onCancelArchive}
+              disabled={archiveState.busy}
+              className='rounded-lg px-3 py-2 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800'
+            >
+              Cancel
+            </button>
+          </div>
+        ) : (
+          <button
+            type='button'
+            onClick={onArchive}
+            className='mt-4 rounded-lg border border-rose-300 px-3 py-2 text-xs font-bold text-rose-700 hover:bg-rose-50 dark:border-rose-800 dark:text-rose-300 dark:hover:bg-rose-950'
+          >
+            Archive project
+          </button>
+        )}
       </div>
     </>
   );
 };
 
-export const ProjectSettingsView = () => {
+export const ProjectSettingsView = ({ project, onProjectUpdated, onProjectArchived }) => {
   const [section, setSection] = useState('Details');
+  const [form, setForm] = useState({
+    name: project.name,
+    description: project.description || '',
+    defaultIssueType: project.defaultIssueType,
+    defaultPriority: project.defaultPriority
+  });
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState(null);
+  const [archiveState, setArchiveState] = useState({ confirming: false, busy: false, error: null });
+
+  const onFieldChange = (field, value) => setForm((current) => ({ ...current, [field]: value }));
+
+  const saveDetails = async () => {
+    setSaving(true);
+    setSaveError(null);
+    const response = await fetch(`/api/issueboard/projects/${encodeURIComponent(project.key)}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify(form)
+    });
+    const payload = await response.json().catch(() => null);
+    setSaving(false);
+    if (!response.ok || !payload?.ok) {
+      setSaveError(payload?.error?.message || 'Could not save project settings.');
+      return;
+    }
+    onProjectUpdated?.(payload.project);
+  };
+
+  const onArchive = async () => {
+    if (!archiveState.confirming) {
+      setArchiveState({ confirming: true, busy: false, error: null });
+      return;
+    }
+    setArchiveState((current) => ({ ...current, busy: true, error: null }));
+    const response = await fetch(`/api/issueboard/projects/${encodeURIComponent(project.key)}/archive`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ archived: true })
+    });
+    const payload = await response.json().catch(() => null);
+    if (!response.ok || !payload?.ok) {
+      setArchiveState({
+        confirming: true,
+        busy: false,
+        error: payload?.error?.message || 'Could not archive the project.'
+      });
+      return;
+    }
+    setArchiveState({ confirming: false, busy: false, error: null });
+    onProjectArchived?.();
+  };
+  const onCancelArchive = () => setArchiveState({ confirming: false, busy: false, error: null });
+
   return (
     <section>
       <PageIntro
         title='Project settings'
-        description='Configure Portfolio Website without weakening shared security rules.'
-        action='Save settings'
+        description={`Configure ${project.name} without weakening shared security rules.`}
+        action={section === 'Details' ? (saving ? 'Saving…' : 'Save settings') : undefined}
+        onAction={saveDetails}
+        actionDisabled={saving}
         icon={FiSave}
       />
       <div className='grid gap-4 lg:grid-cols-[13rem_minmax(0,1fr)]'>
@@ -285,7 +395,16 @@ export const ProjectSettingsView = () => {
           ))}
         </nav>
         <article className={`${surface} min-w-0 p-5 md:p-6`}>
-          <SettingsPanel section={section} />
+          <SettingsPanel
+            section={section}
+            project={project}
+            form={form}
+            onFieldChange={onFieldChange}
+            saveError={saveError}
+            archiveState={archiveState}
+            onArchive={onArchive}
+            onCancelArchive={onCancelArchive}
+          />
         </article>
       </div>
     </section>

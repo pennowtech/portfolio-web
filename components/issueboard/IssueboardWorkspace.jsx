@@ -1066,7 +1066,16 @@ const IssueboardWorkspace = ({ adminEmail }) => {
       {view === 'reports' && <ReportsView project={data.project} />}
       {view === 'projects' && <ProjectsView />}
       {view === 'integrations' && <IntegrationsHealthView />}
-      {view === 'settings' && <ProjectSettingsView />}
+      {view === 'settings' && data.project && (
+        <ProjectSettingsView
+          project={data.project}
+          onProjectUpdated={data.reload}
+          onProjectArchived={() => {
+            data.reload();
+            router.push('/admin/issues?view=projects');
+          }}
+        />
+      )}
       {!['overview', 'backlog', 'board', 'reports', 'projects', 'integrations', 'settings'].includes(view) && (
         <PlaceholderView view={view} />
       )}

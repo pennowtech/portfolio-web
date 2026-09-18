@@ -66,3 +66,37 @@ export const createProject = async ({ projectKey, name, description, defaultIssu
   if (error) throw error;
   return toProject(data);
 };
+
+export const updateProject = async (projectKey, { name, description, defaultIssueType, defaultPriority }, actor) => {
+  const current = await getProjectByKey(projectKey);
+  if (!current) return null;
+
+  const { data, error } = await getIssueboardSupabaseAdmin().rpc('issueboard_update_project', {
+    project_id_input: current.id,
+    name_input: name,
+    description_input: description,
+    default_issue_type_input: defaultIssueType,
+    default_priority_input: defaultPriority,
+    actor_input: actor
+  });
+  if (error) throw error;
+  return toProject(data);
+};
+
+export const setProjectArchived = async (projectKey, archived, actor) => {
+  const { data, error } = await getIssueboardSupabaseAdmin()
+    .from('issueboard_projects')
+    .select('id')
+    .eq('project_key', projectKey.toUpperCase())
+    .maybeSingle();
+  if (error) throw error;
+  if (!data) return null;
+
+  const { data: updated, error: rpcError } = await getIssueboardSupabaseAdmin().rpc('issueboard_set_project_archived', {
+    project_id_input: data.id,
+    archived_input: archived,
+    actor_input: actor
+  });
+  if (rpcError) throw rpcError;
+  return toProject(updated);
+};
