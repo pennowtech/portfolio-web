@@ -47,6 +47,25 @@ export const reorderStatusesSchema = z
   })
   .strict();
 
+const hexColorSchema = z
+  .string()
+  .trim()
+  .regex(/^#[0-9a-f]{6}$/i, 'Use a hex color like #10b981.');
+
+export const createLabelSchema = z
+  .object({
+    name: z.string().trim().min(1).max(50)
+  })
+  .strict();
+
+export const updateLabelSchema = z
+  .object({
+    name: z.string().trim().min(1).max(50),
+    backgroundColor: hexColorSchema,
+    textColor: hexColorSchema
+  })
+  .strict();
+
 export const createIssueSchema = z
   .object({
     projectKey: z
