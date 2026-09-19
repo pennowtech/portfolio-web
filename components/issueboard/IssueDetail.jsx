@@ -1649,24 +1649,25 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
                   </div>
                 ) : (
                   <div className='flex flex-col items-start gap-1.5 min-w-0 max-w-full'>
-                    <div className='flex items-center gap-1 min-w-0 max-w-full overflow-hidden flex-nowrap'>
+                    <div className='flex flex-col items-start gap-1 w-full min-w-0'>
                       {issue.labels.map((label) => (
-                        <span
-                          key={label.id}
-                          title={label.name}
-                          className='inline-flex h-5 max-w-[140px] shrink-0 items-center gap-1 rounded-full px-2 text-[10px] font-bold overflow-hidden'
-                          style={{ backgroundColor: label.backgroundColor, color: label.textColor }}
-                        >
-                          <span className='truncate'>{label.name}</span>
-                          <button
-                            type='button'
-                            onClick={() => removeLabel(label.id)}
-                            aria-label={`Remove label ${label.name}`}
-                            className='shrink-0 leading-none opacity-70 hover:opacity-100'
+                        <div key={label.id} className='w-full min-w-0 max-w-full overflow-hidden'>
+                          <span
+                            title={label.name}
+                            className='inline-flex h-5 max-w-full items-center gap-1 rounded-full px-2 text-[10px] font-bold overflow-hidden'
+                            style={{ backgroundColor: label.backgroundColor, color: label.textColor }}
                           >
-                            <FiX className='size-2.5' />
-                          </button>
-                        </span>
+                            <span className='truncate'>{label.name}</span>
+                            <button
+                              type='button'
+                              onClick={() => removeLabel(label.id)}
+                              aria-label={`Remove label ${label.name}`}
+                              className='shrink-0 leading-none opacity-70 hover:opacity-100'
+                            >
+                              <FiX className='size-2.5' />
+                            </button>
+                          </span>
+                        </div>
                       ))}
                     </div>
                     <button
