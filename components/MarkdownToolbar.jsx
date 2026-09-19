@@ -11,7 +11,6 @@ import {
   FiTable,
   FiHash,
   FiType,
-  FiChevronDown,
   FiHelpCircle
 } from 'react-icons/fi';
 import { LuBraces, LuListOrdered, LuListTree, LuQuote, LuUndo, LuRedo } from 'react-icons/lu';
@@ -458,7 +457,7 @@ const MarkdownToolbar = ({
             event.target.value = '';
           }}
           defaultValue=''
-          className='h-8 appearance-none rounded-lg border border-slate-200/90 bg-white/90 pl-8 pr-7 text-xs font-semibold text-slate-700 shadow-xs transition hover:border-slate-300 hover:bg-white focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 dark:border-slate-700/80 dark:bg-slate-800/90 dark:text-slate-200 dark:hover:border-slate-600 cursor-pointer'
+          className='h-8 rounded-lg border border-slate-200/90 bg-white/90 pl-8 pr-7 text-xs font-semibold text-slate-700 shadow-xs transition hover:border-slate-300 hover:bg-white focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 dark:border-slate-700/80 dark:bg-slate-800/90 dark:text-slate-200 dark:hover:border-slate-600 cursor-pointer'
           title='Paragraph and heading style'
         >
           <option value='' disabled>
@@ -469,10 +468,6 @@ const MarkdownToolbar = ({
           <option value='3'>Heading 3 (H3)</option>
           <option value='4'>Heading 4 (H4)</option>
         </select>
-        <FiChevronDown
-          className='pointer-events-none absolute right-2 size-3 text-slate-400 dark:text-slate-500'
-          aria-hidden='true'
-        />
       </div>
 
       <span className='mx-1 h-4 w-px bg-slate-200/90 dark:bg-slate-700/90' aria-hidden='true' />
@@ -536,7 +531,7 @@ const MarkdownToolbar = ({
         <select
           onChange={(event) => jumpToHeading(event.target.value)}
           defaultValue=''
-          className='h-8 w-full appearance-none rounded-lg border border-slate-200/90 bg-white/90 pl-8 pr-7 text-xs font-medium text-slate-700 shadow-xs transition hover:border-slate-300 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 dark:border-slate-700/80 dark:bg-slate-800/90 dark:text-slate-200 dark:hover:border-slate-600 cursor-pointer truncate'
+          className='h-8 w-full rounded-lg border border-slate-200/90 bg-white/90 pl-8 pr-7 text-xs font-medium text-slate-700 shadow-xs transition hover:border-slate-300 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 dark:border-slate-700/80 dark:bg-slate-800/90 dark:text-slate-200 dark:hover:border-slate-600 cursor-pointer truncate'
           title='Jump to article heading'
         >
           <option value=''>Article outline ({headings.length})</option>
@@ -544,10 +539,6 @@ const MarkdownToolbar = ({
             <option key={`${position}-${index}`} value={position}>{`${'— '.repeat(level - 2)}${title}`}</option>
           ))}
         </select>
-        <FiChevronDown
-          className='pointer-events-none absolute right-2 size-3 text-slate-400 dark:text-slate-500'
-          aria-hidden='true'
-        />
       </div>
 
       {/* Line Numbers Toggle */}
