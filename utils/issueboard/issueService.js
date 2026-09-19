@@ -10,6 +10,7 @@ const ISSUE_SELECT =
 const toIssue = (projectKey) => (row) => ({
   id: row.id,
   key: `${projectKey}-${row.issue_number}`,
+  issueNumber: Number(row.issue_number),
   type: row.issue_type,
   title: row.title,
   description: row.description,
