@@ -9,6 +9,7 @@ import {
   FiChevronDown,
   FiColumns,
   FiEdit2,
+  FiExternalLink,
   FiGitBranch,
   FiImage,
   FiInfo,
@@ -16,6 +17,7 @@ import {
   FiList,
   FiMoreHorizontal,
   FiSearch,
+  FiSidebar,
   FiZap,
   FiX
 } from 'react-icons/fi';
@@ -48,6 +50,15 @@ const badgeClass = (status) => {
 };
 
 const daysRemaining = (endsAt) => Math.max(0, Math.ceil((new Date(endsAt).getTime() - Date.now()) / 86400000));
+
+const formatSprintDates = (startsAt, endsAt) => {
+  if (!startsAt && !endsAt) return 'Dates not planned';
+  const options = { month: 'short', day: 'numeric' };
+  const startStr = startsAt ? new Date(startsAt).toLocaleDateString(undefined, options) : null;
+  const endStr = endsAt ? new Date(endsAt).toLocaleDateString(undefined, { ...options, year: 'numeric' }) : null;
+  if (startStr && endStr) return `${startStr} – ${endStr}`;
+  return startStr ? `Starts ${startStr}` : `Ends ${endStr}`;
+};
 
 const priorityClass = (priority) => {
   if (priority === 'Highest') return 'text-rose-700 dark:text-rose-300';
@@ -751,116 +762,535 @@ const IssueRow = ({ issue, returnTo, sprintOptions, onMoveSprint }) => (
   </div>
 );
 
-const SprintSection = ({
-  sprint,
-  issues,
-  returnTo,
-  sprintOptions,
-  onMoveSprint,
-  onCreateIssue,
-  onStart,
-  onComplete,
-  onCancel
-}) => {
-  const [starting, setStarting] = useState(false);
-  const [actionError, setActionError] = useState(null);
-  const [busy, setBusy] = useState(false);
+const SprintSwitcherDropdown = ({ sprints = [], currentSprintId, issues = [], onSelectSprint }) => {
+  const [open, setOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
-  const complete = async () => {
-    setBusy(true);
-    setActionError(null);
-    try {
-      await onComplete();
-    } catch (error) {
-      setActionError(error.message);
-    } finally {
-      setBusy(false);
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    if (open) {
+      document.addEventListener('mousedown', handleOutsideClick);
     }
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, [open]);
+
+  const activeSprints = sprints.filter((s) => s.state === 'active');
+  const plannedSprints = sprints.filter((s) => s.state === 'planned');
+  const closedSprints = sprints.filter((s) => s.state === 'closed');
+
+  const currentSprint =
+    sprints.find((s) => s.id === currentSprintId) || activeSprints[0] || plannedSprints[0] || sprints[0];
+
+  const getSprintPoints = (sprintId) => {
+    return issues
+      .filter((i) => i.sprintId === sprintId && !i.archivedAt)
+      .reduce((acc, i) => acc + (Number(i.estimate ?? i.storyPoints) || 0), 0);
   };
 
-  const cancel = async () => {
-    setBusy(true);
-    setActionError(null);
-    try {
-      await onCancel();
-    } catch (error) {
-      setActionError(error.message);
-    } finally {
-      setBusy(false);
-    }
+  const getSprintIssueCount = (sprintId) => {
+    return issues.filter((i) => i.sprintId === sprintId && !i.archivedAt).length;
   };
+
+  if (!currentSprint && sprints.length === 0) return null;
 
   return (
-    <section className='mb-4 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900'>
-      <header className='flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-800 dark:bg-slate-900'>
-        <div>
-          <strong>{sprint.name}</strong>
-          {sprint.goal && <span className='ml-2 text-xs text-slate-500'>{sprint.goal}</span>}
-          <span
-            className={`ml-2 inline-flex h-5 items-center rounded-full px-2 text-[10px] font-bold ${sprint.state === 'active' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200' : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200'}`}
-          >
-            {sprint.state}
+    <div className='relative' ref={dropdownRef}>
+      <button
+        type='button'
+        onClick={() => setOpen((prev) => !prev)}
+        className='flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 shadow-2xs transition'
+        aria-haspopup='true'
+        aria-expanded={open}
+      >
+        <span className='flex items-center gap-1.5'>
+          {currentSprint?.state === 'active' && <span className='size-2 rounded-full bg-emerald-500 animate-pulse' />}
+          {currentSprint?.state === 'planned' && <span className='size-2 rounded-full bg-amber-500' />}
+          {currentSprint?.state === 'closed' && <span className='size-2 rounded-full bg-purple-500' />}
+          <span className='font-bold text-slate-900 dark:text-slate-100 max-w-[9rem] truncate'>
+            {currentSprint?.name || 'Select Sprint'}
           </span>
-          <span className='ml-2 text-xs text-slate-500'>{issues.length} issues</span>
+        </span>
+
+        {currentSprint?.state === 'active' && currentSprint.endsAt && (
+          <span className='hidden sm:inline-block rounded-md bg-emerald-50 px-1.5 py-0.5 text-[10px] font-bold text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 font-mono'>
+            {daysRemaining(currentSprint.endsAt)}d left
+          </span>
+        )}
+        {currentSprint?.state === 'planned' && (
+          <span className='hidden sm:inline-block rounded-md bg-amber-50 px-1.5 py-0.5 text-[10px] font-bold text-amber-700 dark:bg-amber-950/80 dark:text-amber-300 border border-amber-300 dark:border-amber-800'>
+            Planned
+          </span>
+        )}
+        {currentSprint?.state === 'closed' && (
+          <span className='hidden sm:inline-block rounded-md bg-purple-50 px-1.5 py-0.5 text-[10px] font-bold text-purple-700 dark:bg-purple-950/80 dark:text-purple-300 border border-purple-300 dark:border-purple-800'>
+            Archived
+          </span>
+        )}
+
+        <FiChevronDown className={`size-3.5 text-slate-400 transition-transform ${open ? 'rotate-180' : ''}`} />
+      </button>
+
+      {open && (
+        <div className='absolute left-0 mt-1.5 w-72 sm:w-80 rounded-2xl border border-slate-200 bg-white p-2 shadow-xl z-50 dark:border-slate-800 dark:bg-slate-900 text-xs'>
+          <div className='px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100 dark:border-slate-800 mb-1'>
+            Select Sprint View
+          </div>
+
+          <div className='max-h-80 overflow-y-auto space-y-2.5 custom-scrollbar pr-1'>
+            {/* Active Sprints */}
+            {activeSprints.length > 0 && (
+              <div>
+                <div className='flex items-center gap-1.5 px-2 py-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider'>
+                  <span className='size-1.5 rounded-full bg-emerald-500' />
+                  <span>Active Sprint</span>
+                </div>
+                {activeSprints.map((s) => {
+                  const isSelected = s.id === currentSprint?.id;
+                  const pts = getSprintPoints(s.id);
+                  const count = getSprintIssueCount(s.id);
+                  return (
+                    <button
+                      key={s.id}
+                      type='button'
+                      onClick={() => {
+                        onSelectSprint(s.id);
+                        setOpen(false);
+                      }}
+                      className={`w-full text-left rounded-xl p-2 transition flex items-center justify-between gap-2 ${
+                        isSelected
+                          ? 'bg-emerald-50 border border-emerald-300 dark:bg-emerald-950/50 dark:border-emerald-800'
+                          : 'hover:bg-slate-50 dark:hover:bg-slate-800/60'
+                      }`}
+                    >
+                      <div className='min-w-0'>
+                        <div className='flex items-center gap-1.5'>
+                          <span className='font-bold text-slate-800 dark:text-slate-100 truncate'>{s.name}</span>
+                          {isSelected && <span className='text-[10px] text-emerald-600 font-bold'>✓</span>}
+                        </div>
+                        <div className='text-[10px] text-slate-500 dark:text-slate-400'>
+                          {formatSprintDates(s.startsAt, s.endsAt)}
+                          {s.endsAt ? ` • ${daysRemaining(s.endsAt)}d left` : ''}
+                        </div>
+                      </div>
+                      <div className='text-right shrink-0'>
+                        <div className='font-mono font-bold text-slate-700 dark:text-slate-300'>{pts} pts</div>
+                        <div className='text-[10px] text-slate-400'>{count} issues</div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Planned Sprints */}
+            {plannedSprints.length > 0 && (
+              <div>
+                <div className='flex items-center gap-1.5 px-2 py-1 text-[10px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider'>
+                  <span className='size-1.5 rounded-full bg-amber-500' />
+                  <span>Upcoming / Planned ({plannedSprints.length})</span>
+                </div>
+                {plannedSprints.map((s) => {
+                  const isSelected = s.id === currentSprint?.id;
+                  const pts = getSprintPoints(s.id);
+                  const count = getSprintIssueCount(s.id);
+                  return (
+                    <button
+                      key={s.id}
+                      type='button'
+                      onClick={() => {
+                        onSelectSprint(s.id);
+                        setOpen(false);
+                      }}
+                      className={`w-full text-left rounded-xl p-2 transition flex items-center justify-between gap-2 ${
+                        isSelected
+                          ? 'bg-amber-50 border border-amber-300 dark:bg-amber-950/50 dark:border-amber-800'
+                          : 'hover:bg-slate-50 dark:hover:bg-slate-800/60'
+                      }`}
+                    >
+                      <div className='min-w-0'>
+                        <div className='flex items-center gap-1.5'>
+                          <span className='font-bold text-slate-800 dark:text-slate-100 truncate'>{s.name}</span>
+                          {isSelected && <span className='text-[10px] text-amber-600 font-bold'>✓</span>}
+                        </div>
+                        <div className='text-[10px] text-slate-500 dark:text-slate-400'>
+                          {formatSprintDates(s.startsAt, s.endsAt)}
+                        </div>
+                      </div>
+                      <div className='text-right shrink-0'>
+                        <div className='font-mono font-bold text-slate-700 dark:text-slate-300'>{pts} pts</div>
+                        <div className='text-[10px] text-slate-400'>{count} issues</div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Closed Sprints */}
+            {closedSprints.length > 0 && (
+              <div>
+                <div className='flex items-center gap-1.5 px-2 py-1 text-[10px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider'>
+                  <span className='size-1.5 rounded-full bg-purple-500' />
+                  <span>Completed Sprints ({closedSprints.length})</span>
+                </div>
+                {closedSprints.map((s) => {
+                  const isSelected = s.id === currentSprint?.id;
+                  const pts = getSprintPoints(s.id);
+                  const count = getSprintIssueCount(s.id);
+                  return (
+                    <button
+                      key={s.id}
+                      type='button'
+                      onClick={() => {
+                        onSelectSprint(s.id);
+                        setOpen(false);
+                      }}
+                      className={`w-full text-left rounded-xl p-2 transition flex items-center justify-between gap-2 ${
+                        isSelected
+                          ? 'bg-purple-50 border border-purple-300 dark:bg-purple-950/50 dark:border-purple-800'
+                          : 'hover:bg-slate-50 dark:hover:bg-slate-800/60'
+                      }`}
+                    >
+                      <div className='min-w-0'>
+                        <div className='flex items-center gap-1.5'>
+                          <span className='font-bold text-slate-800 dark:text-slate-100 truncate'>{s.name}</span>
+                          {isSelected && <span className='text-[10px] text-purple-600 font-bold'>✓</span>}
+                          <span className='rounded bg-slate-100 dark:bg-slate-800 px-1 text-[9px] text-slate-500 font-medium'>
+                            Archived
+                          </span>
+                        </div>
+                        <div className='text-[10px] text-slate-500 dark:text-slate-400'>
+                          {formatSprintDates(s.startsAt, s.endsAt)}
+                        </div>
+                      </div>
+                      <div className='text-right shrink-0'>
+                        <div className='font-mono font-bold text-slate-700 dark:text-slate-300'>{pts} pts</div>
+                        <div className='text-[10px] text-slate-400'>{count} issues</div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </div>
-        <div className='flex gap-2'>
-          {sprint.state === 'planned' && !starting && (
-            <button
-              type='button'
-              onClick={() => setStarting(true)}
-              className='rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-bold dark:border-slate-700'
-            >
-              Start sprint
-            </button>
-          )}
-          {sprint.state === 'active' && (
-            <button
-              type='button'
-              onClick={complete}
-              disabled={busy}
-              className='rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-bold disabled:opacity-60 dark:border-slate-700'
-            >
-              {busy ? '…' : 'Complete sprint'}
-            </button>
-          )}
-          {sprint.state === 'planned' && (
-            <button
-              type='button'
-              onClick={cancel}
-              disabled={busy}
-              className='rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-bold text-rose-600 disabled:opacity-60 dark:border-slate-700'
-            >
-              Cancel
-            </button>
+      )}
+    </div>
+  );
+};
+
+const CompactSprintCard = ({ sprint, issues = [], onOpenBoard, onStart, onComplete }) => {
+  const [starting, setStarting] = useState(false);
+  const sprintIssues = issues.filter((iss) => iss.sprintId === sprint.id && !iss.archivedAt);
+
+  const typeCounts = {
+    story: 0,
+    task: 0,
+    bug: 0,
+    epic: 0,
+    other: 0
+  };
+
+  sprintIssues.forEach((iss) => {
+    const t = (iss.issueType || iss.type || 'task').toLowerCase();
+    if (t.includes('story')) typeCounts.story++;
+    else if (t.includes('bug')) typeCounts.bug++;
+    else if (t.includes('task') || t.includes('subtask')) typeCounts.task++;
+    else if (t.includes('epic')) typeCounts.epic++;
+    else typeCounts.other++;
+  });
+
+  const totalPoints = sprintIssues.reduce((sum, iss) => sum + (Number(iss.estimate ?? iss.storyPoints) || 0), 0);
+  const doneCount = sprintIssues.filter((iss) => {
+    const statusName =
+      iss.status?.name?.toLowerCase?.() || (typeof iss.status === 'string' ? iss.status.toLowerCase() : '');
+    const category = iss.status?.category?.toLowerCase?.() || '';
+    return category === 'done' || statusName === 'done';
+  }).length;
+  const percentDone = sprintIssues.length > 0 ? Math.round((doneCount / sprintIssues.length) * 100) : 0;
+
+  const isActive = sprint.state === 'active';
+  const isPlanned = sprint.state === 'planned';
+
+  return (
+    <div
+      onClick={() => onOpenBoard(sprint.id)}
+      className={`group relative rounded-2xl border p-3.5 shadow-xs transition hover:shadow-md cursor-pointer ${
+        isActive
+          ? 'border-emerald-400/80 bg-white dark:border-emerald-800/80 dark:bg-slate-900'
+          : 'border-slate-200 bg-white hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700'
+      }`}
+    >
+      {/* Top status line */}
+      <div className='flex items-center justify-between gap-2 pb-2 border-b border-slate-100 dark:border-slate-800/60'>
+        <div className='flex items-center gap-1.5'>
+          {isActive ? (
+            <span className='inline-flex items-center gap-1.5 rounded-full bg-emerald-100/80 px-2 py-0.5 text-[10px] font-bold text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200 border border-emerald-300/60 dark:border-emerald-800'>
+              <span className='size-1.5 rounded-full bg-emerald-500 animate-pulse' />
+              Active Sprint
+            </span>
+          ) : (
+            <span className='inline-flex items-center gap-1.5 rounded-full bg-amber-100/80 px-2 py-0.5 text-[10px] font-bold text-amber-800 dark:bg-amber-950 dark:text-amber-200 border border-amber-300/60 dark:border-amber-800'>
+              ⏳ Upcoming
+            </span>
           )}
         </div>
-      </header>
-      {actionError && <p className='px-4 py-2 text-xs font-semibold text-rose-600 dark:text-rose-300'>{actionError}</p>}
-      {issues.length === 0 && <p className='px-4 py-6 text-sm text-slate-500'>No issues in this sprint yet.</p>}
-      {issues.map((issue) => (
-        <IssueRow
-          key={issue.key}
-          issue={issue}
-          returnTo={returnTo}
-          sprintOptions={sprintOptions}
-          onMoveSprint={(sprintId) => onMoveSprint(issue, sprintId)}
-        />
-      ))}
-      {sprint.state === 'planned' && (
+        {isActive && sprint.endsAt ? (
+          <span className='text-[10px] font-bold text-emerald-600 dark:text-emerald-400 font-mono'>
+            {daysRemaining(sprint.endsAt)}d left
+          </span>
+        ) : (
+          <span className='text-[10px] font-mono text-slate-400'>{sprintIssues.length} issues</span>
+        )}
+      </div>
+
+      {/* Sprint Name and points */}
+      <div className='pt-2 flex items-center justify-between gap-2'>
         <button
           type='button'
-          onClick={onCreateIssue}
-          className='w-full px-5 py-3 text-left text-xs font-semibold text-slate-500 hover:bg-slate-50 hover:text-emerald-700 dark:hover:bg-slate-800'
+          onClick={(e) => {
+            e.stopPropagation();
+            onOpenBoard(sprint.id);
+          }}
+          className='font-bold text-sm text-slate-800 dark:text-slate-100 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 flex items-center gap-1.5 text-left'
         >
-          ＋ Create issue
+          <span className='truncate'>{sprint.name}</span>
+          <FiExternalLink className='size-3 text-slate-400 group-hover:text-emerald-500 transition shrink-0' />
         </button>
+        <span className='font-mono text-xs font-bold text-slate-700 dark:text-slate-300 shrink-0'>
+          {totalPoints} pts
+        </span>
+      </div>
+
+      {/* Planned Dates */}
+      <div className='flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 pt-1'>
+        <FiCalendar className='size-3 shrink-0' />
+        <span className='truncate'>{formatSprintDates(sprint.startsAt, sprint.endsAt)}</span>
+      </div>
+
+      {/* Goal if any */}
+      {sprint.goal && (
+        <p className='text-[11px] text-slate-500 dark:text-slate-400 italic pt-1 truncate'>
+          &ldquo;{sprint.goal}&rdquo;
+        </p>
       )}
-      {starting && (
-        <div className='px-4 pb-4'>
-          <StartSprintForm onStart={onStart} onClose={() => setStarting(false)} />
+
+      {/* Task Types breakdown */}
+      <div className='flex flex-wrap items-center gap-1.5 pt-2.5'>
+        {typeCounts.story > 0 && (
+          <span
+            className='inline-flex items-center gap-1 rounded-md bg-emerald-50 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-700 dark:bg-emerald-950/70 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/80'
+            title={`${typeCounts.story} User Stories`}
+          >
+            <FiBookmark className='size-2.5' />
+            <span>
+              {typeCounts.story} {typeCounts.story === 1 ? 'story' : 'stories'}
+            </span>
+          </span>
+        )}
+        {typeCounts.task > 0 && (
+          <span
+            className='inline-flex items-center gap-1 rounded-md bg-blue-50 px-1.5 py-0.5 text-[10px] font-semibold text-blue-700 dark:bg-blue-950/70 dark:text-blue-300 border border-blue-200/80 dark:border-blue-800/80'
+            title={`${typeCounts.task} Tasks`}
+          >
+            <FiCheckSquare className='size-2.5' />
+            <span>
+              {typeCounts.task} {typeCounts.task === 1 ? 'task' : 'tasks'}
+            </span>
+          </span>
+        )}
+        {typeCounts.bug > 0 && (
+          <span
+            className='inline-flex items-center gap-1 rounded-md bg-rose-50 px-1.5 py-0.5 text-[10px] font-semibold text-rose-700 dark:bg-rose-950/70 dark:text-rose-300 border border-rose-200/80 dark:border-rose-800/80'
+            title={`${typeCounts.bug} Bugs`}
+          >
+            <FaBug className='size-2.5' />
+            <span>
+              {typeCounts.bug} {typeCounts.bug === 1 ? 'bug' : 'bugs'}
+            </span>
+          </span>
+        )}
+        {typeCounts.epic > 0 && (
+          <span
+            className='inline-flex items-center gap-1 rounded-md bg-purple-50 px-1.5 py-0.5 text-[10px] font-semibold text-purple-700 dark:bg-purple-950/70 dark:text-purple-300 border border-purple-200/80 dark:border-purple-800/80'
+            title={`${typeCounts.epic} Epics`}
+          >
+            <span>👑 {typeCounts.epic}</span>
+          </span>
+        )}
+        {sprintIssues.length === 0 && <span className='text-[10px] text-slate-400 italic'>No tickets committed</span>}
+      </div>
+
+      {/* Progress Bar for Active Sprint */}
+      {isActive && sprintIssues.length > 0 && (
+        <div className='pt-2.5 space-y-1'>
+          <div className='flex justify-between text-[10px] font-semibold text-slate-500 dark:text-slate-400'>
+            <span>
+              Completed ({doneCount}/{sprintIssues.length})
+            </span>
+            <span className='font-bold text-emerald-600 dark:text-emerald-400'>{percentDone}%</span>
+          </div>
+          <div className='h-1.5 w-full rounded-full bg-slate-100 overflow-hidden dark:bg-slate-800'>
+            <div
+              className='h-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-300'
+              style={{ width: `${percentDone}%` }}
+            />
+          </div>
         </div>
       )}
-    </section>
+
+      {/* Footer quick action */}
+      <div className='mt-3 pt-2 border-t border-slate-100 dark:border-slate-800/60 flex items-center justify-between gap-2'>
+        <button
+          type='button'
+          onClick={(e) => {
+            e.stopPropagation();
+            onOpenBoard(sprint.id);
+          }}
+          className='text-[11px] font-bold text-emerald-600 hover:underline dark:text-emerald-400 flex items-center gap-1'
+        >
+          <span>Open in Sprint Board</span>
+          <span>→</span>
+        </button>
+        {isPlanned && onStart && (
+          <button
+            type='button'
+            onClick={(e) => {
+              e.stopPropagation();
+              setStarting((prev) => !prev);
+            }}
+            className='rounded-lg bg-emerald-600 px-2.5 py-0.5 text-[10px] font-bold text-white shadow-xs hover:bg-emerald-500 transition'
+          >
+            {starting ? 'Cancel' : 'Start Sprint'}
+          </button>
+        )}
+      </div>
+
+      {starting && onStart && (
+        <div className='mt-2 pt-2 border-t border-slate-100 dark:border-slate-800' onClick={(e) => e.stopPropagation()}>
+          <StartSprintForm
+            onStart={(input) => {
+              onStart(input);
+              setStarting(false);
+            }}
+            onClose={() => setStarting(false)}
+          />
+        </div>
+      )}
+    </div>
+  );
+};
+
+const BacklogSprintSidebar = ({
+  sprints = [],
+  issues = [],
+  onOpenBoard,
+  onCreateSprint,
+  onStartSprint,
+  onCompleteSprint
+}) => {
+  const activeSprints = sprints.filter((s) => s.state === 'active');
+  const plannedSprints = sprints.filter((s) => s.state === 'planned');
+  const closedSprints = sprints.filter((s) => s.state === 'closed');
+  const [showPast, setShowPast] = useState(false);
+
+  return (
+    <aside className='w-full lg:w-80 shrink-0 space-y-3.5'>
+      {/* Sidebar Header */}
+      <div className='flex items-center justify-between pb-1 border-b border-slate-200 dark:border-slate-800'>
+        <div className='flex items-center gap-2'>
+          <span className='size-2 rounded-full bg-emerald-500' />
+          <h3 className='text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider'>
+            Sprints Overview
+          </h3>
+        </div>
+        <button
+          type='button'
+          onClick={onCreateSprint}
+          className='text-[11px] font-bold text-emerald-600 hover:underline dark:text-emerald-400'
+        >
+          + New Sprint
+        </button>
+      </div>
+
+      {/* Sprints Cards list */}
+      <div className='space-y-2.5'>
+        {activeSprints.map((sprint) => (
+          <CompactSprintCard
+            key={sprint.id}
+            sprint={sprint}
+            issues={issues}
+            onOpenBoard={onOpenBoard}
+            onComplete={onCompleteSprint}
+          />
+        ))}
+
+        {plannedSprints.map((sprint) => (
+          <CompactSprintCard
+            key={sprint.id}
+            sprint={sprint}
+            issues={issues}
+            onOpenBoard={onOpenBoard}
+            onStart={(input) => onStartSprint(sprint.id, input)}
+          />
+        ))}
+
+        {activeSprints.length === 0 && plannedSprints.length === 0 && (
+          <div className='rounded-2xl border border-dashed border-slate-300 p-4 text-center dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50'>
+            <p className='text-xs text-slate-500 dark:text-slate-400 mb-2 font-medium'>No active or planned sprints.</p>
+            <button
+              type='button'
+              onClick={onCreateSprint}
+              className='button text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white py-1 px-3'
+            >
+              + Create Sprint
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Past Sprints Section */}
+      {closedSprints.length > 0 && (
+        <div className='pt-2 border-t border-slate-200/80 dark:border-slate-800/80'>
+          <button
+            type='button'
+            onClick={() => setShowPast((prev) => !prev)}
+            className='flex w-full items-center justify-between text-[11px] font-bold text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 py-1'
+          >
+            <span>Past Sprints ({closedSprints.length})</span>
+            <span className='text-[10px]'>{showPast ? '▲' : '▼'}</span>
+          </button>
+          {showPast && (
+            <div className='space-y-2 pt-1'>
+              {closedSprints.map((sprint) => (
+                <div
+                  key={sprint.id}
+                  onClick={() => onOpenBoard(sprint.id)}
+                  className='rounded-xl border border-slate-200 bg-slate-50/70 p-2.5 text-xs hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900/60 dark:hover:border-slate-700 cursor-pointer transition'
+                >
+                  <div className='flex items-center justify-between'>
+                    <span className='font-bold text-slate-700 dark:text-slate-300'>{sprint.name}</span>
+                    <span className='text-[10px] text-purple-600 dark:text-purple-400 font-semibold'>Archived</span>
+                  </div>
+                  <div className='flex items-center justify-between text-[10px] text-slate-400 pt-1'>
+                    <span>{formatSprintDates(sprint.startsAt, sprint.endsAt)}</span>
+                    <span className='text-emerald-600 hover:underline dark:text-emerald-400 font-semibold'>
+                      View on Board →
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </aside>
   );
 };
 
@@ -1692,7 +2122,8 @@ const Backlog = ({
   creatingSprint = false,
   setCreatingSprint = () => {},
   onCreateIssue,
-  onCreateIssueModal
+  onCreateIssueModal,
+  onOpenSprintBoard
 }) => {
   const {
     status,
@@ -1706,14 +2137,37 @@ const Backlog = ({
     updateIssueAssignee,
     createSprint,
     startSprint,
-    completeSprint,
-    cancelSprint
+    completeSprint
   } = data;
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
   const [priorityFilter, setPriorityFilter] = useState('');
   const [assigneeFilter, setAssigneeFilter] = useState('');
   const [moveError, setMoveError] = useState(null);
+  const [showSprintSidebar, setShowSprintSidebar] = useState(true);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('issueboard:showSprintSidebar');
+      if (saved !== null) {
+        setShowSprintSidebar(saved === 'true');
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  const toggleSprintSidebar = () => {
+    setShowSprintSidebar((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem('issueboard:showSprintSidebar', String(next));
+      } catch {
+        // ignore
+      }
+      return next;
+    });
+  };
 
   if (status === 'loading') return null;
   if (status === 'unavailable') return <DatastoreUnavailableNotice error={error} />;
@@ -1818,86 +2272,110 @@ const Backlog = ({
 
   return (
     <>
-      <Filters
-        search={search}
-        onSearchChange={setSearch}
-        type={typeFilter}
-        onTypeChange={setTypeFilter}
-        priority={priorityFilter}
-        onPriorityChange={setPriorityFilter}
-        assignee={assigneeFilter}
-        onAssigneeChange={setAssigneeFilter}
-        availableAssignees={availableAssignees}
-      />
+      {/* Top search & filters with Show/Hide Sprints toggle */}
+      <div className='flex flex-wrap items-center justify-between gap-3 mb-3'>
+        <div className='flex-1 min-w-[16rem]'>
+          <Filters
+            search={search}
+            onSearchChange={setSearch}
+            type={typeFilter}
+            onTypeChange={setTypeFilter}
+            priority={priorityFilter}
+            onPriorityChange={setPriorityFilter}
+            assignee={assigneeFilter}
+            onAssigneeChange={setAssigneeFilter}
+            availableAssignees={availableAssignees}
+          />
+        </div>
+        <button
+          type='button'
+          onClick={toggleSprintSidebar}
+          className={`flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-semibold shadow-2xs transition shrink-0 ${
+            showSprintSidebar
+              ? 'border-emerald-300 bg-emerald-50/80 text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'
+              : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300'
+          }`}
+          title={showSprintSidebar ? 'Hide Sprint Sidebar' : 'Show Sprint Sidebar'}
+        >
+          <FiSidebar className='size-3.5' />
+          <span className='hidden sm:inline'>
+            {showSprintSidebar ? 'Hide Sprints' : `Sprints (${openSprints.length})`}
+          </span>
+        </button>
+      </div>
+
       {moveError && (
         <p className='mb-3 rounded-lg border border-rose-300 bg-rose-50 p-2 text-xs font-semibold text-rose-800 dark:border-rose-800 dark:bg-rose-950/40 dark:text-rose-200'>
           {moveError}
         </p>
       )}
-      {creatingSprint && <NewSprintForm onCreate={createSprint} onClose={() => setCreatingSprint(false)} />}
-      {openSprints.map((sprint) => (
-        <SprintSection
-          key={sprint.id}
-          sprint={sprint}
-          issues={toRows(filteredIssues.filter((issue) => issue.sprintId === sprint.id))}
-          returnTo={returnTo}
-          sprintOptions={openSprints}
-          onMoveSprint={handleMoveSprint}
-          onCreateIssue={onCreateIssue}
-          onStart={(input) => startSprint(sprint.id, input)}
-          onComplete={() => completeSprint(sprint.id, null)}
-          onCancel={() => cancelSprint(sprint.id)}
-        />
-      ))}
 
-      {/* Backlog Section according to Layout */}
-      {backlogLayout === 'high-density' ? (
-        <section className='mb-4'>
-          <header className='flex flex-wrap items-center justify-between gap-3 mb-3'>
-            <div className='flex items-center gap-2'>
-              <span className='size-2.5 rounded-full bg-teal-500' />
-              <h3 className='text-sm font-bold text-slate-800 dark:text-slate-100'>Backlog Linear Terminal</h3>
-              <span className='text-xs text-slate-500 font-mono'>
-                ({nonEpicBacklogIssues.length} {filtersActive ? `of ${totalNonEpicCount} issues` : 'issues'})
-              </span>
-            </div>
-          </header>
-          <BacklogHighDensity
-            issues={nonEpicBacklogIssues}
-            sprints={openSprints}
-            returnTo={returnTo}
-            availableAssignees={availableAssignees}
-            onMoveSprint={handleMoveSprint}
-            onBatchMoveSprint={handleBatchMoveSprint}
-            onBatchAssign={handleBatchAssign}
-            onCreateIssue={onCreateIssue}
+      {creatingSprint && <NewSprintForm onCreate={createSprint} onClose={() => setCreatingSprint(false)} />}
+
+      <div className='flex flex-col lg:flex-row items-start gap-4'>
+        {/* Main Left Column: Backlog Epics or Linear Terminal */}
+        <div className='flex-1 min-w-0 w-full'>
+          {backlogLayout === 'high-density' ? (
+            <section className='mb-4'>
+              <header className='flex flex-wrap items-center justify-between gap-3 mb-3'>
+                <div className='flex items-center gap-2'>
+                  <span className='size-2.5 rounded-full bg-teal-500' />
+                  <h3 className='text-sm font-bold text-slate-800 dark:text-slate-100'>Backlog Linear Terminal</h3>
+                  <span className='text-xs text-slate-500 font-mono'>
+                    ({nonEpicBacklogIssues.length} {filtersActive ? `of ${totalNonEpicCount} issues` : 'issues'})
+                  </span>
+                </div>
+              </header>
+              <BacklogHighDensity
+                issues={nonEpicBacklogIssues}
+                sprints={openSprints}
+                returnTo={returnTo}
+                availableAssignees={availableAssignees}
+                onMoveSprint={handleMoveSprint}
+                onBatchMoveSprint={handleBatchMoveSprint}
+                onBatchAssign={handleBatchAssign}
+                onCreateIssue={onCreateIssue}
+              />
+            </section>
+          ) : (
+            <section className='mb-4'>
+              <header className='flex flex-wrap items-center justify-between gap-3 mb-3'>
+                <div className='flex items-center gap-2'>
+                  <span className='size-2.5 rounded-full bg-purple-500' />
+                  <h3 className='text-sm font-bold text-slate-800 dark:text-slate-100'>Backlog Epics & Milestones</h3>
+                  <span className='text-xs text-slate-500 font-mono'>
+                    ({backlogIssues.length}{' '}
+                    {filtersActive ? `of ${issues.filter((i) => !i.sprintId).length} issues` : 'issues'})
+                  </span>
+                </div>
+              </header>
+              <BacklogEpicTree
+                projectKey={data.project?.key}
+                issues={backlogIssues}
+                allIssues={filteredIssues}
+                sprints={openSprints}
+                returnTo={returnTo}
+                onMoveSprint={handleMoveSprint}
+                onCreateIssue={data.createIssue}
+                onUpdateIssue={updateIssue}
+                onCreateIssueModal={onCreateIssueModal}
+              />
+            </section>
+          )}
+        </div>
+
+        {/* Right Column: Compact Sprint Cards Sidebar */}
+        {showSprintSidebar && (
+          <BacklogSprintSidebar
+            sprints={sprints}
+            issues={filteredIssues}
+            onOpenBoard={onOpenSprintBoard}
+            onCreateSprint={() => setCreatingSprint(true)}
+            onStartSprint={startSprint}
+            onCompleteSprint={completeSprint}
           />
-        </section>
-      ) : (
-        <section className='mb-4'>
-          <header className='flex flex-wrap items-center justify-between gap-3 mb-3'>
-            <div className='flex items-center gap-2'>
-              <span className='size-2.5 rounded-full bg-purple-500' />
-              <h3 className='text-sm font-bold text-slate-800 dark:text-slate-100'>Backlog Epics & Milestones</h3>
-              <span className='text-xs text-slate-500 font-mono'>
-                ({backlogIssues.length}{' '}
-                {filtersActive ? `of ${issues.filter((i) => !i.sprintId).length} issues` : 'issues'})
-              </span>
-            </div>
-          </header>
-          <BacklogEpicTree
-            projectKey={data.project?.key}
-            issues={backlogIssues}
-            allIssues={filteredIssues}
-            sprints={openSprints}
-            returnTo={returnTo}
-            onMoveSprint={handleMoveSprint}
-            onCreateIssue={data.createIssue}
-            onUpdateIssue={updateIssue}
-            onCreateIssueModal={onCreateIssueModal}
-          />
-        </section>
-      )}
+        )}
+      </div>
     </>
   );
 };
@@ -2581,7 +3059,15 @@ const StoryPod = ({
   );
 };
 
-const Board = ({ returnTo, data, moveIssueStatus, setIssueWorkState, boardLayout = 'swimlane' }) => {
+const Board = ({
+  returnTo,
+  data,
+  moveIssueStatus,
+  setIssueWorkState,
+  boardLayout = 'swimlane',
+  selectedSprint = null,
+  onSelectSprint = () => {}
+}) => {
   const { status, issues, statuses, sprints, error, project, createIssue, moveIssueSprint } = data;
   const [moveError, setMoveError] = useState(null);
   const [dragIssueKey, setDragIssueKey] = useState(null);
@@ -2675,8 +3161,13 @@ const Board = ({ returnTo, data, moveIssueStatus, setIssueWorkState, boardLayout
   };
 
   const activeSprint = sprints.find((sprint) => sprint.state === 'active');
+  const targetSprint =
+    selectedSprint || activeSprint || sprints.find((s) => s.state === 'planned') || sprints[0] || null;
+  const isClosedSprint = targetSprint?.state === 'closed';
+  const isPlannedSprint = targetSprint?.state === 'planned';
+
   const activeIssues = issues.filter(
-    (issue) => !issue.archivedAt && (!activeSprint || issue.sprintId === activeSprint.id)
+    (issue) => !issue.archivedAt && (!targetSprint || issue.sprintId === targetSprint.id)
   );
   const allParentIssues = activeIssues.filter((issue) => !issue.parentIssueId);
   const subtasksByParent = {};
@@ -2693,6 +3184,10 @@ const Board = ({ returnTo, data, moveIssueStatus, setIssueWorkState, boardLayout
 
   const move = async (issue, statusId) => {
     if (statusId === issue.status?.id) return;
+    if (isClosedSprint) {
+      setMoveError('Completed sprints are read-only historical archives. Issues cannot be moved.');
+      return;
+    }
     setMoveError(null);
     try {
       await moveIssueStatus(issue, statusId);
@@ -2705,6 +3200,10 @@ const Board = ({ returnTo, data, moveIssueStatus, setIssueWorkState, boardLayout
     event.preventDefault();
     const title = quickTitle.trim();
     if (!title || quickCreateBusy) return;
+    if (isClosedSprint) {
+      setMoveError('Cannot add subtasks to a completed sprint.');
+      return;
+    }
     setQuickCreateBusy(true);
     setMoveError(null);
     try {
@@ -2717,7 +3216,7 @@ const Board = ({ returnTo, data, moveIssueStatus, setIssueWorkState, boardLayout
       });
       setQuickTitle('');
       setQuickCreateParent(null);
-      if (activeSprint) await moveIssueSprint(subtask, activeSprint.id);
+      if (targetSprint && !isClosedSprint) await moveIssueSprint(subtask, targetSprint.id);
     } catch (createErr) {
       setMoveError(createErr.message);
     } finally {
@@ -2727,7 +3226,7 @@ const Board = ({ returnTo, data, moveIssueStatus, setIssueWorkState, boardLayout
 
   return (
     <div className='flex flex-1 flex-col min-h-0 h-full overflow-hidden'>
-      <div className='shrink-0 mb-4'>
+      <div className='shrink-0 mb-3'>
         {/* Untouched Filters Row: search row + priority + type + Assignee */}
         <Filters
           search={search}
@@ -2742,9 +3241,62 @@ const Board = ({ returnTo, data, moveIssueStatus, setIssueWorkState, boardLayout
         />
 
         {moveError && (
-          <p className='mb-3 rounded-lg border border-rose-300 bg-rose-50 p-2 text-xs font-semibold text-rose-800 dark:border-rose-800 dark:bg-rose-950/40 dark:text-rose-200'>
+          <p className='my-2 rounded-lg border border-rose-300 bg-rose-50 p-2 text-xs font-semibold text-rose-800 dark:border-rose-800 dark:bg-rose-950/40 dark:text-rose-200'>
             {moveError}
           </p>
+        )}
+
+        {/* Sprint Status Context Banner */}
+        {targetSprint && isClosedSprint && (
+          <div className='mt-3 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-purple-200 bg-purple-50/80 p-3 text-xs text-purple-900 dark:border-purple-800/80 dark:bg-purple-950/40 dark:text-purple-200 shadow-2xs'>
+            <div className='flex items-center gap-2.5'>
+              <span className='size-6 rounded-lg bg-purple-500/20 text-purple-600 dark:text-purple-300 font-bold grid place-items-center text-xs shrink-0'>
+                🏁
+              </span>
+              <div>
+                <strong className='font-bold text-slate-900 dark:text-slate-100'>{targetSprint.name}</strong>
+                <span className='ml-2 text-[11px] text-slate-600 dark:text-slate-400'>
+                  Completed on{' '}
+                  {targetSprint.endsAt ? new Date(targetSprint.endsAt).toLocaleDateString() : 'earlier date'} •{' '}
+                  {activeIssues.length} issues • Read-only archive
+                </span>
+              </div>
+            </div>
+            {activeSprint && (
+              <button
+                type='button'
+                onClick={() => onSelectSprint(activeSprint.id)}
+                className='rounded-lg bg-white px-2.5 py-1 text-xs font-bold text-purple-700 hover:bg-purple-100 border border-purple-300 dark:border-purple-700 dark:bg-slate-900 dark:text-purple-300 transition shrink-0'
+              >
+                Switch to Active Sprint →
+              </button>
+            )}
+          </div>
+        )}
+
+        {targetSprint && isPlannedSprint && (
+          <div className='mt-3 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-amber-200 bg-amber-50/80 p-3 text-xs text-amber-900 dark:border-amber-800/80 dark:bg-amber-950/40 dark:text-amber-200 shadow-2xs'>
+            <div className='flex items-center gap-2.5'>
+              <span className='size-6 rounded-lg bg-amber-500/20 text-amber-600 dark:text-amber-300 font-bold grid place-items-center text-xs shrink-0'>
+                ⏳
+              </span>
+              <div>
+                <strong className='font-bold text-slate-900 dark:text-slate-100'>{targetSprint.name} (Upcoming)</strong>
+                <span className='ml-2 text-[11px] text-slate-600 dark:text-slate-400'>
+                  {activeIssues.length} issues committed •{' '}
+                  {formatSprintDates(targetSprint.startsAt, targetSprint.endsAt)}
+                </span>
+              </div>
+            </div>
+            <div className='flex items-center gap-2 shrink-0'>
+              <Link
+                href={`/admin/issues?project=${project?.key}&view=backlog`}
+                className='rounded-lg bg-white px-2.5 py-1 text-xs font-bold text-amber-800 hover:bg-amber-100 border border-amber-300 dark:border-amber-700 dark:bg-slate-900 dark:text-amber-300 transition'
+              >
+                Manage in Backlog →
+              </Link>
+            </div>
+          </div>
         )}
       </div>
 
@@ -3760,28 +4312,80 @@ const IssueboardWorkspace = ({ adminEmail }) => {
     [boardLayout, data]
   );
 
+  const [selectedSprintId, setSelectedSprintId] = useState(
+    typeof router.query.sprintId === 'string' ? router.query.sprintId : null
+  );
+
+  useEffect(() => {
+    if (typeof router.query.sprintId === 'string') {
+      setSelectedSprintId(router.query.sprintId);
+    }
+  }, [router.query.sprintId]);
+
   const activeSprint = useMemo(() => {
     return (data.sprints || []).find((s) => s.state === 'active');
   }, [data.sprints]);
 
+  const currentBoardSprint = useMemo(() => {
+    if (selectedSprintId) {
+      const found = (data.sprints || []).find((s) => s.id === selectedSprintId);
+      if (found) return found;
+    }
+    return activeSprint || (data.sprints || []).find((s) => s.state === 'planned') || (data.sprints || [])[0] || null;
+  }, [selectedSprintId, data.sprints, activeSprint]);
+
+  const handleSelectSprint = useCallback(
+    (sprintId) => {
+      setSelectedSprintId(sprintId);
+      router.replace({ pathname: router.pathname, query: { ...router.query, sprintId } }, undefined, { shallow: true });
+    },
+    [router]
+  );
+
+  const handleOpenSprintOnBoard = useCallback(
+    (sprintId) => {
+      setSelectedSprintId(sprintId);
+      router.push({ pathname: router.pathname, query: { ...router.query, view: 'board', sprintId } }, undefined, {
+        shallow: true
+      });
+    },
+    [router]
+  );
+
   const pageTitle = useMemo(() => {
     if (view === 'board') {
-      return activeSprint?.name || 'Sprint 1';
+      return currentBoardSprint?.name || 'Sprint Board';
     }
     return viewTitles[view];
-  }, [view, activeSprint]);
+  }, [view, currentBoardSprint]);
 
   const pageSubtitle = useMemo(() => {
-    if (view === 'board' && activeSprint?.endsAt) {
-      return `${daysRemaining(activeSprint.endsAt)} days remaining`;
+    if (view === 'board' && currentBoardSprint) {
+      if (currentBoardSprint.state === 'active' && currentBoardSprint.endsAt) {
+        return `Active • ${daysRemaining(currentBoardSprint.endsAt)} days remaining`;
+      }
+      if (currentBoardSprint.state === 'planned') {
+        return `Planned • ${currentBoardSprint.startsAt ? new Date(currentBoardSprint.startsAt).toLocaleDateString() : 'Ready to start'}`;
+      }
+      if (currentBoardSprint.state === 'closed') {
+        return `Completed • ${currentBoardSprint.endsAt ? new Date(currentBoardSprint.endsAt).toLocaleDateString() : 'Archived'}`;
+      }
     }
     return null;
-  }, [view, activeSprint]);
+  }, [view, currentBoardSprint]);
 
   const headerActions = useMemo(() => {
     if (view === 'board') {
       return (
         <div className='flex items-center gap-2'>
+          {/* Sprint Switcher Dropdown (Option 1) */}
+          <SprintSwitcherDropdown
+            sprints={data.sprints || []}
+            currentSprintId={currentBoardSprint?.id}
+            issues={data.issues || []}
+            onSelectSprint={handleSelectSprint}
+          />
+
           {/* Dual Layout Switcher (Clean icon buttons with tooltip) */}
           <div className='flex items-center rounded-lg border border-slate-300 bg-slate-100 p-0.5 dark:border-slate-700 dark:bg-slate-800 shadow-2xs'>
             <button
@@ -3833,11 +4437,11 @@ const IssueboardWorkspace = ({ adminEmail }) => {
             <FiInfo className='size-4' />
           </button>
 
-          {/* Complete sprint button */}
-          {activeSprint && (
+          {/* Complete sprint button (only when viewing active sprint) */}
+          {currentBoardSprint?.state === 'active' && (
             <button
               type='button'
-              onClick={() => data.completeSprint?.(activeSprint.id, null)}
+              onClick={() => data.completeSprint?.(currentBoardSprint.id, null)}
               className='flex size-8 items-center justify-center rounded-lg border border-slate-300 bg-white text-slate-600 hover:border-emerald-500 hover:text-emerald-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-emerald-500 dark:hover:text-emerald-400 transition shadow-2xs'
               title='Complete sprint'
               aria-label='Complete sprint'
@@ -3906,10 +4510,11 @@ const IssueboardWorkspace = ({ adminEmail }) => {
     boardLayout,
     backlogLayout,
     creatingSprint,
-    activeSprint,
+    currentBoardSprint,
     data,
     handleSwitchLayout,
     handleSwitchBacklogLayout,
+    handleSelectSprint,
     layoutError
   ]);
 
@@ -3941,6 +4546,7 @@ const IssueboardWorkspace = ({ adminEmail }) => {
           setCreatingSprint={setCreatingSprint}
           onCreateIssue={() => data.project && handleOpenCreateModal()}
           onCreateIssueModal={handleOpenCreateModal}
+          onOpenSprintBoard={handleOpenSprintOnBoard}
         />
       )}
       {view === 'board' && (
@@ -3950,6 +4556,8 @@ const IssueboardWorkspace = ({ adminEmail }) => {
           moveIssueStatus={data.moveIssueStatus}
           setIssueWorkState={data.setIssueWorkState}
           boardLayout={boardLayout}
+          selectedSprint={currentBoardSprint}
+          onSelectSprint={handleSelectSprint}
         />
       )}
       {view === 'reports' && <ReportsView project={data.project} />}
