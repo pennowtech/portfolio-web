@@ -167,15 +167,6 @@ const TICKER_ISSUES = [
     projectColor: 'border-cyan-500/40 bg-cyan-950/80 text-cyan-300',
     status: 'To do',
     statusColor: 'border-sky-500/40 bg-sky-950/80 text-sky-300'
-  },
-  {
-    key: 'LEM-3',
-    type: 'bug',
-    title: 'Automated diagnostic report - Android v0.3.4',
-    project: 'LEM',
-    projectColor: 'border-purple-500/40 bg-purple-950/80 text-purple-300',
-    status: 'To do',
-    statusColor: 'border-sky-500/40 bg-sky-950/80 text-sky-300'
   }
 ];
 
@@ -206,7 +197,6 @@ const AdminDashboardPage = ({ adminEmail }) => {
         {/* Sub-Header: Bento Grid & Live Timestamp matching Artefact 2 */}
         <div className='flex items-center justify-between px-1'>
           <h1 className='text-2xl font-bold tracking-tight text-white'>Bento Grid</h1>
-
           <div className='text-xs font-mono text-slate-400'>{currentDateStr || 'Wed, Oct 26, 10:45 AM'}</div>
         </div>
 
@@ -217,7 +207,7 @@ const AdminDashboardPage = ({ adminEmail }) => {
           {/* ============================================================== */}
           <div className='flex flex-col gap-5 h-full'>
             {/* Upper Box: Articles Studio & Drafts Preview */}
-            <div className='rounded-2xl border border-emerald-500/50 bg-[#0f1722] p-5 shadow-2xl transition hover:border-emerald-500/80 flex flex-col justify-between flex-1'>
+            <div className='rounded-2xl border border-emerald-500/50 bg-[#0f1722] p-5 shadow-2xl transition hover:border-emerald-500/80 flex flex-col justify-between flex-[1.2]'>
               <div>
                 {/* Header */}
                 <div className='flex items-center justify-between mb-4'>
@@ -341,7 +331,7 @@ const AdminDashboardPage = ({ adminEmail }) => {
           {/* ============================================================== */}
           <div className='flex flex-col gap-5 h-full'>
             {/* Upper Box: Active Sprint & Burndown Chart */}
-            <div className='rounded-2xl border border-cyan-400/50 bg-[#0d1724] p-5 shadow-2xl transition hover:border-cyan-400/80 flex flex-col justify-between flex-1'>
+            <div className='rounded-2xl border border-cyan-400/50 bg-[#0d1724] p-5 shadow-2xl transition hover:border-cyan-400/80 flex flex-col justify-between flex-[1.2]'>
               <div>
                 {/* Header */}
                 <div className='flex items-center justify-between mb-4'>
@@ -389,14 +379,14 @@ const AdminDashboardPage = ({ adminEmail }) => {
                   </div>
 
                   {/* Burndown SVG Graph with Y and X Axes matching Artefact 2 */}
-                  <div className='relative h-32 w-full mt-2'>
+                  <div className='relative h-36 w-full mt-2'>
                     {/* Y Axis Vertical Label */}
                     <div className='absolute -left-1 top-1/2 -translate-y-1/2 -rotate-90 text-[8px] font-mono text-slate-500 uppercase tracking-widest pointer-events-none'>
                       Remaining Effort
                     </div>
 
                     <div className='ml-6 h-full flex flex-col justify-between'>
-                      <div className='relative h-24 w-full'>
+                      <div className='relative h-28 w-full'>
                         <svg
                           className='h-full w-full overflow-visible'
                           viewBox='0 0 300 100'
@@ -474,7 +464,7 @@ const AdminDashboardPage = ({ adminEmail }) => {
                   Issueboard Ticker
                 </h3>
                 <Link href='/admin/issues?view=board' className='text-slate-400 hover:text-cyan-400 text-xs font-mono'>
-                  View Board ({TICKER_ISSUES.length}) →
+                  View Board (7) →
                 </Link>
               </div>
 
