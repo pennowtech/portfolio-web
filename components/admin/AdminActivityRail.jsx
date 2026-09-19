@@ -44,7 +44,7 @@ const NAV_ITEMS = [
   }
 ];
 
-export const AdminActivityRail = ({ sidebarExpanded, onToggleSidebar }) => {
+export const AdminActivityRail = ({ sidebarExpanded, onToggleSidebar, hideToggle = false }) => {
   const router = useRouter();
   const currentPath = router.pathname;
 
@@ -101,19 +101,21 @@ export const AdminActivityRail = ({ sidebarExpanded, onToggleSidebar }) => {
       {/* Bottom Utilities */}
       <div className='flex flex-col items-center gap-2'>
         {/* Toggle Context Sidebar Drawer */}
-        <button
-          type='button'
-          onClick={onToggleSidebar}
-          title={sidebarExpanded ? 'Collapse Context Shelf (⌥B)' : 'Expand Context Shelf (⌥B)'}
-          className={`flex size-9 items-center justify-center rounded-lg transition ${
-            sidebarExpanded
-              ? 'text-emerald-600 bg-emerald-50 hover:bg-emerald-100 dark:text-emerald-400 dark:bg-transparent dark:hover:bg-slate-800'
-              : 'text-slate-500 hover:bg-slate-200 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200'
-          }`}
-          aria-label='Toggle Context Drawer'
-        >
-          <FiSidebar className='size-4' />
-        </button>
+        {!hideToggle && (
+          <button
+            type='button'
+            onClick={onToggleSidebar}
+            title={sidebarExpanded ? 'Collapse Context Shelf (⌥B)' : 'Expand Context Shelf (⌥B)'}
+            className={`flex size-9 items-center justify-center rounded-lg transition ${
+              sidebarExpanded
+                ? 'text-emerald-600 bg-emerald-50 hover:bg-emerald-100 dark:text-emerald-400 dark:bg-transparent dark:hover:bg-slate-800'
+                : 'text-slate-500 hover:bg-slate-200 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200'
+            }`}
+            aria-label='Toggle Context Drawer'
+          >
+            <FiSidebar className='size-4' />
+          </button>
+        )}
 
         {/* Portfolio Live Link */}
         <Link

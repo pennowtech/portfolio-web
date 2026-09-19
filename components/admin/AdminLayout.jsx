@@ -12,7 +12,8 @@ export const AdminLayout = ({
   title = 'Admin Command Center | SinghBuildsTech',
   description = 'Private SinghBuildsTech administration console.',
   adminEmail = '',
-  defaultSidebarExpanded = true
+  defaultSidebarExpanded = true,
+  hideContextSidebar = false
 }) => {
   const router = useRouter();
   const [sidebarExpanded, setSidebarExpanded] = useState(defaultSidebarExpanded);
@@ -98,10 +99,14 @@ export const AdminLayout = ({
       </Head>
 
       {/* TIER 1: 54px Iconic Activity Rail (Artefact 3) */}
-      <AdminActivityRail sidebarExpanded={sidebarExpanded} onToggleSidebar={handleToggleSidebar} />
+      <AdminActivityRail
+        sidebarExpanded={sidebarExpanded}
+        onToggleSidebar={handleToggleSidebar}
+        hideToggle={hideContextSidebar}
+      />
 
       {/* TIER 2: 230px Contextual Shelf & Sub-tree Drawer (Artefact 3) */}
-      <AdminContextSidebar expanded={sidebarExpanded} onOpenQuickAdd={handleOpenQuickAdd} />
+      {!hideContextSidebar && <AdminContextSidebar expanded={sidebarExpanded} onOpenQuickAdd={handleOpenQuickAdd} />}
 
       {/* MAIN VIEWPORT CANVAS */}
       <div className='flex min-w-0 flex-1 flex-col overflow-hidden bg-slate-100 dark:bg-slate-950'>

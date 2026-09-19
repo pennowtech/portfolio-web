@@ -8,8 +8,9 @@ import { getServerSession } from 'next-auth/next';
 const NewArticlePage = ({ adminEmail, defaultPublicationDate }) => (
   <AdminLayout
     adminEmail={adminEmail}
-    title='Write Article | SinghBuildsTech Editorial Studio'
+    title='Write Article | SinghBuildsTech'
     description='Private SinghBuildsTech author workspace.'
+    hideContextSidebar={true}
   >
     <div className='p-4 sm:p-6'>
       <ArticleEditor adminEmail={adminEmail} defaultPublicationDate={defaultPublicationDate} />

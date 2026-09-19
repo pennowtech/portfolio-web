@@ -171,10 +171,10 @@ export const AdminContextSidebar = ({ expanded, onOpenQuickAdd }) => {
         )}
 
         {/* ARTICLES DOMAIN TREE */}
-        {(isArticles || isOverview) && (
+        {isOverview && (
           <div className='space-y-1'>
             <div className='px-2.5 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400'>
-              Editorial Studio
+              Articles
             </div>
             <Link
               href='/admin/articles/new'
