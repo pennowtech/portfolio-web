@@ -10,7 +10,9 @@ import {
   FiMoreVertical,
   FiTable,
   FiHash,
-  FiType
+  FiType,
+  FiChevronDown,
+  FiHelpCircle
 } from 'react-icons/fi';
 import { LuBraces, LuListOrdered, LuListTree, LuQuote, LuUndo, LuRedo } from 'react-icons/lu';
 import { EditorView } from '@codemirror/view';
@@ -413,63 +415,69 @@ const MarkdownToolbar = ({
     );
   }
 
+  const btnClass =
+    'flex size-8 items-center justify-center rounded-lg border border-transparent text-slate-600 transition-all duration-150 hover:border-slate-200/80 hover:bg-white hover:text-emerald-700 hover:shadow-xs active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40 dark:text-slate-300 dark:hover:border-slate-700/80 dark:hover:bg-slate-800 dark:hover:text-emerald-400';
+
   return (
     <div
-      className={
-        compact
-          ? 'flex min-w-0 flex-1 flex-wrap items-center justify-end gap-1 border-0 bg-transparent p-0.5 [&_button]:!size-6 [&_select]:!h-6'
-          : 'flex flex-wrap items-center gap-1 border-b border-slate-300 bg-slate-50 p-2 dark:border-slate-600 dark:bg-slate-800'
-      }
+      className='flex flex-wrap items-center gap-1 border-b border-slate-200/90 bg-gradient-to-r from-slate-50/95 via-white/90 to-slate-50/95 px-3 py-1.5 backdrop-blur-md dark:border-slate-800 dark:from-slate-900/95 dark:via-slate-900/90 dark:to-slate-900/95'
       role='toolbar'
       aria-label='Markdown formatting'
     >
+      {/* History Controls */}
       <button
         type='button'
         onClick={handleUndo}
         title='Undo (Ctrl/⌘ Z)'
         aria-label='Undo (Ctrl/⌘ Z)'
-        className='flex size-9 items-center justify-center rounded-md text-slate-700 hover:bg-white hover:text-green-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:text-slate-100 dark:hover:bg-slate-700 dark:hover:text-green-400'
+        className={btnClass}
       >
-        <LuUndo aria-hidden='true' />
+        <LuUndo className='size-4' aria-hidden='true' />
       </button>
       <button
         type='button'
         onClick={handleRedo}
         title='Redo (Ctrl/⌘ Y or Ctrl/⌘ Shift Z)'
         aria-label='Redo (Ctrl/⌘ Y or Ctrl/⌘ Shift Z)'
-        className='flex size-9 items-center justify-center rounded-md text-slate-700 hover:bg-white hover:text-green-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:text-slate-100 dark:hover:bg-slate-700 dark:hover:text-green-400'
+        className={btnClass}
       >
-        <LuRedo aria-hidden='true' />
+        <LuRedo className='size-4' aria-hidden='true' />
       </button>
-      <span className={`${compact ? 'mx-0.5 h-5' : 'mx-1 h-6'} border-l border-slate-300 dark:border-slate-600`} />
-      <label className={`relative shrink-0 ${compact ? 'inline-flex size-6 items-center justify-center' : ''}`}>
-        <span className='sr-only'>Text style</span>
-        {compact && (
-          <FiType className='pointer-events-none size-3.5 text-slate-700 dark:text-slate-200' aria-hidden='true' />
-        )}
+
+      <span className='mx-1 h-4 w-px bg-slate-200/90 dark:bg-slate-700/90' aria-hidden='true' />
+
+      {/* Text Style Selector */}
+      <div className='relative inline-flex items-center'>
+        <FiType
+          className='pointer-events-none absolute left-2.5 size-3.5 text-slate-400 dark:text-slate-500'
+          aria-hidden='true'
+        />
         <select
           onChange={(event) => {
             setHeading(Number(event.target.value));
             event.target.value = '';
           }}
           defaultValue=''
-          className={
-            compact
-              ? 'absolute inset-0 size-6 cursor-pointer opacity-0'
-              : 'h-9 rounded-md border border-slate-300 bg-white px-3 pr-8 text-sm text-slate-800 dark:border-slate-600 dark:bg-slate-900 dark:text-white'
-          }
+          className='h-8 appearance-none rounded-lg border border-slate-200/90 bg-white/90 pl-8 pr-7 text-xs font-semibold text-slate-700 shadow-xs transition hover:border-slate-300 hover:bg-white focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 dark:border-slate-700/80 dark:bg-slate-800/90 dark:text-slate-200 dark:hover:border-slate-600 cursor-pointer'
           title='Paragraph and heading style'
         >
           <option value='' disabled>
             Text style
           </option>
-          <option value='0'>Normal text</option>
-          <option value='2'>Heading 2</option>
-          <option value='3'>Heading 3</option>
-          <option value='4'>Heading 4</option>
+          <option value='0'>Normal text (P)</option>
+          <option value='2'>Heading 2 (H2)</option>
+          <option value='3'>Heading 3 (H3)</option>
+          <option value='4'>Heading 4 (H4)</option>
         </select>
-      </label>
-      <span className={`${compact ? 'mx-0.5 h-5' : 'mx-1 h-6'} border-l border-slate-300 dark:border-slate-600`} />
+        <FiChevronDown
+          className='pointer-events-none absolute right-2 size-3 text-slate-400 dark:text-slate-500'
+          aria-hidden='true'
+        />
+      </div>
+
+      <span className='mx-1 h-4 w-px bg-slate-200/90 dark:bg-slate-700/90' aria-hidden='true' />
+
+      {/* Formatting & Structure Tools */}
       {tools
         .filter(({ extended, title }) => {
           if (
@@ -484,72 +492,76 @@ const MarkdownToolbar = ({
           ) {
             return false;
           }
-          return !compact || !extended;
+          return !extended;
         })
         .map(({ icon: Icon, title, action }) => (
-          <button
-            key={title}
-            type='button'
-            title={title}
-            aria-label={title}
-            onClick={action}
-            className='flex size-9 items-center justify-center rounded-md text-slate-700 hover:bg-white hover:text-green-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:text-slate-100 dark:hover:bg-slate-700 dark:hover:text-green-400'
-          >
-            <Icon aria-hidden='true' />
+          <button key={title} type='button' title={title} aria-label={title} onClick={action} className={btnClass}>
+            <Icon className='size-4' aria-hidden='true' />
           </button>
         ))}
-      {!compact && <span className='mx-1 h-6 border-l border-slate-300 dark:border-slate-600' />}
-      {!compact && (
-        <button
-          type='button'
-          onClick={insertToc}
-          title='Insert linked table of contents'
-          aria-label='Insert linked table of contents'
-          className='flex size-9 items-center justify-center rounded-md text-slate-700 hover:bg-white hover:text-green-700 dark:text-slate-100 dark:hover:bg-slate-700 dark:hover:text-green-400'
+
+      <span className='mx-1 h-4 w-px bg-slate-200/90 dark:bg-slate-700/90' aria-hidden='true' />
+
+      {/* Table of Contents Generator */}
+      <button
+        type='button'
+        onClick={insertToc}
+        title='Insert linked table of contents'
+        aria-label='Insert linked table of contents'
+        className={btnClass}
+      >
+        <LuListTree className='size-4' aria-hidden='true' />
+      </button>
+
+      {/* Heading Outline Jump */}
+      <div className='relative ml-auto flex min-w-44 max-w-60 shrink-0 items-center'>
+        <LuListTree
+          className='pointer-events-none absolute left-2.5 size-3.5 text-slate-400 dark:text-slate-500'
+          aria-hidden='true'
+        />
+        <select
+          onChange={(event) => jumpToHeading(event.target.value)}
+          defaultValue=''
+          className='h-8 w-full appearance-none rounded-lg border border-slate-200/90 bg-white/90 pl-8 pr-7 text-xs font-medium text-slate-700 shadow-xs transition hover:border-slate-300 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 dark:border-slate-700/80 dark:bg-slate-800/90 dark:text-slate-200 dark:hover:border-slate-600 cursor-pointer truncate'
+          title='Jump to article heading'
         >
-          <LuListTree aria-hidden='true' />
-        </button>
-      )}
-      {!compact && (
-        <label className='ml-auto flex min-w-56 shrink-0 items-center gap-2'>
-          <LuListTree className='text-slate-500' aria-hidden='true' />
-          <span className='sr-only'>Jump to article heading</span>
-          <select
-            onChange={(event) => jumpToHeading(event.target.value)}
-            defaultValue=''
-            className='h-9 min-w-0 flex-1 rounded-md border border-slate-300 bg-white px-2 text-sm text-slate-800 dark:border-slate-600 dark:bg-slate-900 dark:text-white'
-            title='Article outline'
-          >
-            <option value=''>Article outline</option>
-            {headings.map(({ level, title, position }, index) => (
-              <option key={`${position}-${index}`} value={position}>{`${'— '.repeat(level - 2)}${title}`}</option>
-            ))}
-          </select>
-        </label>
-      )}
-      {!compact && (
-        <button
-          type='button'
-          onClick={onToggleLineNumbers}
-          title={`${showLineNumbers ? 'Hide' : 'Show'} line numbers`}
-          aria-label={`${showLineNumbers ? 'Hide' : 'Show'} line numbers`}
-          aria-pressed={showLineNumbers}
-          className={`flex size-9 shrink-0 items-center justify-center rounded-full border ${showLineNumbers ? 'border-green-700 text-green-700 dark:border-green-400 dark:text-green-400' : 'border-slate-300 text-slate-600 dark:border-slate-600 dark:text-slate-300'}`}
-        >
-          <FiHash aria-hidden='true' />
-        </button>
-      )}
-      {!compact && (
-        <button
-          type='button'
-          onClick={onHelp}
-          title='Markdown editor help'
-          aria-label='Markdown editor help'
-          className='flex size-9 shrink-0 items-center justify-center rounded-full border border-slate-300 text-base font-semibold text-slate-700 hover:border-green-700 hover:text-green-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:border-slate-600 dark:text-slate-100 dark:hover:border-green-400 dark:hover:text-green-400'
-        >
-          ?
-        </button>
-      )}
+          <option value=''>Article outline ({headings.length})</option>
+          {headings.map(({ level, title, position }, index) => (
+            <option key={`${position}-${index}`} value={position}>{`${'— '.repeat(level - 2)}${title}`}</option>
+          ))}
+        </select>
+        <FiChevronDown
+          className='pointer-events-none absolute right-2 size-3 text-slate-400 dark:text-slate-500'
+          aria-hidden='true'
+        />
+      </div>
+
+      {/* Line Numbers Toggle */}
+      <button
+        type='button'
+        onClick={onToggleLineNumbers}
+        title={`${showLineNumbers ? 'Hide' : 'Show'} line numbers`}
+        aria-label={`${showLineNumbers ? 'Hide' : 'Show'} line numbers`}
+        aria-pressed={showLineNumbers}
+        className={`flex size-8 shrink-0 items-center justify-center rounded-lg border text-xs font-mono font-bold transition-all active:scale-95 ${
+          showLineNumbers
+            ? 'border-emerald-500/50 bg-emerald-50/90 text-emerald-700 shadow-xs dark:border-emerald-500/40 dark:bg-emerald-950/40 dark:text-emerald-300'
+            : 'border-slate-200/90 bg-white/90 text-slate-400 hover:border-slate-300 hover:text-slate-600 dark:border-slate-700/80 dark:bg-slate-800/80 dark:text-slate-400'
+        }`}
+      >
+        <FiHash className='size-3.5' aria-hidden='true' />
+      </button>
+
+      {/* Help Button */}
+      <button
+        type='button'
+        onClick={onHelp}
+        title='Markdown editor help & formatting reference'
+        aria-label='Markdown editor help'
+        className='flex size-8 shrink-0 items-center justify-center rounded-lg border border-slate-200/90 bg-white/90 text-slate-600 shadow-xs transition-all hover:border-emerald-400 hover:bg-emerald-50/50 hover:text-emerald-700 active:scale-95 dark:border-slate-700/80 dark:bg-slate-800/80 dark:text-slate-300 dark:hover:border-emerald-500/40 dark:hover:text-emerald-300'
+      >
+        <FiHelpCircle className='size-3.5' aria-hidden='true' />
+      </button>
     </div>
   );
 };
