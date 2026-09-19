@@ -149,6 +149,33 @@ const TICKER_ISSUES = [
     projectColor: 'border-purple-500/40 bg-purple-950/80 text-purple-300',
     status: 'To do',
     statusColor: 'border-sky-500/40 bg-sky-950/80 text-sky-300'
+  },
+  {
+    key: 'PORT-40',
+    type: 'bug',
+    title: 'Multipart File Upload Issue',
+    project: 'PORT',
+    projectColor: 'border-cyan-500/40 bg-cyan-950/80 text-cyan-300',
+    status: 'To do',
+    statusColor: 'border-sky-500/40 bg-sky-950/80 text-sky-300'
+  },
+  {
+    key: 'PORT-42',
+    type: 'task',
+    title: 'Issue created with X-API-Key',
+    project: 'PORT',
+    projectColor: 'border-cyan-500/40 bg-cyan-950/80 text-cyan-300',
+    status: 'To do',
+    statusColor: 'border-sky-500/40 bg-sky-950/80 text-sky-300'
+  },
+  {
+    key: 'LEM-3',
+    type: 'bug',
+    title: 'Automated diagnostic report - Android v0.3.4',
+    project: 'LEM',
+    projectColor: 'border-purple-500/40 bg-purple-950/80 text-purple-300',
+    status: 'To do',
+    statusColor: 'border-sky-500/40 bg-sky-950/80 text-sky-300'
   }
 ];
 
@@ -441,22 +468,22 @@ const AdminDashboardPage = ({ adminEmail }) => {
 
             {/* Bottom Box: Issueboard Ticker */}
             <div className='rounded-2xl border border-slate-800/80 bg-[#0d1724] p-5 shadow-xl flex flex-col justify-between flex-1'>
-              <div className='flex items-center justify-between mb-3.5'>
+              <div className='flex items-center justify-between mb-3'>
                 <h3 className='text-xs font-bold text-slate-200 uppercase tracking-wider font-mono flex items-center gap-1.5'>
                   <span className='size-2 rounded-full bg-cyan-400 animate-pulse' />
                   Issueboard Ticker
                 </h3>
                 <Link href='/admin/issues?view=board' className='text-slate-400 hover:text-cyan-400 text-xs font-mono'>
-                  View Board →
+                  View Board ({TICKER_ISSUES.length}) →
                 </Link>
               </div>
 
-              <div className='space-y-2.5'>
+              <div className='space-y-2'>
                 {TICKER_ISSUES.map((issue) => (
                   <Link
                     key={issue.key}
                     href={`/admin/issues/${issue.key}`}
-                    className='group flex items-center justify-between rounded-xl border border-slate-800/60 bg-slate-950/60 p-2.5 transition hover:border-cyan-500/50 hover:bg-slate-900/60'
+                    className='group flex items-center justify-between rounded-xl border border-slate-800/60 bg-slate-950/60 p-2 sm:p-2.5 transition hover:border-cyan-500/50 hover:bg-slate-900/60'
                   >
                     <div className='flex items-center gap-2 min-w-0 pr-2'>
                       <span
