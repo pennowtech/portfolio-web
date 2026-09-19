@@ -4,6 +4,7 @@ import { signOut } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import {
   FiActivity,
+  FiArrowLeft,
   FiCalendar,
   FiChevronDown,
   FiColumns,
@@ -36,6 +37,32 @@ const Sidebar = ({ adminEmail, currentView, currentProject, projects = [] }) => 
 
   return (
     <aside className='flex h-full w-[17rem] shrink-0 flex-col overflow-y-auto bg-emerald-950 px-4 py-5 text-emerald-50'>
+      {/* Quick Admin Hub Switcher */}
+      <div className='mb-4 pb-3 border-b border-emerald-800/80'>
+        <Link
+          href='/admin'
+          className='flex items-center gap-1.5 text-xs font-semibold text-emerald-300/80 hover:text-emerald-100 transition'
+        >
+          <FiArrowLeft className='size-3.5' /> Admin Command Hub
+        </Link>
+        <div className='mt-2 flex items-center gap-1.5'>
+          <Link
+            href='/admin/articles/new'
+            title='Articles Studio'
+            className='flex-1 text-center py-1 px-1.5 rounded-lg border border-emerald-800/80 bg-emerald-900/40 text-[11px] font-medium text-emerald-200/80 hover:bg-emerald-800 hover:text-white transition'
+          >
+            Articles
+          </Link>
+          <Link
+            href='/admin/books'
+            title='Book Records & Library'
+            className='flex-1 text-center py-1 px-1.5 rounded-lg border border-emerald-800/80 bg-emerald-900/40 text-[11px] font-medium text-emerald-200/80 hover:bg-emerald-800 hover:text-white transition'
+          >
+            Books
+          </Link>
+        </div>
+      </div>
+
       <div className='flex items-center gap-3 px-2 pb-6'>
         <div className='grid size-10 place-items-center rounded-xl bg-emerald-300 font-Inter font-bold text-emerald-950'>
           IB
