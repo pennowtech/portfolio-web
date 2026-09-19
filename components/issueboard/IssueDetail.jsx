@@ -1504,16 +1504,27 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
               </select>
             </label>
             {/* Assignee multi-select picker */}
-            {/* Assignee multi-select picker */}
             <div className='grid grid-cols-[5.5rem_1fr] items-start gap-2 text-sm'>
               <span className='pt-1 text-xs text-slate-500'>Assignee</span>
-              <div className='relative picker-container'>
-                <div className='flex items-center justify-between gap-2'>
-                  <div className='flex flex-wrap items-center gap-1.5 min-w-0'>
-                    {selectedAssignees.length === 0 ? (
-                      <span className='text-xs italic text-slate-400 dark:text-slate-500'>Unassigned</span>
-                    ) : (
-                      selectedAssignees.map((user) => {
+              <div className='relative picker-container min-w-0'>
+                {selectedAssignees.length === 0 ? (
+                  <div className='flex items-center justify-between gap-2'>
+                    <span className='text-xs italic text-slate-400 dark:text-slate-500'>Unassigned</span>
+                    <button
+                      type='button'
+                      onClick={() => {
+                        setAssigneePickerOpen((open) => !open);
+                        setLabelPickerOpen(false);
+                      }}
+                      className='shrink-0 ml-auto inline-flex items-center gap-1 rounded-lg border border-dashed border-slate-300 px-2 py-0.5 text-[11px] font-semibold text-slate-600 hover:border-emerald-500 hover:text-emerald-700 dark:border-slate-700 dark:text-slate-400 dark:hover:border-emerald-500 dark:hover:text-emerald-400'
+                    >
+                      <FiPlus className='size-2.5' /> Assign
+                    </button>
+                  </div>
+                ) : (
+                  <div className='flex flex-col items-start gap-1.5 min-w-0'>
+                    <div className='flex flex-wrap items-center gap-1.5 min-w-0'>
+                      {selectedAssignees.map((user) => {
                         const initial = user.charAt(0).toUpperCase();
                         return (
                           <span
@@ -1534,20 +1545,20 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
                             </button>
                           </span>
                         );
-                      })
-                    )}
+                      })}
+                    </div>
+                    <button
+                      type='button'
+                      onClick={() => {
+                        setAssigneePickerOpen((open) => !open);
+                        setLabelPickerOpen(false);
+                      }}
+                      className='inline-flex items-center gap-1 rounded-lg border border-dashed border-slate-300 px-2 py-0.5 text-[11px] font-semibold text-slate-600 hover:border-emerald-500 hover:text-emerald-700 dark:border-slate-700 dark:text-slate-400 dark:hover:border-emerald-500 dark:hover:text-emerald-400'
+                    >
+                      <FiPlus className='size-2.5' /> Assign
+                    </button>
                   </div>
-                  <button
-                    type='button'
-                    onClick={() => {
-                      setAssigneePickerOpen((open) => !open);
-                      setLabelPickerOpen(false);
-                    }}
-                    className='shrink-0 ml-auto inline-flex items-center gap-1 rounded-lg border border-dashed border-slate-300 px-2 py-0.5 text-[11px] font-semibold text-slate-600 hover:border-emerald-500 hover:text-emerald-700 dark:border-slate-700 dark:text-slate-400 dark:hover:border-emerald-500 dark:hover:text-emerald-400'
-                  >
-                    <FiPlus className='size-2.5' /> Assign
-                  </button>
-                </div>
+                )}
 
                 {assigneePickerOpen && (
                   <div className='absolute right-0 top-full z-20 mt-1.5 w-64 max-w-[calc(100vw-3rem)] rounded-xl border border-slate-200 bg-white p-2 shadow-xl dark:border-slate-700 dark:bg-slate-900'>
@@ -1621,41 +1632,56 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
             {/* Labels multi-select picker */}
             <div className='grid grid-cols-[5.5rem_1fr] items-start gap-2 text-sm'>
               <span className='pt-1 text-xs text-slate-500'>Labels</span>
-              <div className='relative picker-container'>
-                <div className='flex items-center justify-between gap-2'>
-                  <div className='flex flex-wrap items-center gap-1 min-w-0'>
-                    {(!issue.labels || issue.labels.length === 0) && (
-                      <span className='text-xs italic text-slate-400 dark:text-slate-500'>None</span>
-                    )}
-                    {issue.labels?.map((label) => (
-                      <span
-                        key={label.id}
-                        className='inline-flex h-5 items-center gap-1 rounded-full px-2 text-[10px] font-bold'
-                        style={{ backgroundColor: label.backgroundColor, color: label.textColor }}
-                      >
-                        {label.name}
-                        <button
-                          type='button'
-                          onClick={() => removeLabel(label.id)}
-                          aria-label={`Remove label ${label.name}`}
-                          className='leading-none opacity-70 hover:opacity-100'
-                        >
-                          <FiX className='size-2.5' />
-                        </button>
-                      </span>
-                    ))}
+              <div className='relative picker-container min-w-0'>
+                {!issue.labels || issue.labels.length === 0 ? (
+                  <div className='flex items-center justify-between gap-2'>
+                    <span className='text-xs italic text-slate-400 dark:text-slate-500'>None</span>
+                    <button
+                      type='button'
+                      onClick={() => {
+                        setLabelPickerOpen((open) => !open);
+                        setAssigneePickerOpen(false);
+                      }}
+                      className='shrink-0 ml-auto inline-flex items-center gap-1 rounded-lg border border-dashed border-slate-300 px-2 py-0.5 text-[11px] font-semibold text-slate-600 hover:border-emerald-500 hover:text-emerald-700 dark:border-slate-700 dark:text-slate-400 dark:hover:border-emerald-500 dark:hover:text-emerald-400'
+                    >
+                      <FiPlus className='size-2.5' /> Label
+                    </button>
                   </div>
-                  <button
-                    type='button'
-                    onClick={() => {
-                      setLabelPickerOpen((open) => !open);
-                      setAssigneePickerOpen(false);
-                    }}
-                    className='shrink-0 ml-auto inline-flex items-center gap-1 rounded-lg border border-dashed border-slate-300 px-2 py-0.5 text-[11px] font-semibold text-slate-600 hover:border-emerald-500 hover:text-emerald-700 dark:border-slate-700 dark:text-slate-400 dark:hover:border-emerald-500 dark:hover:text-emerald-400'
-                  >
-                    <FiPlus className='size-2.5' /> Label
-                  </button>
-                </div>
+                ) : (
+                  <div className='flex flex-col items-start gap-1.5 min-w-0 max-w-full'>
+                    <div className='flex flex-col items-start gap-1 w-full min-w-0'>
+                      {issue.labels.map((label) => (
+                        <div key={label.id} className='w-full min-w-0 max-w-full overflow-hidden'>
+                          <span
+                            title={label.name}
+                            className='inline-flex h-5 max-w-full items-center gap-1 rounded-full px-2 text-[10px] font-bold overflow-hidden'
+                            style={{ backgroundColor: label.backgroundColor, color: label.textColor }}
+                          >
+                            <span className='truncate'>{label.name}</span>
+                            <button
+                              type='button'
+                              onClick={() => removeLabel(label.id)}
+                              aria-label={`Remove label ${label.name}`}
+                              className='shrink-0 leading-none opacity-70 hover:opacity-100'
+                            >
+                              <FiX className='size-2.5' />
+                            </button>
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                    <button
+                      type='button'
+                      onClick={() => {
+                        setLabelPickerOpen((open) => !open);
+                        setAssigneePickerOpen(false);
+                      }}
+                      className='inline-flex items-center gap-1 rounded-lg border border-dashed border-slate-300 px-2 py-0.5 text-[11px] font-semibold text-slate-600 hover:border-emerald-500 hover:text-emerald-700 dark:border-slate-700 dark:text-slate-400 dark:hover:border-emerald-500 dark:hover:text-emerald-400'
+                    >
+                      <FiPlus className='size-2.5' /> Label
+                    </button>
+                  </div>
+                )}
 
                 {labelPickerOpen && (
                   <div className='absolute right-0 top-full z-20 mt-1.5 w-64 max-w-[calc(100vw-3rem)] rounded-xl border border-slate-200 bg-white p-2 shadow-xl dark:border-slate-700 dark:bg-slate-900'>

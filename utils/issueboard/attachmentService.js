@@ -230,3 +230,88 @@ export const deleteAttachment = async (projectKey, issueNumber, attachmentId, ac
   });
   return true;
 };
+
+export const uploadAttachmentDirect = async (
+  projectKey,
+  issueNumber,
+  { originalFilename, mimeType, buffer },
+  actor
+) => {
+  const issue = await getIssueByKey(projectKey, issueNumber);
+  if (!issue) return { error: 'ISSUE_NOT_FOUND' };
+
+  if (!ACCEPTED_ATTACHMENT_MIME_TYPES.includes(mimeType)) return { error: 'UNSUPPORTED_TYPE' };
+
+  const isImg = isImageMime(mimeType);
+  const maxAllowed = isImg ? MAX_IMAGE_BYTES : MAX_FILE_BYTES;
+  if (!buffer || buffer.length === 0 || buffer.length > maxAllowed) return { error: 'TOO_LARGE' };
+
+  let width = null;
+  let height = null;
+  if (isImg) {
+    let metadata;
+    try {
+      metadata = await sharp(buffer).metadata();
+    } catch {
+      return { error: 'INVALID_IMAGE' };
+    }
+    const expectedFormat = SHARP_FORMAT_BY_MIME[mimeType];
+    if (expectedFormat && metadata.format !== expectedFormat) return { error: 'TYPE_MISMATCH' };
+    if (!metadata.width || !metadata.height || metadata.width > MAX_DIMENSION || metadata.height > MAX_DIMENSION) {
+      return { error: 'DIMENSIONS_INVALID' };
+    }
+    width = metadata.width;
+    height = metadata.height;
+  }
+
+  const extension = MIME_EXTENSION[mimeType] || 'bin';
+  const objectPath = `${issue.id}/${randomUUID()}.${extension}`;
+  const admin = getIssueboardSupabaseAdmin();
+
+  const { error: uploadError } = await admin.storage
+    .from(BUCKET)
+    .upload(objectPath, buffer, { contentType: mimeType, upsert: true });
+  if (uploadError) throw uploadError;
+
+  const checksum = createHash('sha256').update(buffer).digest('hex');
+  const displayName = (originalFilename || '').trim().slice(0, 200) || (isImg ? 'image' : 'attachment');
+
+  const { data: attachment, error: insertError } = await admin
+    .from('issueboard_attachments')
+    .insert({
+      issue_id: issue.id,
+      bucket_id: BUCKET,
+      object_path: objectPath,
+      original_filename: displayName,
+      display_name: displayName,
+      mime_type: mimeType,
+      byte_size: buffer.length,
+      width,
+      height,
+      checksum_sha256: checksum,
+      state: 'ready',
+      created_by: actor || 'api',
+      finalized_at: new Date().toISOString()
+    })
+    .select(
+      'id,original_filename,display_name,mime_type,byte_size,width,height,state,created_at,finalized_at,created_by,object_path'
+    )
+    .single();
+
+  if (insertError) throw insertError;
+
+  const project = await getProjectByKey(projectKey);
+  await admin.from('issueboard_audit_events').insert({
+    project_id: project.id,
+    issue_id: issue.id,
+    actor: actor || 'api',
+    action: 'attachment.uploaded',
+    safe_metadata: { attachmentId: attachment.id, byteSize: buffer.length, mimeType }
+  });
+
+  const { data: signed } = await admin.storage
+    .from(BUCKET)
+    .createSignedUrl(attachment.object_path, SIGNED_DOWNLOAD_TTL_SECONDS);
+
+  return { attachment: { ...toAttachment(attachment), url: signed?.signedUrl || null } };
+};

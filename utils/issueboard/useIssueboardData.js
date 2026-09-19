@@ -119,16 +119,20 @@ export const useIssueboardData = (projectKey) => {
     load();
   }, [load]);
 
-  const createIssue = useCallback(async (input) => {
-    const { ok, payload } = await jsonFetch('/api/issueboard/issues', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(input)
-    });
-    if (!ok || !payload?.ok) throwFromResponse(payload, 'Could not create the issue.');
-    setState((current) => ({ ...current, issues: [...current.issues, payload.issue] }));
-    return payload.issue;
-  }, []);
+  const createIssue = useCallback(
+    async (input) => {
+      const projectKeyToUse = input.projectKey || state.project?.key || projectKey;
+      const { ok, payload } = await jsonFetch('/api/issueboard/issues', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...input, projectKey: projectKeyToUse })
+      });
+      if (!ok || !payload?.ok) throwFromResponse(payload, 'Could not create the issue.');
+      setState((current) => ({ ...current, issues: [...current.issues, payload.issue] }));
+      return payload.issue;
+    },
+    [projectKey, state.project?.key]
+  );
 
   const moveIssueStatus = useCallback(async (issue, statusId) => {
     const { ok, payload } = await jsonFetch(`/api/issueboard/issues/${encodeURIComponent(issue.key)}`, {
@@ -298,10 +302,32 @@ export const useIssueboardData = (projectKey) => {
     return payload.issue;
   }, []);
 
+  const updateIssue = useCallback(async (issue, updates) => {
+    const { ok, payload } = await jsonFetch(`/api/issueboard/issues/${encodeURIComponent(issue.key)}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: updates.title !== undefined ? updates.title : issue.title,
+        description: updates.description !== undefined ? updates.description : issue.description || '',
+        priority: (updates.priority || issue.rawPriority || issue.priority || 'medium').toLowerCase(),
+        assignee: updates.assignee !== undefined ? updates.assignee : issue.assignee || null,
+        statusId: updates.statusId || issue.status?.id || issue.statusId,
+        expectedUpdatedAt: issue.updatedAt
+      })
+    });
+    if (!ok || !payload?.ok) throwFromResponse(payload, 'Could not update the issue.');
+    setState((current) => ({
+      ...current,
+      issues: current.issues.map((entry) => (entry.id === payload.issue.id ? payload.issue : entry))
+    }));
+    return payload.issue;
+  }, []);
+
   return {
     ...state,
     reload: load,
     createIssue,
+    updateIssue,
     moveIssueStatus,
     moveIssueSprint,
     setIssueWorkState,

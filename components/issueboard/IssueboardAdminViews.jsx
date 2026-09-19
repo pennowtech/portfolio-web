@@ -1274,10 +1274,10 @@ export const IntegrationsHealthView = () => {
           <IntegrationCard
             icon={FiCode}
             name='Issue API'
-            description='Create issues directly from approved services and automation'
-            status='Planned'
-            statusTone='blue'
-            action='View specification'
+            description='Create issues directly from approved services, CLI, scripts, and mobile apps'
+            status='Ready'
+            statusTone='green'
+            action='Active'
           >
             <div className='grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,.85fr)]'>
               <div>
@@ -1286,29 +1286,34 @@ export const IntegrationsHealthView = () => {
                   <span>/api/issues</span>
                 </div>
                 <p className='mt-3 text-xs leading-5 text-slate-500'>
-                  Server-to-server requests will require a scoped credential, idempotency key, JSON content type, and
-                  project authorization. Credentials will never be exposed in browser code.
+                  Server-to-server and client requests require scoped authentication via Bearer token or X-API-Key
+                  header. Supports full CORS for React Native and desktop clients.
                 </p>
                 <div className='mt-4 grid gap-2 sm:grid-cols-2'>
-                  <HealthRow label='Authentication' value='Bearer API key' />
-                  <HealthRow label='Idempotency' value='Required header' />
-                  <HealthRow label='Request format' value='application/json' />
-                  <HealthRow label='Attachment bytes' value='Not accepted' />
+                  <HealthRow label='Authentication' value='Bearer API key' healthy />
+                  <HealthRow label='CORS' value='Enabled (*)' healthy />
+                  <HealthRow label='Request format' value='JSON & multipart' healthy />
+                  <HealthRow label='Attachments' value='Images & files (10MB)' healthy />
                 </div>
               </div>
               <div>
                 <h4 className='text-xs font-bold uppercase tracking-wide text-slate-500'>Request parameters</h4>
                 <div className='mt-2 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800'>
                   {[
-                    ['projectKey', 'string', 'Required', 'Target project key'],
-                    ['title', 'string', 'Required', 'Issue title'],
-                    ['issueType', 'string', 'Required', 'Task, story, bug, or epic'],
-                    ['description', 'markdown', 'Optional', 'Description and checklist'],
-                    ['priority', 'string', 'Optional', 'Defaults to project setting'],
-                    ['labels', 'string[]', 'Optional', 'Unknown labels are created'],
-                    ['sprintId', 'uuid', 'Optional', 'Target sprint'],
-                    ['parentIssueKey', 'string', 'Optional', 'Parent for a subtask'],
-                    ['relationships', 'object[]', 'Optional', 'Links, blocks, or blocked by']
+                    ['projectKey', 'string', 'Required', 'Target project key (e.g. "PORT")'],
+                    ['title', 'string', 'Required', 'Issue title (min 3 chars)'],
+                    ['issueType', 'string', 'Optional', 'task, story, bug, epic, subtask'],
+                    ['description', 'markdown', 'Optional', 'Description with markdown'],
+                    ['priority', 'string', 'Optional', 'highest, high, medium, low, lowest'],
+                    ['assignee', 'string', 'Optional', 'Assignee name or email'],
+                    ['storyPoints', 'number', 'Optional', 'Estimate points'],
+                    ['dueAt', 'datetime', 'Optional', 'Due date ISO string'],
+                    ['parentIssueKey', 'string', 'Optional', 'Parent issue key (e.g. "PORT-12")'],
+                    ['sprint', 'string', 'Optional', '"active" or target sprint ID'],
+                    ['status', 'string', 'Optional', 'Status name (e.g. "To do")'],
+                    ['labels', 'string[]', 'Optional', 'Auto-created if new'],
+                    ['checklist', 'string[]', 'Optional', 'Checklist items'],
+                    ['attachments', 'object[] / file', 'Optional', 'Base64 array or multipart files']
                   ].map(([name, type, requirement, detail]) => (
                     <div
                       key={name}
@@ -1329,8 +1334,8 @@ export const IntegrationsHealthView = () => {
                 </div>
                 <p className='mt-3 flex gap-2 text-xs leading-5 text-slate-500'>
                   <FiLock className='mt-0.5 shrink-0' />
-                  Images will use the existing signed direct-upload authorization and finalize flow; image bodies will
-                  not pass through this API or Vercel functions.
+                  Files and images are validated via Sharp, encrypted, and stored in private storage (up to 5MB for
+                  images, 10MB for files).
                 </p>
               </div>
             </div>
