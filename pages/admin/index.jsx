@@ -207,7 +207,7 @@ const AdminDashboardPage = ({ adminEmail }) => {
           {/* ============================================================== */}
           <div className='flex flex-col gap-5 h-full'>
             {/* Upper Box: Articles Studio & Drafts Preview */}
-            <div className='rounded-2xl border border-emerald-500/50 bg-[#0f1722] p-5 shadow-2xl transition hover:border-emerald-500/80 flex flex-col justify-between flex-[1.2]'>
+            <div className='rounded-2xl border border-emerald-500/50 bg-[#0f1722] p-4 sm:p-5 shadow-2xl transition hover:border-emerald-500/80 flex flex-col justify-between flex-[1.2] overflow-hidden'>
               <div>
                 {/* Header */}
                 <div className='flex items-center justify-between mb-4'>
@@ -331,10 +331,10 @@ const AdminDashboardPage = ({ adminEmail }) => {
           {/* ============================================================== */}
           <div className='flex flex-col gap-5 h-full'>
             {/* Upper Box: Active Sprint & Burndown Chart */}
-            <div className='rounded-2xl border border-cyan-400/50 bg-[#0d1724] p-5 shadow-2xl transition hover:border-cyan-400/80 flex flex-col justify-between flex-[1.2]'>
+            <div className='rounded-2xl border border-cyan-400/50 bg-[#0d1724] p-4 sm:p-5 shadow-2xl transition hover:border-cyan-400/80 flex flex-col justify-between flex-[1.2] overflow-hidden'>
               <div>
                 {/* Header */}
-                <div className='flex items-center justify-between mb-4'>
+                <div className='flex items-center justify-between mb-3'>
                   <h2 className='text-xs font-black uppercase tracking-wider text-cyan-400 font-mono'>
                     ISSUEBOARD WORKSPACE
                   </h2>
@@ -351,7 +351,7 @@ const AdminDashboardPage = ({ adminEmail }) => {
                 {/* Active Sprint Glowing Banner */}
                 <Link
                   href='/admin/issues?view=board'
-                  className='group flex items-center justify-between rounded-xl bg-gradient-to-r from-cyan-400 to-[#22d3ee] p-3 text-slate-950 shadow-lg shadow-cyan-500/25 transition hover:brightness-105'
+                  className='group flex items-center justify-between rounded-xl bg-gradient-to-r from-cyan-400 to-[#22d3ee] p-2.5 sm:p-3 text-slate-950 shadow-lg shadow-cyan-500/25 transition hover:brightness-105'
                 >
                   <div className='flex items-center gap-3'>
                     <span className='grid size-8 place-items-center rounded-lg bg-slate-950/20 text-slate-950'>
@@ -366,7 +366,7 @@ const AdminDashboardPage = ({ adminEmail }) => {
                 </Link>
 
                 {/* Sprint Burndown Chart */}
-                <div className='mt-5 pt-3 border-t border-slate-800/80'>
+                <div className='mt-3.5 pt-2.5 border-t border-slate-800/80'>
                   <div className='flex items-baseline justify-between mb-1'>
                     <div>
                       <h3 className='text-xs font-bold text-slate-200'>Sprint Burndown Chart</h3>
@@ -379,14 +379,14 @@ const AdminDashboardPage = ({ adminEmail }) => {
                   </div>
 
                   {/* Burndown SVG Graph with Y and X Axes matching Artefact 2 */}
-                  <div className='relative h-36 w-full mt-2'>
+                  <div className='relative h-28 sm:h-32 w-full mt-1.5'>
                     {/* Y Axis Vertical Label */}
                     <div className='absolute -left-1 top-1/2 -translate-y-1/2 -rotate-90 text-[8px] font-mono text-slate-500 uppercase tracking-widest pointer-events-none'>
                       Remaining Effort
                     </div>
 
                     <div className='ml-6 h-full flex flex-col justify-between'>
-                      <div className='relative h-28 w-full'>
+                      <div className='relative h-20 sm:h-22 w-full'>
                         <svg
                           className='h-full w-full overflow-visible'
                           viewBox='0 0 300 100'
@@ -440,14 +440,14 @@ const AdminDashboardPage = ({ adminEmail }) => {
                       </div>
 
                       {/* X-axis Ticks below */}
-                      <div className='flex justify-between text-[9px] font-mono text-slate-500 pt-1 border-t border-slate-800/80'>
+                      <div className='flex justify-between text-[8.5px] font-mono text-slate-500 pt-0.5 border-t border-slate-800/80 leading-tight'>
                         <span>0</span>
                         <span>6</span>
                         <span>16</span>
                         <span>24</span>
                         <span>38</span>
                       </div>
-                      <div className='text-center text-[8px] font-mono text-slate-500 uppercase tracking-widest -mt-1'>
+                      <div className='text-center text-[7.5px] font-mono text-slate-500 uppercase tracking-widest leading-none pt-0.5'>
                         Time
                       </div>
                     </div>
