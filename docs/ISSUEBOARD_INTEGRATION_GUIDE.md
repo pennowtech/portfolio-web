@@ -248,19 +248,53 @@ print("Ticket created:", ticket.get("issue", {}).get("key"))
 
 ## How to Manage the `ISSUEBOARD_API_KEY`
 
-1. **Where to Store It**:
-   - **Local Development**: In `.env.local`:
-     ```bash
-     ISSUEBOARD_API_KEY=ib_live_your_secret_key_here
-     ```
-   - **Production (Vercel / Hosting)**: In your project settings under **Environment Variables** as `ISSUEBOARD_API_KEY`.
+### 1. Where to Find It (If Lost or Forgotten)
 
-2. **How to Generate a New Key**:
-   If you ever need to generate a new key or rotate an existing one, run this one-liner in your terminal:
+If you ever forget or lose your API key, you can retrieve it from your existing configuration without needing to regenerate it:
 
-   ```bash
-   node -e "console.log('ib_live_' + require('crypto').randomBytes(24).toString('hex'))"
-   ```
+- **In Local Development**:
+  Check your local environment file [`.env.local`](.env.local):
+  ```bash
+  grep "ISSUEBOARD_API_KEY" .env.local
+  ```
+- **In Production (Vercel)**:
+  1. Open your **Vercel Dashboard** and select this portfolio project.
+  2. Go to **Settings** → **Environment Variables**.
+  3. Locate `ISSUEBOARD_API_KEY` in the list.
+  4. Click the **Eye icon (Reveal)** or **Copy** button to view the active secret key.
+- **Via Vercel CLI**:
+  You can also inspect or pull your production environment variables directly from your terminal:
+  ```bash
+  npx vercel env pull .env.production.local
+  ```
 
-3. **Rotating the Key**:
-   Update `ISSUEBOARD_API_KEY` in your environment variables and restart/redeploy the application. Any callers using the old key will receive a `401 Unauthorized` error until updated.
+---
+
+### 2. How to Generate a New Key
+
+If the key was deleted, compromised, or you want to start fresh, generate a new secure 256-bit key with this terminal command:
+
+```bash
+node -e "console.log('ib_live_' + require('crypto').randomBytes(24).toString('hex'))"
+```
+
+---
+
+### 3. Where to Save the Key
+
+- **Locally**: Add or update it in your `.env.local`:
+  ```bash
+  ISSUEBOARD_API_KEY=ib_live_0e1ad9ddfd55228b48c94720569649a2c2a99738a0ace28b
+  ```
+- **Production**: Add it in **Vercel Settings → Environment Variables** for `Production`, `Preview`, and `Development` environments.
+
+---
+
+### 4. Rotating the Key
+
+When you update `ISSUEBOARD_API_KEY`:
+
+1. Save the new value in Vercel and locally.
+2. Redeploy the project (or restart `npm run dev`).
+3. Update any external scripts, mobile apps, or CI pipelines to use the new key.
+4. Any requests made with the previous key will immediately receive `401 Unauthorized`.
