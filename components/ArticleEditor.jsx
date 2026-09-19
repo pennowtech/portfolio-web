@@ -90,7 +90,6 @@ const ArticleEditor = ({ adminEmail, defaultPublicationDate }) => {
   const [slugEdited, setSlugEdited] = useState(false);
   const [viewMode, setViewMode] = useState('split');
   const [showLineNumbers, setShowLineNumbers] = useState(true);
-  const [showMoreToolbar, setShowMoreToolbar] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState(null);
@@ -513,24 +512,6 @@ const ArticleEditor = ({ adminEmail, defaultPublicationDate }) => {
               </button>
             ))}
           </div>
-
-          <button
-            type='button'
-            onClick={() => setShowMoreToolbar((prev) => !prev)}
-            aria-pressed={showMoreToolbar}
-            title={
-              showMoreToolbar
-                ? 'Hide extended markdown toolbar'
-                : 'Show extended markdown tools (Headings, Tables, Lists, Code, Embeds)'
-            }
-            className={`flex size-8 items-center justify-center rounded-lg border text-sm transition ${
-              showMoreToolbar
-                ? 'border-emerald-500 bg-emerald-50 text-emerald-700 shadow-[0_0_10px_rgba(16,185,129,0.2)] dark:border-emerald-500/50 dark:bg-emerald-950/40 dark:text-emerald-300'
-                : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800'
-            }`}
-          >
-            <FiMoreHorizontal className='size-4' />
-          </button>
         </div>
       </div>
 
@@ -544,18 +525,15 @@ const ArticleEditor = ({ adminEmail, defaultPublicationDate }) => {
               onKeyDownCapture={handleEditorShortcut}
               className='relative overflow-hidden rounded-xl border border-slate-300 shadow-sm dark:border-slate-700'
             >
-              {showMoreToolbar && (
-                <div className='border-b border-slate-200/80 bg-slate-50/70 dark:border-slate-700/80 dark:bg-slate-900/70'>
-                  <MarkdownToolbar
-                    getEditorView={getEditorView}
-                    markdown={form.markdown}
-                    onHelp={() => setHelpOpen(true)}
-                    showLineNumbers={showLineNumbers}
-                    onToggleLineNumbers={() => setShowLineNumbers((current) => !current)}
-                    excludeFloatingTools={true}
-                  />
-                </div>
-              )}
+              {/* Permanent Top-Level Formatting Bar */}
+              <MarkdownToolbar
+                getEditorView={getEditorView}
+                markdown={form.markdown}
+                onHelp={() => setHelpOpen(true)}
+                showLineNumbers={showLineNumbers}
+                onToggleLineNumbers={() => setShowLineNumbers((current) => !current)}
+                excludeFloatingTools={true}
+              />
 
               {/* Frosted Floating Selection Bubble */}
               <FrostedSelectionBubble getEditorView={getEditorView} />
