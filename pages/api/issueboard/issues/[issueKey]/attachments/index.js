@@ -13,8 +13,8 @@ const issueKeyPattern = /^([A-Z][A-Z0-9]{1,9})-(\d{1,10})$/;
 
 const ERROR_MESSAGES = {
   ISSUE_NOT_FOUND: ['ISSUE_NOT_FOUND', 404, 'Issue not found.'],
-  UNSUPPORTED_TYPE: ['UNSUPPORTED_TYPE', 400, 'Only JPEG, PNG, or WebP images are accepted.'],
-  TOO_LARGE: ['TOO_LARGE', 400, 'Compressed image must be 1 MB or smaller.']
+  UNSUPPORTED_TYPE: ['UNSUPPORTED_TYPE', 400, 'Invalid or unsupported file type.'],
+  TOO_LARGE: ['TOO_LARGE', 400, 'File exceeds the size limit (5MB for images, 10MB for documents/files).']
 };
 
 export default async function handler(req, res) {
