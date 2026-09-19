@@ -215,7 +215,7 @@ const BooksPage = ({ adminEmail }) => {
                     setActiveShelf(shelf.id);
                     router.push(`/admin/books?shelf=${shelf.id}`, undefined, { shallow: true });
                   }}
-                  className={`inline-flex items-center gap-2 rounded-xl px-3 py-1 text-xs font-semibold transition ${
+                  className={`h-7 inline-flex items-center gap-1.5 rounded-full px-3 text-xs leading-none font-semibold transition ${
                     isSelected
                       ? 'bg-amber-500 text-black font-bold shadow-md shadow-amber-500/25'
                       : 'bg-slate-900/90 text-slate-300 border border-slate-800 hover:border-slate-700 hover:text-white'
@@ -304,7 +304,7 @@ const BooksPage = ({ adminEmail }) => {
                         <div className='flex items-center gap-2'>
                           <h2 className='text-base font-bold text-white tracking-tight'>{shelfDef.title}</h2>
                           <span
-                            className={`rounded-full px-2 py-0.5 text-[10px] font-mono font-bold border ${shelfDef.bgBadge}`}
+                            className={`h-[18px] inline-flex items-center rounded-full px-2 text-[10px] leading-none font-mono font-bold border ${shelfDef.bgBadge}`}
                           >
                             {shelfBooks.length} {shelfBooks.length === 1 ? 'Book' : 'Books'}
                           </span>
@@ -349,7 +349,7 @@ const BooksPage = ({ adminEmail }) => {
 
                             <div className='p-4 space-y-3'>
                               <div className='flex items-center justify-between'>
-                                <span className='rounded-full bg-slate-900 px-2 py-0.5 text-[10px] font-mono font-semibold text-amber-300 border border-slate-800'>
+                                <span className='h-[18px] inline-flex items-center rounded-full bg-slate-900 px-2 text-[10px] leading-none font-mono font-semibold text-amber-300 border border-slate-800'>
                                   {shelfDef.title.split(' ')[0]}
                                 </span>
                                 <div className='flex items-center gap-1 text-amber-400 text-xs'>
@@ -475,7 +475,7 @@ const BooksPage = ({ adminEmail }) => {
                   <div className='p-5 space-y-3.5'>
                     {/* Shelf Tag & Rating */}
                     <div className='flex items-center justify-between'>
-                      <span className='rounded-full bg-slate-800/90 px-2 py-0.5 text-[10px] font-mono font-semibold text-amber-300 border border-slate-700'>
+                      <span className='h-[18px] inline-flex items-center rounded-full bg-slate-800/90 px-2 text-[10px] leading-none font-mono font-semibold text-amber-300 border border-slate-700'>
                         {book.shelf}
                       </span>
                       <div className='flex items-center gap-0.5 text-amber-400 text-xs'>
@@ -602,7 +602,7 @@ const BooksPage = ({ adminEmail }) => {
                         <div className='text-[11px] text-slate-400'>{book.author}</div>
                       </td>
                       <td className='p-3.5'>
-                        <span className='rounded bg-slate-800 px-2 py-0.5 text-[10px] font-mono text-amber-300 border border-slate-700'>
+                        <span className='h-[18px] inline-flex items-center rounded-full bg-slate-800 px-2 text-[10px] leading-none font-mono text-amber-300 border border-slate-700'>
                           {book.shelf}
                         </span>
                       </td>

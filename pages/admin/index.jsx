@@ -472,13 +472,13 @@ const AdminDashboardPage = ({ adminEmail }) => {
                     <div className='flex items-center gap-1.5 shrink-0'>
                       {/* Project Code Capsule */}
                       <span
-                        className={`rounded-full px-2.5 py-0.5 text-[10px] font-mono font-bold border shadow-sm ${issue.projectColor}`}
+                        className={`inline-flex items-center h-[18px] rounded-full px-2 text-[10px] font-mono font-bold leading-none border shadow-sm ${issue.projectColor}`}
                       >
                         {issue.project}
                       </span>
                       {/* Status Capsule */}
                       <span
-                        className={`rounded-full px-2.5 py-0.5 text-[10px] font-mono font-semibold border shadow-sm ${issue.statusColor}`}
+                        className={`inline-flex items-center h-[18px] rounded-full px-2 text-[10px] font-mono font-semibold leading-none border shadow-sm ${issue.statusColor}`}
                       >
                         {issue.status}
                       </span>
@@ -560,7 +560,7 @@ const AdminDashboardPage = ({ adminEmail }) => {
                     <Link
                       key={tag.shelf}
                       href={`/admin/books?shelf=${tag.shelf}`}
-                      className='rounded-full border border-slate-800 bg-slate-900/90 px-2.5 py-0.5 text-[10px] font-sans font-medium text-slate-300 hover:border-amber-500/50 hover:text-amber-300 transition whitespace-nowrap'
+                      className='inline-flex items-center h-[20px] rounded-full border border-slate-800 bg-slate-900/90 px-2.5 text-[10px] leading-none font-sans font-medium text-slate-300 hover:border-amber-500/50 hover:text-amber-300 transition whitespace-nowrap'
                     >
                       {tag.label}
                     </Link>
@@ -611,7 +611,7 @@ const AdminDashboardPage = ({ adminEmail }) => {
 
                         {/* Shelf Tags Pill */}
                         <div className='mt-1'>
-                          <span className='inline-block rounded-full bg-amber-950/40 border border-amber-900/60 px-2 py-0.5 text-[9px] font-sans text-amber-300'>
+                          <span className='inline-flex items-center h-4 rounded-full bg-amber-950/40 border border-amber-900/60 px-1.5 text-[9px] leading-none font-sans text-amber-300'>
                             Shelf tags
                           </span>
                         </div>
