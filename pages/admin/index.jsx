@@ -96,6 +96,57 @@ const SHOWCASE_BOOKS = [
   }
 ];
 
+const TOP_ARTICLE_CATEGORIES = [
+  { name: 'Software Architecture', count: 14, pct: 100 },
+  { name: 'Distributed Systems', count: 9, pct: 64 },
+  { name: 'Full-Stack & React', count: 7, pct: 50 },
+  { name: 'DevOps & Reliability', count: 5, pct: 36 },
+  { name: 'AI & Agentic Workflows', count: 4, pct: 28 }
+];
+
+const TICKER_ISSUES = [
+  {
+    key: 'PORT-1',
+    title: 'Wire issue service to real Supabase data',
+    project: 'PORT',
+    projectColor: 'bg-cyan-950/80 text-cyan-300 border-cyan-700/60',
+    status: 'In progress',
+    statusColor: 'bg-amber-950/80 text-amber-300 border-amber-700/60'
+  },
+  {
+    key: 'LEM-12',
+    title: 'Audio sync pipeline latency calibration',
+    project: 'LEM',
+    projectColor: 'bg-purple-950/80 text-purple-300 border-purple-700/60',
+    status: 'In progress',
+    statusColor: 'bg-amber-950/80 text-amber-300 border-amber-700/60'
+  },
+  {
+    key: 'PORT-26',
+    title: 'Interactive ticket triage and label clipping',
+    project: 'PORT',
+    projectColor: 'bg-cyan-950/80 text-cyan-300 border-cyan-700/60',
+    status: 'To do',
+    statusColor: 'bg-sky-950/80 text-sky-300 border-sky-700/60'
+  },
+  {
+    key: 'PORT-34',
+    title: 'Implement epic hierarchy and milestone rollups',
+    project: 'PORT',
+    projectColor: 'bg-cyan-950/80 text-cyan-300 border-cyan-700/60',
+    status: 'To do',
+    statusColor: 'bg-sky-950/80 text-sky-300 border-sky-700/60'
+  },
+  {
+    key: 'LEM-8',
+    title: 'Session authentication token refresh retry',
+    project: 'LEM',
+    projectColor: 'bg-purple-950/80 text-purple-300 border-purple-700/60',
+    status: 'To do',
+    statusColor: 'bg-sky-950/80 text-sky-300 border-sky-700/60'
+  }
+];
+
 const AdminDashboardPage = ({ adminEmail }) => {
   const router = useRouter();
   const [activeDraftTab, setActiveDraftTab] = useState('ai');
@@ -212,27 +263,41 @@ const AdminDashboardPage = ({ adminEmail }) => {
               </div>
             </div>
 
-            {/* Bottom Box: Drafts Word Count Bar Chart */}
+            {/* Bottom Box: Top 5 Categories & Article Breakdown */}
             <div className='rounded-2xl border border-slate-800/80 bg-[#0f1722] p-5 shadow-xl'>
-              <h3 className='text-xs font-bold text-slate-200 font-sans mb-4'>Drafts Word Count</h3>
+              <div className='flex items-center justify-between mb-3.5'>
+                <h3 className='text-xs font-bold text-slate-200 uppercase tracking-wider font-mono flex items-center gap-1.5'>
+                  <span className='size-2 rounded-full bg-[#10b981]' />
+                  Top 5 Categories
+                </h3>
+                <Link href='/admin/articles/new' className='text-[11px] font-mono text-emerald-400 hover:underline'>
+                  39 Articles →
+                </Link>
+              </div>
 
-              <div className='flex items-end justify-between h-36 px-4 pt-2'>
-                {[
-                  { day: 'Mon', count: '8k', height: '48%' },
-                  { day: 'Tue', count: '12k', height: '72%' },
-                  { day: 'Wed', count: '10k', height: '60%' },
-                  { day: 'Thu', count: '15k', height: '95%' },
-                  { day: 'Fri', count: '11k', height: '68%' }
-                ].map((bar) => (
-                  <div key={bar.day} className='flex flex-col items-center gap-2 w-11'>
-                    <span className='text-[11px] font-mono font-bold text-white'>{bar.count}</span>
-                    <div className='w-9 rounded-t-md bg-slate-800/90 h-24 flex items-end overflow-hidden'>
+              <div className='space-y-2.5'>
+                {TOP_ARTICLE_CATEGORIES.map((cat, idx) => (
+                  <div
+                    key={cat.name}
+                    className='group flex flex-col gap-1 rounded-xl border border-slate-800/60 bg-slate-950/60 p-2.5 transition hover:border-emerald-500/40 hover:bg-slate-900/60'
+                  >
+                    <div className='flex items-center justify-between text-xs'>
+                      <div className='flex items-center gap-2 min-w-0'>
+                        <span className='font-mono text-[10px] font-bold text-slate-500 w-3'>#{idx + 1}</span>
+                        <span className='font-medium text-slate-200 truncate group-hover:text-emerald-300 transition'>
+                          {cat.name}
+                        </span>
+                      </div>
+                      <span className='font-mono text-[11px] font-bold text-emerald-400 shrink-0 ml-2'>
+                        {cat.count} <span className='text-[10px] font-normal text-slate-400'>articles</span>
+                      </span>
+                    </div>
+                    <div className='h-1 w-full bg-slate-800/80 rounded-full overflow-hidden mt-0.5'>
                       <div
-                        className='w-full rounded-t-md bg-[#10b981] transition-all duration-500 shadow-[0_0_12px_rgba(16,185,129,0.5)]'
-                        style={{ height: bar.height }}
+                        className='h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-500'
+                        style={{ width: `${cat.pct}%` }}
                       />
                     </div>
-                    <span className='text-[11px] font-sans text-slate-400'>{bar.day}</span>
                   </div>
                 ))}
               </div>
@@ -369,73 +434,52 @@ const AdminDashboardPage = ({ adminEmail }) => {
               </div>
             </div>
 
-            {/* Bottom Box: Bug Ticker */}
+            {/* Bottom Box: Issueboard Ticker */}
             <div className='rounded-2xl border border-slate-800/80 bg-[#0d1724] p-5 shadow-xl'>
-              <div className='flex items-center justify-between mb-3'>
-                <h3 className='text-xs font-bold text-slate-200'>Bug Ticker</h3>
-                <Link href='/admin/issues?view=backlog' className='text-slate-400 hover:text-cyan-400 text-xs'>
-                  <FiChevronRight className='size-4' />
+              <div className='flex items-center justify-between mb-3.5'>
+                <h3 className='text-xs font-bold text-slate-200 uppercase tracking-wider font-mono flex items-center gap-1.5'>
+                  <span className='size-2 rounded-full bg-cyan-400 animate-pulse' />
+                  Issueboard Ticker
+                </h3>
+                <Link href='/admin/issues?view=board' className='text-slate-400 hover:text-cyan-400 text-xs font-mono'>
+                  View Board →
                 </Link>
               </div>
 
               <div className='space-y-2.5'>
-                {/* Item 1 */}
-                <Link
-                  href='/admin/issues?project=LEM'
-                  className='flex items-center justify-between rounded-xl border border-slate-800/60 bg-slate-950/60 p-2.5 transition hover:border-slate-700'
-                >
-                  <div className='flex items-center gap-2 min-w-0'>
-                    <span className='size-2 rounded-full bg-rose-500 shrink-0' />
-                    <span className='text-xs text-slate-200 font-medium truncate'>
-                      Critical bug #342: <span className='text-slate-400'>Login failure</span>
-                    </span>
-                  </div>
-                  <span className='rounded-md bg-rose-950/80 border border-rose-800/80 px-2 py-0.5 text-[9px] font-bold text-rose-400 font-mono'>
-                    High
-                  </span>
-                </Link>
-
-                {/* Item 2 */}
-                <Link
-                  href='/admin/issues?project=PORT'
-                  className='flex items-center justify-between rounded-xl border border-slate-800/60 bg-slate-950/60 p-2.5 transition hover:border-slate-700'
-                >
-                  <div className='flex items-center gap-2 min-w-0'>
-                    <span className='size-2 rounded-full bg-amber-500 shrink-0' />
-                    <span className='text-xs text-slate-200 font-medium truncate'>
-                      UI Glitch #345 <span className='text-slate-400'>in profile</span>
-                    </span>
-                  </div>
-                  <div className='flex gap-1'>
-                    <span className='rounded-md bg-rose-950/80 border border-rose-800/80 px-2 py-0.5 text-[9px] font-bold text-rose-400 font-mono'>
-                      High
-                    </span>
-                    <span className='rounded-md bg-amber-950/80 border border-amber-800/80 px-2 py-0.5 text-[9px] font-bold text-amber-400 font-mono'>
-                      Medium
-                    </span>
-                  </div>
-                </Link>
-
-                {/* Item 3 */}
-                <Link
-                  href='/admin/issues?project=LEM'
-                  className='flex items-center justify-between rounded-xl border border-slate-800/60 bg-slate-950/60 p-2.5 transition hover:border-slate-700'
-                >
-                  <div className='flex items-center gap-2 min-w-0'>
-                    <span className='size-2 rounded-full bg-amber-500 shrink-0' />
-                    <span className='text-xs text-slate-200 font-medium truncate'>
-                      Performance issue #331 <span className='text-slate-400'>Performance</span>
-                    </span>
-                  </div>
-                  <div className='flex gap-1'>
-                    <span className='rounded-md bg-rose-950/80 border border-rose-800/80 px-2 py-0.5 text-[9px] font-bold text-rose-400 font-mono'>
-                      High
-                    </span>
-                    <span className='rounded-md bg-amber-950/80 border border-amber-800/80 px-2 py-0.5 text-[9px] font-bold text-amber-400 font-mono'>
-                      Medium
-                    </span>
-                  </div>
-                </Link>
+                {TICKER_ISSUES.map((issue) => (
+                  <Link
+                    key={issue.key}
+                    href={`/admin/issues/${issue.key}`}
+                    className='group flex items-center justify-between rounded-xl border border-slate-800/60 bg-slate-950/60 p-2.5 transition hover:border-cyan-500/50 hover:bg-slate-900/60'
+                  >
+                    <div className='flex items-center gap-2 min-w-0 pr-2'>
+                      <span
+                        className={`size-2 rounded-full shrink-0 ${
+                          issue.status === 'In progress' ? 'bg-amber-400' : 'bg-sky-400'
+                        }`}
+                      />
+                      <span className='text-xs text-slate-200 font-medium truncate group-hover:text-cyan-300 transition'>
+                        <span className='font-mono font-bold text-white mr-1.5'>{issue.key}:</span>
+                        <span className='text-slate-300'>{issue.title}</span>
+                      </span>
+                    </div>
+                    <div className='flex items-center gap-1.5 shrink-0'>
+                      {/* Project Code Capsule */}
+                      <span
+                        className={`rounded px-2 py-0.5 text-[10px] font-mono font-bold border ${issue.projectColor}`}
+                      >
+                        {issue.project}
+                      </span>
+                      {/* Status Capsule */}
+                      <span
+                        className={`rounded px-2 py-0.5 text-[10px] font-mono font-semibold border ${issue.statusColor}`}
+                      >
+                        {issue.status}
+                      </span>
+                    </div>
+                  </Link>
+                ))}
               </div>
             </div>
           </div>

@@ -20,7 +20,7 @@ Router.events.on('routeChangeError', () => nProgress.done());
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
-  const isIssueboard = router.pathname.startsWith('/admin/issues');
+  const isAdminScreen = router.pathname.startsWith('/admin');
 
   return (
     <LanguageProvider>
@@ -37,8 +37,8 @@ function MyApp({ Component, pageProps }) {
           <main className='main flex-1'>
             <Component {...pageProps} />
           </main>
-          {!isIssueboard && <Footer />}
-          {!isIssueboard && <PrivacyConsent />}
+          {!isAdminScreen && <Footer />}
+          {!isAdminScreen && <PrivacyConsent />}
         </div>
       </ThemeProvider>
     </LanguageProvider>
