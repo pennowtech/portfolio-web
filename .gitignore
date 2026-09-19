@@ -56,3 +56,5 @@ __mocks__/fileMock.js
 .pre-commit-config.yaml
 /supabase/.temp/
 .next-broken-issueboard-debug/
+/public/artifacts/
+/public/prototypes/

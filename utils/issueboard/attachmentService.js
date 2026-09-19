@@ -3,14 +3,22 @@ import sharp from 'sharp';
 import { getIssueboardSupabaseAdmin } from './supabaseAdmin';
 import { getIssueByKey } from './issueService';
 import { getProjectByKey } from './projectService';
+import { ACCEPTED_ATTACHMENT_MIME_TYPES, MIME_EXTENSION, isImageMime } from './attachmentTypes';
 
 const BUCKET = 'issueboard-private';
-const MAX_BYTES = 1_048_576; // 1 MB, matches the bucket's configured file_size_limit
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // 5 MB for images
+const MAX_FILE_BYTES = 10 * 1024 * 1024; // 10 MB for documents and files
 const MAX_DIMENSION = 8000; // guards against decompression-bomb-style oversized images
-const SIGNED_DOWNLOAD_TTL_SECONDS = 300;
+const SIGNED_DOWNLOAD_TTL_SECONDS = 300; // 5 minutes -- keep the exposure window on a private bucket short
 
-const MIME_EXTENSION = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
-const SHARP_FORMAT_MIME = { jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp' };
+// sharp's decoded `metadata().format` for each image mime we accept -- used to confirm
+// the uploaded bytes actually are what the client claimed, not just trust the header.
+const SHARP_FORMAT_BY_MIME = {
+  'image/jpeg': 'jpeg',
+  'image/png': 'png',
+  'image/webp': 'webp',
+  'image/gif': 'gif'
+};
 
 const toAttachment = (row) => ({
   id: row.id,
@@ -29,16 +37,20 @@ export const authorizeUpload = async (projectKey, issueNumber, { originalFilenam
   const issue = await getIssueByKey(projectKey, issueNumber);
   if (!issue) return { error: 'ISSUE_NOT_FOUND' };
 
-  const extension = MIME_EXTENSION[mimeType];
-  if (!extension) return { error: 'UNSUPPORTED_TYPE' };
-  if (!Number.isFinite(byteSize) || byteSize <= 0 || byteSize > MAX_BYTES) return { error: 'TOO_LARGE' };
+  if (!ACCEPTED_ATTACHMENT_MIME_TYPES.includes(mimeType)) return { error: 'UNSUPPORTED_TYPE' };
 
+  const isImg = isImageMime(mimeType);
+  const maxAllowed = isImg ? MAX_IMAGE_BYTES : MAX_FILE_BYTES;
+  if (!Number.isFinite(byteSize) || byteSize <= 0 || byteSize > maxAllowed) return { error: 'TOO_LARGE' };
+
+  const extension = MIME_EXTENSION[mimeType];
   const objectPath = `${issue.id}/${randomUUID()}.${extension}`;
   const admin = getIssueboardSupabaseAdmin();
   const { data: signed, error: signError } = await admin.storage.from(BUCKET).createSignedUploadUrl(objectPath);
   if (signError) throw signError;
 
-  const displayName = originalFilename.trim().slice(0, 200) || 'image';
+  const displayName = originalFilename.trim().slice(0, 200) || (isImg ? 'image' : 'attachment');
+
   const { data: attachment, error: insertError } = await admin
     .from('issueboard_attachments')
     .insert({
@@ -50,7 +62,7 @@ export const authorizeUpload = async (projectKey, issueNumber, { originalFilenam
       mime_type: mimeType,
       byte_size: byteSize,
       state: 'pending',
-      created_by: actor
+      created_by: actor || 'system'
     })
     .select('id,object_path')
     .single();
@@ -89,18 +101,26 @@ export const finalizeUpload = async (projectKey, issueNumber, attachmentId, acto
   if (downloadError || !blob) return reject('UPLOAD_NOT_FOUND');
 
   const buffer = Buffer.from(await blob.arrayBuffer());
-  if (buffer.length === 0 || buffer.length > MAX_BYTES) return reject('SIZE_MISMATCH');
+  const effectiveMime = attachment.mime_type;
+  const isImg = isImageMime(effectiveMime);
+  const maxAllowed = isImg ? MAX_IMAGE_BYTES : MAX_FILE_BYTES;
+  if (buffer.length === 0 || buffer.length > maxAllowed) return reject('SIZE_MISMATCH');
 
-  let metadata;
-  try {
-    metadata = await sharp(buffer).metadata();
-  } catch {
-    return reject('INVALID_IMAGE');
-  }
-  const detectedMime = SHARP_FORMAT_MIME[metadata.format];
-  if (!detectedMime || detectedMime !== attachment.mime_type) return reject('TYPE_MISMATCH');
-  if (!metadata.width || !metadata.height || metadata.width > MAX_DIMENSION || metadata.height > MAX_DIMENSION) {
-    return reject('DIMENSIONS_INVALID');
+  let width = null;
+  let height = null;
+  if (isImg) {
+    let metadata;
+    try {
+      metadata = await sharp(buffer).metadata();
+    } catch {
+      return reject('INVALID_IMAGE');
+    }
+    const expectedFormat = SHARP_FORMAT_BY_MIME[effectiveMime];
+    if (expectedFormat && metadata.format !== expectedFormat) return reject('TYPE_MISMATCH');
+    if (!metadata.width || !metadata.height || metadata.width > MAX_DIMENSION || metadata.height > MAX_DIMENSION)
+      return reject('DIMENSIONS_INVALID');
+    width = metadata.width;
+    height = metadata.height;
   }
 
   const checksum = createHash('sha256').update(buffer).digest('hex');
@@ -109,13 +129,15 @@ export const finalizeUpload = async (projectKey, issueNumber, attachmentId, acto
     .update({
       state: 'ready',
       byte_size: buffer.length,
-      width: metadata.width,
-      height: metadata.height,
+      width,
+      height,
       checksum_sha256: checksum,
       finalized_at: new Date().toISOString()
     })
     .eq('id', attachmentId)
-    .select('id,original_filename,display_name,mime_type,byte_size,width,height,state,created_at,finalized_at')
+    .select(
+      'id,original_filename,display_name,mime_type,byte_size,width,height,state,created_at,finalized_at,created_by,object_path'
+    )
     .single();
   if (updateError) throw updateError;
 
@@ -125,10 +147,35 @@ export const finalizeUpload = async (projectKey, issueNumber, attachmentId, acto
     issue_id: issue.id,
     actor,
     action: 'attachment.uploaded',
-    safe_metadata: { attachmentId, byteSize: buffer.length, mimeType: attachment.mime_type }
+    safe_metadata: { attachmentId, byteSize: buffer.length, mimeType: effectiveMime }
   });
 
   return { attachment: toAttachment(updated) };
+};
+
+export const getAttachment = async (projectKey, issueNumber, attachmentId) => {
+  const issue = await getIssueByKey(projectKey, issueNumber);
+  if (!issue) return null;
+
+  const admin = getIssueboardSupabaseAdmin();
+  const { data, error } = await admin
+    .from('issueboard_attachments')
+    .select(
+      'id,original_filename,display_name,mime_type,byte_size,width,height,state,created_at,finalized_at,created_by,object_path'
+    )
+    .eq('id', attachmentId)
+    .eq('issue_id', issue.id)
+    .eq('state', 'ready')
+    .maybeSingle();
+  if (error || !data) return null;
+
+  const { data: signed } = await admin.storage
+    .from(BUCKET)
+    .createSignedUrl(data.object_path, SIGNED_DOWNLOAD_TTL_SECONDS, {
+      download: data.display_name
+    });
+
+  return { ...toAttachment(data), url: signed?.signedUrl || null };
 };
 
 export const listAttachments = async (projectKey, issueNumber) => {
@@ -139,7 +186,7 @@ export const listAttachments = async (projectKey, issueNumber) => {
   const { data, error } = await admin
     .from('issueboard_attachments')
     .select(
-      'id,original_filename,display_name,mime_type,byte_size,width,height,state,created_at,finalized_at,object_path'
+      'id,original_filename,display_name,mime_type,byte_size,width,height,state,created_at,finalized_at,created_by,object_path'
     )
     .eq('issue_id', issue.id)
     .eq('state', 'ready')

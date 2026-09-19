@@ -1,4 +1,4 @@
-import { deleteAttachment } from '@utils/issueboard/attachmentService';
+import { deleteAttachment, getAttachment } from '@utils/issueboard/attachmentService';
 import {
   allowIssueboardMethods,
   consumeIssueboardRateLimit,
@@ -13,7 +13,7 @@ const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{1
 
 export default async function handler(req, res) {
   const actor = await requireIssueboardAdminApi(req, res);
-  if (!actor || !allowIssueboardMethods(req, res, ['DELETE'])) return;
+  if (!actor || !allowIssueboardMethods(req, res, ['GET', 'DELETE'])) return;
   const requestId = issueboardRequestId(req);
   res.setHeader('X-Request-Id', requestId);
 
@@ -25,8 +25,6 @@ export default async function handler(req, res) {
     });
   }
 
-  if (!requireSameOriginMutation(req, res)) return;
-
   const issueKey = String(req.query.issueKey || '').toUpperCase();
   const match = issueKeyPattern.exec(issueKey);
   const attachmentId = String(req.query.attachmentId || '');
@@ -37,6 +35,30 @@ export default async function handler(req, res) {
       error: { code: 'VALIDATION_ERROR', message: 'Invalid issue key or attachment id.' }
     });
   const [, projectKey, issueNumberText] = match;
+
+  if (req.method === 'GET') {
+    try {
+      const attachment = await getAttachment(projectKey, Number(issueNumberText), attachmentId);
+      if (!attachment || !attachment.url) {
+        return res
+          .status(404)
+          .json({ ok: false, requestId, error: { code: 'ATTACHMENT_NOT_FOUND', message: 'Attachment not found.' } });
+      }
+
+      if (req.headers.accept?.includes('application/json') || req.query.json === '1') {
+        return res.status(200).json({ ok: true, requestId, attachment });
+      }
+
+      return res.redirect(307, attachment.url);
+    } catch (error) {
+      const normalized = normalizeIssueboardDatastoreError(error);
+      return res
+        .status(normalized.status)
+        .json({ ok: false, requestId, error: { code: normalized.code, message: normalized.message } });
+    }
+  }
+
+  if (!requireSameOriginMutation(req, res)) return;
 
   try {
     const allowed = await consumeIssueboardRateLimit({

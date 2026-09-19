@@ -26,6 +26,7 @@ export default defineConfig([
     '.next-*-issueboard-debug/**',
     'out/**',
     '.vercel/**',
+    '.kilo/**',
     'playwright-report/**',
     'public/**',
     'Urql2.jsx',

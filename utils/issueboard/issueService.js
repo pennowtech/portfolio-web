@@ -69,10 +69,11 @@ export const getIssueByKey = async (projectKey, issueNumber) => {
 };
 
 export const createIssue = async (
-  { projectKey, issueType, title, description, priority, assignee, storyPoints, dueAt, parentIssueId },
+  { projectKey, issueType, title, description, priority, assignee, storyPoints, dueAt, parentIssueId, statusId },
   actor
 ) => {
-  const { data, error } = await getIssueboardSupabaseAdmin().rpc('issueboard_create_issue', {
+  const admin = getIssueboardSupabaseAdmin();
+  const { data, error } = await admin.rpc('issueboard_create_issue', {
     project_key_input: projectKey,
     issue_type_input: issueType,
     title_input: title,
@@ -85,6 +86,25 @@ export const createIssue = async (
     parent_issue_id_input: parentIssueId ?? null
   });
   if (error) throw error;
+
+  let targetStatusId = statusId;
+  if (!targetStatusId && parentIssueId) {
+    // Subtasks default to the project's 'To do' status (category = 'todo')
+    const { data: todoStatus } = await admin
+      .from('issueboard_statuses')
+      .select('id')
+      .eq('project_id', data.project_id)
+      .eq('category', 'todo')
+      .order('position')
+      .limit(1)
+      .maybeSingle();
+    if (todoStatus?.id) targetStatusId = todoStatus.id;
+  }
+
+  if (targetStatusId) {
+    await admin.from('issueboard_issues').update({ status_id: targetStatusId }).eq('id', data.id);
+  }
+
   return getIssueByKey(projectKey, data.issue_number);
 };
 

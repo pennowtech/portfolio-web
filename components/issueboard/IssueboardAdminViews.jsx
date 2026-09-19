@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   FiAlertTriangle,
   FiArrowDown,
@@ -16,6 +16,9 @@ import {
   FiShield,
   FiSlack,
   FiTrash2,
+  FiUser,
+  FiUserPlus,
+  FiUsers,
   FiX
 } from 'react-icons/fi';
 
@@ -42,7 +45,16 @@ const PageIntro = ({ title, description, action, icon: Icon, onAction, actionDis
   </div>
 );
 
-const settingsSections = ['Details', 'Workflow', 'Issue types', 'Priorities', 'Labels', 'Access', 'Danger zone'];
+const settingsSections = [
+  'Details',
+  'Users',
+  'Workflow',
+  'Issue types',
+  'Priorities',
+  'Labels',
+  'Access',
+  'Danger zone'
+];
 
 const Field = ({ label, children, full = false }) => (
   <label className={`text-xs font-semibold text-slate-700 dark:text-slate-300 ${full ? 'sm:col-span-2' : ''}`}>
@@ -631,6 +643,232 @@ const LabelsPanel = ({ project }) => {
   );
 };
 
+const UsersPanel = ({ project }) => {
+  const [users, setUsers] = useState([]);
+  const [status, setStatus] = useState('loading');
+  const [error, setError] = useState(null);
+  const [adding, setAdding] = useState(false);
+  const [newUser, setNewUser] = useState({ name: '', email: '', role: 'Developer' });
+  const [busy, setBusy] = useState(false);
+
+  const loadUsers = useCallback(async () => {
+    setStatus('loading');
+    setError(null);
+    try {
+      const response = await fetch(`/api/issueboard/projects/${encodeURIComponent(project.key)}/users`);
+      const payload = await response.json().catch(() => null);
+      if (!response.ok || !payload?.ok) {
+        setStatus('error');
+        setError(payload?.error?.message || 'Could not load project users.');
+        return;
+      }
+      setUsers(payload.users || []);
+      setStatus('ready');
+    } catch {
+      setStatus('error');
+      setError('Could not reach user management service.');
+    }
+  }, [project.key]);
+
+  useEffect(() => {
+    loadUsers();
+  }, [loadUsers]);
+
+  const addUser = async (event) => {
+    event.preventDefault();
+    const name = newUser.name.trim();
+    const email = newUser.email.trim();
+    if (!name || !email || busy) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const response = await fetch(`/api/issueboard/projects/${encodeURIComponent(project.key)}/users`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, role: newUser.role })
+      });
+      const payload = await response.json().catch(() => null);
+      if (!response.ok || !payload?.ok) {
+        setError(payload?.error?.message || 'Could not add user.');
+        setBusy(false);
+        return;
+      }
+      setUsers(payload.users || []);
+      setNewUser({ name: '', email: '', role: 'Developer' });
+      setAdding(false);
+    } catch {
+      setError('Could not reach the user service.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const removeUser = async (userEmail) => {
+    if (busy) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const response = await fetch(
+        `/api/issueboard/projects/${encodeURIComponent(project.key)}/users?userEmail=${encodeURIComponent(userEmail)}`,
+        { method: 'DELETE' }
+      );
+      const payload = await response.json().catch(() => null);
+      if (!response.ok || !payload?.ok) {
+        setError(payload?.error?.message || 'Could not remove user.');
+        setBusy(false);
+        return;
+      }
+      setUsers(payload.users || []);
+    } catch {
+      setError('Could not reach the user service.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <>
+      <PanelHeading
+        title='Project users & team'
+        description='Team members and collaborators assigned to this project. These users automatically populate the assignee picker on issues.'
+        action={adding ? 'Close form' : '+ Add user'}
+        onAction={() => setAdding((open) => !open)}
+      />
+      {status === 'loading' && <p className='text-sm text-slate-500'>Loading team members…</p>}
+      {status === 'error' && <p className='text-sm font-semibold text-rose-600 dark:text-rose-300'>{error}</p>}
+      {status === 'ready' && (
+        <div className='space-y-4'>
+          {adding && (
+            <form
+              onSubmit={addUser}
+              className='rounded-xl border border-emerald-500/30 bg-emerald-50/50 p-4 dark:border-emerald-500/20 dark:bg-emerald-950/20'
+            >
+              <h4 className='mb-3 text-xs font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-300'>
+                Add new team member
+              </h4>
+              <div className='grid gap-3 sm:grid-cols-3'>
+                <div>
+                  <label className='block text-xs font-semibold text-slate-700 dark:text-slate-300'>Full name</label>
+                  <input
+                    autoFocus
+                    required
+                    value={newUser.name}
+                    onChange={(e) => setNewUser((prev) => ({ ...prev, name: e.target.value }))}
+                    placeholder='e.g. Alex Morgan'
+                    className='mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs outline-none focus:border-emerald-600 dark:border-slate-700 dark:bg-slate-900'
+                  />
+                </div>
+                <div>
+                  <label className='block text-xs font-semibold text-slate-700 dark:text-slate-300'>
+                    Email address
+                  </label>
+                  <input
+                    required
+                    type='email'
+                    value={newUser.email}
+                    onChange={(e) => setNewUser((prev) => ({ ...prev, email: e.target.value }))}
+                    placeholder='alex@example.com'
+                    className='mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs outline-none focus:border-emerald-600 dark:border-slate-700 dark:bg-slate-900'
+                  />
+                </div>
+                <div>
+                  <label className='block text-xs font-semibold text-slate-700 dark:text-slate-300'>Project role</label>
+                  <select
+                    value={newUser.role}
+                    onChange={(e) => setNewUser((prev) => ({ ...prev, role: e.target.value }))}
+                    className='mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs outline-none focus:border-emerald-600 dark:border-slate-700 dark:bg-slate-900'
+                  >
+                    {[
+                      'Lead Developer',
+                      'Developer',
+                      'Designer',
+                      'Product Manager',
+                      'QA Engineer',
+                      'Admin',
+                      'Contributor'
+                    ].map((role) => (
+                      <option key={role} value={role}>
+                        {role}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className='mt-3 flex items-center justify-end gap-2'>
+                <button
+                  type='button'
+                  onClick={() => setAdding(false)}
+                  className='rounded-lg px-3 py-1.5 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800'
+                >
+                  Cancel
+                </button>
+                <button
+                  type='submit'
+                  disabled={busy || !newUser.name.trim() || !newUser.email.trim()}
+                  className='button text-xs font-bold disabled:opacity-60'
+                >
+                  {busy ? 'Adding…' : 'Add user'}
+                </button>
+              </div>
+            </form>
+          )}
+
+          <div className='divide-y divide-slate-100 overflow-hidden rounded-xl border border-slate-200 bg-white dark:divide-slate-800 dark:border-slate-800 dark:bg-slate-900'>
+            {users.length === 0 ? (
+              <p className='p-4 text-xs text-slate-500'>No users added to this project yet.</p>
+            ) : (
+              users.map((user) => {
+                const initials = user.name
+                  ? user.name
+                      .split(' ')
+                      .filter(Boolean)
+                      .map((n) => n[0])
+                      .slice(0, 2)
+                      .join('')
+                      .toUpperCase()
+                  : 'U';
+                return (
+                  <div
+                    key={user.email}
+                    className='flex items-center justify-between p-3 transition hover:bg-slate-50/50 dark:hover:bg-slate-800/40'
+                  >
+                    <div className='flex items-center gap-3'>
+                      <div className='grid size-8 place-items-center rounded-full bg-gradient-to-br from-emerald-600 to-teal-700 text-xs font-bold text-white shadow-sm'>
+                        {initials}
+                      </div>
+                      <div>
+                        <div className='flex items-center gap-2'>
+                          <strong className='text-xs font-semibold text-slate-900 dark:text-slate-100'>
+                            {user.name}
+                          </strong>
+                          <span className='inline-flex h-5 items-center rounded-full border border-slate-200 bg-slate-100 px-2.5 text-[10px] font-semibold text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300'>
+                            {user.role}
+                          </span>
+                        </div>
+                        <p className='font-mono text-[11px] text-slate-500 dark:text-slate-400'>{user.email}</p>
+                      </div>
+                    </div>
+                    <button
+                      type='button'
+                      onClick={() => removeUser(user.email)}
+                      disabled={busy}
+                      aria-label={`Remove ${user.name} from project`}
+                      className='rounded-lg p-1.5 text-slate-400 hover:bg-rose-50 hover:text-rose-600 disabled:opacity-50 dark:hover:bg-rose-950/50 dark:hover:text-rose-400'
+                    >
+                      <FiTrash2 className='size-3.5' />
+                    </button>
+                  </div>
+                );
+              })
+            )}
+          </div>
+          {error && <p className='text-xs font-semibold text-rose-600 dark:text-rose-400'>{error}</p>}
+        </div>
+      )}
+    </>
+  );
+};
+
 const SettingsPanel = ({
   section,
   project,
@@ -643,6 +881,7 @@ const SettingsPanel = ({
 }) => {
   if (section === 'Details')
     return <DetailsPanel project={project} form={form} onFieldChange={onFieldChange} saveError={saveError} />;
+  if (section === 'Users') return <UsersPanel project={project} />;
   if (section === 'Workflow') return <WorkflowPanel project={project} />;
   if (section === 'Issue types')
     return (

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { ACCEPTED_ATTACHMENT_MIME_TYPES } from './attachmentTypes';
 
 export const createProjectSchema = z
   .object({
@@ -58,6 +59,20 @@ export const createLabelSchema = z
   })
   .strict();
 
+export const createProjectUserSchema = z
+  .object({
+    name: z.string().trim().min(1).max(200),
+    email: z.string().trim().toLowerCase().email().max(200),
+    role: z.string().trim().min(1).max(50).optional()
+  })
+  .strict();
+
+export const removeProjectUserSchema = z
+  .object({
+    email: z.string().trim().toLowerCase().email().max(200)
+  })
+  .strict();
+
 export const updateLabelSchema = z
   .object({
     name: z.string().trim().min(1).max(50),
@@ -84,7 +99,8 @@ export const createIssueSchema = z
     assignee: z.string().trim().max(200).optional(),
     storyPoints: z.number().min(0).max(999).optional(),
     dueAt: z.string().datetime().optional(),
-    parentIssueId: z.string().uuid().optional()
+    parentIssueId: z.string().uuid().optional(),
+    statusId: z.string().uuid().optional()
   })
   .strict();
 
@@ -155,15 +171,15 @@ export const createRelationshipSchema = z
       .string()
       .trim()
       .regex(/^[A-Z][A-Z0-9]{1,9}-\d{1,10}$/i, 'Provide a valid issue key.'),
-    relationshipType: z.enum(['relates_to', 'blocks', 'duplicates'])
+    relationshipType: z.enum(['relates_to', 'blocks', 'duplicates', 'predecessor', 'successor', 'parent', 'child'])
   })
   .strict();
 
 export const authorizeUploadSchema = z
   .object({
     originalFilename: z.string().trim().min(1).max(200),
-    mimeType: z.enum(['image/jpeg', 'image/png', 'image/webp']),
-    byteSize: z.number().int().positive().max(1_048_576)
+    mimeType: z.enum(ACCEPTED_ATTACHMENT_MIME_TYPES),
+    byteSize: z.number().int().positive().max(10_485_760)
   })
   .strict();
 
