@@ -477,9 +477,9 @@ const MarkdownToolbar = ({
 
       <span className='mx-1 h-4 w-px bg-slate-200/90 dark:bg-slate-700/90' aria-hidden='true' />
 
-      {/* Formatting & Structure Tools */}
+      {/* Formatting, Structure, Lists & Media Tools */}
       {tools
-        .filter(({ extended, title }) => {
+        .filter(({ title }) => {
           if (
             excludeFloatingTools &&
             [
@@ -492,13 +492,27 @@ const MarkdownToolbar = ({
           ) {
             return false;
           }
-          return !extended;
+          return true;
         })
-        .map(({ icon: Icon, title, action }) => (
-          <button key={title} type='button' title={title} aria-label={title} onClick={action} className={btnClass}>
-            <Icon className='size-4' aria-hidden='true' />
-          </button>
-        ))}
+        .map(({ icon: Icon, title, action }) => {
+          const isSocial = ['Embed YouTube video', 'Embed LinkedIn post', 'Embed X/Twitter post'].includes(title);
+          return (
+            <React.Fragment key={title}>
+              {title === 'Toggle bulleted list' && (
+                <span className='mx-1 h-4 w-px bg-slate-200/90 dark:bg-slate-700/90' aria-hidden='true' />
+              )}
+              {title === 'GFM table' && (
+                <span className='mx-1 h-4 w-px bg-slate-200/90 dark:bg-slate-700/90' aria-hidden='true' />
+              )}
+              {title === 'Embed YouTube video' && (
+                <span className='mx-1 h-4 w-px bg-slate-200/90 dark:bg-slate-700/90' aria-hidden='true' />
+              )}
+              <button type='button' title={title} aria-label={title} onClick={action} className={btnClass}>
+                <Icon className={isSocial ? 'size-3.5' : 'size-4'} aria-hidden='true' />
+              </button>
+            </React.Fragment>
+          );
+        })}
 
       <span className='mx-1 h-4 w-px bg-slate-200/90 dark:bg-slate-700/90' aria-hidden='true' />
 
