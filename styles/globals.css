@@ -351,3 +351,74 @@ span.comment.linenumber.react-syntax-highlighter-line-number {
     padding: 1.5px 8px;
   }
 }
+
+.blocked-bg {
+  background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%);
+  border-color: #fecdd3;
+}
+.dark .blocked-bg {
+  background: linear-gradient(135deg, rgba(88, 28, 28, 0.38) 0%, rgba(30, 10, 15, 0.45) 100%) !important;
+  border-color: rgba(244, 63, 94, 0.35) !important;
+}
+
+/* Sprint Board Internal Scroll Container with Reserved Gutter */
+.sprint-board-scroll {
+  overflow: auto;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 0.3s ease;
+}
+
+.sprint-board-scroll:hover,
+.sprint-board-scroll:focus-within,
+.sprint-board-scroll.scrolling {
+  scrollbar-color: rgba(148, 163, 184, 0.6) transparent;
+}
+
+.dark .sprint-board-scroll:hover,
+.dark .sprint-board-scroll:focus-within,
+.dark .sprint-board-scroll.scrolling {
+  scrollbar-color: rgba(100, 116, 139, 0.6) transparent;
+}
+
+.sprint-board-scroll::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+.sprint-board-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sprint-board-scroll::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 9999px;
+  border: 1.5px solid transparent;
+  background-clip: padding-box;
+  transition: background-color 0.25s ease;
+}
+
+.sprint-board-scroll:hover::-webkit-scrollbar-thumb,
+.sprint-board-scroll:focus-within::-webkit-scrollbar-thumb,
+.sprint-board-scroll.scrolling::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.5);
+  background-clip: padding-box;
+}
+
+.sprint-board-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.8) !important;
+  background-clip: padding-box !important;
+}
+
+.dark .sprint-board-scroll:hover::-webkit-scrollbar-thumb,
+.dark .sprint-board-scroll:focus-within::-webkit-scrollbar-thumb,
+.dark .sprint-board-scroll.scrolling::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.5);
+  background-clip: padding-box;
+}
+
+.dark .sprint-board-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.8) !important;
+  background-clip: padding-box !important;
+}
