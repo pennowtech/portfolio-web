@@ -51,7 +51,7 @@ export const AdminActivityRail = ({ sidebarExpanded, onToggleSidebar }) => {
   return (
     <aside
       aria-label='Activity Rail'
-      className='relative z-30 flex h-full w-[54px] shrink-0 flex-col items-center justify-between border-r border-slate-200/80 bg-slate-900 text-slate-400 py-3 select-none dark:border-slate-800'
+      className='relative z-30 flex h-full w-[54px] shrink-0 flex-col items-center justify-between border-r border-slate-200 bg-slate-50 text-slate-600 py-3 select-none dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400'
     >
       {/* Top Brand Mark */}
       <div className='flex flex-col items-center gap-4'>
@@ -61,10 +61,10 @@ export const AdminActivityRail = ({ sidebarExpanded, onToggleSidebar }) => {
           className='group relative flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-700 text-white shadow-lg shadow-emerald-500/20 transition-all duration-200 hover:scale-105'
         >
           <span className='font-mono text-sm font-black tracking-tight'>SB</span>
-          <span className='absolute -bottom-0.5 -right-0.5 size-2 rounded-full bg-emerald-400 ring-2 ring-slate-900' />
+          <span className='absolute -bottom-0.5 -right-0.5 size-2 rounded-full bg-emerald-400 ring-2 ring-white dark:ring-slate-900' />
         </Link>
 
-        <div className='h-px w-6 bg-slate-800' />
+        <div className='h-px w-6 bg-slate-200 dark:bg-slate-800' />
 
         {/* Primary Macro Domain Icons */}
         <nav className='flex flex-col items-center gap-1.5'>
@@ -77,7 +77,9 @@ export const AdminActivityRail = ({ sidebarExpanded, onToggleSidebar }) => {
                 <Link
                   href={item.href}
                   className={`relative flex size-10 items-center justify-center rounded-xl transition-all duration-150 ${
-                    isActive ? item.activeColor : 'hover:bg-slate-800 hover:text-slate-200'
+                    isActive
+                      ? item.activeColor
+                      : 'text-slate-600 hover:bg-slate-200/70 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200'
                   }`}
                   aria-label={item.label}
                 >
@@ -87,7 +89,7 @@ export const AdminActivityRail = ({ sidebarExpanded, onToggleSidebar }) => {
                 </Link>
 
                 {/* Tooltip on hover */}
-                <div className='pointer-events-none absolute left-full ml-2.5 hidden whitespace-nowrap rounded-lg border border-slate-700 bg-slate-900/95 px-2.5 py-1 text-xs font-semibold text-slate-100 shadow-xl backdrop-blur-md group-hover:block z-50'>
+                <div className='pointer-events-none absolute left-full ml-2.5 hidden whitespace-nowrap rounded-lg border border-slate-200 bg-white text-slate-800 shadow-xl dark:border-slate-700 dark:bg-slate-900/95 dark:text-slate-100 px-2.5 py-1 text-xs font-semibold backdrop-blur-md group-hover:block z-50'>
                   {item.label}
                 </div>
               </div>
@@ -105,8 +107,8 @@ export const AdminActivityRail = ({ sidebarExpanded, onToggleSidebar }) => {
           title={sidebarExpanded ? 'Collapse Context Shelf (⌥B)' : 'Expand Context Shelf (⌥B)'}
           className={`flex size-9 items-center justify-center rounded-lg transition ${
             sidebarExpanded
-              ? 'text-emerald-400 hover:bg-slate-800'
-              : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+              ? 'text-emerald-600 bg-emerald-50 hover:bg-emerald-100 dark:text-emerald-400 dark:bg-transparent dark:hover:bg-slate-800'
+              : 'text-slate-500 hover:bg-slate-200 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200'
           }`}
           aria-label='Toggle Context Drawer'
         >

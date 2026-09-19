@@ -110,63 +110,72 @@ const TICKER_ISSUES = [
     type: 'task',
     title: 'Wire issue service to real Supabase data',
     project: 'PORT',
-    projectColor: 'border-cyan-500/40 bg-cyan-950/80 text-cyan-300',
+    projectColor:
+      'border-cyan-300 bg-cyan-50 text-cyan-800 dark:border-cyan-500/40 dark:bg-cyan-950/80 dark:text-cyan-300',
     status: 'In progress',
-    statusColor: 'border-amber-500/40 bg-amber-950/80 text-amber-300'
+    statusColor:
+      'border-amber-300 bg-amber-50 text-amber-800 dark:border-amber-500/40 dark:bg-amber-950/80 dark:text-amber-300'
   },
   {
     key: 'LEM-1',
     type: 'bug',
     title: 'Voice dictation cuts off mid-sentence',
     project: 'LEM',
-    projectColor: 'border-purple-500/40 bg-purple-950/80 text-purple-300',
+    projectColor:
+      'border-purple-300 bg-purple-50 text-purple-800 dark:border-purple-500/40 dark:bg-purple-950/80 dark:text-purple-300',
     status: 'In progress',
-    statusColor: 'border-amber-500/40 bg-amber-950/80 text-amber-300'
+    statusColor:
+      'border-amber-300 bg-amber-50 text-amber-800 dark:border-amber-500/40 dark:bg-amber-950/80 dark:text-amber-300'
   },
   {
     key: 'PORT-26',
     type: 'bug',
     title: 'Interactive ticket triage and label clipping',
     project: 'PORT',
-    projectColor: 'border-cyan-500/40 bg-cyan-950/80 text-cyan-300',
+    projectColor:
+      'border-cyan-300 bg-cyan-50 text-cyan-800 dark:border-cyan-500/40 dark:bg-cyan-950/80 dark:text-cyan-300',
     status: 'To do',
-    statusColor: 'border-sky-500/40 bg-sky-950/80 text-sky-300'
+    statusColor: 'border-sky-300 bg-sky-50 text-sky-800 dark:border-sky-500/40 dark:bg-sky-950/80 dark:text-sky-300'
   },
   {
     key: 'PORT-39',
     type: 'story',
     title: 'Full Feature API Issue with Image and Checklist',
     project: 'PORT',
-    projectColor: 'border-cyan-500/40 bg-cyan-950/80 text-cyan-300',
+    projectColor:
+      'border-cyan-300 bg-cyan-50 text-cyan-800 dark:border-cyan-500/40 dark:bg-cyan-950/80 dark:text-cyan-300',
     status: 'To do',
-    statusColor: 'border-sky-500/40 bg-sky-950/80 text-sky-300'
+    statusColor: 'border-sky-300 bg-sky-50 text-sky-800 dark:border-sky-500/40 dark:bg-sky-950/80 dark:text-sky-300'
   },
   {
     key: 'LEM-2',
     type: 'bug',
     title: 'Crash when playing lesson audio',
     project: 'LEM',
-    projectColor: 'border-purple-500/40 bg-purple-950/80 text-purple-300',
+    projectColor:
+      'border-purple-300 bg-purple-50 text-purple-800 dark:border-purple-500/40 dark:bg-purple-950/80 dark:text-purple-300',
     status: 'To do',
-    statusColor: 'border-sky-500/40 bg-sky-950/80 text-sky-300'
+    statusColor: 'border-sky-300 bg-sky-50 text-sky-800 dark:border-sky-500/40 dark:bg-sky-950/80 dark:text-sky-300'
   },
   {
     key: 'PORT-40',
     type: 'bug',
     title: 'Multipart File Upload Issue',
     project: 'PORT',
-    projectColor: 'border-cyan-500/40 bg-cyan-950/80 text-cyan-300',
+    projectColor:
+      'border-cyan-300 bg-cyan-50 text-cyan-800 dark:border-cyan-500/40 dark:bg-cyan-950/80 dark:text-cyan-300',
     status: 'To do',
-    statusColor: 'border-sky-500/40 bg-sky-950/80 text-sky-300'
+    statusColor: 'border-sky-300 bg-sky-50 text-sky-800 dark:border-sky-500/40 dark:bg-sky-950/80 dark:text-sky-300'
   },
   {
     key: 'PORT-42',
     type: 'task',
     title: 'Issue created with X-API-Key',
     project: 'PORT',
-    projectColor: 'border-cyan-500/40 bg-cyan-950/80 text-cyan-300',
+    projectColor:
+      'border-cyan-300 bg-cyan-50 text-cyan-800 dark:border-cyan-500/40 dark:bg-cyan-950/80 dark:text-cyan-300',
     status: 'To do',
-    statusColor: 'border-sky-500/40 bg-sky-950/80 text-sky-300'
+    statusColor: 'border-sky-300 bg-sky-50 text-sky-800 dark:border-sky-500/40 dark:bg-sky-950/80 dark:text-sky-300'
   }
 ];
 
@@ -193,11 +202,13 @@ const AdminDashboardPage = ({ adminEmail }) => {
       title='Bento Grid Dashboard | SinghBuildsTech Admin'
       description='Modular executive dashboard for Articles, Issueboard, and Book Records.'
     >
-      <div className='mx-auto max-w-[1560px] p-4 sm:p-6 lg:p-8 space-y-4 font-sans text-slate-200'>
+      <div className='mx-auto max-w-[1560px] p-4 sm:p-6 lg:p-8 space-y-4 font-sans text-slate-800 dark:text-slate-200'>
         {/* Sub-Header: Bento Grid & Live Timestamp matching Artefact 2 */}
         <div className='flex items-center justify-between px-1'>
-          <h1 className='text-2xl font-bold tracking-tight text-white'>Bento Grid</h1>
-          <div className='text-xs font-mono text-slate-400'>{currentDateStr || 'Wed, Oct 26, 10:45 AM'}</div>
+          <h1 className='text-2xl font-bold tracking-tight text-slate-900 dark:text-white'>Bento Grid</h1>
+          <div className='text-xs font-mono text-slate-500 dark:text-slate-400'>
+            {currentDateStr || 'Wed, Oct 26, 10:45 AM'}
+          </div>
         </div>
 
         {/* 3-COLUMN BENTO GRID (EXACT ARTEFACT 2 ARCHITECTURE) */}
@@ -207,27 +218,27 @@ const AdminDashboardPage = ({ adminEmail }) => {
           {/* ============================================================== */}
           <div className='flex flex-col gap-5 h-full'>
             {/* Upper Box: Articles Studio & Drafts Preview */}
-            <div className='rounded-2xl border border-emerald-500/50 bg-[#0f1722] p-4 sm:p-5 shadow-2xl transition hover:border-emerald-500/80 flex flex-col justify-between flex-[1.2] overflow-hidden'>
+            <div className='rounded-2xl border border-emerald-500/30 bg-white p-4 sm:p-5 shadow-lg transition hover:border-emerald-500/60 dark:border-emerald-500/50 dark:bg-[#0f1722] dark:shadow-2xl dark:hover:border-emerald-500/80 flex flex-col justify-between flex-[1.2] overflow-hidden'>
               <div>
                 {/* Header */}
                 <div className='flex items-center justify-between mb-4'>
-                  <h2 className='text-xs font-black uppercase tracking-wider text-[#10b981] font-mono'>
+                  <h2 className='text-xs font-black uppercase tracking-wider text-emerald-600 dark:text-[#10b981] font-mono'>
                     ARTICLES STUDIO
                   </h2>
                   <Link
                     href='/admin/articles/new'
-                    className='rounded-md bg-[#10b981] px-3.5 py-1 text-xs font-black text-black shadow-md shadow-emerald-500/30 transition hover:bg-emerald-400 active:scale-95'
+                    className='rounded-md bg-[#10b981] px-3.5 py-1 text-xs font-black text-black shadow-md shadow-emerald-500/20 transition hover:bg-emerald-400 active:scale-95'
                   >
                     WRITE ARTICLE +
                   </Link>
                 </div>
 
                 {/* Drafts Section Header */}
-                <div className='flex items-center justify-between text-xs font-mono text-slate-400 mb-3'>
+                <div className='flex items-center justify-between text-xs font-mono text-slate-500 dark:text-slate-400 mb-3'>
                   <span>Drafts (1)</span>
-                  <div className='flex items-center gap-1.5 text-slate-500'>
-                    <FiFolder className='size-3.5 hover:text-slate-300 cursor-pointer' />
-                    <FiMoreHorizontal className='size-3.5 hover:text-slate-300 cursor-pointer' />
+                  <div className='flex items-center gap-1.5 text-slate-400 dark:text-slate-500'>
+                    <FiFolder className='size-3.5 hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer' />
+                    <FiMoreHorizontal className='size-3.5 hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer' />
                   </div>
                 </div>
 
@@ -240,12 +251,12 @@ const AdminDashboardPage = ({ adminEmail }) => {
                       onClick={() => setActiveDraftTab('ai')}
                       className={`w-full rounded-xl p-3 text-left transition border ${
                         activeDraftTab === 'ai'
-                          ? 'border-emerald-500 bg-emerald-950/40 text-emerald-200'
-                          : 'border-slate-800/80 bg-slate-900/60 text-slate-300 hover:bg-slate-800/80'
+                          ? 'border-emerald-500 bg-emerald-50 text-emerald-950 dark:bg-emerald-950/40 dark:text-emerald-200'
+                          : 'border-slate-200 bg-slate-50/80 text-slate-700 hover:bg-slate-100 dark:border-slate-800/80 dark:bg-slate-900/60 dark:text-slate-300 dark:hover:bg-slate-800/80'
                       }`}
                     >
-                      <div className='font-bold text-xs text-white truncate'>The Future of AI</div>
-                      <div className='text-[11px] font-mono text-slate-400 mt-0.5'>1.2k words</div>
+                      <div className='font-bold text-xs text-slate-900 dark:text-white truncate'>The Future of AI</div>
+                      <div className='text-[11px] font-mono text-slate-500 dark:text-slate-400 mt-0.5'>1.2k words</div>
                     </button>
 
                     <button
@@ -253,32 +264,36 @@ const AdminDashboardPage = ({ adminEmail }) => {
                       onClick={() => setActiveDraftTab('react')}
                       className={`w-full rounded-xl p-3 text-left transition border ${
                         activeDraftTab === 'react'
-                          ? 'border-emerald-500 bg-emerald-950/40 text-emerald-200'
-                          : 'border-slate-800/80 bg-slate-900/60 text-slate-300 hover:bg-slate-800/80'
+                          ? 'border-emerald-500 bg-emerald-50 text-emerald-950 dark:bg-emerald-950/40 dark:text-emerald-200'
+                          : 'border-slate-200 bg-slate-50/80 text-slate-700 hover:bg-slate-100 dark:border-slate-800/80 dark:bg-slate-900/60 dark:text-slate-300 dark:hover:bg-slate-800/80'
                       }`}
                     >
-                      <div className='font-bold text-xs text-white truncate'>React State Management</div>
-                      <div className='text-[11px] font-mono text-slate-400 mt-0.5'>850 words</div>
+                      <div className='font-bold text-xs text-slate-900 dark:text-white truncate'>
+                        React State Management
+                      </div>
+                      <div className='text-[11px] font-mono text-slate-500 dark:text-slate-400 mt-0.5'>850 words</div>
                     </button>
                   </div>
 
                   {/* Right Draft Preview Card */}
-                  <div className='sm:col-span-7 rounded-xl border border-slate-800 bg-[#0b121b] p-3.5 flex flex-col justify-between text-left'>
+                  <div className='sm:col-span-7 rounded-xl border border-slate-200 bg-slate-50 p-3.5 flex flex-col justify-between text-left dark:border-slate-800 dark:bg-[#0b121b]'>
                     <div>
-                      <span className='text-[10px] font-mono text-slate-400 block mb-1'>Draft article</span>
-                      <h3 className='text-xs font-bold text-white leading-tight'>
+                      <span className='text-[10px] font-mono text-slate-500 dark:text-slate-400 block mb-1'>
+                        Draft article
+                      </span>
+                      <h3 className='text-xs font-bold text-slate-900 dark:text-white leading-tight'>
                         {activeDraftTab === 'ai' ? 'The Future of AI' : 'React State Management'}
                       </h3>
-                      <p className='mt-2 text-[11px] text-slate-300 leading-relaxed'>
+                      <p className='mt-2 text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed'>
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tnper euismod incididunt
                         ut labore et dolore magna aliqua. Ut volutpat e:nit mint veniam, aliquip ex ea commodo
                         consequat.
                       </p>
                     </div>
 
-                    <div className='mt-4 pt-2.5 border-t border-slate-800/80 flex items-center justify-between text-[10px] font-mono text-slate-400'>
+                    <div className='mt-4 pt-2.5 border-t border-slate-200 dark:border-slate-800/80 flex items-center justify-between text-[10px] font-mono text-slate-500 dark:text-slate-400'>
                       <span>Metadata · July 26, 2023</span>
-                      <span className='text-slate-400'>Liarphnn · Paneamn</span>
+                      <span className='text-slate-500 dark:text-slate-400'>Liarphnn · Paneamn</span>
                     </div>
                   </div>
                 </div>
@@ -286,13 +301,16 @@ const AdminDashboardPage = ({ adminEmail }) => {
             </div>
 
             {/* Bottom Box: Top 5 Categories & Article Breakdown */}
-            <div className='rounded-2xl border border-slate-800/80 bg-[#0f1722] p-5 shadow-xl flex flex-col justify-between flex-1'>
+            <div className='rounded-2xl border border-slate-200 bg-white p-5 shadow-lg dark:border-slate-800/80 dark:bg-[#0f1722] dark:shadow-xl flex flex-col justify-between flex-1'>
               <div className='flex items-center justify-between mb-3.5'>
-                <h3 className='text-xs font-bold text-slate-200 uppercase tracking-wider font-mono flex items-center gap-1.5'>
+                <h3 className='text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider font-mono flex items-center gap-1.5'>
                   <span className='size-2 rounded-full bg-[#10b981]' />
                   Top 5 Categories
                 </h3>
-                <Link href='/page' className='text-[11px] font-mono text-emerald-400 hover:underline'>
+                <Link
+                  href='/page'
+                  className='text-[11px] font-mono text-emerald-600 dark:text-emerald-400 hover:underline'
+                >
                   8 Published Articles →
                 </Link>
               </div>
@@ -301,20 +319,23 @@ const AdminDashboardPage = ({ adminEmail }) => {
                 {TOP_ARTICLE_CATEGORIES.map((cat, idx) => (
                   <div
                     key={cat.name}
-                    className='group flex flex-col gap-1 rounded-xl border border-slate-800/60 bg-slate-950/60 p-2.5 transition hover:border-emerald-500/40 hover:bg-slate-900/60'
+                    className='group flex flex-col gap-1 rounded-xl border border-slate-100 bg-slate-50/80 p-2.5 transition hover:border-emerald-500/40 hover:bg-slate-100/80 dark:border-slate-800/60 dark:bg-slate-950/60 dark:hover:bg-slate-900/60'
                   >
                     <div className='flex items-center justify-between text-xs'>
                       <div className='flex items-center gap-2 min-w-0'>
-                        <span className='font-mono text-[10px] font-bold text-slate-500 w-3'>#{idx + 1}</span>
-                        <span className='font-medium text-slate-200 truncate group-hover:text-emerald-300 transition'>
+                        <span className='font-mono text-[10px] font-bold text-slate-400 dark:text-slate-500 w-3'>
+                          #{idx + 1}
+                        </span>
+                        <span className='font-medium text-slate-700 dark:text-slate-200 truncate group-hover:text-emerald-600 dark:group-hover:text-emerald-300 transition'>
                           {cat.name}
                         </span>
                       </div>
-                      <span className='font-mono text-[11px] font-bold text-emerald-400 shrink-0 ml-2'>
-                        {cat.count} <span className='text-[10px] font-normal text-slate-400'>articles</span>
+                      <span className='font-mono text-[11px] font-bold text-emerald-600 dark:text-emerald-400 shrink-0 ml-2'>
+                        {cat.count}{' '}
+                        <span className='text-[10px] font-normal text-slate-500 dark:text-slate-400'>articles</span>
                       </span>
                     </div>
-                    <div className='h-1 w-full bg-slate-800/80 rounded-full overflow-hidden mt-0.5'>
+                    <div className='h-1 w-full bg-slate-200 dark:bg-slate-800/80 rounded-full overflow-hidden mt-0.5'>
                       <div
                         className='h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-500'
                         style={{ width: `${cat.pct}%` }}
@@ -331,17 +352,17 @@ const AdminDashboardPage = ({ adminEmail }) => {
           {/* ============================================================== */}
           <div className='flex flex-col gap-5 h-full'>
             {/* Upper Box: Active Sprint & Burndown Chart */}
-            <div className='rounded-2xl border border-cyan-400/50 bg-[#0d1724] p-4 sm:p-5 shadow-2xl transition hover:border-cyan-400/80 flex flex-col justify-between flex-[1.2]'>
+            <div className='rounded-2xl border border-cyan-400/40 bg-white p-4 sm:p-5 shadow-lg transition hover:border-cyan-400/70 dark:border-cyan-400/50 dark:bg-[#0d1724] dark:shadow-2xl dark:hover:border-cyan-400/80 flex flex-col justify-between flex-[1.2]'>
               <div>
                 {/* Header */}
                 <div className='flex items-center justify-between mb-3'>
-                  <h2 className='text-xs font-black uppercase tracking-wider text-cyan-400 font-mono'>
+                  <h2 className='text-xs font-black uppercase tracking-wider text-cyan-600 dark:text-cyan-400 font-mono'>
                     ISSUEBOARD WORKSPACE
                   </h2>
                   <button
                     type='button'
                     onClick={() => router.push('/admin/issues')}
-                    className='text-slate-400 hover:text-slate-200'
+                    className='text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
                     aria-label='Options'
                   >
                     <FiMoreHorizontal className='size-4' />
@@ -351,7 +372,7 @@ const AdminDashboardPage = ({ adminEmail }) => {
                 {/* Active Sprint Glowing Banner */}
                 <Link
                   href='/admin/issues?view=board'
-                  className='group flex items-center justify-between rounded-xl bg-gradient-to-r from-cyan-400 to-[#22d3ee] p-2.5 sm:p-3 text-slate-950 shadow-lg shadow-cyan-500/25 transition hover:brightness-105'
+                  className='group flex items-center justify-between rounded-xl bg-gradient-to-r from-cyan-400 to-[#22d3ee] p-2.5 sm:p-3 text-slate-950 shadow-md shadow-cyan-500/20 transition hover:brightness-105'
                 >
                   <div className='flex items-center gap-3'>
                     <span className='grid size-8 place-items-center rounded-lg bg-slate-950/20 text-slate-950'>
@@ -366,15 +387,19 @@ const AdminDashboardPage = ({ adminEmail }) => {
                 </Link>
 
                 {/* Sprint Burndown Chart */}
-                <div className='mt-3.5 pt-2.5 border-t border-slate-800/80'>
+                <div className='mt-3.5 pt-2.5 border-t border-slate-200 dark:border-slate-800/80'>
                   <div className='flex items-baseline justify-between mb-1.5'>
                     <div>
-                      <h3 className='text-xs font-bold text-slate-200'>Sprint Burndown Chart</h3>
-                      <p className='text-[10px] text-slate-400 font-mono'>Remaining Effort vs. Time</p>
+                      <h3 className='text-xs font-bold text-slate-800 dark:text-slate-200'>Sprint Burndown Chart</h3>
+                      <p className='text-[10px] text-slate-500 dark:text-slate-400 font-mono'>
+                        Remaining Effort vs. Time
+                      </p>
                     </div>
                     <div className='text-right'>
-                      <span className='text-xs font-black text-white font-mono'>24 story</span>
-                      <span className='text-[10px] text-slate-400 block font-mono'>points left</span>
+                      <span className='text-xs font-black text-slate-900 dark:text-white font-mono'>24 story</span>
+                      <span className='text-[10px] text-slate-500 dark:text-slate-400 block font-mono'>
+                        points left
+                      </span>
                     </div>
                   </div>
 
@@ -382,10 +407,10 @@ const AdminDashboardPage = ({ adminEmail }) => {
                   <div className='flex items-end gap-2 mt-2 w-full'>
                     {/* Y Axis Vertical Label & Ticks */}
                     <div className='flex items-center gap-1 shrink-0'>
-                      <div className='text-[8px] font-mono text-slate-500 uppercase tracking-widest -rotate-90 origin-center whitespace-nowrap -ml-2 select-none'>
+                      <div className='text-[8px] font-mono text-slate-400 dark:text-slate-500 uppercase tracking-widest -rotate-90 origin-center whitespace-nowrap -ml-2 select-none'>
                         Effort
                       </div>
-                      <div className='flex flex-col justify-between h-24 text-[9px] font-mono text-slate-400 text-right pr-1 select-none'>
+                      <div className='flex flex-col justify-between h-24 text-[9px] font-mono text-slate-500 dark:text-slate-400 text-right pr-1 select-none'>
                         <span>140</span>
                         <span>30</span>
                         <span>20</span>
@@ -411,7 +436,8 @@ const AdminDashboardPage = ({ adminEmail }) => {
                             y1='10'
                             x2='295'
                             y2='95'
-                            stroke='#94a3b8'
+                            stroke='currentColor'
+                            className='text-slate-300 dark:text-slate-600'
                             strokeWidth='1.5'
                             strokeDasharray='3 3'
                           />
@@ -426,25 +452,25 @@ const AdminDashboardPage = ({ adminEmail }) => {
                           <path
                             d='M 5,10 Q 50,22 100,42 T 180,60 T 255,80'
                             fill='none'
-                            stroke='#22d3ee'
+                            stroke='#06b6d4'
                             strokeWidth='2.5'
                             strokeLinecap='round'
                           />
 
                           {/* Data point dot */}
-                          <circle cx='255' cy='80' r='3.5' fill='#fff' stroke='#06b6d4' strokeWidth='2' />
+                          <circle cx='255' cy='80' r='3.5' fill='#fff' stroke='#0891b2' strokeWidth='2' />
                         </svg>
                       </div>
 
                       {/* X-axis Ticks below */}
-                      <div className='flex justify-between text-[9px] font-mono text-slate-400 pt-1 border-t border-slate-800/80'>
+                      <div className='flex justify-between text-[9px] font-mono text-slate-500 dark:text-slate-400 pt-1 border-t border-slate-200 dark:border-slate-800/80'>
                         <span>0</span>
                         <span>6</span>
                         <span>16</span>
                         <span>24</span>
                         <span>38</span>
                       </div>
-                      <div className='text-center text-[8px] font-mono text-slate-500 uppercase tracking-widest pt-0.5'>
+                      <div className='text-center text-[8px] font-mono text-slate-400 dark:text-slate-500 uppercase tracking-widest pt-0.5'>
                         Time
                       </div>
                     </div>
@@ -454,13 +480,16 @@ const AdminDashboardPage = ({ adminEmail }) => {
             </div>
 
             {/* Bottom Box: Issueboard Ticker */}
-            <div className='rounded-2xl border border-slate-800/80 bg-[#0d1724] p-5 shadow-xl flex flex-col justify-between flex-1'>
+            <div className='rounded-2xl border border-slate-200 bg-white p-5 shadow-lg dark:border-slate-800/80 dark:bg-[#0d1724] dark:shadow-xl flex flex-col justify-between flex-1'>
               <div className='flex items-center justify-between mb-3'>
-                <h3 className='text-xs font-bold text-slate-200 uppercase tracking-wider font-mono flex items-center gap-1.5'>
-                  <span className='size-2 rounded-full bg-cyan-400 animate-pulse' />
+                <h3 className='text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider font-mono flex items-center gap-1.5'>
+                  <span className='size-2 rounded-full bg-cyan-500 dark:bg-cyan-400 animate-pulse' />
                   Issueboard Ticker
                 </h3>
-                <Link href='/admin/issues?view=board' className='text-slate-400 hover:text-cyan-400 text-xs font-mono'>
+                <Link
+                  href='/admin/issues?view=board'
+                  className='text-slate-500 hover:text-cyan-600 dark:text-slate-400 dark:hover:text-cyan-400 text-xs font-mono'
+                >
                   View Board (7) →
                 </Link>
               </div>
@@ -470,7 +499,7 @@ const AdminDashboardPage = ({ adminEmail }) => {
                   <Link
                     key={issue.key}
                     href={`/admin/issues/${issue.key}`}
-                    className='group flex items-center justify-between rounded-xl border border-slate-800/60 bg-slate-950/60 p-2 sm:p-2.5 transition hover:border-cyan-500/50 hover:bg-slate-900/60'
+                    className='group flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50/80 p-2 sm:p-2.5 transition hover:border-cyan-500/40 hover:bg-slate-100/80 dark:border-slate-800/60 dark:bg-slate-950/60 dark:hover:border-cyan-500/50 dark:hover:bg-slate-900/60'
                   >
                     <div className='flex items-center gap-2 min-w-0 pr-2'>
                       <span
@@ -478,9 +507,9 @@ const AdminDashboardPage = ({ adminEmail }) => {
                           issue.status === 'In progress' ? 'bg-amber-400' : 'bg-sky-400'
                         }`}
                       />
-                      <span className='text-xs text-slate-200 font-medium truncate group-hover:text-cyan-300 transition'>
-                        <span className='font-mono font-bold text-white mr-1.5'>{issue.key}:</span>
-                        <span className='text-slate-300'>{issue.title}</span>
+                      <span className='text-xs text-slate-700 font-medium truncate group-hover:text-cyan-600 dark:text-slate-200 dark:group-hover:text-cyan-300 transition'>
+                        <span className='font-mono font-bold text-slate-900 dark:text-white mr-1.5'>{issue.key}:</span>
+                        <span className='text-slate-600 dark:text-slate-300'>{issue.title}</span>
                       </span>
                     </div>
                     <div className='flex items-center gap-1.5 shrink-0'>
@@ -508,17 +537,17 @@ const AdminDashboardPage = ({ adminEmail }) => {
           {/* ============================================================== */}
           <div className='flex flex-col h-full'>
             {/* Full-Height Bento Card for Books matching Artefact 2 */}
-            <div className='h-full rounded-2xl border border-amber-500/50 bg-[#14100c] p-5 shadow-2xl transition hover:border-amber-500/80 flex flex-col justify-between space-y-4'>
+            <div className='h-full rounded-2xl border border-amber-500/30 bg-white p-5 shadow-lg transition hover:border-amber-500/60 dark:border-amber-500/50 dark:bg-[#14100c] dark:shadow-2xl dark:hover:border-amber-500/80 flex flex-col justify-between space-y-4'>
               <div>
                 {/* Header */}
                 <div className='flex items-center justify-between'>
-                  <h2 className='text-xs font-black uppercase tracking-wider text-amber-400 font-mono'>
+                  <h2 className='text-xs font-black uppercase tracking-wider text-amber-600 dark:text-amber-400 font-mono'>
                     BOOKS & LIBRARY RECORDS
                   </h2>
                   <button
                     type='button'
                     onClick={() => router.push('/admin/books')}
-                    className='text-slate-400 hover:text-slate-200'
+                    className='text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
                     aria-label='Options'
                   >
                     <FiMoreHorizontal className='size-4' />
@@ -528,12 +557,15 @@ const AdminDashboardPage = ({ adminEmail }) => {
                 {/* Reading Stats & Radial Gauge Section matching Artefact 2 */}
                 <div className='flex items-center justify-between mt-3 py-1'>
                   <div>
-                    <div className='text-3xl font-black text-white font-mono leading-none'>
+                    <div className='text-3xl font-black text-slate-900 dark:text-white font-mono leading-none'>
                       18 <span className='text-slate-400 text-xl font-normal'>/ 25</span>
                     </div>
-                    <div className='text-xs font-semibold text-slate-300 mt-1.5'>Books Read This Year</div>
-                    <div className='text-[11px] text-slate-400 mt-0.5'>
-                      Next Up: <span className='text-slate-200 font-medium'>Algorithms to Live By</span>
+                    <div className='text-xs font-semibold text-slate-700 dark:text-slate-300 mt-1.5'>
+                      Books Read This Year
+                    </div>
+                    <div className='text-[11px] text-slate-500 dark:text-slate-400 mt-0.5'>
+                      Next Up:{' '}
+                      <span className='text-slate-800 dark:text-slate-200 font-medium'>Algorithms to Live By</span>
                     </div>
                   </div>
 
@@ -542,7 +574,7 @@ const AdminDashboardPage = ({ adminEmail }) => {
                     <svg className='size-full -rotate-90' viewBox='0 0 36 36'>
                       {/* Background Arc Track */}
                       <path
-                        className='text-slate-800 stroke-current'
+                        className='text-slate-200 dark:text-slate-800 stroke-current'
                         strokeWidth='3.5'
                         strokeDasharray='75, 100'
                         strokeLinecap='round'
@@ -551,7 +583,7 @@ const AdminDashboardPage = ({ adminEmail }) => {
                       />
                       {/* Glowing Amber Arc Progress 72% */}
                       <path
-                        className='text-amber-400 stroke-current drop-shadow-[0_0_8px_rgba(251,191,36,0.7)]'
+                        className='text-amber-500 dark:text-amber-400 stroke-current drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]'
                         strokeDasharray='54, 100'
                         strokeWidth='3.5'
                         strokeLinecap='round'
@@ -559,7 +591,7 @@ const AdminDashboardPage = ({ adminEmail }) => {
                         d='M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831'
                       />
                     </svg>
-                    <span className='absolute font-mono text-sm font-black text-white'>72%</span>
+                    <span className='absolute font-mono text-sm font-black text-slate-900 dark:text-white'>72%</span>
                   </div>
                 </div>
 
@@ -574,7 +606,7 @@ const AdminDashboardPage = ({ adminEmail }) => {
                     <Link
                       key={tag.shelf}
                       href={`/admin/books?shelf=${tag.shelf}`}
-                      className='inline-flex items-center h-[20px] rounded-full border border-slate-800 bg-slate-900/90 px-2.5 text-[10px] leading-none font-sans font-medium text-slate-300 hover:border-amber-500/50 hover:text-amber-300 transition whitespace-nowrap'
+                      className='inline-flex items-center h-[20px] rounded-full border border-slate-200 bg-slate-100 px-2.5 text-[10px] leading-none font-sans font-medium text-slate-700 hover:border-amber-500/50 hover:text-amber-700 dark:border-slate-800 dark:bg-slate-900/90 dark:text-slate-300 dark:hover:text-amber-300 transition whitespace-nowrap'
                     >
                       {tag.label}
                     </Link>
@@ -590,7 +622,7 @@ const AdminDashboardPage = ({ adminEmail }) => {
                       className='group flex flex-col items-center text-center'
                     >
                       {/* Realistic 3D Standing Book Cover with Spine & Drop Shadow */}
-                      <div className='relative w-full aspect-[2/3] rounded-sm overflow-hidden shadow-xl shadow-black/80 transition-all duration-200 group-hover:-translate-y-1 group-hover:shadow-amber-500/20'>
+                      <div className='relative w-full aspect-[2/3] rounded-sm overflow-hidden shadow-md shadow-slate-300/60 dark:shadow-xl dark:shadow-black/80 transition-all duration-200 group-hover:-translate-y-1 group-hover:shadow-amber-500/20'>
                         {/* 3D Left Spine Edge */}
                         <div className={`absolute left-0 top-0 bottom-0 w-1.5 ${book.spineBg} z-10 opacity-80`} />
 
@@ -598,7 +630,7 @@ const AdminDashboardPage = ({ adminEmail }) => {
                         <div
                           className={`absolute inset-0 bg-gradient-to-tr ${book.coverBg} p-2 flex flex-col justify-between border-l border-white/20`}
                         >
-                          <div className='text-[8px] font-mono uppercase tracking-widest text-slate-400'>
+                          <div className='text-[8px] font-mono uppercase tracking-widest text-slate-300 dark:text-slate-400'>
                             {book.shelf}
                           </div>
                           <div
@@ -608,24 +640,24 @@ const AdminDashboardPage = ({ adminEmail }) => {
                           >
                             {book.title}
                           </div>
-                          <div className='text-[7px] font-mono text-slate-400'>2026 EDITION</div>
+                          <div className='text-[7px] font-mono text-slate-300 dark:text-slate-400'>2026 EDITION</div>
                         </div>
                       </div>
 
                       {/* Title & Progress Line & Shelf Tags Pill below matching Artefact 2 */}
                       <div className='mt-2 w-full'>
-                        <div className='text-[10px] font-bold text-slate-200 truncate group-hover:text-amber-300 transition'>
+                        <div className='text-[10px] font-bold text-slate-700 dark:text-slate-200 truncate group-hover:text-amber-600 dark:group-hover:text-amber-300 transition'>
                           {book.title}
                         </div>
 
                         {/* Thin Progress Line */}
-                        <div className='mt-1 h-0.5 w-full bg-slate-800 rounded-full overflow-hidden'>
+                        <div className='mt-1 h-0.5 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden'>
                           <div className={`h-full ${book.progressColor}`} style={{ width: `${book.progress}%` }} />
                         </div>
 
                         {/* Shelf Tags Pill */}
                         <div className='mt-1'>
-                          <span className='inline-flex items-center h-4 rounded-full bg-amber-950/40 border border-amber-900/60 px-1.5 text-[9px] leading-none font-sans text-amber-300'>
+                          <span className='inline-flex items-center h-4 rounded-full bg-amber-50 border border-amber-200 px-1.5 text-[9px] leading-none font-sans text-amber-800 dark:bg-amber-950/40 dark:border-amber-900/60 dark:text-amber-300'>
                             Shelf tags
                           </span>
                         </div>
@@ -636,11 +668,11 @@ const AdminDashboardPage = ({ adminEmail }) => {
               </div>
 
               {/* Bottom Quick Jump Link */}
-              <div className='pt-2 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400'>
+              <div className='pt-2 border-t border-slate-200 dark:border-slate-800/80 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400'>
                 <span>All 18 Cataloged Books</span>
                 <Link
                   href='/admin/books'
-                  className='text-amber-400 hover:underline font-bold inline-flex items-center gap-1'
+                  className='text-amber-600 dark:text-amber-400 hover:underline font-bold inline-flex items-center gap-1'
                 >
                   Open Bookshelf →
                 </Link>

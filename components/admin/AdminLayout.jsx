@@ -90,7 +90,7 @@ export const AdminLayout = ({
   }, [router]);
 
   return (
-    <div className='flex h-screen w-screen overflow-hidden bg-slate-950 font-sans text-slate-100 antialiased selection:bg-emerald-500/30 selection:text-emerald-200'>
+    <div className='flex h-screen w-screen overflow-hidden bg-slate-100 font-sans text-slate-900 antialiased selection:bg-emerald-500/30 selection:text-emerald-700 dark:bg-slate-950 dark:text-slate-100 dark:selection:text-emerald-200'>
       <Head>
         <title>{title}</title>
         <meta name='description' content={description} />
@@ -104,7 +104,7 @@ export const AdminLayout = ({
       <AdminContextSidebar expanded={sidebarExpanded} onOpenQuickAdd={handleOpenQuickAdd} />
 
       {/* MAIN VIEWPORT CANVAS */}
-      <div className='flex min-w-0 flex-1 flex-col overflow-hidden bg-slate-950'>
+      <div className='flex min-w-0 flex-1 flex-col overflow-hidden bg-slate-100 dark:bg-slate-950'>
         {/* TOP: Horizon Glass Panoramic Header (Artefact 4) */}
         <AdminHorizonHeader
           adminEmail={adminEmail}
@@ -113,7 +113,7 @@ export const AdminLayout = ({
         />
 
         {/* CONTENT CANVAS */}
-        <main className='relative flex-1 overflow-y-auto bg-slate-950/60'>{children}</main>
+        <main className='relative flex-1 overflow-y-auto bg-slate-50/80 dark:bg-slate-950/60'>{children}</main>
       </div>
 
       {/* SPATIAL COMMAND PALETTE & 3D SWITCHER MODAL (Artefact 5: ⌘K) */}

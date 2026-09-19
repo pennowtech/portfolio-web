@@ -142,40 +142,43 @@ const BooksPage = ({ adminEmail }) => {
     >
       <div className='mx-auto max-w-7xl p-6 sm:p-8 space-y-6'>
         {/* Top Header Card with Reading Challenge Gauge matching Artefact 2 stats */}
-        <div className='relative overflow-hidden rounded-2xl border border-amber-500/40 bg-[#14100c] p-6 shadow-2xl'>
+        <div className='relative overflow-hidden rounded-2xl border border-amber-500/30 bg-white p-6 shadow-lg dark:border-amber-500/40 dark:bg-[#14100c] dark:shadow-2xl'>
           <div className='flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6'>
             <div>
               <div className='flex items-center gap-2'>
-                <span className='inline-flex items-center gap-1.5 rounded-full bg-amber-500/10 px-2.5 py-0.5 text-xs font-bold text-amber-400 border border-amber-500/20 font-mono'>
+                <span className='inline-flex items-center gap-1.5 rounded-full bg-amber-500/10 px-2.5 py-0.5 text-xs font-bold text-amber-600 dark:text-amber-400 border border-amber-500/20 font-mono'>
                   <FiBookOpen className='size-3.5' /> Personal Library Records
                 </span>
-                <span className='rounded-full bg-slate-800/80 px-2 py-0.5 text-[11px] font-mono text-slate-400 border border-slate-700'>
+                <span className='rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-mono text-slate-600 border border-slate-200 dark:bg-slate-800/80 dark:text-slate-400 dark:border-slate-700'>
                   {books.length} Books Cataloged
                 </span>
               </div>
-              <h1 className='mt-2 text-2xl font-black tracking-tight text-white sm:text-3xl'>
+              <h1 className='mt-2 text-2xl font-black tracking-tight text-slate-900 dark:text-white sm:text-3xl'>
                 Books, Shelves & Reading Log
               </h1>
-              <p className='mt-1 text-xs text-slate-400 max-w-xl'>
+              <p className='mt-1 text-xs text-slate-500 dark:text-slate-400 max-w-xl'>
                 Categorized personal repository of engineering architectures, cognitive models, philosophy, and
                 leadership classics.
               </p>
             </div>
 
             {/* Reading Challenge Gauge Tile (18 / 25 - 72%) */}
-            <div className='flex items-center gap-5 rounded-2xl border border-amber-900/50 bg-slate-950/80 p-4 shadow-xl'>
-              <div className='relative grid size-16 place-items-center rounded-full bg-slate-900 border-2 border-amber-500/50 shadow-[0_0_15px_rgba(245,158,11,0.2)]'>
-                <span className='font-mono text-base font-black text-amber-400'>{goalPercentage}%</span>
+            <div className='flex items-center gap-5 rounded-2xl border border-amber-200 bg-amber-50/50 p-4 shadow-sm dark:border-amber-900/50 dark:bg-slate-950/80 dark:shadow-xl'>
+              <div className='relative grid size-16 place-items-center rounded-full bg-white border-2 border-amber-500/50 shadow-sm dark:bg-slate-900 dark:shadow-[0_0_15px_rgba(245,158,11,0.2)]'>
+                <span className='font-mono text-base font-black text-amber-600 dark:text-amber-400'>
+                  {goalPercentage}%
+                </span>
               </div>
               <div>
-                <div className='text-xs font-bold text-slate-200'>2026 Reading Challenge</div>
-                <div className='font-mono text-xs text-slate-400 mt-0.5'>
-                  <strong className='text-white text-sm'>{completedCount}</strong> of {yearlyGoal} books completed
+                <div className='text-xs font-bold text-slate-800 dark:text-slate-200'>2026 Reading Challenge</div>
+                <div className='font-mono text-xs text-slate-500 dark:text-slate-400 mt-0.5'>
+                  <strong className='text-slate-900 dark:text-white text-sm'>{completedCount}</strong> of {yearlyGoal}{' '}
+                  books completed
                 </div>
-                <div className='text-[10px] text-amber-400/80 font-mono mt-0.5'>
-                  Next Up: <span className='text-white'>Algorithms to Live By</span>
+                <div className='text-[10px] text-amber-600/90 dark:text-amber-400/80 font-mono mt-0.5'>
+                  Next Up: <span className='text-slate-800 dark:text-white'>Algorithms to Live By</span>
                 </div>
-                <div className='mt-2 h-1.5 w-40 rounded-full bg-slate-800 overflow-hidden'>
+                <div className='mt-2 h-1.5 w-40 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden'>
                   <div
                     className='h-full rounded-full bg-gradient-to-r from-amber-500 to-yellow-400 shadow-[0_0_8px_rgba(251,191,36,0.6)]'
                     style={{ width: `${goalPercentage}%` }}
@@ -218,7 +221,7 @@ const BooksPage = ({ adminEmail }) => {
                   className={`h-7 inline-flex items-center gap-1.5 rounded-full px-3 text-xs leading-none font-semibold transition ${
                     isSelected
                       ? 'bg-amber-500 text-black font-bold shadow-md shadow-amber-500/25'
-                      : 'bg-slate-900/90 text-slate-300 border border-slate-800 hover:border-slate-700 hover:text-white'
+                      : 'bg-white text-slate-700 border border-slate-200 hover:border-slate-300 dark:bg-slate-900/90 dark:text-slate-300 dark:border-slate-800 dark:hover:border-slate-700 dark:hover:text-white'
                   }`}
                 >
                   <span>{shelf.label}</span>
@@ -230,24 +233,24 @@ const BooksPage = ({ adminEmail }) => {
           {/* Search + View Mode Toggle */}
           <div className='flex items-center gap-2'>
             <div className='relative flex-1 sm:w-60'>
-              <FiSearch className='absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-slate-500' />
+              <FiSearch className='absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-slate-400' />
               <input
                 type='text'
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder='Search title, author…'
-                className='w-full rounded-xl border border-slate-800 bg-slate-900 pl-8 pr-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 outline-none focus:border-amber-500'
+                className='w-full rounded-xl border border-slate-200 bg-white pl-8 pr-3 py-1.5 text-xs text-slate-800 placeholder-slate-400 outline-none focus:border-amber-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:placeholder-slate-500'
               />
             </div>
 
-            <div className='flex items-center rounded-xl border border-slate-800 bg-slate-900 p-1'>
+            <div className='flex items-center rounded-xl border border-slate-200 bg-white p-1 dark:border-slate-800 dark:bg-slate-900'>
               <button
                 type='button'
                 onClick={() => setViewMode('shelves')}
                 className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold transition ${
                   viewMode === 'shelves'
-                    ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
-                    : 'text-slate-400 hover:text-slate-200'
+                    ? 'bg-amber-500/15 text-amber-700 border border-amber-500/30 dark:bg-amber-500/20 dark:text-amber-300 dark:border-amber-500/40'
+                    : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200'
                 }`}
                 title='Categorized Shelves View'
               >
@@ -258,7 +261,9 @@ const BooksPage = ({ adminEmail }) => {
                 type='button'
                 onClick={() => setViewMode('grid')}
                 className={`p-1.5 rounded-lg text-xs transition ${
-                  viewMode === 'grid' ? 'bg-slate-800 text-amber-400' : 'text-slate-400 hover:text-slate-200'
+                  viewMode === 'grid'
+                    ? 'bg-slate-100 text-amber-600 dark:bg-slate-800 dark:text-amber-400'
+                    : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200'
                 }`}
                 title='Cover Grid'
               >
@@ -268,7 +273,9 @@ const BooksPage = ({ adminEmail }) => {
                 type='button'
                 onClick={() => setViewMode('table')}
                 className={`p-1.5 rounded-lg text-xs transition ${
-                  viewMode === 'table' ? 'bg-slate-800 text-amber-400' : 'text-slate-400 hover:text-slate-200'
+                  viewMode === 'table'
+                    ? 'bg-slate-100 text-amber-600 dark:bg-slate-800 dark:text-amber-400'
+                    : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200'
                 }`}
                 title='List Table'
               >

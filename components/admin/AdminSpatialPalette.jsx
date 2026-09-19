@@ -240,22 +240,24 @@ export const AdminSpatialPalette = ({ isOpen, onClose, onOpenQuickAdd }) => {
     <div
       role='dialog'
       aria-modal='true'
-      className='fixed inset-0 z-50 flex items-start justify-center bg-slate-950/55 p-4 pt-16 backdrop-blur-[2px] animate-in fade-in duration-150'
+      className='fixed inset-0 z-50 flex items-start justify-center bg-slate-900/40 dark:bg-slate-950/55 p-4 pt-16 backdrop-blur-[2px] animate-in fade-in duration-150'
       onClick={onClose}
     >
       <div
-        className='relative w-full max-w-2xl overflow-hidden rounded-2xl border border-emerald-500/40 bg-slate-900/98 shadow-[0_0_50px_rgba(16,185,129,0.2)]'
+        className='relative w-full max-w-2xl overflow-hidden rounded-2xl border border-emerald-500/40 bg-white dark:bg-slate-900/98 shadow-2xl dark:shadow-[0_0_50px_rgba(16,185,129,0.2)]'
         onClick={(e) => e.stopPropagation()}
         onKeyDown={handleKeyDown}
       >
         {/* Top Header: 3 Tactile Glowing Switcher Cards (Artefact 3 & 5) */}
-        <div className='border-b border-slate-800 bg-slate-950/70 p-3.5'>
+        <div className='border-b border-slate-200 bg-slate-50 p-3.5 dark:border-slate-800 dark:bg-slate-950/70'>
           <div className='mb-2.5 flex items-center justify-between px-1'>
-            <span className='text-[10px] font-bold uppercase tracking-wider text-slate-400'>Direct Domain Jump</span>
+            <span className='text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400'>
+              Direct Domain Jump
+            </span>
             <button
               type='button'
               onClick={onClose}
-              className='text-slate-400 hover:text-slate-200 transition'
+              className='text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition'
               aria-label='Close command palette'
             >
               <FiX className='size-4' />
@@ -270,20 +272,20 @@ export const AdminSpatialPalette = ({ isOpen, onClose, onOpenQuickAdd }) => {
                 router.push('/admin/articles/new');
                 onClose();
               }}
-              className='group relative flex flex-col items-start rounded-xl border border-emerald-500/40 bg-gradient-to-br from-emerald-950/50 to-slate-900/90 p-3 text-left shadow-[0_0_15px_rgba(16,185,129,0.15)] transition-all duration-200 hover:border-emerald-400 hover:shadow-[0_0_25px_rgba(16,185,129,0.35)]'
+              className='group relative flex flex-col items-start rounded-xl border border-emerald-500/40 bg-gradient-to-br from-emerald-50 to-white dark:from-emerald-950/50 dark:to-slate-900/90 p-3 text-left shadow-sm dark:shadow-[0_0_15px_rgba(16,185,129,0.15)] transition-all duration-200 hover:border-emerald-400 hover:shadow-md dark:hover:shadow-[0_0_25px_rgba(16,185,129,0.35)]'
             >
               <div className='flex w-full items-center justify-between'>
-                <span className='grid size-8 place-items-center rounded-lg bg-emerald-500/25 text-emerald-300 border border-emerald-500/60 shadow-[0_0_14px_rgba(16,185,129,0.6)] group-hover:scale-105 transition-transform'>
+                <span className='grid size-8 place-items-center rounded-lg bg-emerald-500/15 text-emerald-600 border border-emerald-500/40 shadow-sm dark:bg-emerald-500/25 dark:text-emerald-300 dark:border-emerald-500/60 dark:shadow-[0_0_14px_rgba(16,185,129,0.6)] group-hover:scale-105 transition-transform'>
                   <FiEdit3 className='size-4 drop-shadow-[0_0_6px_rgba(16,185,129,0.8)]' />
                 </span>
-                <kbd className='rounded-md border border-emerald-500/50 bg-emerald-950/90 px-1.5 py-0.5 font-mono text-[9px] font-bold text-emerald-300 shadow-[0_0_8px_rgba(16,185,129,0.3)]'>
+                <kbd className='rounded-md border border-emerald-500/30 bg-emerald-100 px-1.5 py-0.5 font-mono text-[9px] font-bold text-emerald-800 dark:border-emerald-500/50 dark:bg-emerald-950/90 dark:text-emerald-300 dark:shadow-[0_0_8px_rgba(16,185,129,0.3)]'>
                   ⌘1
                 </kbd>
               </div>
-              <div className='mt-2.5 text-xs font-bold text-slate-100 group-hover:text-emerald-300 transition'>
+              <div className='mt-2.5 text-xs font-bold text-slate-900 dark:text-slate-100 group-hover:text-emerald-600 dark:group-hover:text-emerald-300 transition'>
                 Articles Studio
               </div>
-              <div className='text-[10px] text-slate-400'>Content & Drafts</div>
+              <div className='text-[10px] text-slate-500 dark:text-slate-400'>Content & Drafts</div>
             </button>
 
             {/* Card 2: Issueboard Workspace (Cyan Glow) */}
@@ -293,20 +295,20 @@ export const AdminSpatialPalette = ({ isOpen, onClose, onOpenQuickAdd }) => {
                 router.push('/admin/issues');
                 onClose();
               }}
-              className='group relative flex flex-col items-start rounded-xl border border-cyan-500/40 bg-gradient-to-br from-cyan-950/50 to-slate-900/90 p-3 text-left shadow-[0_0_15px_rgba(6,182,212,0.15)] transition-all duration-200 hover:border-cyan-400 hover:shadow-[0_0_25px_rgba(6,182,212,0.35)]'
+              className='group relative flex flex-col items-start rounded-xl border border-cyan-500/40 bg-gradient-to-br from-cyan-50 to-white dark:from-cyan-950/50 dark:to-slate-900/90 p-3 text-left shadow-sm dark:shadow-[0_0_15px_rgba(6,182,212,0.15)] transition-all duration-200 hover:border-cyan-400 hover:shadow-md dark:hover:shadow-[0_0_25px_rgba(6,182,212,0.35)]'
             >
               <div className='flex w-full items-center justify-between'>
-                <span className='grid size-8 place-items-center rounded-lg bg-cyan-500/25 text-cyan-300 border border-cyan-500/60 shadow-[0_0_14px_rgba(6,182,212,0.6)] group-hover:scale-105 transition-transform'>
+                <span className='grid size-8 place-items-center rounded-lg bg-cyan-500/15 text-cyan-600 border border-cyan-500/40 shadow-sm dark:bg-cyan-500/25 dark:text-cyan-300 dark:border-cyan-500/60 dark:shadow-[0_0_14px_rgba(6,182,212,0.6)] group-hover:scale-105 transition-transform'>
                   <FiTrello className='size-4 drop-shadow-[0_0_6px_rgba(6,182,212,0.8)]' />
                 </span>
-                <kbd className='rounded-md border border-cyan-500/50 bg-cyan-950/90 px-1.5 py-0.5 font-mono text-[9px] font-bold text-cyan-300 shadow-[0_0_8px_rgba(6,182,212,0.3)]'>
+                <kbd className='rounded-md border border-cyan-500/30 bg-cyan-100 px-1.5 py-0.5 font-mono text-[9px] font-bold text-cyan-800 dark:border-cyan-500/50 dark:bg-cyan-950/90 dark:text-cyan-300 dark:shadow-[0_0_8px_rgba(6,182,212,0.3)]'>
                   ⌘2
                 </kbd>
               </div>
-              <div className='mt-2.5 text-xs font-bold text-slate-100 group-hover:text-cyan-300 transition'>
+              <div className='mt-2.5 text-xs font-bold text-slate-900 dark:text-slate-100 group-hover:text-cyan-600 dark:group-hover:text-cyan-300 transition'>
                 Issueboard
               </div>
-              <div className='text-[10px] text-slate-400'>PORT & LEM Sprints</div>
+              <div className='text-[10px] text-slate-500 dark:text-slate-400'>PORT & LEM Sprints</div>
             </button>
 
             {/* Card 3: Book Records & Library (Amber Glow) */}
@@ -316,28 +318,28 @@ export const AdminSpatialPalette = ({ isOpen, onClose, onOpenQuickAdd }) => {
                 router.push('/admin/books');
                 onClose();
               }}
-              className='group relative flex flex-col items-start rounded-xl border border-amber-500/40 bg-gradient-to-br from-amber-950/50 to-slate-900/90 p-3 text-left shadow-[0_0_15px_rgba(245,158,11,0.15)] transition-all duration-200 hover:border-amber-400 hover:shadow-[0_0_25px_rgba(245,158,11,0.35)]'
+              className='group relative flex flex-col items-start rounded-xl border border-amber-500/40 bg-gradient-to-br from-amber-50 to-white dark:from-amber-950/50 dark:to-slate-900/90 p-3 text-left shadow-sm dark:shadow-[0_0_15px_rgba(245,158,11,0.15)] transition-all duration-200 hover:border-amber-400 hover:shadow-md dark:hover:shadow-[0_0_25px_rgba(245,158,11,0.35)]'
             >
               <div className='flex w-full items-center justify-between'>
-                <span className='grid size-8 place-items-center rounded-lg bg-amber-500/25 text-amber-300 border border-amber-500/60 shadow-[0_0_14px_rgba(245,158,11,0.6)] group-hover:scale-105 transition-transform'>
+                <span className='grid size-8 place-items-center rounded-lg bg-amber-500/15 text-amber-600 border border-amber-500/40 shadow-sm dark:bg-amber-500/25 dark:text-amber-300 dark:border-amber-500/60 dark:shadow-[0_0_14px_rgba(245,158,11,0.6)] group-hover:scale-105 transition-transform'>
                   <FiBookOpen className='size-4 drop-shadow-[0_0_6px_rgba(245,158,11,0.8)]' />
                 </span>
-                <kbd className='rounded-md border border-amber-500/50 bg-amber-950/90 px-1.5 py-0.5 font-mono text-[9px] font-bold text-amber-300 shadow-[0_0_8px_rgba(245,158,11,0.3)]'>
+                <kbd className='rounded-md border border-amber-500/30 bg-amber-100 px-1.5 py-0.5 font-mono text-[9px] font-bold text-amber-800 dark:border-amber-500/50 dark:bg-amber-950/90 dark:text-amber-300 dark:shadow-[0_0_8px_rgba(245,158,11,0.3)]'>
                   ⌘3
                 </kbd>
               </div>
-              <div className='mt-2.5 text-xs font-bold text-slate-100 group-hover:text-amber-300 transition'>
+              <div className='mt-2.5 text-xs font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 dark:group-hover:text-amber-300 transition'>
                 Book Records
               </div>
-              <div className='text-[10px] text-slate-400'>Library & Shelves</div>
+              <div className='text-[10px] text-slate-500 dark:text-slate-400'>Library & Shelves</div>
             </button>
           </div>
         </div>
 
         {/* Omnisearch Glowing Search Box Container */}
-        <div className='border-b border-slate-800/80 bg-slate-950/70 p-3'>
-          <div className='relative flex items-center gap-3 rounded-xl border border-emerald-500/50 bg-slate-950/90 px-3.5 py-2.5 shadow-[0_0_20px_rgba(16,185,129,0.22)] transition-all duration-200 focus-within:border-emerald-400 focus-within:shadow-[0_0_30px_rgba(16,185,129,0.4)]'>
-            <span className='grid size-7 shrink-0 place-items-center rounded-lg bg-emerald-500/20 text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.5)]'>
+        <div className='border-b border-slate-200 bg-slate-50/80 p-3 dark:border-slate-800/80 dark:bg-slate-950/70'>
+          <div className='relative flex items-center gap-3 rounded-xl border border-emerald-500/50 bg-white px-3.5 py-2.5 shadow-[0_0_15px_rgba(16,185,129,0.15)] dark:bg-slate-950/90 dark:shadow-[0_0_20px_rgba(16,185,129,0.22)] transition-all duration-200 focus-within:border-emerald-500 focus-within:shadow-[0_0_25px_rgba(16,185,129,0.3)]'>
+            <span className='grid size-7 shrink-0 place-items-center rounded-lg bg-emerald-500/15 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 shadow-sm'>
               <FiSearch className='size-3.5 drop-shadow-[0_0_5px_rgba(16,185,129,0.8)]' />
             </span>
             <input
@@ -349,19 +351,19 @@ export const AdminSpatialPalette = ({ isOpen, onClose, onOpenQuickAdd }) => {
                 setSelectedIndex(0);
               }}
               placeholder='Search articles, books, tickets (LEM-1, PORT-38), or actions…'
-              className='w-full !border-0 !border-none bg-transparent text-sm font-medium text-slate-100 placeholder-slate-400 !outline-none !ring-0 !shadow-none focus:!border-0 focus:!border-none focus:!outline-none focus:!ring-0'
+              className='w-full !border-0 !border-none bg-transparent text-sm font-medium text-slate-900 placeholder-slate-400 dark:text-slate-100 dark:placeholder-slate-400 !outline-none !ring-0 !shadow-none focus:!border-0 focus:!border-none focus:!outline-none focus:!ring-0'
               style={{ border: 'none', outline: 'none', boxShadow: 'none' }}
             />
             {query ? (
               <button
                 type='button'
                 onClick={() => setQuery('')}
-                className='rounded-md bg-slate-800 px-2 py-0.5 text-xs text-slate-300 hover:bg-slate-700 hover:text-white transition'
+                className='rounded-md bg-slate-200 px-2 py-0.5 text-xs text-slate-700 hover:bg-slate-300 hover:text-slate-900 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white transition'
               >
                 Clear
               </button>
             ) : (
-              <span className='hidden sm:inline-flex items-center gap-1 rounded-md border border-emerald-500/40 bg-emerald-950/60 px-2 py-0.5 font-mono text-[10px] font-bold text-emerald-300 shadow-[0_0_8px_rgba(16,185,129,0.25)]'>
+              <span className='hidden sm:inline-flex items-center gap-1 rounded-md border border-emerald-500/30 bg-emerald-50 px-2 py-0.5 font-mono text-[10px] font-bold text-emerald-800 dark:border-emerald-500/40 dark:bg-emerald-950/60 dark:text-emerald-300 dark:shadow-[0_0_8px_rgba(16,185,129,0.25)]'>
                 ESC
               </span>
             )}
@@ -371,7 +373,7 @@ export const AdminSpatialPalette = ({ isOpen, onClose, onOpenQuickAdd }) => {
         {/* Results List */}
         <div className='max-h-72 overflow-y-auto p-2.5 space-y-1.5'>
           {filtered.length === 0 ? (
-            <div className='py-8 text-center text-xs text-slate-400'>
+            <div className='py-8 text-center text-xs text-slate-500 dark:text-slate-400'>
               No results matching &quot;{query}&quot; across tickets, articles, or book records.
             </div>
           ) : (
@@ -390,8 +392,8 @@ export const AdminSpatialPalette = ({ isOpen, onClose, onOpenQuickAdd }) => {
                   onMouseEnter={() => setSelectedIndex(idx)}
                   className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left transition ${
                     isSelected
-                      ? 'bg-slate-800/90 text-white ring-1 ring-emerald-500/50 shadow-md'
-                      : 'text-slate-300 hover:bg-slate-800/40'
+                      ? 'bg-emerald-50 text-slate-900 ring-1 ring-emerald-500/50 shadow-sm dark:bg-slate-800/90 dark:text-white dark:ring-emerald-500/50 dark:shadow-md'
+                      : 'text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800/40'
                   }`}
                 >
                   <div className='flex items-center gap-3 min-w-0'>
@@ -399,17 +401,19 @@ export const AdminSpatialPalette = ({ isOpen, onClose, onOpenQuickAdd }) => {
                       <Icon className='size-4 drop-shadow-[0_0_5px_currentColor]' />
                     </span>
                     <div className='truncate min-w-0'>
-                      <div className='truncate text-xs font-semibold text-slate-100'>{item.title}</div>
-                      <div className='truncate text-[11px] text-slate-400'>{item.subtitle}</div>
+                      <div className='truncate text-xs font-semibold text-slate-900 dark:text-slate-100'>
+                        {item.title}
+                      </div>
+                      <div className='truncate text-[11px] text-slate-500 dark:text-slate-400'>{item.subtitle}</div>
                     </div>
                   </div>
 
                   <div className='flex items-center gap-2 shrink-0 pl-2'>
-                    <span className='rounded bg-slate-800/90 px-2 py-0.5 text-[10px] font-mono text-slate-300 border border-slate-700/80'>
+                    <span className='rounded bg-slate-100 px-2 py-0.5 text-[10px] font-mono text-slate-600 border border-slate-200 dark:bg-slate-800/90 dark:text-slate-300 dark:border-slate-700/80'>
                       {item.badge}
                     </span>
                     {isSelected && (
-                      <FiCornerDownLeft className='size-3.5 text-emerald-400 drop-shadow-[0_0_4px_rgba(16,185,129,0.8)]' />
+                      <FiCornerDownLeft className='size-3.5 text-emerald-600 dark:text-emerald-400 drop-shadow-[0_0_4px_rgba(16,185,129,0.8)]' />
                     )}
                   </div>
                 </button>
@@ -419,19 +423,22 @@ export const AdminSpatialPalette = ({ isOpen, onClose, onOpenQuickAdd }) => {
         </div>
 
         {/* Keyboard Footer Guide */}
-        <div className='flex items-center justify-between border-t border-slate-800/80 bg-slate-950/80 px-4 py-2 text-[10px] text-slate-400 font-mono'>
+        <div className='flex items-center justify-between border-t border-slate-200 bg-slate-50 px-4 py-2 text-[10px] text-slate-500 font-mono dark:border-slate-800/80 dark:bg-slate-950/80 dark:text-slate-400'>
           <div className='flex items-center gap-3'>
             <span>
-              <kbd className='rounded bg-slate-800 px-1 text-slate-300'>↑↓</kbd> navigate
+              <kbd className='rounded bg-slate-200 px-1 text-slate-700 dark:bg-slate-800 dark:text-slate-300'>↑↓</kbd>{' '}
+              navigate
             </span>
             <span>
-              <kbd className='rounded bg-slate-800 px-1 text-slate-300'>↵</kbd> select
+              <kbd className='rounded bg-slate-200 px-1 text-slate-700 dark:bg-slate-800 dark:text-slate-300'>↵</kbd>{' '}
+              select
             </span>
             <span>
-              <kbd className='rounded bg-slate-800 px-1 text-slate-300'>esc</kbd> dismiss
+              <kbd className='rounded bg-slate-200 px-1 text-slate-700 dark:bg-slate-800 dark:text-slate-300'>esc</kbd>{' '}
+              dismiss
             </span>
           </div>
-          <span className='text-emerald-400 font-semibold drop-shadow-[0_0_6px_rgba(16,185,129,0.6)]'>
+          <span className='text-emerald-600 font-semibold drop-shadow-[0_0_6px_rgba(16,185,129,0.3)] dark:text-emerald-400'>
             SinghBuildsTech Omnisearch
           </span>
         </div>
