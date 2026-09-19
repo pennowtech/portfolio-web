@@ -838,10 +838,6 @@ const SprintSwitcherDropdown = ({ sprints = [], currentSprintId, issues = [], on
 
       {open && (
         <div className='absolute left-0 mt-1.5 w-72 sm:w-80 rounded-2xl border border-slate-200 bg-white p-2 shadow-xl z-50 dark:border-slate-800 dark:bg-slate-900 text-xs'>
-          <div className='px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100 dark:border-slate-800 mb-1'>
-            Select Sprint View
-          </div>
-
           <div className='max-h-80 overflow-y-auto space-y-2.5 custom-scrollbar pr-1'>
             {/* Active Sprints */}
             {activeSprints.length > 0 && (
@@ -1081,47 +1077,51 @@ const CompactSprintCard = ({ sprint, issues = [], onOpenBoard, onStart, onComple
         </p>
       )}
 
-      {/* Task Types breakdown */}
+      {/* Task Types breakdown: icon + count only, hover reveals what it is */}
       <div className='flex flex-wrap items-center gap-1.5 pt-2.5'>
         {typeCounts.story > 0 && (
           <span
-            className='inline-flex items-center gap-1 rounded-md bg-emerald-50 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-700 dark:bg-emerald-950/70 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/80'
-            title={`${typeCounts.story} User Stories`}
+            className='inline-flex items-center gap-1 rounded-md bg-emerald-50 px-1.5 py-0.5 text-xs font-bold text-emerald-700 dark:bg-emerald-950/70 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/80 cursor-default shadow-2xs'
+            title={`${typeCounts.story} ${typeCounts.story === 1 ? 'User Story' : 'User Stories'}`}
           >
-            <FiBookmark className='size-2.5' />
-            <span>
-              {typeCounts.story} {typeCounts.story === 1 ? 'story' : 'stories'}
-            </span>
+            <FiBookmark className='size-3 text-emerald-600 dark:text-emerald-400 shrink-0' />
+            <span className='font-mono leading-none'>{typeCounts.story}</span>
           </span>
         )}
         {typeCounts.task > 0 && (
           <span
-            className='inline-flex items-center gap-1 rounded-md bg-blue-50 px-1.5 py-0.5 text-[10px] font-semibold text-blue-700 dark:bg-blue-950/70 dark:text-blue-300 border border-blue-200/80 dark:border-blue-800/80'
-            title={`${typeCounts.task} Tasks`}
+            className='inline-flex items-center gap-1 rounded-md bg-blue-50 px-1.5 py-0.5 text-xs font-bold text-blue-700 dark:bg-blue-950/70 dark:text-blue-300 border border-blue-200/80 dark:border-blue-800/80 cursor-default shadow-2xs'
+            title={`${typeCounts.task} ${typeCounts.task === 1 ? 'Task' : 'Tasks'}`}
           >
-            <FiCheckSquare className='size-2.5' />
-            <span>
-              {typeCounts.task} {typeCounts.task === 1 ? 'task' : 'tasks'}
-            </span>
+            <FiCheckSquare className='size-3 text-blue-600 dark:text-blue-400 shrink-0' />
+            <span className='font-mono leading-none'>{typeCounts.task}</span>
           </span>
         )}
         {typeCounts.bug > 0 && (
           <span
-            className='inline-flex items-center gap-1 rounded-md bg-rose-50 px-1.5 py-0.5 text-[10px] font-semibold text-rose-700 dark:bg-rose-950/70 dark:text-rose-300 border border-rose-200/80 dark:border-rose-800/80'
-            title={`${typeCounts.bug} Bugs`}
+            className='inline-flex items-center gap-1 rounded-md bg-rose-50 px-1.5 py-0.5 text-xs font-bold text-rose-700 dark:bg-rose-950/70 dark:text-rose-300 border border-rose-200/80 dark:border-rose-800/80 cursor-default shadow-2xs'
+            title={`${typeCounts.bug} ${typeCounts.bug === 1 ? 'Bug' : 'Bugs'}`}
           >
-            <FaBug className='size-2.5' />
-            <span>
-              {typeCounts.bug} {typeCounts.bug === 1 ? 'bug' : 'bugs'}
-            </span>
+            <FaBug className='size-3 text-rose-600 dark:text-rose-400 shrink-0' />
+            <span className='font-mono leading-none'>{typeCounts.bug}</span>
           </span>
         )}
         {typeCounts.epic > 0 && (
           <span
-            className='inline-flex items-center gap-1 rounded-md bg-purple-50 px-1.5 py-0.5 text-[10px] font-semibold text-purple-700 dark:bg-purple-950/70 dark:text-purple-300 border border-purple-200/80 dark:border-purple-800/80'
-            title={`${typeCounts.epic} Epics`}
+            className='inline-flex items-center gap-1 rounded-md bg-purple-50 px-1.5 py-0.5 text-xs font-bold text-purple-700 dark:bg-purple-950/70 dark:text-purple-300 border border-purple-200/80 dark:border-purple-800/80 cursor-default shadow-2xs'
+            title={`${typeCounts.epic} ${typeCounts.epic === 1 ? 'Epic' : 'Epics'}`}
           >
-            <span>👑 {typeCounts.epic}</span>
+            <FiZap className='size-3 text-purple-600 dark:text-purple-400 shrink-0' />
+            <span className='font-mono leading-none'>{typeCounts.epic}</span>
+          </span>
+        )}
+        {typeCounts.other > 0 && (
+          <span
+            className='inline-flex items-center gap-1 rounded-md bg-cyan-50 px-1.5 py-0.5 text-xs font-bold text-cyan-700 dark:bg-cyan-950/70 dark:text-cyan-300 border border-cyan-200/80 dark:border-cyan-800/80 cursor-default shadow-2xs'
+            title={`${typeCounts.other} ${typeCounts.other === 1 ? 'Subtask / Other' : 'Subtasks / Other'}`}
+          >
+            <FiLayers className='size-3 text-cyan-600 dark:text-cyan-400 shrink-0' />
+            <span className='font-mono leading-none'>{typeCounts.other}</span>
           </span>
         )}
         {sprintIssues.length === 0 && <span className='text-[10px] text-slate-400 italic'>No tickets committed</span>}
@@ -1146,18 +1146,7 @@ const CompactSprintCard = ({ sprint, issues = [], onOpenBoard, onStart, onComple
       )}
 
       {/* Footer quick action */}
-      <div className='mt-3 pt-2 border-t border-slate-100 dark:border-slate-800/60 flex items-center justify-between gap-2'>
-        <button
-          type='button'
-          onClick={(e) => {
-            e.stopPropagation();
-            onOpenBoard(sprint.id);
-          }}
-          className='text-[11px] font-bold text-emerald-600 hover:underline dark:text-emerald-400 flex items-center gap-1'
-        >
-          <span>Open in Sprint Board</span>
-          <span>→</span>
-        </button>
+      <div className='flex items-center justify-between gap-2'>
         {isPlanned && onStart && (
           <button
             type='button'
@@ -2123,7 +2112,8 @@ const Backlog = ({
   setCreatingSprint = () => {},
   onCreateIssue,
   onCreateIssueModal,
-  onOpenSprintBoard
+  onOpenSprintBoard,
+  showSprintSidebar = true
 }) => {
   const {
     status,
@@ -2144,30 +2134,6 @@ const Backlog = ({
   const [priorityFilter, setPriorityFilter] = useState('');
   const [assigneeFilter, setAssigneeFilter] = useState('');
   const [moveError, setMoveError] = useState(null);
-  const [showSprintSidebar, setShowSprintSidebar] = useState(true);
-
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem('issueboard:showSprintSidebar');
-      if (saved !== null) {
-        setShowSprintSidebar(saved === 'true');
-      }
-    } catch {
-      // ignore
-    }
-  }, []);
-
-  const toggleSprintSidebar = () => {
-    setShowSprintSidebar((prev) => {
-      const next = !prev;
-      try {
-        localStorage.setItem('issueboard:showSprintSidebar', String(next));
-      } catch {
-        // ignore
-      }
-      return next;
-    });
-  };
 
   if (status === 'loading') return null;
   if (status === 'unavailable') return <DatastoreUnavailableNotice error={error} />;
@@ -2272,36 +2238,19 @@ const Backlog = ({
 
   return (
     <>
-      {/* Top search & filters with Show/Hide Sprints toggle */}
-      <div className='flex flex-wrap items-center justify-between gap-3 mb-3'>
-        <div className='flex-1 min-w-[16rem]'>
-          <Filters
-            search={search}
-            onSearchChange={setSearch}
-            type={typeFilter}
-            onTypeChange={setTypeFilter}
-            priority={priorityFilter}
-            onPriorityChange={setPriorityFilter}
-            assignee={assigneeFilter}
-            onAssigneeChange={setAssigneeFilter}
-            availableAssignees={availableAssignees}
-          />
-        </div>
-        <button
-          type='button'
-          onClick={toggleSprintSidebar}
-          className={`flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-semibold shadow-2xs transition shrink-0 ${
-            showSprintSidebar
-              ? 'border-emerald-300 bg-emerald-50/80 text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'
-              : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300'
-          }`}
-          title={showSprintSidebar ? 'Hide Sprint Sidebar' : 'Show Sprint Sidebar'}
-        >
-          <FiSidebar className='size-3.5' />
-          <span className='hidden sm:inline'>
-            {showSprintSidebar ? 'Hide Sprints' : `Sprints (${openSprints.length})`}
-          </span>
-        </button>
+      {/* Top search & filters */}
+      <div className='mb-3'>
+        <Filters
+          search={search}
+          onSearchChange={setSearch}
+          type={typeFilter}
+          onTypeChange={setTypeFilter}
+          priority={priorityFilter}
+          onPriorityChange={setPriorityFilter}
+          assignee={assigneeFilter}
+          onAssigneeChange={setAssigneeFilter}
+          availableAssignees={availableAssignees}
+        />
       </div>
 
       {moveError && (
@@ -4352,6 +4301,31 @@ const IssueboardWorkspace = ({ adminEmail }) => {
     [router]
   );
 
+  const [showSprintSidebar, setShowSprintSidebar] = useState(true);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('issueboard:showSprintSidebar');
+      if (saved !== null) {
+        setShowSprintSidebar(saved === 'true');
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  const toggleSprintSidebar = useCallback(() => {
+    setShowSprintSidebar((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem('issueboard:showSprintSidebar', String(next));
+      } catch {
+        // ignore
+      }
+      return next;
+    });
+  }, []);
+
   const pageTitle = useMemo(() => {
     if (view === 'board') {
       return currentBoardSprint?.name || 'Sprint Board';
@@ -4416,35 +4390,21 @@ const IssueboardWorkspace = ({ adminEmail }) => {
             </button>
           </div>
 
+          {/* Inline triage error if layout switch failed */}
           {layoutError && (
-            <button
-              type='button'
-              onClick={() => setLayoutError(null)}
-              className='max-w-[12rem] truncate rounded-lg border border-rose-300 bg-rose-50 px-2 py-1 text-[11px] font-semibold text-rose-800 dark:border-rose-800 dark:bg-rose-950/40 dark:text-rose-200'
-              title={`${layoutError} (click to dismiss)`}
-            >
-              {layoutError}
-            </button>
+            <span className='text-[11px] text-rose-500 font-medium' title={layoutError}>
+              Layout sync failed
+            </span>
           )}
 
-          {/* Sprint details button */}
-          <button
-            type='button'
-            className='flex size-8 items-center justify-center rounded-lg border border-slate-300 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white transition shadow-2xs'
-            title='Sprint details'
-            aria-label='Sprint details'
-          >
-            <FiInfo className='size-4' />
-          </button>
-
-          {/* Complete sprint button (only when viewing active sprint) */}
+          {/* Quick complete active sprint button if viewing active sprint */}
           {currentBoardSprint?.state === 'active' && (
             <button
               type='button'
-              onClick={() => data.completeSprint?.(currentBoardSprint.id, null)}
+              onClick={() => data.completeSprint?.(currentBoardSprint.id)}
               className='flex size-8 items-center justify-center rounded-lg border border-slate-300 bg-white text-slate-600 hover:border-emerald-500 hover:text-emerald-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-emerald-500 dark:hover:text-emerald-400 transition shadow-2xs'
-              title='Complete sprint'
-              aria-label='Complete sprint'
+              title='Complete Sprint'
+              aria-label='Complete Sprint'
             >
               <FiCheckCircle className='size-4' />
             </button>
@@ -4486,6 +4446,21 @@ const IssueboardWorkspace = ({ adminEmail }) => {
             </button>
           </div>
 
+          {/* Toggle Sprints Sidebar button (icon button) */}
+          <button
+            type='button'
+            onClick={toggleSprintSidebar}
+            className={`flex size-8 items-center justify-center rounded-lg border transition shadow-2xs ${
+              showSprintSidebar
+                ? 'border-emerald-500 bg-emerald-50 text-emerald-600 dark:border-emerald-500 dark:bg-emerald-950 dark:text-emerald-400'
+                : 'border-slate-300 bg-white text-slate-600 hover:border-emerald-500 hover:text-emerald-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-emerald-500 dark:hover:text-emerald-400'
+            }`}
+            title={showSprintSidebar ? 'Hide sprint sidebar' : 'Show sprint sidebar'}
+            aria-label={showSprintSidebar ? 'Hide sprint sidebar' : 'Show sprint sidebar'}
+          >
+            <FiSidebar className='size-4' />
+          </button>
+
           {/* Create sprint button */}
           <button
             type='button'
@@ -4510,11 +4485,13 @@ const IssueboardWorkspace = ({ adminEmail }) => {
     boardLayout,
     backlogLayout,
     creatingSprint,
+    showSprintSidebar,
     currentBoardSprint,
     data,
     handleSwitchLayout,
     handleSwitchBacklogLayout,
     handleSelectSprint,
+    toggleSprintSidebar,
     layoutError
   ]);
 
@@ -4547,6 +4524,7 @@ const IssueboardWorkspace = ({ adminEmail }) => {
           onCreateIssue={() => data.project && handleOpenCreateModal()}
           onCreateIssueModal={handleOpenCreateModal}
           onOpenSprintBoard={handleOpenSprintOnBoard}
+          showSprintSidebar={showSprintSidebar}
         />
       )}
       {view === 'board' && (
