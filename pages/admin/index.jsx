@@ -592,26 +592,66 @@ const AdminDashboardPage = ({ adminEmail }) => {
                       href={`/admin/books?shelf=${book.shelfKey}`}
                       className='group flex flex-col items-center text-center'
                     >
-                      {/* Realistic 3D Standing Book Cover with Spine & Drop Shadow */}
-                      <div className='relative w-full aspect-[2/3] rounded-sm overflow-hidden shadow-xl shadow-black/80 transition-all duration-200 group-hover:-translate-y-1 group-hover:shadow-amber-500/20'>
-                        {/* 3D Left Spine Edge */}
-                        <div className={`absolute left-0 top-0 bottom-0 w-1.5 ${book.spineBg} z-10 opacity-80`} />
+                      {/* 3D Diagonal Standing Book with Isometric Perspective matching Artefact 2 */}
+                      <div className='relative w-full aspect-[2/3] [perspective:800px] flex items-center justify-center pt-1 pb-2'>
+                        {/* Elliptical Shelf Drop Shadow */}
+                        <div className='absolute bottom-1 left-2 right-0 h-3 rounded-full bg-black/85 blur-[5px] -rotate-3 transition-all duration-300 group-hover:scale-90 group-hover:blur-[7px]' />
 
-                        {/* Cover Content */}
+                        {/* 3D Angled Book Structure (Diagonal Isometric View) */}
                         <div
-                          className={`absolute inset-0 bg-gradient-to-tr ${book.coverBg} p-2 flex flex-col justify-between border-l border-white/20`}
+                          className='relative w-[88%] h-full rounded-r-sm rounded-l-[1px] overflow-hidden transition-all duration-300 transform-gpu [transform-style:preserve-3d] shadow-[-10px_14px_22px_rgba(0,0,0,0.85),-2px_4px_8px_rgba(0,0,0,0.5)] group-hover:-translate-y-2 group-hover:shadow-amber-500/20'
+                          style={{
+                            transform: 'rotateY(-24deg) rotateX(8deg) rotateZ(0.5deg)'
+                          }}
                         >
-                          <div className='text-[8px] font-mono uppercase tracking-widest text-slate-400'>
-                            {book.shelf}
-                          </div>
+                          {/* Left 3D Spine Thickness Edge with Crease Lighting */}
                           <div
-                            className={`text-[11px] font-black leading-tight line-clamp-3 ${
-                              book.isLight ? 'text-slate-950' : 'text-white'
-                            }`}
+                            className={`absolute left-0 top-0 bottom-0 w-3 ${book.spineBg} z-20 shadow-[inset_-3px_0_5px_rgba(0,0,0,0.7)] border-r border-black/50`}
+                          />
+                          {/* Spine Crease / Hinge Highlight */}
+                          <div className='absolute left-3 top-0 bottom-0 w-[1.5px] bg-white/20 z-20' />
+
+                          {/* Top Paper Pages Rim */}
+                          <div className='absolute right-0 top-0 left-3 h-[2.5px] bg-gradient-to-r from-stone-400 via-stone-200 to-stone-300 z-20 opacity-90' />
+                          {/* Right Paper Pages Edge */}
+                          <div className='absolute right-0 top-0 bottom-0 w-[2.5px] bg-gradient-to-b from-stone-300 via-stone-200 to-stone-400 z-20 opacity-90' />
+
+                          {/* Front Cover Face with Lighting Sheen */}
+                          <div
+                            className={`absolute inset-0 bg-gradient-to-tr ${book.coverBg} pl-4.5 pr-2.5 py-2.5 flex flex-col justify-between`}
                           >
-                            {book.title}
+                            {/* Dynamic 3D diagonal lighting sheen */}
+                            <div className='absolute inset-0 bg-gradient-to-r from-white/15 via-transparent to-black/40 pointer-events-none' />
+
+                            {/* Top Header on Cover */}
+                            <div className='relative z-10'>
+                              <div
+                                className={`text-[7.5px] font-mono uppercase tracking-widest ${
+                                  book.isLight ? 'text-slate-500' : 'text-slate-400'
+                                }`}
+                              >
+                                {book.shelf}
+                              </div>
+                              <div
+                                className={`mt-1 text-[11px] font-black leading-tight line-clamp-3 ${
+                                  book.titleColor || (book.isLight ? 'text-slate-950' : 'text-white')
+                                }`}
+                              >
+                                {book.title}
+                              </div>
+                            </div>
+
+                            {/* Bottom Footer on Cover */}
+                            <div className='relative z-10'>
+                              <div
+                                className={`text-[6.5px] font-mono tracking-wider ${
+                                  book.isLight ? 'text-slate-500' : 'text-slate-400'
+                                }`}
+                              >
+                                2026 EDITION
+                              </div>
+                            </div>
                           </div>
-                          <div className='text-[7px] font-mono text-slate-400'>2026 EDITION</div>
                         </div>
                       </div>
 
