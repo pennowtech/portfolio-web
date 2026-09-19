@@ -338,304 +338,319 @@ const ArticleEditor = ({ adminEmail, defaultPublicationDate }) => {
         </div>
       </div>
 
-      <ArticleLibrary articles={taxonomy.articles} loading={taxonomyLoading} message={taxonomyMessage} />
+      <div className='grid gap-8 xl:grid-cols-[330px_minmax(0,1fr)] 2xl:grid-cols-[360px_minmax(0,1fr)] items-start'>
+        {/* Left Column: Concept 4 Interactive Drafts Deck */}
+        <div className='min-w-0 xl:sticky xl:top-6'>
+          <ArticleLibrary
+            articles={taxonomy.articles}
+            loading={taxonomyLoading}
+            message={taxonomyMessage}
+            activeArticleId={editingArticleId}
+          />
+        </div>
 
-      <section
-        id='article-form'
-        aria-busy={articleLoading}
-        className='grid scroll-mt-24 gap-5 rounded-xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-700 dark:bg-slate-800/60 lg:grid-cols-2 lg:p-6'
-      >
-        <label className='text-sm font-medium text-slate-700 dark:text-slate-200'>
-          Title
-          <input
-            value={form.title}
-            onChange={(event) => update('title', event.target.value)}
-            className={inputClass}
-            maxLength={180}
-          />
-          <FieldError>{errors.title}</FieldError>
-        </label>
-        <label className='text-sm font-medium text-slate-700 dark:text-slate-200'>
-          <span className='flex items-center justify-between gap-3'>
-            Slug
-            <button
-              type='button'
-              onClick={() => {
-                setSlugEdited(false);
-                update('slug', slugify(form.title));
-              }}
-              className='text-xs font-normal text-green-700 underline underline-offset-2 dark:text-green-400'
-            >
-              Regenerate from title
-            </button>
-          </span>
-          <input
-            value={form.slug}
-            onChange={(event) => {
-              setSlugEdited(true);
-              update('slug', slugify(event.target.value));
-            }}
-            className={inputClass}
-            maxLength={180}
-          />
-          <FieldError>{errors.slug}</FieldError>
-        </label>
-        <label className='text-sm font-medium text-slate-700 dark:text-slate-200'>
-          Category
-          <select
-            value={form.category}
-            onChange={(event) => update('category', event.target.value)}
-            className={inputClass}
+        {/* Center / Main Column */}
+        <div className='min-w-0'>
+          <section
+            id='article-form'
+            aria-busy={articleLoading}
+            className='grid scroll-mt-24 gap-5 rounded-xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-700 dark:bg-slate-800/60 lg:grid-cols-2 lg:p-6'
           >
-            {[...new Set([form.category, ...taxonomy.categories])].filter(Boolean).map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))}
-          </select>
-          <FieldError>{errors.category}</FieldError>
-        </label>
-        <PublicationDatePicker
-          value={form.publicationDate}
-          onChange={(value) => update('publicationDate', value)}
-          error={errors.publicationDate}
-        />
-        <label className='text-sm font-medium text-slate-700 dark:text-slate-200 lg:col-span-2'>
-          Description
-          <textarea
-            value={form.description}
-            onChange={(event) => update('description', event.target.value)}
-            className={`${inputClass} min-h-24`}
-            maxLength={500}
-          />
-          <span className='mt-1 block text-right text-xs text-slate-500'>{form.description.length}/500</span>
-          <FieldError>{errors.description}</FieldError>
-        </label>
-        <div className='grid gap-5 lg:col-span-2'>
-          <label className='text-sm font-medium text-slate-700 dark:text-slate-200'>
-            Tags, comma separated
-            <input
-              list='notion-tags'
-              value={form.tags}
-              onChange={(event) => update('tags', event.target.value)}
-              className={inputClass}
+            <label className='text-sm font-medium text-slate-700 dark:text-slate-200'>
+              Title
+              <input
+                value={form.title}
+                onChange={(event) => update('title', event.target.value)}
+                className={inputClass}
+                maxLength={180}
+              />
+              <FieldError>{errors.title}</FieldError>
+            </label>
+            <label className='text-sm font-medium text-slate-700 dark:text-slate-200'>
+              <span className='flex items-center justify-between gap-3'>
+                Slug
+                <button
+                  type='button'
+                  onClick={() => {
+                    setSlugEdited(false);
+                    update('slug', slugify(form.title));
+                  }}
+                  className='text-xs font-normal text-green-700 underline underline-offset-2 dark:text-green-400'
+                >
+                  Regenerate from title
+                </button>
+              </span>
+              <input
+                value={form.slug}
+                onChange={(event) => {
+                  setSlugEdited(true);
+                  update('slug', slugify(event.target.value));
+                }}
+                className={inputClass}
+                maxLength={180}
+              />
+              <FieldError>{errors.slug}</FieldError>
+            </label>
+            <label className='text-sm font-medium text-slate-700 dark:text-slate-200'>
+              Category
+              <select
+                value={form.category}
+                onChange={(event) => update('category', event.target.value)}
+                className={inputClass}
+              >
+                {[...new Set([form.category, ...taxonomy.categories])].filter(Boolean).map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+              <FieldError>{errors.category}</FieldError>
+            </label>
+            <PublicationDatePicker
+              value={form.publicationDate}
+              onChange={(value) => update('publicationDate', value)}
+              error={errors.publicationDate}
             />
-            <datalist id='notion-tags'>
-              {taxonomy.tags.map((tag) => (
-                <option key={tag} value={tag} />
-              ))}
-            </datalist>
-            {taxonomy.tags.length > 0 && (
-              <div className='mt-2 flex flex-wrap gap-1.5'>
-                {taxonomy.tags.map((tag) => (
+            <label className='text-sm font-medium text-slate-700 dark:text-slate-200 lg:col-span-2'>
+              Description
+              <textarea
+                value={form.description}
+                onChange={(event) => update('description', event.target.value)}
+                className={`${inputClass} min-h-24`}
+                maxLength={500}
+              />
+              <span className='mt-1 block text-right text-xs text-slate-500'>{form.description.length}/500</span>
+              <FieldError>{errors.description}</FieldError>
+            </label>
+            <div className='grid gap-5 lg:col-span-2'>
+              <label className='text-sm font-medium text-slate-700 dark:text-slate-200'>
+                Tags, comma separated
+                <input
+                  list='notion-tags'
+                  value={form.tags}
+                  onChange={(event) => update('tags', event.target.value)}
+                  className={inputClass}
+                />
+                <datalist id='notion-tags'>
+                  {taxonomy.tags.map((tag) => (
+                    <option key={tag} value={tag} />
+                  ))}
+                </datalist>
+                {taxonomy.tags.length > 0 && (
+                  <div className='mt-2 flex flex-wrap gap-1.5'>
+                    {taxonomy.tags.map((tag) => (
+                      <button
+                        key={tag}
+                        type='button'
+                        onClick={() => {
+                          const current = tags.includes(tag) ? tags : [...tags, tag];
+                          update('tags', current.join(', '));
+                        }}
+                        className={`rounded-full border px-2.5 py-1 text-xs ${
+                          tags.includes(tag)
+                            ? 'border-green-700 bg-green-50 text-green-800 dark:bg-green-950/40 dark:text-green-300'
+                            : 'border-slate-300 text-slate-600 dark:border-slate-600 dark:text-slate-300'
+                        }`}
+                      >
+                        {tag}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                <FieldError>{errors.tags}</FieldError>
+                {taxonomyMessage && (
+                  <p className='mt-2 text-xs text-amber-700 dark:text-amber-300'>{taxonomyMessage}</p>
+                )}
+              </label>
+            </div>
+            <CoverImagePicker
+              coverUrl={form.coverUrl}
+              coverUpload={form.coverUpload}
+              coverCredit={form.coverCredit}
+              onUrlChange={(value) => update('coverUrl', value)}
+              onUploadChange={(value) => update('coverUpload', value)}
+              onCreditChange={(value) => update('coverCredit', value)}
+              error={errors.coverUrl}
+            />
+          </section>
+
+          <div className='mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
+            <div className='flex items-center gap-2.5'>
+              <div className='flex items-center gap-2 rounded-lg border border-slate-200/80 bg-slate-50/80 px-3 py-1.5 font-mono text-xs font-semibold text-slate-700 shadow-sm dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-200'>
+                <FiFileText className='size-3.5 text-emerald-600 dark:text-emerald-400' />
+                <span className='max-w-[180px] sm:max-w-[280px] truncate'>
+                  {form.title ? `${form.title}.md` : 'Untitled Article.md'}
+                </span>
+                <span
+                  className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold ${
+                    editingPublished
+                      ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                      : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
+                  }`}
+                >
+                  <span
+                    className={`size-1.5 rounded-full ${
+                      editingPublished ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'
+                    }`}
+                  />
+                  {editingPublished ? 'Published' : 'Draft'}
+                </span>
+              </div>
+            </div>
+
+            <div className='flex items-center gap-2'>
+              <div
+                className='flex items-center rounded-lg border border-slate-200 bg-slate-100/80 p-0.5 dark:border-slate-800 dark:bg-slate-900'
+                role='group'
+                aria-label='Editor view mode'
+              >
+                {[
+                  { id: 'edit', label: 'Edit', icon: FiCode },
+                  { id: 'split', label: 'Split', icon: FiColumns },
+                  { id: 'preview', label: 'Preview', icon: FiEye }
+                ].map(({ id, label, icon: Icon }) => (
                   <button
-                    key={tag}
+                    key={id}
                     type='button'
-                    onClick={() => {
-                      const current = tags.includes(tag) ? tags : [...tags, tag];
-                      update('tags', current.join(', '));
-                    }}
-                    className={`rounded-full border px-2.5 py-1 text-xs ${
-                      tags.includes(tag)
-                        ? 'border-green-700 bg-green-50 text-green-800 dark:bg-green-950/40 dark:text-green-300'
-                        : 'border-slate-300 text-slate-600 dark:border-slate-600 dark:text-slate-300'
+                    onClick={() => setViewMode(id)}
+                    aria-pressed={viewMode === id}
+                    className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 font-Monda text-xs font-semibold capitalize transition ${
+                      viewMode === id
+                        ? 'bg-white text-emerald-700 shadow-sm dark:bg-emerald-600 dark:text-white'
+                        : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100'
                     }`}
                   >
-                    {tag}
+                    <Icon className='size-3.5' />
+                    <span>{label}</span>
                   </button>
                 ))}
               </div>
-            )}
-            <FieldError>{errors.tags}</FieldError>
-            {taxonomyMessage && <p className='mt-2 text-xs text-amber-700 dark:text-amber-300'>{taxonomyMessage}</p>}
-          </label>
-        </div>
-        <CoverImagePicker
-          coverUrl={form.coverUrl}
-          coverUpload={form.coverUpload}
-          coverCredit={form.coverCredit}
-          onUrlChange={(value) => update('coverUrl', value)}
-          onUploadChange={(value) => update('coverUpload', value)}
-          onCreditChange={(value) => update('coverCredit', value)}
-          error={errors.coverUrl}
-        />
-      </section>
-
-      <div className='mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
-        <div className='flex items-center gap-2.5'>
-          <div className='flex items-center gap-2 rounded-lg border border-slate-200/80 bg-slate-50/80 px-3 py-1.5 font-mono text-xs font-semibold text-slate-700 shadow-sm dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-200'>
-            <FiFileText className='size-3.5 text-emerald-600 dark:text-emerald-400' />
-            <span className='max-w-[180px] sm:max-w-[280px] truncate'>
-              {form.title ? `${form.title}.md` : 'Untitled Article.md'}
-            </span>
-            <span
-              className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold ${
-                editingPublished
-                  ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
-                  : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
-              }`}
-            >
-              <span
-                className={`size-1.5 rounded-full ${
-                  editingPublished ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'
-                }`}
-              />
-              {editingPublished ? 'Published' : 'Draft'}
-            </span>
+            </div>
           </div>
-        </div>
 
-        <div className='flex items-center gap-2'>
-          <div
-            className='flex items-center rounded-lg border border-slate-200 bg-slate-100/80 p-0.5 dark:border-slate-800 dark:bg-slate-900'
-            role='group'
-            aria-label='Editor view mode'
+          <section
+            className={`mt-4 grid min-w-0 gap-6 ${viewMode === 'split' ? 'lg:grid-cols-2' : 'grid-cols-1'}`}
+            data-color-mode={editorTheme}
           >
-            {[
-              { id: 'edit', label: 'Edit', icon: FiCode },
-              { id: 'split', label: 'Split', icon: FiColumns },
-              { id: 'preview', label: 'Preview', icon: FiEye }
-            ].map(({ id, label, icon: Icon }) => (
-              <button
-                key={id}
-                type='button'
-                onClick={() => setViewMode(id)}
-                aria-pressed={viewMode === id}
-                className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 font-Monda text-xs font-semibold capitalize transition ${
-                  viewMode === id
-                    ? 'bg-white text-emerald-700 shadow-sm dark:bg-emerald-600 dark:text-white'
-                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100'
-                }`}
-              >
-                <Icon className='size-3.5' />
-                <span>{label}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
+            {viewMode !== 'preview' && (
+              <div className='min-w-0'>
+                <div
+                  onKeyDownCapture={handleEditorShortcut}
+                  className='relative overflow-hidden rounded-xl border border-slate-300 shadow-sm dark:border-slate-700'
+                >
+                  {/* Permanent Top-Level Formatting Bar */}
+                  <MarkdownToolbar
+                    getEditorView={getEditorView}
+                    markdown={form.markdown}
+                    onHelp={() => setHelpOpen(true)}
+                    showLineNumbers={showLineNumbers}
+                    onToggleLineNumbers={() => setShowLineNumbers((current) => !current)}
+                    excludeFloatingTools={true}
+                  />
 
-      <section
-        className={`mt-4 grid min-w-0 gap-6 ${viewMode === 'split' ? 'lg:grid-cols-2' : 'grid-cols-1'}`}
-        data-color-mode={editorTheme}
-      >
-        {viewMode !== 'preview' && (
-          <div className='min-w-0'>
+                  {/* Frosted Floating Selection Bubble */}
+                  <FrostedSelectionBubble getEditorView={getEditorView} />
+
+                  <CodeMirror
+                    value={form.markdown}
+                    minHeight='650px'
+                    maxHeight='650px'
+                    theme={editorTheme}
+                    extensions={editorExtensions}
+                    basicSetup={{
+                      lineNumbers: showLineNumbers,
+                      foldGutter: true,
+                      highlightActiveLine: true,
+                      highlightSelectionMatches: true,
+                      bracketMatching: true,
+                      closeBrackets: true,
+                      autocompletion: true
+                    }}
+                    onCreateEditor={(view) => {
+                      editorViewRef.current = view;
+                    }}
+                    onChange={(value) => update('markdown', value || '')}
+                  />
+
+                  {/* Ambient Circular Word & Reading Pace Meter */}
+                  <AmbientWordMeter wordCount={wordCount} charCount={form.markdown.length} />
+                </div>
+                <div className='mt-2 flex justify-between text-xs text-slate-500 dark:text-slate-400'>
+                  <span>Markdown, GFM tables, task lists, code fences, HTML and custom article elements</span>
+                  <span>
+                    {wordCount.toLocaleString()} words · {form.markdown.length.toLocaleString()} characters
+                  </span>
+                </div>
+                <FieldError>{errors.markdown}</FieldError>
+              </div>
+            )}
+
+            {viewMode !== 'edit' && (
+              <div className='min-w-0'>
+                <div className='h-[650px] overflow-y-auto rounded-xl border border-slate-300 bg-white p-5 shadow-sm dark:border-slate-600 dark:bg-slate-900 md:p-8'>
+                  <ArticlePreview
+                    mdxSource={`${form.markdown}${
+                      form.coverCredit
+                        ? `\n\n---\n\n<small>Cover photo by [${form.coverCredit.photographer}](${form.coverCredit.profileUrl}) on [${form.coverCredit.provider}](${form.coverCredit.providerUrl}).</small>`
+                        : ''
+                    }`}
+                  />
+                </div>
+              </div>
+            )}
+          </section>
+
+          {message && (
             <div
-              onKeyDownCapture={handleEditorShortcut}
-              className='relative overflow-hidden rounded-xl border border-slate-300 shadow-sm dark:border-slate-700'
+              className={`mt-6 rounded-lg px-4 py-3 text-sm ${message.type === 'success' ? 'bg-green-50 text-green-900 dark:bg-green-950/40 dark:text-green-100' : 'bg-red-50 text-red-900 dark:bg-red-950/40 dark:text-red-100'}`}
             >
-              {/* Permanent Top-Level Formatting Bar */}
-              <MarkdownToolbar
-                getEditorView={getEditorView}
-                markdown={form.markdown}
-                onHelp={() => setHelpOpen(true)}
-                showLineNumbers={showLineNumbers}
-                onToggleLineNumbers={() => setShowLineNumbers((current) => !current)}
-                excludeFloatingTools={true}
-              />
-
-              {/* Frosted Floating Selection Bubble */}
-              <FrostedSelectionBubble getEditorView={getEditorView} />
-
-              <CodeMirror
-                value={form.markdown}
-                minHeight='650px'
-                maxHeight='650px'
-                theme={editorTheme}
-                extensions={editorExtensions}
-                basicSetup={{
-                  lineNumbers: showLineNumbers,
-                  foldGutter: true,
-                  highlightActiveLine: true,
-                  highlightSelectionMatches: true,
-                  bracketMatching: true,
-                  closeBrackets: true,
-                  autocompletion: true
-                }}
-                onCreateEditor={(view) => {
-                  editorViewRef.current = view;
-                }}
-                onChange={(value) => update('markdown', value || '')}
-              />
-
-              {/* Ambient Circular Word & Reading Pace Meter */}
-              <AmbientWordMeter wordCount={wordCount} charCount={form.markdown.length} />
-            </div>
-            <div className='mt-2 flex justify-between text-xs text-slate-500 dark:text-slate-400'>
-              <span>Markdown, GFM tables, task lists, code fences, HTML and custom article elements</span>
-              <span>
-                {wordCount.toLocaleString()} words · {form.markdown.length.toLocaleString()} characters
-              </span>
-            </div>
-            <FieldError>{errors.markdown}</FieldError>
-          </div>
-        )}
-
-        {viewMode !== 'edit' && (
-          <div className='min-w-0'>
-            <div className='h-[650px] overflow-y-auto rounded-xl border border-slate-300 bg-white p-5 shadow-sm dark:border-slate-600 dark:bg-slate-900 md:p-8'>
-              <ArticlePreview
-                mdxSource={`${form.markdown}${
-                  form.coverCredit
-                    ? `\n\n---\n\n<small>Cover photo by [${form.coverCredit.photographer}](${form.coverCredit.profileUrl}) on [${form.coverCredit.provider}](${form.coverCredit.providerUrl}).</small>`
-                    : ''
-                }`}
-              />
-            </div>
-          </div>
-        )}
-      </section>
-
-      {message && (
-        <div
-          className={`mt-6 rounded-lg px-4 py-3 text-sm ${message.type === 'success' ? 'bg-green-50 text-green-900 dark:bg-green-950/40 dark:text-green-100' : 'bg-red-50 text-red-900 dark:bg-red-950/40 dark:text-red-100'}`}
-        >
-          <p>{message.text}</p>
-          {message.article?.url && (
-            <p className='mt-2 flex flex-wrap gap-4'>
-              <a href={message.article.url} target='_blank' rel='noreferrer' className='font-medium underline'>
-                Open in Notion
-              </a>
-              {message.article.published && (
-                <Link href={`/blog/${message.article.slug}`} className='font-medium underline'>
-                  Open portfolio article
-                </Link>
+              <p>{message.text}</p>
+              {message.article?.url && (
+                <p className='mt-2 flex flex-wrap gap-4'>
+                  <a href={message.article.url} target='_blank' rel='noreferrer' className='font-medium underline'>
+                    Open in Notion
+                  </a>
+                  {message.article.published && (
+                    <Link href={`/blog/${message.article.slug}`} className='font-medium underline'>
+                      Open portfolio article
+                    </Link>
+                  )}
+                </p>
               )}
-            </p>
+            </div>
           )}
-        </div>
-      )}
 
-      <div className='sticky bottom-4 z-20 mt-8 flex flex-col gap-3 rounded-xl border border-slate-200 bg-white/95 p-4 shadow-xl backdrop-blur dark:border-slate-700 dark:bg-slate-900/95 sm:flex-row sm:justify-end'>
-        <button
-          type='button'
-          disabled={submitting}
-          onClick={() => save(false)}
-          className='min-h-12 rounded-lg border border-green-700 px-6 py-3 font-Monda font-semibold text-green-800 hover:bg-green-50 disabled:opacity-60 dark:border-green-500 dark:text-green-300 dark:hover:bg-green-950/40'
-        >
-          {submitting
-            ? 'Saving…'
-            : editingArticleId
-              ? editingPublished
-                ? 'Move to draft'
-                : 'Update draft'
-              : 'Save as Notion draft'}
-        </button>
-        <button
-          type='button'
-          disabled={submitting}
-          onClick={() => save(true)}
-          className='min-h-12 rounded-lg bg-green-700 px-6 py-3 font-Monda font-semibold text-white hover:bg-green-800 disabled:opacity-60 dark:bg-green-600 dark:hover:bg-green-500'
-        >
-          {submitting
-            ? 'Publishing…'
-            : editingArticleId && editingPublished
-              ? 'Update published article'
-              : editingArticleId
-                ? 'Publish draft'
-                : 'Publish article'}
-        </button>
+          <div className='sticky bottom-4 z-20 mt-8 flex flex-col gap-3 rounded-xl border border-slate-200 bg-white/95 p-4 shadow-xl backdrop-blur dark:border-slate-700 dark:bg-slate-900/95 sm:flex-row sm:justify-end'>
+            <button
+              type='button'
+              disabled={submitting}
+              onClick={() => save(false)}
+              className='min-h-12 rounded-lg border border-green-700 px-6 py-3 font-Monda font-semibold text-green-800 hover:bg-green-50 disabled:opacity-60 dark:border-green-500 dark:text-green-300 dark:hover:bg-green-950/40'
+            >
+              {submitting
+                ? 'Saving…'
+                : editingArticleId
+                  ? editingPublished
+                    ? 'Move to draft'
+                    : 'Update draft'
+                  : 'Save as Notion draft'}
+            </button>
+            <button
+              type='button'
+              disabled={submitting}
+              onClick={() => save(true)}
+              className='min-h-12 rounded-lg bg-green-700 px-6 py-3 font-Monda font-semibold text-white hover:bg-green-800 disabled:opacity-60 dark:bg-green-600 dark:hover:bg-green-500'
+            >
+              {submitting
+                ? 'Publishing…'
+                : editingArticleId && editingPublished
+                  ? 'Update published article'
+                  : editingArticleId
+                    ? 'Publish draft'
+                    : 'Publish article'}
+            </button>
+          </div>
+        </div>
       </div>
       <ArticleEditorHelp open={helpOpen} onClose={() => setHelpOpen(false)} />
     </main>
