@@ -8,6 +8,7 @@ const toProject = (project) => ({
   color: project.color,
   defaultIssueType: project.default_issue_type,
   defaultPriority: project.default_priority,
+  sprintBoardLayout: project.sprint_board_layout || 'swimlane',
   archivedAt: project.archived_at,
   createdAt: project.created_at,
   updatedAt: project.updated_at
@@ -17,7 +18,7 @@ export const listProjects = async () => {
   const { data, error } = await getIssueboardSupabaseAdmin()
     .from('issueboard_projects')
     .select(
-      'id,project_key,name,description,color,default_issue_type,default_priority,archived_at,created_at,updated_at'
+      'id,project_key,name,description,color,default_issue_type,default_priority,sprint_board_layout,archived_at,created_at,updated_at'
     )
     .is('archived_at', null)
     .order('name');
@@ -29,7 +30,7 @@ export const getProjectByKey = async (projectKey) => {
   const { data, error } = await getIssueboardSupabaseAdmin()
     .from('issueboard_projects')
     .select(
-      'id,project_key,name,description,color,default_issue_type,default_priority,archived_at,created_at,updated_at'
+      'id,project_key,name,description,color,default_issue_type,default_priority,sprint_board_layout,archived_at,created_at,updated_at'
     )
     .eq('project_key', projectKey.toUpperCase())
     .is('archived_at', null)
@@ -158,4 +159,17 @@ export const reorderStatuses = async (projectKey, orderedStatusIds, actor) => {
   });
   if (error) throw error;
   return data.map(toStatus);
+};
+
+export const setSprintBoardLayout = async (projectKey, layout, actor) => {
+  const current = await getProjectByKey(projectKey);
+  if (!current) return null;
+
+  const { data, error } = await getIssueboardSupabaseAdmin().rpc('issueboard_set_sprint_board_layout', {
+    project_id_input: current.id,
+    layout_input: layout,
+    actor_input: actor
+  });
+  if (error) throw error;
+  return toProject(data);
 };

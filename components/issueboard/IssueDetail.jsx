@@ -233,7 +233,7 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
     setAssignee(payload.issue.assignee || '');
     setDescription(payload.issue.description || '');
 
-    const projectKey = issueKey.split('-')[0];
+    const projectKey = (issueKey || '').split('-')[0].toUpperCase();
     const [
       commentsResult,
       subtasksResult,
@@ -385,6 +385,16 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
     const next = selectedAssignees.filter((a) => a !== name.trim());
     setAssignee(next.join(', '));
   };
+
+  const availableUsers = useMemo(() => {
+    const list = [...projectUsers];
+    selectedAssignees.forEach((name) => {
+      if (!list.some((u) => u.name.toLowerCase() === name.toLowerCase())) {
+        list.push({ name, email: `${name.toLowerCase().replace(/\s+/g, '.')}@example.com` });
+      }
+    });
+    return list;
+  }, [projectUsers, selectedAssignees]);
 
   const [newLabelName, setNewLabelName] = useState('');
   const [labelBusy, setLabelBusy] = useState(false);
@@ -1552,14 +1562,14 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
                       />
                     </div>
                     <div className='max-h-48 overflow-y-auto space-y-1'>
-                      {projectUsers
+                      {availableUsers
                         .filter((u) => !assigneeSearch || u.name.toLowerCase().includes(assigneeSearch.toLowerCase()))
                         .map((u) => {
                           const isSelected = selectedAssignees.includes(u.name);
                           const initial = u.name.charAt(0).toUpperCase();
                           return (
                             <button
-                              key={u.email}
+                              key={u.email || u.name}
                               type='button'
                               onClick={() => toggleAssignee(u.name)}
                               className={`flex w-full items-center justify-between rounded-lg px-2 py-1.5 text-left text-xs transition ${
@@ -1579,7 +1589,7 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
                           );
                         })}
                       {assigneeSearch &&
-                        !projectUsers.some((u) => u.name.toLowerCase() === assigneeSearch.toLowerCase()) && (
+                        !availableUsers.some((u) => u.name.toLowerCase() === assigneeSearch.toLowerCase()) && (
                           <button
                             type='button'
                             onClick={() => {

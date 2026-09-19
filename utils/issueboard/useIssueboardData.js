@@ -7,6 +7,7 @@ const initialState = {
   issues: [],
   statuses: [],
   sprints: [],
+  projectUsers: [],
   error: null
 };
 
@@ -47,6 +48,7 @@ export const useIssueboardData = (projectKey) => {
           issues: [],
           statuses: [],
           sprints: [],
+          projectUsers: [],
           error: projectsPayload?.error?.message || 'Issue management is temporarily unavailable.'
         });
         return;
@@ -62,15 +64,17 @@ export const useIssueboardData = (projectKey) => {
           issues: [],
           statuses: [],
           sprints: [],
+          projectUsers: [],
           error: null
         });
         return;
       }
 
-      const [issuesResult, statusesResult, sprintsResult] = await Promise.all([
+      const [issuesResult, statusesResult, sprintsResult, usersResult] = await Promise.all([
         jsonFetch(`/api/issueboard/issues?projectKey=${encodeURIComponent(project.key)}`),
         jsonFetch(`/api/issueboard/projects/${encodeURIComponent(project.key)}/statuses`),
-        jsonFetch(`/api/issueboard/projects/${encodeURIComponent(project.key)}/sprints`)
+        jsonFetch(`/api/issueboard/projects/${encodeURIComponent(project.key)}/sprints`),
+        jsonFetch(`/api/issueboard/projects/${encodeURIComponent(project.key)}/users`)
       ]);
       if (!issuesResult.ok || !issuesResult.payload?.ok) {
         setState({
@@ -80,6 +84,7 @@ export const useIssueboardData = (projectKey) => {
           issues: [],
           statuses: [],
           sprints: [],
+          projectUsers: [],
           error: issuesResult.payload?.error?.message || 'Issue management is temporarily unavailable.'
         });
         return;
@@ -92,6 +97,7 @@ export const useIssueboardData = (projectKey) => {
         issues: issuesResult.payload.issues,
         statuses: statusesResult.ok && statusesResult.payload?.ok ? statusesResult.payload.statuses : [],
         sprints: sprintsResult.ok && sprintsResult.payload?.ok ? sprintsResult.payload.sprints : [],
+        projectUsers: usersResult.ok && usersResult.payload?.ok ? usersResult.payload.users : [],
         error: null,
         loadedAt: Date.now()
       });
@@ -103,7 +109,8 @@ export const useIssueboardData = (projectKey) => {
         issues: [],
         statuses: [],
         sprints: [],
-        error: 'Issue management could not be reached. Check your connection and try again.'
+        projectUsers: [],
+        error: 'Issue management is temporarily unavailable.'
       });
     }
   }, [projectKey]);
@@ -236,6 +243,61 @@ export const useIssueboardData = (projectKey) => {
     [load]
   );
 
+  const setSprintBoardLayout = useCallback(
+    async (layout) => {
+      if (!state.project) throw new Error('No project selected.');
+      const previousLayout = state.project.sprintBoardLayout;
+      setState((current) => ({
+        ...current,
+        project: current.project ? { ...current.project, sprintBoardLayout: layout } : current.project
+      }));
+      try {
+        const { ok, payload } = await jsonFetch(
+          `/api/issueboard/projects/${encodeURIComponent(state.project.key)}/board-layout`,
+          {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ layout })
+          }
+        );
+        if (!ok || !payload?.ok) throwFromResponse(payload, 'Could not save the board layout.');
+        setState((current) => ({
+          ...current,
+          project: payload.project
+        }));
+        return payload.project;
+      } catch (error) {
+        setState((current) => ({
+          ...current,
+          project: current.project ? { ...current.project, sprintBoardLayout: previousLayout } : current.project
+        }));
+        throw error;
+      }
+    },
+    [state.project]
+  );
+
+  const updateIssueAssignee = useCallback(async (issue, assignee) => {
+    const { ok, payload } = await jsonFetch(`/api/issueboard/issues/${encodeURIComponent(issue.key)}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: issue.title,
+        description: issue.description || '',
+        priority: (issue.rawPriority || issue.priority || 'medium').toLowerCase(),
+        assignee: assignee || null,
+        statusId: issue.status?.id || issue.statusId,
+        expectedUpdatedAt: issue.updatedAt
+      })
+    });
+    if (!ok || !payload?.ok) throwFromResponse(payload, 'Could not update assignee.');
+    setState((current) => ({
+      ...current,
+      issues: current.issues.map((entry) => (entry.id === payload.issue.id ? payload.issue : entry))
+    }));
+    return payload.issue;
+  }, []);
+
   return {
     ...state,
     reload: load,
@@ -243,6 +305,8 @@ export const useIssueboardData = (projectKey) => {
     moveIssueStatus,
     moveIssueSprint,
     setIssueWorkState,
+    updateIssueAssignee,
+    setSprintBoardLayout,
     createSprint,
     startSprint,
     completeSprint,

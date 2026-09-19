@@ -128,6 +128,8 @@ const IssueboardShell = ({
   currentProject,
   projects,
   title,
+  subtitle,
+  headerActions,
   onCreate,
   children
 }) => {
@@ -148,7 +150,7 @@ const IssueboardShell = ({
   }, [menuOpen]);
 
   return (
-    <div className='min-h-screen bg-slate-100 font-Inter text-slate-900 dark:bg-slate-950 dark:text-slate-100'>
+    <div className='h-screen overflow-hidden flex bg-slate-100 font-Inter text-slate-900 dark:bg-slate-950 dark:text-slate-100'>
       <div className='fixed inset-y-0 left-0 z-40 hidden lg:block'>
         <Sidebar
           adminEmail={adminEmail}
@@ -183,8 +185,8 @@ const IssueboardShell = ({
           </div>
         </div>
       )}
-      <div className='min-w-0 lg:pl-[17rem]'>
-        <header className='sticky top-0 z-30 flex min-h-16 items-center gap-3 border-b border-slate-200 bg-white/90 px-4 backdrop-blur md:px-7 dark:border-slate-800 dark:bg-slate-900/90'>
+      <div className='flex flex-col flex-1 h-screen min-w-0 lg:pl-[17rem] overflow-hidden'>
+        <header className='shrink-0 z-30 flex min-h-16 items-center gap-3 border-b border-slate-200 bg-white/90 px-4 backdrop-blur md:px-7 dark:border-slate-800 dark:bg-slate-900/90'>
           <button
             type='button'
             aria-label='Open issueboard navigation'
@@ -197,15 +199,29 @@ const IssueboardShell = ({
             <span className='hidden text-[11px] text-slate-500 sm:block'>
               Issueboard{currentProject ? ` / ${currentProject.name}` : ''}
             </span>
-            <h1 className='truncate text-lg font-bold tracking-tight'>{title}</h1>
+            <div className='flex items-center gap-2'>
+              <h1 className='truncate text-lg font-bold tracking-tight'>{title}</h1>
+              {subtitle && (
+                <span className='hidden text-xs text-slate-500 md:inline-flex items-center rounded-md bg-slate-200/60 dark:bg-slate-800/80 px-2 py-0.5 font-medium'>
+                  {subtitle}
+                </span>
+              )}
+            </div>
           </div>
+          {headerActions && <div className='flex items-center gap-2'>{headerActions}</div>}
           {onCreate && (
             <button type='button' onClick={onCreate} className='button inline-flex items-center gap-2 text-sm'>
               <FiPlus /> <span className='hidden sm:inline'>Create issue</span>
             </button>
           )}
         </header>
-        <main className='mx-auto max-w-[100rem] p-4 md:p-7'>{children}</main>
+        <main
+          className={`mx-auto w-full max-w-[100rem] p-4 md:p-6 flex-1 min-h-0 ${
+            currentView === 'board' ? 'flex flex-col overflow-hidden' : 'overflow-y-auto'
+          }`}
+        >
+          {children}
+        </main>
       </div>
     </div>
   );

@@ -96,7 +96,7 @@ export const createIssueSchema = z
       .max(200, 'Title must be at most 200 characters.'),
     description: z.string().trim().max(20000).default(''),
     priority: z.enum(['highest', 'high', 'medium', 'low', 'lowest']).default('medium'),
-    assignee: z.string().trim().max(200).optional(),
+    assignee: z.string().trim().max(200).nullish(),
     storyPoints: z.number().min(0).max(999).optional(),
     dueAt: z.string().datetime().optional(),
     parentIssueId: z.string().uuid().optional(),
@@ -113,7 +113,7 @@ export const updateIssueSchema = z
       .max(200, 'Title must be at most 200 characters.'),
     description: z.string().trim().max(20000).default(''),
     priority: z.enum(['highest', 'high', 'medium', 'low', 'lowest']),
-    assignee: z.string().trim().max(200).optional(),
+    assignee: z.string().trim().max(200).nullish(),
     statusId: z.string().uuid(),
     expectedUpdatedAt: z.string().datetime({ offset: true })
   })
@@ -212,7 +212,13 @@ export const setIssueSprintSchema = z
 
 export const setIssueWorkStateSchema = z
   .object({
-    workState: z.enum(['normal', 'blocked', 'rejected'])
+    workState: z.enum(['normal', 'active', 'approved', 'blocked', 'done', 'rejected'])
+  })
+  .strict();
+
+export const setSprintBoardLayoutSchema = z
+  .object({
+    layout: z.enum(['swimlane', 'accordion'])
   })
   .strict();
 
