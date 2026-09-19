@@ -188,9 +188,9 @@ const AdminDashboardPage = ({ adminEmail }) => {
           {/* ============================================================== */}
           {/* COLUMN 1: ARTICLES STUDIO (Emerald Theme)                      */}
           {/* ============================================================== */}
-          <div className='flex flex-col gap-5'>
+          <div className='flex flex-col gap-5 h-full'>
             {/* Upper Box: Articles Studio & Drafts Preview */}
-            <div className='rounded-2xl border border-emerald-500/50 bg-[#0f1722] p-5 shadow-2xl transition hover:border-emerald-500/80 flex flex-col justify-between'>
+            <div className='rounded-2xl border border-emerald-500/50 bg-[#0f1722] p-5 shadow-2xl transition hover:border-emerald-500/80 flex flex-col justify-between flex-1'>
               <div>
                 {/* Header */}
                 <div className='flex items-center justify-between mb-4'>
@@ -269,7 +269,7 @@ const AdminDashboardPage = ({ adminEmail }) => {
             </div>
 
             {/* Bottom Box: Top 5 Categories & Article Breakdown */}
-            <div className='rounded-2xl border border-slate-800/80 bg-[#0f1722] p-5 shadow-xl'>
+            <div className='rounded-2xl border border-slate-800/80 bg-[#0f1722] p-5 shadow-xl flex flex-col justify-between flex-1'>
               <div className='flex items-center justify-between mb-3.5'>
                 <h3 className='text-xs font-bold text-slate-200 uppercase tracking-wider font-mono flex items-center gap-1.5'>
                   <span className='size-2 rounded-full bg-[#10b981]' />
@@ -312,9 +312,9 @@ const AdminDashboardPage = ({ adminEmail }) => {
           {/* ============================================================== */}
           {/* COLUMN 2: ISSUEBOARD WORKSPACE (Cyan Theme)                    */}
           {/* ============================================================== */}
-          <div className='flex flex-col gap-5'>
+          <div className='flex flex-col gap-5 h-full'>
             {/* Upper Box: Active Sprint & Burndown Chart */}
-            <div className='rounded-2xl border border-cyan-400/50 bg-[#0d1724] p-5 shadow-2xl transition hover:border-cyan-400/80 flex flex-col justify-between'>
+            <div className='rounded-2xl border border-cyan-400/50 bg-[#0d1724] p-5 shadow-2xl transition hover:border-cyan-400/80 flex flex-col justify-between flex-1'>
               <div>
                 {/* Header */}
                 <div className='flex items-center justify-between mb-4'>
@@ -440,7 +440,7 @@ const AdminDashboardPage = ({ adminEmail }) => {
             </div>
 
             {/* Bottom Box: Issueboard Ticker */}
-            <div className='rounded-2xl border border-slate-800/80 bg-[#0d1724] p-5 shadow-xl'>
+            <div className='rounded-2xl border border-slate-800/80 bg-[#0d1724] p-5 shadow-xl flex flex-col justify-between flex-1'>
               <div className='flex items-center justify-between mb-3.5'>
                 <h3 className='text-xs font-bold text-slate-200 uppercase tracking-wider font-mono flex items-center gap-1.5'>
                   <span className='size-2 rounded-full bg-cyan-400 animate-pulse' />
@@ -492,7 +492,7 @@ const AdminDashboardPage = ({ adminEmail }) => {
           {/* ============================================================== */}
           {/* COLUMN 3: BOOKS & LIBRARY RECORDS (Full-Height Amber Theme)    */}
           {/* ============================================================== */}
-          <div className='h-full'>
+          <div className='flex flex-col h-full'>
             {/* Full-Height Bento Card for Books matching Artefact 2 */}
             <div className='h-full rounded-2xl border border-amber-500/50 bg-[#14100c] p-5 shadow-2xl transition hover:border-amber-500/80 flex flex-col justify-between space-y-4'>
               <div>
