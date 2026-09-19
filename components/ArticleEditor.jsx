@@ -88,7 +88,7 @@ const ArticleEditor = ({ adminEmail, defaultPublicationDate }) => {
     markdown: INITIAL_MARKDOWN
   });
   const [slugEdited, setSlugEdited] = useState(false);
-  const [viewMode, setViewMode] = useState('split');
+  const [viewMode, setViewMode] = useState('edit');
   const [showLineNumbers, setShowLineNumbers] = useState(true);
   const [helpOpen, setHelpOpen] = useState(false);
   const [errors, setErrors] = useState({});
