@@ -110,16 +110,18 @@ export const AdminHorizonHeader = ({ adminEmail, onOpenCommandPalette, onOpenQui
 
       {/* Right: Omnisearch Trigger, + Quick Add Dropdown, Theme Toggle, Profile */}
       <div className='flex items-center gap-2.5'>
-        {/* Search Command Palette Trigger Button (Artefact 5) */}
+        {/* Search Command Palette Trigger Button (Artefact 3 & 5) */}
         <button
           type='button'
           onClick={onOpenCommandPalette}
-          className='flex items-center gap-2 rounded-lg border border-slate-700/80 bg-slate-800/80 px-2.5 py-1 text-xs text-slate-400 shadow-sm transition hover:border-emerald-500/60 hover:text-slate-200'
+          className='group flex items-center gap-2.5 rounded-xl border border-emerald-500/40 bg-slate-900/90 px-3 py-1.5 text-xs text-slate-300 shadow-[0_0_15px_rgba(16,185,129,0.2)] transition-all duration-200 hover:border-emerald-400 hover:bg-slate-900 hover:text-white hover:shadow-[0_0_24px_rgba(16,185,129,0.4)]'
           title='Open Spatial Command Palette (⌘K)'
         >
-          <FiSearch className='size-3 text-slate-400' />
-          <span className='hidden lg:inline'>Search admin…</span>
-          <kbd className='rounded border border-slate-700 bg-slate-900 px-1 py-0.5 font-mono text-[10px] text-slate-400 font-semibold'>
+          <span className='grid size-5 place-items-center rounded-md bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 shadow-[0_0_8px_rgba(16,185,129,0.5)] group-hover:scale-105 transition'>
+            <FiSearch className='size-3 drop-shadow-[0_0_5px_rgba(16,185,129,0.8)]' />
+          </span>
+          <span className='hidden lg:inline font-medium text-slate-300 group-hover:text-slate-100'>Search admin…</span>
+          <kbd className='rounded-md border border-emerald-500/40 bg-emerald-950/70 px-1.5 py-0.5 font-mono text-[10px] font-bold text-emerald-300 shadow-[0_0_8px_rgba(16,185,129,0.25)]'>
             ⌘K
           </kbd>
         </button>

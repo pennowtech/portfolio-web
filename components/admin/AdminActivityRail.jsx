@@ -9,28 +9,38 @@ const NAV_ITEMS = [
     label: 'Overview Dashboard',
     href: '/admin',
     icon: FiGrid,
-    matcher: (path) => path === '/admin'
+    matcher: (path) => path === '/admin',
+    activeColor:
+      'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 shadow-[0_0_14px_rgba(16,185,129,0.5)]',
+    notchColor: 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)]'
   },
   {
     id: 'articles',
     label: 'Articles Studio',
     href: '/admin/articles/new',
     icon: FiEdit3,
-    matcher: (path) => path.startsWith('/admin/articles')
+    matcher: (path) => path.startsWith('/admin/articles'),
+    activeColor:
+      'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 shadow-[0_0_14px_rgba(16,185,129,0.5)]',
+    notchColor: 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)]'
   },
   {
     id: 'issues',
     label: 'Issueboard Workspace',
     href: '/admin/issues',
     icon: FiTrello,
-    matcher: (path) => path.startsWith('/admin/issues')
+    matcher: (path) => path.startsWith('/admin/issues'),
+    activeColor: 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 shadow-[0_0_14px_rgba(6,182,212,0.5)]',
+    notchColor: 'bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.9)]'
   },
   {
     id: 'books',
     label: 'Book Records & Library',
     href: '/admin/books',
     icon: FiBookOpen,
-    matcher: (path) => path.startsWith('/admin/books')
+    matcher: (path) => path.startsWith('/admin/books'),
+    activeColor: 'bg-amber-500/20 text-amber-400 border border-amber-500/40 shadow-[0_0_14px_rgba(245,158,11,0.5)]',
+    notchColor: 'bg-amber-400 shadow-[0_0_8px_rgba(245,158,11,0.9)]'
   }
 ];
 
@@ -67,17 +77,13 @@ export const AdminActivityRail = ({ sidebarExpanded, onToggleSidebar }) => {
                 <Link
                   href={item.href}
                   className={`relative flex size-10 items-center justify-center rounded-xl transition-all duration-150 ${
-                    isActive
-                      ? 'bg-emerald-500/15 text-emerald-400 shadow-sm shadow-emerald-500/10'
-                      : 'hover:bg-slate-800 hover:text-slate-200'
+                    isActive ? item.activeColor : 'hover:bg-slate-800 hover:text-slate-200'
                   }`}
                   aria-label={item.label}
                 >
-                  <Icon className='size-5' />
+                  <Icon className='size-5 drop-shadow-[0_0_4px_currentColor]' />
                   {/* Glowing active notch */}
-                  {isActive && (
-                    <span className='absolute -left-1.5 h-5 w-1 rounded-r-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]' />
-                  )}
+                  {isActive && <span className={`absolute -left-1.5 h-5 w-1 rounded-r-full ${item.notchColor}`} />}
                 </Link>
 
                 {/* Tooltip on hover */}

@@ -21,7 +21,7 @@ export const AdminSpatialPalette = ({ isOpen, onClose, onOpenQuickAdd }) => {
   // Load books for search
   const books = getStoredBooks();
 
-  // Static + Dynamic Search Items
+  // Static + Dynamic Search Items across Articles, Books, and Issues
   const actions = [
     // Direct domain navigation
     {
@@ -31,7 +31,7 @@ export const AdminSpatialPalette = ({ isOpen, onClose, onOpenQuickAdd }) => {
       subtitle: 'Markdown editor & draft publishing',
       badge: '⌘1',
       icon: FiEdit3,
-      color: 'text-emerald-400 bg-emerald-950/60 border-emerald-700/50',
+      color: 'text-emerald-300 bg-emerald-500/20 border-emerald-500/50 shadow-[0_0_12px_rgba(16,185,129,0.45)]',
       run: () => router.push('/admin/articles/new')
     },
     {
@@ -41,7 +41,7 @@ export const AdminSpatialPalette = ({ isOpen, onClose, onOpenQuickAdd }) => {
       subtitle: 'Active sprints, backlog triage & reports',
       badge: '⌘2',
       icon: FiTrello,
-      color: 'text-cyan-400 bg-cyan-950/60 border-cyan-700/50',
+      color: 'text-cyan-300 bg-cyan-500/20 border-cyan-500/50 shadow-[0_0_12px_rgba(6,182,212,0.45)]',
       run: () => router.push('/admin/issues')
     },
     {
@@ -51,11 +51,24 @@ export const AdminSpatialPalette = ({ isOpen, onClose, onOpenQuickAdd }) => {
       subtitle: 'Personal reading tracker & bibliography',
       badge: '⌘3',
       icon: FiBookOpen,
-      color: 'text-amber-400 bg-amber-950/60 border-amber-700/50',
+      color: 'text-amber-300 bg-amber-500/20 border-amber-500/50 shadow-[0_0_12px_rgba(245,158,11,0.45)]',
       run: () => router.push('/admin/books')
     },
 
     // Fast actions
+    {
+      id: 'action-quick-article',
+      type: 'Action',
+      title: 'Write New Article',
+      subtitle: 'Launch markdown authoring editor',
+      badge: 'Create',
+      icon: FiEdit3,
+      color: 'text-emerald-300 bg-emerald-500/20 border-emerald-500/50 shadow-[0_0_12px_rgba(16,185,129,0.45)]',
+      run: () => {
+        onClose();
+        router.push('/admin/articles/new');
+      }
+    },
     {
       id: 'action-quick-issue',
       type: 'Action',
@@ -63,7 +76,7 @@ export const AdminSpatialPalette = ({ isOpen, onClose, onOpenQuickAdd }) => {
       subtitle: 'Create task or bug in PORT or LEM project',
       badge: 'Create',
       icon: FiTrello,
-      color: 'text-cyan-400 bg-cyan-950/60 border-cyan-700/50',
+      color: 'text-cyan-300 bg-cyan-500/20 border-cyan-500/50 shadow-[0_0_12px_rgba(6,182,212,0.45)]',
       run: () => {
         onClose();
         onOpenQuickAdd?.('issue');
@@ -76,11 +89,105 @@ export const AdminSpatialPalette = ({ isOpen, onClose, onOpenQuickAdd }) => {
       subtitle: 'Catalog book with cover, pages, and shelf',
       badge: 'Create',
       icon: FiBookOpen,
-      color: 'text-amber-400 bg-amber-950/60 border-amber-700/50',
+      color: 'text-amber-300 bg-amber-500/20 border-amber-500/50 shadow-[0_0_12px_rgba(245,158,11,0.45)]',
       run: () => {
         onClose();
         onOpenQuickAdd?.('book');
       }
+    },
+
+    // Real Articles & Drafts
+    {
+      id: 'art-ai-future',
+      type: 'Article',
+      title: 'The Future of AI',
+      subtitle: 'Draft article · 1.2k words · July 26, 2023',
+      badge: 'Draft',
+      icon: FiEdit3,
+      color: 'text-emerald-300 bg-emerald-500/20 border-emerald-500/50 shadow-[0_0_12px_rgba(16,185,129,0.45)]',
+      run: () => router.push('/admin/articles/new')
+    },
+    {
+      id: 'art-react-state',
+      type: 'Article',
+      title: 'React State Management',
+      subtitle: 'Draft article · 850 words · Frontend Architecture',
+      badge: 'Draft',
+      icon: FiEdit3,
+      color: 'text-emerald-300 bg-emerald-500/20 border-emerald-500/50 shadow-[0_0_12px_rgba(16,185,129,0.45)]',
+      run: () => router.push('/admin/articles/new')
+    },
+    {
+      id: 'art-distributed-sys',
+      type: 'Article',
+      title: 'Designing for Partial Failure: Resilient Systems',
+      subtitle: 'Tech Talks · Published article',
+      badge: 'Published',
+      icon: FiEdit3,
+      color: 'text-emerald-300 bg-emerald-500/20 border-emerald-500/50 shadow-[0_0_12px_rgba(16,185,129,0.45)]',
+      run: () => router.push('/blog/designing-for-partial-failure-what-resilient-systems-do-differently')
+    },
+    {
+      id: 'art-adr',
+      type: 'Article',
+      title: 'Architecture Decision Records Engineers Actually Read',
+      subtitle: 'System Design · Published article',
+      badge: 'Published',
+      icon: FiEdit3,
+      color: 'text-emerald-300 bg-emerald-500/20 border-emerald-500/50 shadow-[0_0_12px_rgba(16,185,129,0.45)]',
+      run: () => router.push('/blog/architecture-decision-records-that-engineers-will-actually-read')
+    },
+
+    // Real Issueboard Tickets
+    {
+      id: 'issue-port-1',
+      type: 'Issue',
+      title: 'PORT-1: Wire issue service to real Supabase data',
+      subtitle: 'PORT Project · Task · In progress',
+      badge: 'In Progress',
+      icon: FiTrello,
+      color: 'text-cyan-300 bg-cyan-500/20 border-cyan-500/50 shadow-[0_0_12px_rgba(6,182,212,0.45)]',
+      run: () => router.push('/admin/issues?issue=PORT-1')
+    },
+    {
+      id: 'issue-lem-1',
+      type: 'Issue',
+      title: 'LEM-1: Voice dictation cuts off mid-sentence',
+      subtitle: 'LEM Project · Bug · In progress',
+      badge: 'In Progress',
+      icon: FiTrello,
+      color: 'text-cyan-300 bg-cyan-500/20 border-cyan-500/50 shadow-[0_0_12px_rgba(6,182,212,0.45)]',
+      run: () => router.push('/admin/issues?issue=LEM-1')
+    },
+    {
+      id: 'issue-port-26',
+      type: 'Issue',
+      title: 'PORT-26: Interactive ticket triage and label clipping',
+      subtitle: 'PORT Project · Bug · To do',
+      badge: 'To Do',
+      icon: FiTrello,
+      color: 'text-cyan-300 bg-cyan-500/20 border-cyan-500/50 shadow-[0_0_12px_rgba(6,182,212,0.45)]',
+      run: () => router.push('/admin/issues?issue=PORT-26')
+    },
+    {
+      id: 'issue-port-39',
+      type: 'Issue',
+      title: 'PORT-39: Full Feature API Issue with Image and Checklist',
+      subtitle: 'PORT Project · Story · To do',
+      badge: 'To Do',
+      icon: FiTrello,
+      color: 'text-cyan-300 bg-cyan-500/20 border-cyan-500/50 shadow-[0_0_12px_rgba(6,182,212,0.45)]',
+      run: () => router.push('/admin/issues?issue=PORT-39')
+    },
+    {
+      id: 'issue-lem-2',
+      type: 'Issue',
+      title: 'LEM-2: Crash when playing lesson audio',
+      subtitle: 'LEM Project · Bug · To do',
+      badge: 'To Do',
+      icon: FiTrello,
+      color: 'text-cyan-300 bg-cyan-500/20 border-cyan-500/50 shadow-[0_0_12px_rgba(6,182,212,0.45)]',
+      run: () => router.push('/admin/issues?issue=LEM-2')
     },
 
     // Book Items
@@ -91,7 +198,7 @@ export const AdminSpatialPalette = ({ isOpen, onClose, onOpenQuickAdd }) => {
       subtitle: `by ${b.author} • ${b.currentPage}/${b.totalPages} pages (${Math.round((b.currentPage / b.totalPages) * 100)}%)`,
       badge: b.shelf,
       icon: FiBookOpen,
-      color: 'text-amber-300 bg-amber-950/50 border-amber-800/40',
+      color: 'text-amber-300 bg-amber-500/20 border-amber-500/50 shadow-[0_0_12px_rgba(245,158,11,0.45)]',
       run: () => router.push(`/admin/books?shelf=${b.shelf}&highlight=${b.id}`)
     }))
   ];
@@ -103,7 +210,8 @@ export const AdminSpatialPalette = ({ isOpen, onClose, onOpenQuickAdd }) => {
     return (
       item.title.toLowerCase().includes(q) ||
       item.subtitle.toLowerCase().includes(q) ||
-      item.type.toLowerCase().includes(q)
+      item.type.toLowerCase().includes(q) ||
+      item.badge.toLowerCase().includes(q)
     );
   });
 
@@ -136,13 +244,13 @@ export const AdminSpatialPalette = ({ isOpen, onClose, onOpenQuickAdd }) => {
       onClick={onClose}
     >
       <div
-        className='relative w-full max-w-2xl overflow-hidden rounded-2xl border border-slate-700/80 bg-slate-900/95 shadow-2xl shadow-emerald-950/20 backdrop-blur-2xl'
+        className='relative w-full max-w-2xl overflow-hidden rounded-2xl border border-emerald-500/40 bg-slate-900/95 shadow-[0_0_50px_rgba(16,185,129,0.2)] backdrop-blur-2xl'
         onClick={(e) => e.stopPropagation()}
         onKeyDown={handleKeyDown}
       >
-        {/* Top Header: 3 Tactile Glowing Switcher Cards (Artefact 5) */}
-        <div className='border-b border-slate-800 bg-slate-950/50 p-3'>
-          <div className='mb-2 flex items-center justify-between px-1'>
+        {/* Top Header: 3 Tactile Glowing Switcher Cards (Artefact 3 & 5) */}
+        <div className='border-b border-slate-800 bg-slate-950/70 p-3.5'>
+          <div className='mb-2.5 flex items-center justify-between px-1'>
             <span className='text-[10px] font-bold uppercase tracking-wider text-slate-400'>Direct Domain Jump</span>
             <button
               type='button'
@@ -155,20 +263,20 @@ export const AdminSpatialPalette = ({ isOpen, onClose, onOpenQuickAdd }) => {
           </div>
 
           <div className='grid grid-cols-3 gap-2.5'>
-            {/* Card 1: Articles Studio */}
+            {/* Card 1: Articles Studio (Emerald Glow) */}
             <button
               type='button'
               onClick={() => {
                 router.push('/admin/articles/new');
                 onClose();
               }}
-              className='group relative flex flex-col items-start rounded-xl border border-emerald-800/40 bg-gradient-to-br from-emerald-950/40 to-slate-900 p-3 text-left transition hover:border-emerald-500/80 hover:shadow-lg hover:shadow-emerald-500/10'
+              className='group relative flex flex-col items-start rounded-xl border border-emerald-500/40 bg-gradient-to-br from-emerald-950/50 to-slate-900/90 p-3 text-left shadow-[0_0_15px_rgba(16,185,129,0.15)] transition-all duration-200 hover:border-emerald-400 hover:shadow-[0_0_25px_rgba(16,185,129,0.35)]'
             >
               <div className='flex w-full items-center justify-between'>
-                <span className='grid size-7 place-items-center rounded-lg bg-emerald-900/60 text-emerald-400 border border-emerald-700/40'>
-                  <FiEdit3 className='size-3.5' />
+                <span className='grid size-8 place-items-center rounded-lg bg-emerald-500/25 text-emerald-300 border border-emerald-500/60 shadow-[0_0_14px_rgba(16,185,129,0.6)] group-hover:scale-105 transition-transform'>
+                  <FiEdit3 className='size-4 drop-shadow-[0_0_6px_rgba(16,185,129,0.8)]' />
                 </span>
-                <kbd className='rounded border border-emerald-800/60 bg-emerald-950/80 px-1.5 py-0.5 font-mono text-[9px] font-bold text-emerald-300'>
+                <kbd className='rounded-md border border-emerald-500/50 bg-emerald-950/90 px-1.5 py-0.5 font-mono text-[9px] font-bold text-emerald-300 shadow-[0_0_8px_rgba(16,185,129,0.3)]'>
                   ⌘1
                 </kbd>
               </div>
@@ -178,20 +286,20 @@ export const AdminSpatialPalette = ({ isOpen, onClose, onOpenQuickAdd }) => {
               <div className='text-[10px] text-slate-400'>Content & Drafts</div>
             </button>
 
-            {/* Card 2: Issueboard Workspace */}
+            {/* Card 2: Issueboard Workspace (Cyan Glow) */}
             <button
               type='button'
               onClick={() => {
                 router.push('/admin/issues');
                 onClose();
               }}
-              className='group relative flex flex-col items-start rounded-xl border border-cyan-800/40 bg-gradient-to-br from-cyan-950/40 to-slate-900 p-3 text-left transition hover:border-cyan-500/80 hover:shadow-lg hover:shadow-cyan-500/10'
+              className='group relative flex flex-col items-start rounded-xl border border-cyan-500/40 bg-gradient-to-br from-cyan-950/50 to-slate-900/90 p-3 text-left shadow-[0_0_15px_rgba(6,182,212,0.15)] transition-all duration-200 hover:border-cyan-400 hover:shadow-[0_0_25px_rgba(6,182,212,0.35)]'
             >
               <div className='flex w-full items-center justify-between'>
-                <span className='grid size-7 place-items-center rounded-lg bg-cyan-900/60 text-cyan-400 border border-cyan-700/40'>
-                  <FiTrello className='size-3.5' />
+                <span className='grid size-8 place-items-center rounded-lg bg-cyan-500/25 text-cyan-300 border border-cyan-500/60 shadow-[0_0_14px_rgba(6,182,212,0.6)] group-hover:scale-105 transition-transform'>
+                  <FiTrello className='size-4 drop-shadow-[0_0_6px_rgba(6,182,212,0.8)]' />
                 </span>
-                <kbd className='rounded border border-cyan-800/60 bg-cyan-950/80 px-1.5 py-0.5 font-mono text-[9px] font-bold text-cyan-300'>
+                <kbd className='rounded-md border border-cyan-500/50 bg-cyan-950/90 px-1.5 py-0.5 font-mono text-[9px] font-bold text-cyan-300 shadow-[0_0_8px_rgba(6,182,212,0.3)]'>
                   ⌘2
                 </kbd>
               </div>
@@ -201,20 +309,20 @@ export const AdminSpatialPalette = ({ isOpen, onClose, onOpenQuickAdd }) => {
               <div className='text-[10px] text-slate-400'>PORT & LEM Sprints</div>
             </button>
 
-            {/* Card 3: Book Records & Library */}
+            {/* Card 3: Book Records & Library (Amber Glow) */}
             <button
               type='button'
               onClick={() => {
                 router.push('/admin/books');
                 onClose();
               }}
-              className='group relative flex flex-col items-start rounded-xl border border-amber-800/40 bg-gradient-to-br from-amber-950/40 to-slate-900 p-3 text-left transition hover:border-amber-500/80 hover:shadow-lg hover:shadow-amber-500/10'
+              className='group relative flex flex-col items-start rounded-xl border border-amber-500/40 bg-gradient-to-br from-amber-950/50 to-slate-900/90 p-3 text-left shadow-[0_0_15px_rgba(245,158,11,0.15)] transition-all duration-200 hover:border-amber-400 hover:shadow-[0_0_25px_rgba(245,158,11,0.35)]'
             >
               <div className='flex w-full items-center justify-between'>
-                <span className='grid size-7 place-items-center rounded-lg bg-amber-900/60 text-amber-400 border border-amber-700/40'>
-                  <FiBookOpen className='size-3.5' />
+                <span className='grid size-8 place-items-center rounded-lg bg-amber-500/25 text-amber-300 border border-amber-500/60 shadow-[0_0_14px_rgba(245,158,11,0.6)] group-hover:scale-105 transition-transform'>
+                  <FiBookOpen className='size-4 drop-shadow-[0_0_6px_rgba(245,158,11,0.8)]' />
                 </span>
-                <kbd className='rounded border border-amber-800/60 bg-amber-950/80 px-1.5 py-0.5 font-mono text-[9px] font-bold text-amber-300'>
+                <kbd className='rounded-md border border-amber-500/50 bg-amber-950/90 px-1.5 py-0.5 font-mono text-[9px] font-bold text-amber-300 shadow-[0_0_8px_rgba(245,158,11,0.3)]'>
                   ⌘3
                 </kbd>
               </div>
@@ -226,29 +334,41 @@ export const AdminSpatialPalette = ({ isOpen, onClose, onOpenQuickAdd }) => {
           </div>
         </div>
 
-        {/* Omnisearch Input Field */}
-        <div className='flex items-center gap-3 border-b border-slate-800 px-4 py-3'>
-          <FiSearch className='size-4 text-emerald-400 shrink-0' />
-          <input
-            ref={inputRef}
-            type='text'
-            value={query}
-            onChange={(e) => {
-              setQuery(e.target.value);
-              setSelectedIndex(0);
-            }}
-            placeholder='Search tickets (LEM-1, PORT-38), articles, books, or actions…'
-            className='w-full bg-transparent text-sm text-slate-100 placeholder-slate-400 outline-none'
-          />
-          {query && (
-            <button type='button' onClick={() => setQuery('')} className='text-slate-400 hover:text-slate-200 text-xs'>
-              Clear
-            </button>
-          )}
+        {/* Omnisearch Input Field with Glowing Neon Treatment */}
+        <div className='border-b border-slate-800/80 bg-slate-950/70 p-3'>
+          <div className='relative flex items-center gap-3 rounded-xl border border-emerald-500/50 bg-slate-950/90 px-3.5 py-2.5 shadow-[0_0_20px_rgba(16,185,129,0.22)] transition-all duration-200 focus-within:border-emerald-400 focus-within:shadow-[0_0_30px_rgba(16,185,129,0.4)] focus-within:ring-1 focus-within:ring-emerald-400/50'>
+            <span className='grid size-7 shrink-0 place-items-center rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/50 shadow-[0_0_10px_rgba(16,185,129,0.5)]'>
+              <FiSearch className='size-3.5 drop-shadow-[0_0_5px_rgba(16,185,129,0.8)]' />
+            </span>
+            <input
+              ref={inputRef}
+              type='text'
+              value={query}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                setSelectedIndex(0);
+              }}
+              placeholder='Search articles, books, tickets (LEM-1, PORT-38), or actions…'
+              className='w-full bg-transparent text-sm font-medium text-slate-100 placeholder-slate-400 outline-none'
+            />
+            {query ? (
+              <button
+                type='button'
+                onClick={() => setQuery('')}
+                className='rounded-md bg-slate-800 px-2 py-0.5 text-xs text-slate-300 hover:bg-slate-700 hover:text-white transition'
+              >
+                Clear
+              </button>
+            ) : (
+              <span className='hidden sm:inline-flex items-center gap-1 rounded-md border border-emerald-500/40 bg-emerald-950/60 px-2 py-0.5 font-mono text-[10px] font-bold text-emerald-300 shadow-[0_0_8px_rgba(16,185,129,0.25)]'>
+                ESC
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Results List */}
-        <div className='max-h-72 overflow-y-auto p-2 space-y-1'>
+        <div className='max-h-72 overflow-y-auto p-2.5 space-y-1.5'>
           {filtered.length === 0 ? (
             <div className='py-8 text-center text-xs text-slate-400'>
               No results matching &quot;{query}&quot; across tickets, articles, or book records.
@@ -269,13 +389,13 @@ export const AdminSpatialPalette = ({ isOpen, onClose, onOpenQuickAdd }) => {
                   onMouseEnter={() => setSelectedIndex(idx)}
                   className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left transition ${
                     isSelected
-                      ? 'bg-slate-800/90 text-white ring-1 ring-emerald-500/40 shadow-sm'
+                      ? 'bg-slate-800/90 text-white ring-1 ring-emerald-500/50 shadow-md'
                       : 'text-slate-300 hover:bg-slate-800/40'
                   }`}
                 >
                   <div className='flex items-center gap-3 min-w-0'>
-                    <span className={`grid size-7 shrink-0 place-items-center rounded-lg border ${item.color}`}>
-                      <Icon className='size-3.5' />
+                    <span className={`grid size-8 shrink-0 place-items-center rounded-lg border ${item.color}`}>
+                      <Icon className='size-4 drop-shadow-[0_0_5px_currentColor]' />
                     </span>
                     <div className='truncate min-w-0'>
                       <div className='truncate text-xs font-semibold text-slate-100'>{item.title}</div>
@@ -284,10 +404,12 @@ export const AdminSpatialPalette = ({ isOpen, onClose, onOpenQuickAdd }) => {
                   </div>
 
                   <div className='flex items-center gap-2 shrink-0 pl-2'>
-                    <span className='rounded bg-slate-800 px-1.5 py-0.5 text-[10px] font-mono text-slate-400 border border-slate-700'>
+                    <span className='rounded bg-slate-800/90 px-2 py-0.5 text-[10px] font-mono text-slate-300 border border-slate-700/80'>
                       {item.badge}
                     </span>
-                    {isSelected && <FiCornerDownLeft className='size-3 text-emerald-400' />}
+                    {isSelected && (
+                      <FiCornerDownLeft className='size-3.5 text-emerald-400 drop-shadow-[0_0_4px_rgba(16,185,129,0.8)]' />
+                    )}
                   </div>
                 </button>
               );
@@ -296,7 +418,7 @@ export const AdminSpatialPalette = ({ isOpen, onClose, onOpenQuickAdd }) => {
         </div>
 
         {/* Keyboard Footer Guide */}
-        <div className='flex items-center justify-between border-t border-slate-800/80 bg-slate-950/70 px-4 py-2 text-[10px] text-slate-400 font-mono'>
+        <div className='flex items-center justify-between border-t border-slate-800/80 bg-slate-950/80 px-4 py-2 text-[10px] text-slate-400 font-mono'>
           <div className='flex items-center gap-3'>
             <span>
               <kbd className='rounded bg-slate-800 px-1 text-slate-300'>↑↓</kbd> navigate
@@ -308,7 +430,9 @@ export const AdminSpatialPalette = ({ isOpen, onClose, onOpenQuickAdd }) => {
               <kbd className='rounded bg-slate-800 px-1 text-slate-300'>esc</kbd> dismiss
             </span>
           </div>
-          <span className='text-emerald-400 font-semibold'>SinghBuildsTech Omnisearch</span>
+          <span className='text-emerald-400 font-semibold drop-shadow-[0_0_6px_rgba(16,185,129,0.6)]'>
+            SinghBuildsTech Omnisearch
+          </span>
         </div>
       </div>
     </div>
