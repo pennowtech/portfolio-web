@@ -78,24 +78,7 @@ export const AdminContextSidebar = ({ expanded, onOpenQuickAdd }) => {
                 <FiBookOpen className='size-3.5 text-amber-400' />
                 <span>All Books</span>
               </div>
-              <span className='rounded-full bg-slate-800 px-1.5 py-0.5 text-[10px] text-slate-300 font-mono'>7</span>
-            </Link>
-
-            <Link
-              href='/admin/books?shelf=reading'
-              className={`group flex items-center justify-between rounded-lg px-2.5 py-1.5 text-xs font-medium transition ${
-                router.query.shelf === 'reading'
-                  ? 'bg-amber-500/15 font-semibold text-amber-400'
-                  : 'hover:bg-slate-800 text-slate-300'
-              }`}
-            >
-              <div className='flex items-center gap-2'>
-                <FiBookmark className='size-3.5 text-emerald-400' />
-                <span>Currently Reading</span>
-              </div>
-              <span className='rounded-full bg-emerald-950/60 px-1.5 py-0.5 text-[10px] text-emerald-400 font-bold font-mono'>
-                3
-              </span>
+              <span className='rounded-full bg-slate-800 px-1.5 py-0.5 text-[10px] text-slate-300 font-mono'>18</span>
             </Link>
 
             <Link
@@ -107,10 +90,12 @@ export const AdminContextSidebar = ({ expanded, onOpenQuickAdd }) => {
               }`}
             >
               <div className='flex items-center gap-2'>
-                <FiCpu className='size-3.5 text-cyan-400' />
-                <span>Technical & Arch</span>
+                <FiCpu className='size-3.5 text-emerald-400' />
+                <span>Tech</span>
               </div>
-              <span className='rounded-full bg-slate-800 px-1.5 py-0.5 text-[10px] text-slate-300 font-mono'>3</span>
+              <span className='rounded-full bg-slate-800 px-1.5 py-0.5 text-[10px] text-emerald-400 font-bold font-mono'>
+                12
+              </span>
             </Link>
 
             <Link
@@ -122,10 +107,46 @@ export const AdminContextSidebar = ({ expanded, onOpenQuickAdd }) => {
               }`}
             >
               <div className='flex items-center gap-2'>
-                <FiCode className='size-3.5 text-purple-400' />
-                <span>Philosophy & Mind</span>
+                <FiCode className='size-3.5 text-rose-400' />
+                <span>Philosophy</span>
               </div>
-              <span className='rounded-full bg-slate-800 px-1.5 py-0.5 text-[10px] text-slate-300 font-mono'>2</span>
+              <span className='rounded-full bg-slate-800 px-1.5 py-0.5 text-[10px] text-rose-400 font-bold font-mono'>
+                4
+              </span>
+            </Link>
+
+            <Link
+              href='/admin/books?shelf=fiction'
+              className={`group flex items-center justify-between rounded-lg px-2.5 py-1.5 text-xs font-medium transition ${
+                router.query.shelf === 'fiction'
+                  ? 'bg-amber-500/15 font-semibold text-amber-400'
+                  : 'hover:bg-slate-800 text-slate-300'
+              }`}
+            >
+              <div className='flex items-center gap-2'>
+                <FiBookmark className='size-3.5 text-amber-400' />
+                <span>Fiction</span>
+              </div>
+              <span className='rounded-full bg-slate-800 px-1.5 py-0.5 text-[10px] text-amber-400 font-bold font-mono'>
+                2
+              </span>
+            </Link>
+
+            <Link
+              href='/admin/books?shelf=business'
+              className={`group flex items-center justify-between rounded-lg px-2.5 py-1.5 text-xs font-medium transition ${
+                router.query.shelf === 'business'
+                  ? 'bg-amber-500/15 font-semibold text-amber-400'
+                  : 'hover:bg-slate-800 text-slate-300'
+              }`}
+            >
+              <div className='flex items-center gap-2'>
+                <FiCheckCircle className='size-3.5 text-cyan-400' />
+                <span>Product & Leadership</span>
+              </div>
+              <span className='rounded-full bg-slate-800 px-1.5 py-0.5 text-[10px] text-cyan-400 font-bold font-mono'>
+                1
+              </span>
             </Link>
 
             <Link
@@ -137,10 +158,12 @@ export const AdminContextSidebar = ({ expanded, onOpenQuickAdd }) => {
               }`}
             >
               <div className='flex items-center gap-2'>
-                <FiCheckCircle className='size-3.5 text-slate-400' />
-                <span>Wishlist / To Read</span>
+                <FiBookmark className='size-3.5 text-purple-400' />
+                <span>Wishlist</span>
               </div>
-              <span className='rounded-full bg-slate-800 px-1.5 py-0.5 text-[10px] text-slate-300 font-mono'>1</span>
+              <span className='rounded-full bg-slate-800 px-1.5 py-0.5 text-[10px] text-purple-400 font-bold font-mono'>
+                1
+              </span>
             </Link>
           </div>
         )}

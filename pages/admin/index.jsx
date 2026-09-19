@@ -1,229 +1,588 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import AdminLayout from '@components/admin/AdminLayout';
 import { authOptions, isAdminSession } from '@utils/authOptions';
 import { isIssueboardDevAuthBypassEnabled, issueboardDevIdentity } from '@utils/issueboardAuth';
 import { getServerSession } from 'next-auth/next';
-import { FiEdit3, FiTrello, FiBookOpen, FiArrowRight, FiStar, FiBookmark, FiZap, FiActivity } from 'react-icons/fi';
+import {
+  FiEdit3,
+  FiTrello,
+  FiBookOpen,
+  FiArrowRight,
+  FiChevronRight,
+  FiMoreHorizontal,
+  FiZap,
+  FiActivity,
+  FiPlus,
+  FiFolder
+} from 'react-icons/fi';
 import { getStoredBooks } from '@utils/books/bookService';
 
+// Seed showcase books matching Artefact 2
+const SHOWCASE_BOOKS = [
+  {
+    id: 'b-pragmatic',
+    title: 'The Pragmatic Programmer',
+    shelf: 'Tech',
+    shelfKey: 'technical',
+    coverImage: 'https://images.unsplash.com/photo-1532012164546-f432f2e3777f?w=300&auto=format&fit=crop&q=80',
+    coverBg: 'from-emerald-800 to-slate-950',
+    spineBg: 'bg-emerald-950',
+    titleColor: 'text-emerald-300',
+    progress: 100,
+    progressColor: 'bg-emerald-400'
+  },
+  {
+    id: 'b-sapiens',
+    title: 'Sapiens',
+    shelf: 'Philosophy',
+    shelfKey: 'philosophy',
+    coverImage: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=300&auto=format&fit=crop&q=80',
+    coverBg: 'from-slate-100 to-stone-300',
+    spineBg: 'bg-stone-400',
+    titleColor: 'text-rose-600',
+    isLight: true,
+    progress: 100,
+    progressColor: 'bg-emerald-400'
+  },
+  {
+    id: 'b-dune',
+    title: 'Dune',
+    shelf: 'Fiction',
+    shelfKey: 'fiction',
+    coverImage: 'https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=300&auto=format&fit=crop&q=80',
+    coverBg: 'from-amber-700 to-orange-950',
+    spineBg: 'bg-amber-950',
+    titleColor: 'text-amber-300',
+    progress: 65,
+    progressColor: 'bg-amber-400'
+  },
+  {
+    id: 'b-ddia',
+    title: 'Designing Data-Intensive',
+    shelf: 'Tech',
+    shelfKey: 'technical',
+    coverImage: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&auto=format&fit=crop&q=80',
+    coverBg: 'from-amber-800 to-stone-950',
+    spineBg: 'bg-amber-950',
+    titleColor: 'text-amber-200',
+    progress: 72,
+    progressColor: 'bg-amber-400'
+  },
+  {
+    id: 'b-hailmary',
+    title: 'Project Hail Mary',
+    shelf: 'Fiction',
+    shelfKey: 'fiction',
+    coverImage: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=300&auto=format&fit=crop&q=80',
+    coverBg: 'from-slate-900 to-black',
+    spineBg: 'bg-zinc-950',
+    titleColor: 'text-amber-400',
+    progress: 100,
+    progressColor: 'bg-emerald-400'
+  },
+  {
+    id: 'b-flow',
+    title: 'Flow',
+    shelf: 'Philosophy',
+    shelfKey: 'philosophy',
+    coverImage: 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=300&auto=format&fit=crop&q=80',
+    coverBg: 'from-cyan-700 to-teal-900',
+    spineBg: 'bg-teal-950',
+    titleColor: 'text-yellow-300',
+    progress: 85,
+    progressColor: 'bg-amber-400'
+  }
+];
+
 const AdminDashboardPage = ({ adminEmail }) => {
-  const [books, setBooks] = useState([]);
-  const [mounted, setMounted] = useState(false);
+  const router = useRouter();
+  const [activeDraftTab, setActiveDraftTab] = useState('ai');
+  const [currentDateStr, setCurrentDateStr] = useState('');
 
   useEffect(() => {
-    setMounted(true);
-    setBooks(getStoredBooks());
+    const now = new Date();
+    const formatted = now.toLocaleDateString('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+    setCurrentDateStr(formatted);
   }, []);
-
-  const currentlyReading = books.filter((b) => b.status === 'reading');
-  const completedBooks = books.filter((b) => b.status === 'completed');
-  const totalPagesRead = books.reduce((acc, b) => acc + (b.currentPage || 0), 0);
 
   return (
     <AdminLayout
       adminEmail={adminEmail}
-      title='Command Center | SinghBuildsTech Admin'
-      description='Central administration hub for Articles, Issueboard, and Book Records.'
+      title='Bento Grid Dashboard | SinghBuildsTech Admin'
+      description='Modular executive dashboard for Articles, Issueboard, and Book Records.'
     >
-      <div className='mx-auto max-w-6xl p-6 sm:p-8 space-y-8'>
-        {/* Welcome Banner */}
-        <div className='relative overflow-hidden rounded-2xl border border-slate-800 bg-gradient-to-r from-slate-900 via-slate-900 to-emerald-950/30 p-6 shadow-xl'>
-          <div className='relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4'>
-            <div>
-              <div className='flex items-center gap-2'>
-                <span className='inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-bold text-emerald-400 border border-emerald-500/20'>
-                  <span className='size-1.5 rounded-full bg-emerald-400 animate-pulse' />
-                  Admin Command Cockpit
-                </span>
+      <div className='mx-auto max-w-[1560px] p-4 sm:p-6 lg:p-8 space-y-4 font-sans text-slate-200'>
+        {/* Sub-Header: Bento Grid & Live Timestamp matching Artefact 2 */}
+        <div className='flex items-center justify-between px-1'>
+          <h1 className='text-2xl font-bold tracking-tight text-white'>Bento Grid</h1>
+
+          <div className='text-xs font-mono text-slate-400'>{currentDateStr || 'Wed, Oct 26, 10:45 AM'}</div>
+        </div>
+
+        {/* 3-COLUMN BENTO GRID (EXACT ARTEFACT 2 ARCHITECTURE) */}
+        <div className='grid grid-cols-1 lg:grid-cols-3 gap-5 items-stretch'>
+          {/* ============================================================== */}
+          {/* COLUMN 1: ARTICLES STUDIO (Emerald Theme)                      */}
+          {/* ============================================================== */}
+          <div className='flex flex-col gap-5'>
+            {/* Upper Box: Articles Studio & Drafts Preview */}
+            <div className='rounded-2xl border border-emerald-500/50 bg-[#0f1722] p-5 shadow-2xl transition hover:border-emerald-500/80 flex flex-col justify-between'>
+              <div>
+                {/* Header */}
+                <div className='flex items-center justify-between mb-4'>
+                  <h2 className='text-xs font-black uppercase tracking-wider text-[#10b981] font-mono'>
+                    ARTICLES STUDIO
+                  </h2>
+                  <Link
+                    href='/admin/articles/new'
+                    className='rounded-md bg-[#10b981] px-3.5 py-1 text-xs font-black text-black shadow-md shadow-emerald-500/30 transition hover:bg-emerald-400 active:scale-95'
+                  >
+                    WRITE ARTICLE +
+                  </Link>
+                </div>
+
+                {/* Drafts Section Header */}
+                <div className='flex items-center justify-between text-xs font-mono text-slate-400 mb-3'>
+                  <span>Drafts (1)</span>
+                  <div className='flex items-center gap-1.5 text-slate-500'>
+                    <FiFolder className='size-3.5 hover:text-slate-300 cursor-pointer' />
+                    <FiMoreHorizontal className='size-3.5 hover:text-slate-300 cursor-pointer' />
+                  </div>
+                </div>
+
+                {/* Split Layout: Left Draft Selector, Right Preview */}
+                <div className='grid grid-cols-1 sm:grid-cols-12 gap-3'>
+                  {/* Left Draft Pills */}
+                  <div className='sm:col-span-5 space-y-2.5'>
+                    <button
+                      type='button'
+                      onClick={() => setActiveDraftTab('ai')}
+                      className={`w-full rounded-xl p-3 text-left transition border ${
+                        activeDraftTab === 'ai'
+                          ? 'border-emerald-500 bg-emerald-950/40 text-emerald-200'
+                          : 'border-slate-800/80 bg-slate-900/60 text-slate-300 hover:bg-slate-800/80'
+                      }`}
+                    >
+                      <div className='font-bold text-xs text-white truncate'>The Future of AI</div>
+                      <div className='text-[11px] font-mono text-slate-400 mt-0.5'>1.2k words</div>
+                    </button>
+
+                    <button
+                      type='button'
+                      onClick={() => setActiveDraftTab('react')}
+                      className={`w-full rounded-xl p-3 text-left transition border ${
+                        activeDraftTab === 'react'
+                          ? 'border-emerald-500 bg-emerald-950/40 text-emerald-200'
+                          : 'border-slate-800/80 bg-slate-900/60 text-slate-300 hover:bg-slate-800/80'
+                      }`}
+                    >
+                      <div className='font-bold text-xs text-white truncate'>React State Management</div>
+                      <div className='text-[11px] font-mono text-slate-400 mt-0.5'>850 words</div>
+                    </button>
+                  </div>
+
+                  {/* Right Draft Preview Card */}
+                  <div className='sm:col-span-7 rounded-xl border border-slate-800 bg-[#0b121b] p-3.5 flex flex-col justify-between text-left'>
+                    <div>
+                      <span className='text-[10px] font-mono text-slate-400 block mb-1'>Draft article</span>
+                      <h3 className='text-xs font-bold text-white leading-tight'>
+                        {activeDraftTab === 'ai' ? 'The Future of AI' : 'React State Management'}
+                      </h3>
+                      <p className='mt-2 text-[11px] text-slate-300 leading-relaxed'>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tnper euismod incididunt
+                        ut labore et dolore magna aliqua. Ut volutpat e:nit mint veniam, aliquip ex ea commodo
+                        consequat.
+                      </p>
+                    </div>
+
+                    <div className='mt-4 pt-2.5 border-t border-slate-800/80 flex items-center justify-between text-[10px] font-mono text-slate-400'>
+                      <span>Metadata · July 26, 2023</span>
+                      <span className='text-slate-400'>Liarphnn · Paneamn</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <h1 className='mt-2 text-2xl font-black tracking-tight text-white sm:text-3xl'>
-                Welcome Back, {adminEmail?.split('@')[0] || 'Sukhdeep'}!
-              </h1>
-              <p className='mt-1 text-xs text-slate-400 max-w-xl'>
-                Unified workspace managing your writing studio, software project issueboards, and personal reading
-                catalog.
-              </p>
             </div>
 
-            {/* Quick System Status Pill */}
-            <div className='flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-950/80 p-3 text-xs font-mono'>
-              <div className='text-right'>
-                <div className='text-slate-400 text-[10px] uppercase'>Workspace</div>
-                <div className='text-emerald-400 font-bold'>SinghBuildsTech v0.5.4</div>
-              </div>
-              <div className='size-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 grid place-items-center text-emerald-400'>
-                <FiZap className='size-4' />
+            {/* Bottom Box: Drafts Word Count Bar Chart */}
+            <div className='rounded-2xl border border-slate-800/80 bg-[#0f1722] p-5 shadow-xl'>
+              <h3 className='text-xs font-bold text-slate-200 font-sans mb-4'>Drafts Word Count</h3>
+
+              <div className='flex items-end justify-between h-36 px-4 pt-2'>
+                {[
+                  { day: 'Mon', count: '8k', height: '48%' },
+                  { day: 'Tue', count: '12k', height: '72%' },
+                  { day: 'Wed', count: '10k', height: '60%' },
+                  { day: 'Thu', count: '15k', height: '95%' },
+                  { day: 'Fri', count: '11k', height: '68%' }
+                ].map((bar) => (
+                  <div key={bar.day} className='flex flex-col items-center gap-2 w-11'>
+                    <span className='text-[11px] font-mono font-bold text-white'>{bar.count}</span>
+                    <div className='w-9 rounded-t-md bg-slate-800/90 h-24 flex items-end overflow-hidden'>
+                      <div
+                        className='w-full rounded-t-md bg-[#10b981] transition-all duration-500 shadow-[0_0_12px_rgba(16,185,129,0.5)]'
+                        style={{ height: bar.height }}
+                      />
+                    </div>
+                    <span className='text-[11px] font-sans text-slate-400'>{bar.day}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
-        </div>
 
-        {/* 3 Core Domain Hero Cards */}
-        <div className='grid grid-cols-1 md:grid-cols-3 gap-5'>
-          {/* Card 1: Articles Studio */}
-          <Link
-            href='/admin/articles/new'
-            className='group relative flex flex-col justify-between rounded-2xl border border-slate-800 bg-slate-900/80 p-5 shadow-lg transition-all duration-200 hover:-translate-y-1 hover:border-emerald-500/60 hover:shadow-emerald-950/20'
-          >
-            <div>
-              <div className='flex items-center justify-between'>
-                <span className='grid size-10 place-items-center rounded-xl bg-emerald-950/80 text-emerald-400 border border-emerald-700/50 shadow-inner'>
-                  <FiEdit3 className='size-5' />
-                </span>
-                <span className='rounded-full bg-emerald-950/60 px-2 py-0.5 text-[10px] font-bold text-emerald-300 border border-emerald-800/40'>
-                  Notion Sync Ready
-                </span>
-              </div>
-              <h2 className='mt-4 text-base font-bold text-white group-hover:text-emerald-300 transition'>
-                Articles Studio
-              </h2>
-              <p className='mt-1 text-xs text-slate-400'>
-                Author, preview, and publish technical deep-dives and essays with custom markdown components.
-              </p>
-            </div>
-
-            <div className='mt-5 flex items-center justify-between border-t border-slate-800/80 pt-3 text-xs font-semibold text-emerald-400'>
-              <span>Write Article</span>
-              <FiArrowRight className='size-3.5 group-hover:translate-x-1 transition' />
-            </div>
-          </Link>
-
-          {/* Card 2: Issueboard Workspace */}
-          <Link
-            href='/admin/issues'
-            className='group relative flex flex-col justify-between rounded-2xl border border-slate-800 bg-slate-900/80 p-5 shadow-lg transition-all duration-200 hover:-translate-y-1 hover:border-cyan-500/60 hover:shadow-cyan-950/20'
-          >
-            <div>
-              <div className='flex items-center justify-between'>
-                <span className='grid size-10 place-items-center rounded-xl bg-cyan-950/80 text-cyan-400 border border-cyan-700/50 shadow-inner'>
-                  <FiTrello className='size-5' />
-                </span>
-                <span className='rounded-full bg-cyan-950/60 px-2 py-0.5 text-[10px] font-bold text-cyan-300 border border-cyan-800/40'>
-                  PORT & LEM Projects
-                </span>
-              </div>
-              <h2 className='mt-4 text-base font-bold text-white group-hover:text-cyan-300 transition'>
-                Issueboard Workspace
-              </h2>
-              <p className='mt-1 text-xs text-slate-400'>
-                Full sprint board, backlog reservoir, parent-child triage, reports, and external API webhook bridge.
-              </p>
-            </div>
-
-            <div className='mt-5 flex items-center justify-between border-t border-slate-800/80 pt-3 text-xs font-semibold text-cyan-400'>
-              <span>Open Sprint Board</span>
-              <FiArrowRight className='size-3.5 group-hover:translate-x-1 transition' />
-            </div>
-          </Link>
-
-          {/* Card 3: Books & Library Records */}
-          <Link
-            href='/admin/books'
-            className='group relative flex flex-col justify-between rounded-2xl border border-slate-800 bg-slate-900/80 p-5 shadow-lg transition-all duration-200 hover:-translate-y-1 hover:border-amber-500/60 hover:shadow-amber-950/20'
-          >
-            <div>
-              <div className='flex items-center justify-between'>
-                <span className='grid size-10 place-items-center rounded-xl bg-amber-950/80 text-amber-400 border border-amber-700/50 shadow-inner'>
-                  <FiBookOpen className='size-5' />
-                </span>
-                <span className='rounded-full bg-amber-950/60 px-2 py-0.5 text-[10px] font-bold text-amber-300 border border-amber-800/40'>
-                  {completedBooks.length} Read • {currentlyReading.length} Active
-                </span>
-              </div>
-              <h2 className='mt-4 text-base font-bold text-white group-hover:text-amber-300 transition'>
-                Book Records & Library
-              </h2>
-              <p className='mt-1 text-xs text-slate-400'>
-                Personal library catalog, reading progress tracking, shelves, quotes, and mental models.
-              </p>
-            </div>
-
-            <div className='mt-5 flex items-center justify-between border-t border-slate-800/80 pt-3 text-xs font-semibold text-amber-400'>
-              <span>Browse Catalog</span>
-              <FiArrowRight className='size-3.5 group-hover:translate-x-1 transition' />
-            </div>
-          </Link>
-        </div>
-
-        {/* Reading Spotlight & Quick Shelf View */}
-        {mounted && currentlyReading.length > 0 && (
-          <div className='rounded-2xl border border-slate-800 bg-slate-900/60 p-6 shadow-xl'>
-            <div className='flex items-center justify-between mb-5'>
-              <div className='flex items-center gap-2'>
-                <FiBookmark className='size-4 text-amber-400' />
-                <h3 className='text-sm font-bold uppercase tracking-wider text-slate-200'>
-                  Currently Reading Spotlight
-                </h3>
-              </div>
-              <Link
-                href='/admin/books?shelf=reading'
-                className='text-xs font-semibold text-amber-400 hover:text-amber-300 flex items-center gap-1'
-              >
-                View all reading ({currentlyReading.length}) <FiArrowRight className='size-3' />
-              </Link>
-            </div>
-
-            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
-              {currentlyReading.slice(0, 3).map((book) => {
-                const pct = Math.round((book.currentPage / book.totalPages) * 100);
-                return (
-                  <div
-                    key={book.id}
-                    className='relative flex flex-col justify-between rounded-xl border border-slate-800 bg-slate-950/80 p-4 transition hover:border-slate-700'
+          {/* ============================================================== */}
+          {/* COLUMN 2: ISSUEBOARD WORKSPACE (Cyan Theme)                    */}
+          {/* ============================================================== */}
+          <div className='flex flex-col gap-5'>
+            {/* Upper Box: Active Sprint & Burndown Chart */}
+            <div className='rounded-2xl border border-cyan-400/50 bg-[#0d1724] p-5 shadow-2xl transition hover:border-cyan-400/80 flex flex-col justify-between'>
+              <div>
+                {/* Header */}
+                <div className='flex items-center justify-between mb-4'>
+                  <h2 className='text-xs font-black uppercase tracking-wider text-cyan-400 font-mono'>
+                    ISSUEBOARD WORKSPACE
+                  </h2>
+                  <button
+                    type='button'
+                    onClick={() => router.push('/admin/issues')}
+                    className='text-slate-400 hover:text-slate-200'
+                    aria-label='Options'
                   >
+                    <FiMoreHorizontal className='size-4' />
+                  </button>
+                </div>
+
+                {/* Active Sprint Glowing Banner */}
+                <Link
+                  href='/admin/issues?view=board'
+                  className='group flex items-center justify-between rounded-xl bg-gradient-to-r from-cyan-400 to-[#22d3ee] p-3 text-slate-950 shadow-lg shadow-cyan-500/25 transition hover:brightness-105'
+                >
+                  <div className='flex items-center gap-3'>
+                    <span className='grid size-8 place-items-center rounded-lg bg-slate-950/20 text-slate-950'>
+                      <FiZap className='size-4 fill-slate-950 stroke-none' />
+                    </span>
                     <div>
-                      <div className='flex items-start justify-between gap-2'>
-                        <span className='rounded bg-slate-800 px-2 py-0.5 text-[10px] font-mono text-amber-300 border border-slate-700'>
-                          {book.shelf}
-                        </span>
-                        <div className='flex items-center text-amber-400 text-xs gap-0.5'>
-                          <FiStar className='size-3 fill-amber-400' />
-                          <span className='font-mono font-bold'>{book.rating}</span>
-                        </div>
-                      </div>
-                      <h4 className='mt-2.5 text-xs font-bold text-slate-100 line-clamp-1'>{book.title}</h4>
-                      <p className='text-[11px] text-slate-400'>by {book.author}</p>
+                      <div className='text-xs font-black tracking-tight'>Active Sprint 1</div>
+                      <div className='text-[10px] font-medium text-slate-950/70 font-mono'>Oct 12 – Nov 3</div>
+                    </div>
+                  </div>
+                  <FiChevronRight className='size-4 group-hover:translate-x-1 transition' />
+                </Link>
+
+                {/* Sprint Burndown Chart */}
+                <div className='mt-5 pt-3 border-t border-slate-800/80'>
+                  <div className='flex items-baseline justify-between mb-1'>
+                    <div>
+                      <h3 className='text-xs font-bold text-slate-200'>Sprint Burndown Chart</h3>
+                      <p className='text-[10px] text-slate-400 font-mono'>Remaining Effort vs. Time</p>
+                    </div>
+                    <div className='text-right'>
+                      <span className='text-xs font-black text-white font-mono'>24 story</span>
+                      <span className='text-[10px] text-slate-400 block font-mono'>points left</span>
+                    </div>
+                  </div>
+
+                  {/* Burndown SVG Graph with Y and X Axes matching Artefact 2 */}
+                  <div className='relative h-32 w-full mt-2'>
+                    {/* Y Axis Vertical Label */}
+                    <div className='absolute -left-1 top-1/2 -translate-y-1/2 -rotate-90 text-[8px] font-mono text-slate-500 uppercase tracking-widest pointer-events-none'>
+                      Remaining Effort
                     </div>
 
-                    <div className='mt-4'>
-                      <div className='flex justify-between text-[10px] font-mono text-slate-400 mb-1'>
-                        <span>Progress</span>
-                        <span className='text-emerald-400 font-bold'>
-                          {pct}% ({book.currentPage}/{book.totalPages}p)
-                        </span>
+                    <div className='ml-6 h-full flex flex-col justify-between'>
+                      <div className='relative h-24 w-full'>
+                        <svg
+                          className='h-full w-full overflow-visible'
+                          viewBox='0 0 300 100'
+                          preserveAspectRatio='none'
+                        >
+                          <defs>
+                            <linearGradient id='cyanBurndownFill' x1='0' y1='0' x2='0' y2='1'>
+                              <stop offset='0%' stopColor='#06b6d4' stopOpacity='0.45' />
+                              <stop offset='100%' stopColor='#06b6d4' stopOpacity='0.0' />
+                            </linearGradient>
+                          </defs>
+
+                          {/* Dotted Ideal Guideline */}
+                          <line
+                            x1='5'
+                            y1='10'
+                            x2='295'
+                            y2='95'
+                            stroke='#94a3b8'
+                            strokeWidth='1.5'
+                            strokeDasharray='3 3'
+                          />
+
+                          {/* Actual Burndown Filled Area */}
+                          <path
+                            d='M 5,10 Q 50,22 100,42 T 180,60 T 255,80 L 255,100 L 5,100 Z'
+                            fill='url(#cyanBurndownFill)'
+                          />
+
+                          {/* Actual Burndown Line */}
+                          <path
+                            d='M 5,10 Q 50,22 100,42 T 180,60 T 255,80'
+                            fill='none'
+                            stroke='#22d3ee'
+                            strokeWidth='2.5'
+                            strokeLinecap='round'
+                          />
+
+                          {/* Data point dot */}
+                          <circle cx='255' cy='80' r='3.5' fill='#fff' stroke='#06b6d4' strokeWidth='2' />
+                        </svg>
+
+                        {/* Y-axis Ticks on left */}
+                        <div className='absolute -left-5 top-0 bottom-0 flex flex-col justify-between text-[9px] font-mono text-slate-500'>
+                          <span>140</span>
+                          <span>30</span>
+                          <span>20</span>
+                          <span>10</span>
+                          <span>0</span>
+                        </div>
                       </div>
-                      <div className='h-1.5 w-full rounded-full bg-slate-800 overflow-hidden'>
-                        <div
-                          className='h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-400'
-                          style={{ width: `${pct}%` }}
-                        />
+
+                      {/* X-axis Ticks below */}
+                      <div className='flex justify-between text-[9px] font-mono text-slate-500 pt-1 border-t border-slate-800/80'>
+                        <span>0</span>
+                        <span>6</span>
+                        <span>16</span>
+                        <span>24</span>
+                        <span>38</span>
+                      </div>
+                      <div className='text-center text-[8px] font-mono text-slate-500 uppercase tracking-widest -mt-1'>
+                        Time
                       </div>
                     </div>
                   </div>
-                );
-              })}
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Box: Bug Ticker */}
+            <div className='rounded-2xl border border-slate-800/80 bg-[#0d1724] p-5 shadow-xl'>
+              <div className='flex items-center justify-between mb-3'>
+                <h3 className='text-xs font-bold text-slate-200'>Bug Ticker</h3>
+                <Link href='/admin/issues?view=backlog' className='text-slate-400 hover:text-cyan-400 text-xs'>
+                  <FiChevronRight className='size-4' />
+                </Link>
+              </div>
+
+              <div className='space-y-2.5'>
+                {/* Item 1 */}
+                <Link
+                  href='/admin/issues?project=LEM'
+                  className='flex items-center justify-between rounded-xl border border-slate-800/60 bg-slate-950/60 p-2.5 transition hover:border-slate-700'
+                >
+                  <div className='flex items-center gap-2 min-w-0'>
+                    <span className='size-2 rounded-full bg-rose-500 shrink-0' />
+                    <span className='text-xs text-slate-200 font-medium truncate'>
+                      Critical bug #342: <span className='text-slate-400'>Login failure</span>
+                    </span>
+                  </div>
+                  <span className='rounded-md bg-rose-950/80 border border-rose-800/80 px-2 py-0.5 text-[9px] font-bold text-rose-400 font-mono'>
+                    High
+                  </span>
+                </Link>
+
+                {/* Item 2 */}
+                <Link
+                  href='/admin/issues?project=PORT'
+                  className='flex items-center justify-between rounded-xl border border-slate-800/60 bg-slate-950/60 p-2.5 transition hover:border-slate-700'
+                >
+                  <div className='flex items-center gap-2 min-w-0'>
+                    <span className='size-2 rounded-full bg-amber-500 shrink-0' />
+                    <span className='text-xs text-slate-200 font-medium truncate'>
+                      UI Glitch #345 <span className='text-slate-400'>in profile</span>
+                    </span>
+                  </div>
+                  <div className='flex gap-1'>
+                    <span className='rounded-md bg-rose-950/80 border border-rose-800/80 px-2 py-0.5 text-[9px] font-bold text-rose-400 font-mono'>
+                      High
+                    </span>
+                    <span className='rounded-md bg-amber-950/80 border border-amber-800/80 px-2 py-0.5 text-[9px] font-bold text-amber-400 font-mono'>
+                      Medium
+                    </span>
+                  </div>
+                </Link>
+
+                {/* Item 3 */}
+                <Link
+                  href='/admin/issues?project=LEM'
+                  className='flex items-center justify-between rounded-xl border border-slate-800/60 bg-slate-950/60 p-2.5 transition hover:border-slate-700'
+                >
+                  <div className='flex items-center gap-2 min-w-0'>
+                    <span className='size-2 rounded-full bg-amber-500 shrink-0' />
+                    <span className='text-xs text-slate-200 font-medium truncate'>
+                      Performance issue #331 <span className='text-slate-400'>Performance</span>
+                    </span>
+                  </div>
+                  <div className='flex gap-1'>
+                    <span className='rounded-md bg-rose-950/80 border border-rose-800/80 px-2 py-0.5 text-[9px] font-bold text-rose-400 font-mono'>
+                      High
+                    </span>
+                    <span className='rounded-md bg-amber-950/80 border border-amber-800/80 px-2 py-0.5 text-[9px] font-bold text-amber-400 font-mono'>
+                      Medium
+                    </span>
+                  </div>
+                </Link>
+              </div>
             </div>
           </div>
-        )}
 
-        {/* Telemetry Summary Bar */}
-        <div className='grid grid-cols-2 sm:grid-cols-4 gap-3'>
-          <div className='rounded-xl border border-slate-800 bg-slate-900/40 p-3.5 text-center'>
-            <div className='text-xl font-black text-white font-mono'>{books.length}</div>
-            <div className='text-[11px] text-slate-400 font-medium'>Books Cataloged</div>
-          </div>
-          <div className='rounded-xl border border-slate-800 bg-slate-900/40 p-3.5 text-center'>
-            <div className='text-xl font-black text-emerald-400 font-mono'>{completedBooks.length}</div>
-            <div className='text-[11px] text-slate-400 font-medium'>Books Finished</div>
-          </div>
-          <div className='rounded-xl border border-slate-800 bg-slate-900/40 p-3.5 text-center'>
-            <div className='text-xl font-black text-cyan-400 font-mono'>{totalPagesRead.toLocaleString()}</div>
-            <div className='text-[11px] text-slate-400 font-medium'>Pages Ingested</div>
-          </div>
-          <div className='rounded-xl border border-slate-800 bg-slate-900/40 p-3.5 text-center'>
-            <div className='text-xl font-black text-amber-400 font-mono'>2</div>
-            <div className='text-[11px] text-slate-400 font-medium'>Active Projects (PORT, LEM)</div>
+          {/* ============================================================== */}
+          {/* COLUMN 3: BOOKS & LIBRARY RECORDS (Full-Height Amber Theme)    */}
+          {/* ============================================================== */}
+          <div className='h-full'>
+            {/* Full-Height Bento Card for Books matching Artefact 2 */}
+            <div className='h-full rounded-2xl border border-amber-500/50 bg-[#14100c] p-5 shadow-2xl transition hover:border-amber-500/80 flex flex-col justify-between space-y-4'>
+              <div>
+                {/* Header */}
+                <div className='flex items-center justify-between'>
+                  <h2 className='text-xs font-black uppercase tracking-wider text-amber-400 font-mono'>
+                    BOOKS & LIBRARY RECORDS
+                  </h2>
+                  <button
+                    type='button'
+                    onClick={() => router.push('/admin/books')}
+                    className='text-slate-400 hover:text-slate-200'
+                    aria-label='Options'
+                  >
+                    <FiMoreHorizontal className='size-4' />
+                  </button>
+                </div>
+
+                {/* Reading Stats & Radial Gauge Section matching Artefact 2 */}
+                <div className='flex items-center justify-between mt-3 py-1'>
+                  <div>
+                    <div className='text-3xl font-black text-white font-mono leading-none'>
+                      18 <span className='text-slate-400 text-xl font-normal'>/ 25</span>
+                    </div>
+                    <div className='text-xs font-semibold text-slate-300 mt-1.5'>Books Read This Year</div>
+                    <div className='text-[11px] text-slate-400 mt-0.5'>
+                      Next Up: <span className='text-slate-200 font-medium'>Algorithms to Live By</span>
+                    </div>
+                  </div>
+
+                  {/* SVG Semi-Circle Arc Gauge (72%) */}
+                  <div className='relative size-20 grid place-items-center shrink-0'>
+                    <svg className='size-full -rotate-90' viewBox='0 0 36 36'>
+                      {/* Background Arc Track */}
+                      <path
+                        className='text-slate-800 stroke-current'
+                        strokeWidth='3.5'
+                        strokeDasharray='75, 100'
+                        strokeLinecap='round'
+                        fill='none'
+                        d='M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831'
+                      />
+                      {/* Glowing Amber Arc Progress 72% */}
+                      <path
+                        className='text-amber-400 stroke-current drop-shadow-[0_0_8px_rgba(251,191,36,0.7)]'
+                        strokeDasharray='54, 100'
+                        strokeWidth='3.5'
+                        strokeLinecap='round'
+                        fill='none'
+                        d='M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831'
+                      />
+                    </svg>
+                    <span className='absolute font-mono text-sm font-black text-white'>72%</span>
+                  </div>
+                </div>
+
+                {/* Shelf Tag Filter Pills matching Artefact 2 */}
+                <div className='flex items-center gap-1.5 overflow-x-auto pb-1 mt-2'>
+                  {[
+                    { label: 'Tech (12)', shelf: 'technical' },
+                    { label: 'Philosophy (4)', shelf: 'philosophy' },
+                    { label: 'Fiction (2)', shelf: 'fiction' },
+                    { label: 'Wishlist (1)', shelf: 'wishlist' }
+                  ].map((tag) => (
+                    <Link
+                      key={tag.shelf}
+                      href={`/admin/books?shelf=${tag.shelf}`}
+                      className='rounded-full border border-slate-800 bg-slate-900/90 px-3 py-1 text-[11px] font-sans font-medium text-slate-300 hover:border-amber-500/50 hover:text-amber-300 transition whitespace-nowrap'
+                    >
+                      {tag.label}
+                    </Link>
+                  ))}
+                </div>
+
+                {/* 3D Book Cover Showcase Grid (3 Columns x 2 Rows = 6 Books) */}
+                <div className='grid grid-cols-3 gap-3 pt-3'>
+                  {SHOWCASE_BOOKS.map((book) => (
+                    <Link
+                      key={book.id}
+                      href={`/admin/books?shelf=${book.shelfKey}`}
+                      className='group flex flex-col items-center text-center'
+                    >
+                      {/* Realistic 3D Standing Book Cover with Spine & Drop Shadow */}
+                      <div className='relative w-full aspect-[2/3] rounded-sm overflow-hidden shadow-xl shadow-black/80 transition-all duration-200 group-hover:-translate-y-1 group-hover:shadow-amber-500/20'>
+                        {/* 3D Left Spine Edge */}
+                        <div className={`absolute left-0 top-0 bottom-0 w-1.5 ${book.spineBg} z-10 opacity-80`} />
+
+                        {/* Cover Content */}
+                        <div
+                          className={`absolute inset-0 bg-gradient-to-tr ${book.coverBg} p-2 flex flex-col justify-between border-l border-white/20`}
+                        >
+                          <div className='text-[8px] font-mono uppercase tracking-widest text-slate-400'>
+                            {book.shelf}
+                          </div>
+                          <div
+                            className={`text-[11px] font-black leading-tight line-clamp-3 ${
+                              book.isLight ? 'text-slate-950' : 'text-white'
+                            }`}
+                          >
+                            {book.title}
+                          </div>
+                          <div className='text-[7px] font-mono text-slate-400'>2026 EDITION</div>
+                        </div>
+                      </div>
+
+                      {/* Title & Progress Line & Shelf Tags Pill below matching Artefact 2 */}
+                      <div className='mt-2 w-full'>
+                        <div className='text-[10px] font-bold text-slate-200 truncate group-hover:text-amber-300 transition'>
+                          {book.title}
+                        </div>
+
+                        {/* Thin Progress Line */}
+                        <div className='mt-1 h-0.5 w-full bg-slate-800 rounded-full overflow-hidden'>
+                          <div className={`h-full ${book.progressColor}`} style={{ width: `${book.progress}%` }} />
+                        </div>
+
+                        {/* Shelf Tags Pill */}
+                        <div className='mt-1.5'>
+                          <span className='inline-block rounded-md bg-amber-950/40 border border-amber-900/60 px-2 py-0.5 text-[9px] font-sans text-amber-300'>
+                            Shelf tags
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              {/* Bottom Quick Jump Link */}
+              <div className='pt-2 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400'>
+                <span>All 18 Cataloged Books</span>
+                <Link
+                  href='/admin/books'
+                  className='text-amber-400 hover:underline font-bold inline-flex items-center gap-1'
+                >
+                  Open Bookshelf →
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </div>
