@@ -33,7 +33,8 @@ const MarkdownToolbar = ({
   onHelp,
   showLineNumbers,
   onToggleLineNumbers,
-  compact = false
+  compact = false,
+  excludeFloatingTools = false
 }) => {
   const headings = useMemo(
     () =>
@@ -470,7 +471,21 @@ const MarkdownToolbar = ({
       </label>
       <span className={`${compact ? 'mx-0.5 h-5' : 'mx-1 h-6'} border-l border-slate-300 dark:border-slate-600`} />
       {tools
-        .filter(({ extended }) => !compact || !extended)
+        .filter(({ extended, title }) => {
+          if (
+            excludeFloatingTools &&
+            [
+              'Toggle bold (Ctrl/⌘ B)',
+              'Toggle italic (Ctrl/⌘ I)',
+              'Toggle highlighted text',
+              'Toggle link',
+              'Toggle inline code'
+            ].includes(title)
+          ) {
+            return false;
+          }
+          return !compact || !extended;
+        })
         .map(({ icon: Icon, title, action }) => (
           <button
             key={title}

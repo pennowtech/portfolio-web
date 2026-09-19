@@ -8,11 +8,14 @@ import { markdown as markdownLanguage } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
 import { EditorView } from '@codemirror/view';
 import { undo, redo } from '@codemirror/commands';
+import { FiMoreHorizontal, FiColumns, FiEye, FiCode, FiFileText } from 'react-icons/fi';
 import MarkdownToolbar from './MarkdownToolbar';
 import ArticleEditorHelp from './ArticleEditorHelp';
 import CoverImagePicker from './CoverImagePicker';
 import PublicationDatePicker from './PublicationDatePicker';
 import ArticleLibrary from './ArticleLibrary';
+import FrostedSelectionBubble from './admin/FrostedSelectionBubble';
+import AmbientWordMeter from './admin/AmbientWordMeter';
 
 const CodeMirror = dynamic(() => import('@uiw/react-codemirror'), {
   ssr: false,
@@ -87,6 +90,7 @@ const ArticleEditor = ({ adminEmail, defaultPublicationDate }) => {
   const [slugEdited, setSlugEdited] = useState(false);
   const [viewMode, setViewMode] = useState('split');
   const [showLineNumbers, setShowLineNumbers] = useState(true);
+  const [showMoreToolbar, setShowMoreToolbar] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState(null);
@@ -459,30 +463,74 @@ const ArticleEditor = ({ adminEmail, defaultPublicationDate }) => {
       </section>
 
       <div className='mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
-        <div>
-          <h2 className='font-Neuton text-2xl font-semibold text-slate-900 dark:text-white'>Article content</h2>
-          <p className='text-sm text-slate-500 dark:text-slate-400'>
-            Choose a focused view or work with source and preview together.
-          </p>
-        </div>
-        <div
-          className='flex rounded-lg border border-slate-300 p-1 dark:border-slate-600'
-          role='group'
-          aria-label='Editor view mode'
-        >
-          {['edit', 'preview', 'split'].map((view) => (
-            <button
-              key={view}
-              type='button'
-              onClick={() => setViewMode(view)}
-              aria-pressed={viewMode === view}
-              className={`min-h-11 flex-1 rounded-md px-4 py-2 font-Monda text-sm font-semibold capitalize ${
-                viewMode === view ? 'bg-green-700 text-white' : 'text-slate-700 dark:text-slate-200'
+        <div className='flex items-center gap-2.5'>
+          <div className='flex items-center gap-2 rounded-lg border border-slate-200/80 bg-slate-50/80 px-3 py-1.5 font-mono text-xs font-semibold text-slate-700 shadow-sm dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-200'>
+            <FiFileText className='size-3.5 text-emerald-600 dark:text-emerald-400' />
+            <span className='max-w-[180px] sm:max-w-[280px] truncate'>
+              {form.title ? `${form.title}.md` : 'Untitled Article.md'}
+            </span>
+            <span
+              className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold ${
+                editingPublished
+                  ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                  : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
               }`}
             >
-              {view}
-            </button>
-          ))}
+              <span
+                className={`size-1.5 rounded-full ${
+                  editingPublished ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'
+                }`}
+              />
+              {editingPublished ? 'Published' : 'Draft'}
+            </span>
+          </div>
+        </div>
+
+        <div className='flex items-center gap-2'>
+          <div
+            className='flex items-center rounded-lg border border-slate-200 bg-slate-100/80 p-0.5 dark:border-slate-800 dark:bg-slate-900'
+            role='group'
+            aria-label='Editor view mode'
+          >
+            {[
+              { id: 'edit', label: 'Edit', icon: FiCode },
+              { id: 'split', label: 'Split', icon: FiColumns },
+              { id: 'preview', label: 'Preview', icon: FiEye }
+            ].map(({ id, label, icon: Icon }) => (
+              <button
+                key={id}
+                type='button'
+                onClick={() => setViewMode(id)}
+                aria-pressed={viewMode === id}
+                className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 font-Monda text-xs font-semibold capitalize transition ${
+                  viewMode === id
+                    ? 'bg-white text-emerald-700 shadow-sm dark:bg-emerald-600 dark:text-white'
+                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100'
+                }`}
+              >
+                <Icon className='size-3.5' />
+                <span>{label}</span>
+              </button>
+            ))}
+          </div>
+
+          <button
+            type='button'
+            onClick={() => setShowMoreToolbar((prev) => !prev)}
+            aria-pressed={showMoreToolbar}
+            title={
+              showMoreToolbar
+                ? 'Hide extended markdown toolbar'
+                : 'Show extended markdown tools (Headings, Tables, Lists, Code, Embeds)'
+            }
+            className={`flex size-8 items-center justify-center rounded-lg border text-sm transition ${
+              showMoreToolbar
+                ? 'border-emerald-500 bg-emerald-50 text-emerald-700 shadow-[0_0_10px_rgba(16,185,129,0.2)] dark:border-emerald-500/50 dark:bg-emerald-950/40 dark:text-emerald-300'
+                : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800'
+            }`}
+          >
+            <FiMoreHorizontal className='size-4' />
+          </button>
         </div>
       </div>
 
@@ -494,15 +542,24 @@ const ArticleEditor = ({ adminEmail, defaultPublicationDate }) => {
           <div className='min-w-0'>
             <div
               onKeyDownCapture={handleEditorShortcut}
-              className='overflow-hidden rounded-xl border border-slate-300 shadow-sm dark:border-slate-600'
+              className='relative overflow-hidden rounded-xl border border-slate-300 shadow-sm dark:border-slate-700'
             >
-              <MarkdownToolbar
-                getEditorView={getEditorView}
-                markdown={form.markdown}
-                onHelp={() => setHelpOpen(true)}
-                showLineNumbers={showLineNumbers}
-                onToggleLineNumbers={() => setShowLineNumbers((current) => !current)}
-              />
+              {showMoreToolbar && (
+                <div className='border-b border-slate-200/80 bg-slate-50/70 dark:border-slate-700/80 dark:bg-slate-900/70'>
+                  <MarkdownToolbar
+                    getEditorView={getEditorView}
+                    markdown={form.markdown}
+                    onHelp={() => setHelpOpen(true)}
+                    showLineNumbers={showLineNumbers}
+                    onToggleLineNumbers={() => setShowLineNumbers((current) => !current)}
+                    excludeFloatingTools={true}
+                  />
+                </div>
+              )}
+
+              {/* Frosted Floating Selection Bubble */}
+              <FrostedSelectionBubble getEditorView={getEditorView} />
+
               <CodeMirror
                 value={form.markdown}
                 minHeight='650px'
@@ -523,6 +580,9 @@ const ArticleEditor = ({ adminEmail, defaultPublicationDate }) => {
                 }}
                 onChange={(value) => update('markdown', value || '')}
               />
+
+              {/* Ambient Circular Word & Reading Pace Meter */}
+              <AmbientWordMeter wordCount={wordCount} charCount={form.markdown.length} />
             </div>
             <div className='mt-2 flex justify-between text-xs text-slate-500 dark:text-slate-400'>
               <span>Markdown, GFM tables, task lists, code fences, HTML and custom article elements</span>
