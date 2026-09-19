@@ -240,11 +240,11 @@ export const AdminSpatialPalette = ({ isOpen, onClose, onOpenQuickAdd }) => {
     <div
       role='dialog'
       aria-modal='true'
-      className='fixed inset-0 z-50 flex items-start justify-center bg-slate-950/80 p-4 pt-16 backdrop-blur-md animate-in fade-in duration-150'
+      className='fixed inset-0 z-50 flex items-start justify-center bg-slate-950/55 p-4 pt-16 backdrop-blur-[2px] animate-in fade-in duration-150'
       onClick={onClose}
     >
       <div
-        className='relative w-full max-w-2xl overflow-hidden rounded-2xl border border-emerald-500/40 bg-slate-900/95 shadow-[0_0_50px_rgba(16,185,129,0.2)] backdrop-blur-2xl'
+        className='relative w-full max-w-2xl overflow-hidden rounded-2xl border border-emerald-500/40 bg-slate-900/98 shadow-[0_0_50px_rgba(16,185,129,0.2)]'
         onClick={(e) => e.stopPropagation()}
         onKeyDown={handleKeyDown}
       >

@@ -101,8 +101,8 @@ const CommandPalette = () => {
   const filtered = allActions.filter((a) => a.title.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <div className='fixed inset-0 z-50 flex items-start justify-center bg-slate-950/70 p-4 pt-20 backdrop-blur-md animate-in fade-in duration-150'>
-      <div className='w-full max-w-lg overflow-hidden rounded-2xl border border-emerald-500/40 bg-slate-900 shadow-[0_0_40px_rgba(16,185,129,0.2)] backdrop-blur-xl'>
+    <div className='fixed inset-0 z-50 flex items-start justify-center bg-slate-950/55 p-4 pt-20 backdrop-blur-[2px] animate-in fade-in duration-150'>
+      <div className='w-full max-w-lg overflow-hidden rounded-2xl border border-emerald-500/40 bg-slate-900/98 shadow-[0_0_40px_rgba(16,185,129,0.2)]'>
         {/* Glowing Search Bar */}
         <div className='border-b border-slate-800 bg-slate-950/70 p-3'>
           <div className='relative flex items-center gap-3 rounded-xl border border-emerald-500/50 bg-slate-950/90 px-3.5 py-2.5 shadow-[0_0_20px_rgba(16,185,129,0.22)] transition-all duration-200 focus-within:border-emerald-400 focus-within:shadow-[0_0_30px_rgba(16,185,129,0.4)]'>
