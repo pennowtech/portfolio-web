@@ -331,7 +331,7 @@ const AdminDashboardPage = ({ adminEmail }) => {
           {/* ============================================================== */}
           <div className='flex flex-col gap-5 h-full'>
             {/* Upper Box: Active Sprint & Burndown Chart */}
-            <div className='rounded-2xl border border-cyan-400/50 bg-[#0d1724] p-4 sm:p-5 shadow-2xl transition hover:border-cyan-400/80 flex flex-col justify-between flex-[1.2] overflow-hidden'>
+            <div className='rounded-2xl border border-cyan-400/50 bg-[#0d1724] p-4 sm:p-5 shadow-2xl transition hover:border-cyan-400/80 flex flex-col justify-between flex-[1.2]'>
               <div>
                 {/* Header */}
                 <div className='flex items-center justify-between mb-3'>
@@ -367,7 +367,7 @@ const AdminDashboardPage = ({ adminEmail }) => {
 
                 {/* Sprint Burndown Chart */}
                 <div className='mt-3.5 pt-2.5 border-t border-slate-800/80'>
-                  <div className='flex items-baseline justify-between mb-1'>
+                  <div className='flex items-baseline justify-between mb-1.5'>
                     <div>
                       <h3 className='text-xs font-bold text-slate-200'>Sprint Burndown Chart</h3>
                       <p className='text-[10px] text-slate-400 font-mono'>Remaining Effort vs. Time</p>
@@ -379,19 +379,25 @@ const AdminDashboardPage = ({ adminEmail }) => {
                   </div>
 
                   {/* Burndown SVG Graph with Y and X Axes matching Artefact 2 */}
-                  <div className='relative h-28 sm:h-32 w-full mt-1.5'>
-                    {/* Y Axis Vertical Label */}
-                    <div className='absolute -left-1 top-1/2 -translate-y-1/2 -rotate-90 text-[8px] font-mono text-slate-500 uppercase tracking-widest pointer-events-none'>
-                      Remaining Effort
+                  <div className='flex items-end gap-2 mt-2 w-full'>
+                    {/* Y Axis Vertical Label & Ticks */}
+                    <div className='flex items-center gap-1 shrink-0'>
+                      <div className='text-[8px] font-mono text-slate-500 uppercase tracking-widest -rotate-90 origin-center whitespace-nowrap -ml-2 select-none'>
+                        Effort
+                      </div>
+                      <div className='flex flex-col justify-between h-24 text-[9px] font-mono text-slate-400 text-right pr-1 select-none'>
+                        <span>140</span>
+                        <span>30</span>
+                        <span>20</span>
+                        <span>10</span>
+                        <span>0</span>
+                      </div>
                     </div>
 
-                    <div className='ml-6 h-full flex flex-col justify-between'>
-                      <div className='relative h-20 sm:h-22 w-full'>
-                        <svg
-                          className='h-full w-full overflow-visible'
-                          viewBox='0 0 300 100'
-                          preserveAspectRatio='none'
-                        >
+                    {/* Main Chart Area */}
+                    <div className='flex-1 min-w-0 flex flex-col justify-between'>
+                      <div className='relative h-24 w-full'>
+                        <svg className='h-full w-full' viewBox='0 0 300 100' preserveAspectRatio='none'>
                           <defs>
                             <linearGradient id='cyanBurndownFill' x1='0' y1='0' x2='0' y2='1'>
                               <stop offset='0%' stopColor='#06b6d4' stopOpacity='0.45' />
@@ -428,26 +434,17 @@ const AdminDashboardPage = ({ adminEmail }) => {
                           {/* Data point dot */}
                           <circle cx='255' cy='80' r='3.5' fill='#fff' stroke='#06b6d4' strokeWidth='2' />
                         </svg>
-
-                        {/* Y-axis Ticks on left */}
-                        <div className='absolute -left-5 top-0 bottom-0 flex flex-col justify-between text-[9px] font-mono text-slate-500'>
-                          <span>140</span>
-                          <span>30</span>
-                          <span>20</span>
-                          <span>10</span>
-                          <span>0</span>
-                        </div>
                       </div>
 
                       {/* X-axis Ticks below */}
-                      <div className='flex justify-between text-[8.5px] font-mono text-slate-500 pt-0.5 border-t border-slate-800/80 leading-tight'>
+                      <div className='flex justify-between text-[9px] font-mono text-slate-400 pt-1 border-t border-slate-800/80'>
                         <span>0</span>
                         <span>6</span>
                         <span>16</span>
                         <span>24</span>
                         <span>38</span>
                       </div>
-                      <div className='text-center text-[7.5px] font-mono text-slate-500 uppercase tracking-widest leading-none pt-0.5'>
+                      <div className='text-center text-[8px] font-mono text-slate-500 uppercase tracking-widest pt-0.5'>
                         Time
                       </div>
                     </div>
@@ -592,66 +589,26 @@ const AdminDashboardPage = ({ adminEmail }) => {
                       href={`/admin/books?shelf=${book.shelfKey}`}
                       className='group flex flex-col items-center text-center'
                     >
-                      {/* 3D Diagonal Standing Book with Isometric Perspective matching Artefact 2 */}
-                      <div className='relative w-full aspect-[2/3] [perspective:800px] flex items-center justify-center pt-1 pb-2'>
-                        {/* Elliptical Shelf Drop Shadow */}
-                        <div className='absolute bottom-1 left-2 right-0 h-3 rounded-full bg-black/85 blur-[5px] -rotate-3 transition-all duration-300 group-hover:scale-90 group-hover:blur-[7px]' />
+                      {/* Realistic 3D Standing Book Cover with Spine & Drop Shadow */}
+                      <div className='relative w-full aspect-[2/3] rounded-sm overflow-hidden shadow-xl shadow-black/80 transition-all duration-200 group-hover:-translate-y-1 group-hover:shadow-amber-500/20'>
+                        {/* 3D Left Spine Edge */}
+                        <div className={`absolute left-0 top-0 bottom-0 w-1.5 ${book.spineBg} z-10 opacity-80`} />
 
-                        {/* 3D Angled Book Structure (Diagonal Isometric View) */}
+                        {/* Cover Content */}
                         <div
-                          className='relative w-[88%] h-full rounded-r-sm rounded-l-[1px] overflow-hidden transition-all duration-300 transform-gpu [transform-style:preserve-3d] shadow-[-10px_14px_22px_rgba(0,0,0,0.85),-2px_4px_8px_rgba(0,0,0,0.5)] group-hover:-translate-y-2 group-hover:shadow-amber-500/20'
-                          style={{
-                            transform: 'rotateY(-24deg) rotateX(8deg) rotateZ(0.5deg)'
-                          }}
+                          className={`absolute inset-0 bg-gradient-to-tr ${book.coverBg} p-2 flex flex-col justify-between border-l border-white/20`}
                         >
-                          {/* Left 3D Spine Thickness Edge with Crease Lighting */}
-                          <div
-                            className={`absolute left-0 top-0 bottom-0 w-3 ${book.spineBg} z-20 shadow-[inset_-3px_0_5px_rgba(0,0,0,0.7)] border-r border-black/50`}
-                          />
-                          {/* Spine Crease / Hinge Highlight */}
-                          <div className='absolute left-3 top-0 bottom-0 w-[1.5px] bg-white/20 z-20' />
-
-                          {/* Top Paper Pages Rim */}
-                          <div className='absolute right-0 top-0 left-3 h-[2.5px] bg-gradient-to-r from-stone-400 via-stone-200 to-stone-300 z-20 opacity-90' />
-                          {/* Right Paper Pages Edge */}
-                          <div className='absolute right-0 top-0 bottom-0 w-[2.5px] bg-gradient-to-b from-stone-300 via-stone-200 to-stone-400 z-20 opacity-90' />
-
-                          {/* Front Cover Face with Lighting Sheen */}
-                          <div
-                            className={`absolute inset-0 bg-gradient-to-tr ${book.coverBg} pl-4.5 pr-2.5 py-2.5 flex flex-col justify-between`}
-                          >
-                            {/* Dynamic 3D diagonal lighting sheen */}
-                            <div className='absolute inset-0 bg-gradient-to-r from-white/15 via-transparent to-black/40 pointer-events-none' />
-
-                            {/* Top Header on Cover */}
-                            <div className='relative z-10'>
-                              <div
-                                className={`text-[7.5px] font-mono uppercase tracking-widest ${
-                                  book.isLight ? 'text-slate-500' : 'text-slate-400'
-                                }`}
-                              >
-                                {book.shelf}
-                              </div>
-                              <div
-                                className={`mt-1 text-[11px] font-black leading-tight line-clamp-3 ${
-                                  book.titleColor || (book.isLight ? 'text-slate-950' : 'text-white')
-                                }`}
-                              >
-                                {book.title}
-                              </div>
-                            </div>
-
-                            {/* Bottom Footer on Cover */}
-                            <div className='relative z-10'>
-                              <div
-                                className={`text-[6.5px] font-mono tracking-wider ${
-                                  book.isLight ? 'text-slate-500' : 'text-slate-400'
-                                }`}
-                              >
-                                2026 EDITION
-                              </div>
-                            </div>
+                          <div className='text-[8px] font-mono uppercase tracking-widest text-slate-400'>
+                            {book.shelf}
                           </div>
+                          <div
+                            className={`text-[11px] font-black leading-tight line-clamp-3 ${
+                              book.isLight ? 'text-slate-950' : 'text-white'
+                            }`}
+                          >
+                            {book.title}
+                          </div>
+                          <div className='text-[7px] font-mono text-slate-400'>2026 EDITION</div>
                         </div>
                       </div>
 
