@@ -97,53 +97,58 @@ const SHOWCASE_BOOKS = [
 ];
 
 const TOP_ARTICLE_CATEGORIES = [
-  { name: 'Software Architecture', count: 14, pct: 100 },
-  { name: 'Distributed Systems', count: 9, pct: 64 },
-  { name: 'Full-Stack & React', count: 7, pct: 50 },
-  { name: 'DevOps & Reliability', count: 5, pct: 36 },
-  { name: 'AI & Agentic Workflows', count: 4, pct: 28 }
+  { name: 'Tech Talks', count: 6, pct: 75 },
+  { name: 'System Design', count: 1, pct: 20 },
+  { name: 'Programming', count: 1, pct: 20 },
+  { name: 'Software Architecture', count: 2, pct: 25, isDraft: true },
+  { name: 'Distributed Platforms', count: 1, pct: 15, isDraft: true }
 ];
 
 const TICKER_ISSUES = [
   {
     key: 'PORT-1',
+    type: 'task',
     title: 'Wire issue service to real Supabase data',
     project: 'PORT',
-    projectColor: 'bg-cyan-950/80 text-cyan-300 border-cyan-700/60',
+    projectColor: 'border-cyan-500/40 bg-cyan-950/80 text-cyan-300',
     status: 'In progress',
-    statusColor: 'bg-amber-950/80 text-amber-300 border-amber-700/60'
+    statusColor: 'border-amber-500/40 bg-amber-950/80 text-amber-300'
   },
   {
-    key: 'LEM-12',
-    title: 'Audio sync pipeline latency calibration',
+    key: 'LEM-1',
+    type: 'bug',
+    title: 'Voice dictation cuts off mid-sentence',
     project: 'LEM',
-    projectColor: 'bg-purple-950/80 text-purple-300 border-purple-700/60',
+    projectColor: 'border-purple-500/40 bg-purple-950/80 text-purple-300',
     status: 'In progress',
-    statusColor: 'bg-amber-950/80 text-amber-300 border-amber-700/60'
+    statusColor: 'border-amber-500/40 bg-amber-950/80 text-amber-300'
   },
   {
     key: 'PORT-26',
+    type: 'bug',
     title: 'Interactive ticket triage and label clipping',
     project: 'PORT',
-    projectColor: 'bg-cyan-950/80 text-cyan-300 border-cyan-700/60',
+    projectColor: 'border-cyan-500/40 bg-cyan-950/80 text-cyan-300',
     status: 'To do',
-    statusColor: 'bg-sky-950/80 text-sky-300 border-sky-700/60'
+    statusColor: 'border-sky-500/40 bg-sky-950/80 text-sky-300'
   },
   {
-    key: 'PORT-34',
-    title: 'Implement epic hierarchy and milestone rollups',
+    key: 'PORT-39',
+    type: 'story',
+    title: 'Full Feature API Issue with Image and Checklist',
     project: 'PORT',
-    projectColor: 'bg-cyan-950/80 text-cyan-300 border-cyan-700/60',
+    projectColor: 'border-cyan-500/40 bg-cyan-950/80 text-cyan-300',
     status: 'To do',
-    statusColor: 'bg-sky-950/80 text-sky-300 border-sky-700/60'
+    statusColor: 'border-sky-500/40 bg-sky-950/80 text-sky-300'
   },
   {
-    key: 'LEM-8',
-    title: 'Session authentication token refresh retry',
+    key: 'LEM-2',
+    type: 'bug',
+    title: 'Crash when playing lesson audio',
     project: 'LEM',
-    projectColor: 'bg-purple-950/80 text-purple-300 border-purple-700/60',
+    projectColor: 'border-purple-500/40 bg-purple-950/80 text-purple-300',
     status: 'To do',
-    statusColor: 'bg-sky-950/80 text-sky-300 border-sky-700/60'
+    statusColor: 'border-sky-500/40 bg-sky-950/80 text-sky-300'
   }
 ];
 
@@ -270,8 +275,8 @@ const AdminDashboardPage = ({ adminEmail }) => {
                   <span className='size-2 rounded-full bg-[#10b981]' />
                   Top 5 Categories
                 </h3>
-                <Link href='/admin/articles/new' className='text-[11px] font-mono text-emerald-400 hover:underline'>
-                  39 Articles →
+                <Link href='/page' className='text-[11px] font-mono text-emerald-400 hover:underline'>
+                  8 Published Articles →
                 </Link>
               </div>
 
@@ -467,13 +472,13 @@ const AdminDashboardPage = ({ adminEmail }) => {
                     <div className='flex items-center gap-1.5 shrink-0'>
                       {/* Project Code Capsule */}
                       <span
-                        className={`rounded px-2 py-0.5 text-[10px] font-mono font-bold border ${issue.projectColor}`}
+                        className={`rounded-full px-2.5 py-0.5 text-[10px] font-mono font-bold border shadow-sm ${issue.projectColor}`}
                       >
                         {issue.project}
                       </span>
                       {/* Status Capsule */}
                       <span
-                        className={`rounded px-2 py-0.5 text-[10px] font-mono font-semibold border ${issue.statusColor}`}
+                        className={`rounded-full px-2.5 py-0.5 text-[10px] font-mono font-semibold border shadow-sm ${issue.statusColor}`}
                       >
                         {issue.status}
                       </span>
@@ -545,7 +550,7 @@ const AdminDashboardPage = ({ adminEmail }) => {
                 </div>
 
                 {/* Shelf Tag Filter Pills matching Artefact 2 */}
-                <div className='flex items-center gap-1.5 overflow-x-auto pb-1 mt-2'>
+                <div className='flex items-center gap-1.5 overflow-x-auto my-1'>
                   {[
                     { label: 'Tech (12)', shelf: 'technical' },
                     { label: 'Philosophy (4)', shelf: 'philosophy' },
@@ -555,7 +560,7 @@ const AdminDashboardPage = ({ adminEmail }) => {
                     <Link
                       key={tag.shelf}
                       href={`/admin/books?shelf=${tag.shelf}`}
-                      className='rounded-full border border-slate-800 bg-slate-900/90 px-3 py-1 text-[11px] font-sans font-medium text-slate-300 hover:border-amber-500/50 hover:text-amber-300 transition whitespace-nowrap'
+                      className='rounded-full border border-slate-800 bg-slate-900/90 px-2.5 py-0.5 text-[10px] font-sans font-medium text-slate-300 hover:border-amber-500/50 hover:text-amber-300 transition whitespace-nowrap'
                     >
                       {tag.label}
                     </Link>
@@ -605,8 +610,8 @@ const AdminDashboardPage = ({ adminEmail }) => {
                         </div>
 
                         {/* Shelf Tags Pill */}
-                        <div className='mt-1.5'>
-                          <span className='inline-block rounded-md bg-amber-950/40 border border-amber-900/60 px-2 py-0.5 text-[9px] font-sans text-amber-300'>
+                        <div className='mt-1'>
+                          <span className='inline-block rounded-full bg-amber-950/40 border border-amber-900/60 px-2 py-0.5 text-[9px] font-sans text-amber-300'>
                             Shelf tags
                           </span>
                         </div>

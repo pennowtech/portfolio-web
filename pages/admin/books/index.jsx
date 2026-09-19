@@ -215,7 +215,7 @@ const BooksPage = ({ adminEmail }) => {
                     setActiveShelf(shelf.id);
                     router.push(`/admin/books?shelf=${shelf.id}`, undefined, { shallow: true });
                   }}
-                  className={`inline-flex items-center gap-2 rounded-xl px-3.5 py-1.5 text-xs font-semibold transition ${
+                  className={`inline-flex items-center gap-2 rounded-xl px-3 py-1 text-xs font-semibold transition ${
                     isSelected
                       ? 'bg-amber-500 text-black font-bold shadow-md shadow-amber-500/25'
                       : 'bg-slate-900/90 text-slate-300 border border-slate-800 hover:border-slate-700 hover:text-white'
@@ -292,12 +292,12 @@ const BooksPage = ({ adminEmail }) => {
               return (
                 <section
                   key={shelfDef.id}
-                  className={`rounded-2xl border ${shelfDef.borderColor} bg-slate-900/60 p-5 sm:p-6 shadow-xl space-y-4`}
+                  className={`rounded-2xl border ${shelfDef.borderColor} bg-slate-900/60 px-5 py-3.5 sm:px-6 sm:py-4 shadow-xl space-y-3`}
                 >
                   {/* Category Shelf Header */}
-                  <div className='flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800/80 pb-3'>
+                  <div className='flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800/80 pb-2'>
                     <div className='flex items-center gap-3'>
-                      <div className={`p-2 rounded-xl bg-slate-950 border border-slate-800 ${shelfDef.accentColor}`}>
+                      <div className={`p-1.5 rounded-xl bg-slate-950 border border-slate-800 ${shelfDef.accentColor}`}>
                         <ShelfIcon className='size-4' />
                       </div>
                       <div>
@@ -329,7 +329,7 @@ const BooksPage = ({ adminEmail }) => {
 
                   {/* Books Row / Grid under this Shelf */}
                   {shelfBooks.length === 0 ? (
-                    <div className='py-8 text-center text-xs text-slate-500 font-mono'>
+                    <div className='py-6 text-center text-xs text-slate-500 font-mono'>
                       No books matching your search in this shelf.
                     </div>
                   ) : (
@@ -349,7 +349,7 @@ const BooksPage = ({ adminEmail }) => {
 
                             <div className='p-4 space-y-3'>
                               <div className='flex items-center justify-between'>
-                                <span className='rounded bg-slate-900 px-2 py-0.5 text-[10px] font-mono font-semibold text-amber-300 border border-slate-800'>
+                                <span className='rounded-full bg-slate-900 px-2 py-0.5 text-[10px] font-mono font-semibold text-amber-300 border border-slate-800'>
                                   {shelfDef.title.split(' ')[0]}
                                 </span>
                                 <div className='flex items-center gap-1 text-amber-400 text-xs'>
