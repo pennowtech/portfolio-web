@@ -334,35 +334,38 @@ export const AdminSpatialPalette = ({ isOpen, onClose, onOpenQuickAdd }) => {
           </div>
         </div>
 
-        {/* Omnisearch Input Field (Border removed as requested) */}
-        <div className='relative flex items-center gap-3 border-b border-slate-800/80 bg-slate-950/60 px-4 py-3.5 shadow-[0_0_20px_rgba(16,185,129,0.12)]'>
-          <span className='grid size-7 shrink-0 place-items-center rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/50 shadow-[0_0_10px_rgba(16,185,129,0.5)]'>
-            <FiSearch className='size-3.5 drop-shadow-[0_0_5px_rgba(16,185,129,0.8)]' />
-          </span>
-          <input
-            ref={inputRef}
-            type='text'
-            value={query}
-            onChange={(e) => {
-              setQuery(e.target.value);
-              setSelectedIndex(0);
-            }}
-            placeholder='Search articles, books, tickets (LEM-1, PORT-38), or actions…'
-            className='w-full bg-transparent text-sm font-medium text-slate-100 placeholder-slate-400 outline-none'
-          />
-          {query ? (
-            <button
-              type='button'
-              onClick={() => setQuery('')}
-              className='rounded-md bg-slate-800 px-2 py-0.5 text-xs text-slate-300 hover:bg-slate-700 hover:text-white transition'
-            >
-              Clear
-            </button>
-          ) : (
-            <span className='hidden sm:inline-flex items-center gap-1 rounded-md border border-emerald-500/40 bg-emerald-950/60 px-2 py-0.5 font-mono text-[10px] font-bold text-emerald-300 shadow-[0_0_8px_rgba(16,185,129,0.25)]'>
-              ESC
+        {/* Omnisearch Glowing Search Box Container */}
+        <div className='border-b border-slate-800/80 bg-slate-950/70 p-3'>
+          <div className='relative flex items-center gap-3 rounded-xl border border-emerald-500/50 bg-slate-950/90 px-3.5 py-2.5 shadow-[0_0_20px_rgba(16,185,129,0.22)] transition-all duration-200 focus-within:border-emerald-400 focus-within:shadow-[0_0_30px_rgba(16,185,129,0.4)]'>
+            <span className='grid size-7 shrink-0 place-items-center rounded-lg bg-emerald-500/20 text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.5)]'>
+              <FiSearch className='size-3.5 drop-shadow-[0_0_5px_rgba(16,185,129,0.8)]' />
             </span>
-          )}
+            <input
+              ref={inputRef}
+              type='text'
+              value={query}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                setSelectedIndex(0);
+              }}
+              placeholder='Search articles, books, tickets (LEM-1, PORT-38), or actions…'
+              className='w-full !border-0 !border-none bg-transparent text-sm font-medium text-slate-100 placeholder-slate-400 !outline-none !ring-0 !shadow-none focus:!border-0 focus:!border-none focus:!outline-none focus:!ring-0'
+              style={{ border: 'none', outline: 'none', boxShadow: 'none' }}
+            />
+            {query ? (
+              <button
+                type='button'
+                onClick={() => setQuery('')}
+                className='rounded-md bg-slate-800 px-2 py-0.5 text-xs text-slate-300 hover:bg-slate-700 hover:text-white transition'
+              >
+                Clear
+              </button>
+            ) : (
+              <span className='hidden sm:inline-flex items-center gap-1 rounded-md border border-emerald-500/40 bg-emerald-950/60 px-2 py-0.5 font-mono text-[10px] font-bold text-emerald-300 shadow-[0_0_8px_rgba(16,185,129,0.25)]'>
+                ESC
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Results List */}
