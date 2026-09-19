@@ -103,30 +103,28 @@ const CommandPalette = () => {
   return (
     <div className='fixed inset-0 z-50 flex items-start justify-center bg-slate-950/70 p-4 pt-20 backdrop-blur-md animate-in fade-in duration-150'>
       <div className='w-full max-w-lg overflow-hidden rounded-2xl border border-emerald-500/40 bg-slate-900 shadow-[0_0_40px_rgba(16,185,129,0.2)] backdrop-blur-xl'>
-        {/* Glowing Search Bar */}
-        <div className='border-b border-slate-800 bg-slate-950/70 p-3'>
-          <div className='relative flex items-center gap-3 rounded-xl border border-emerald-500/50 bg-slate-950/90 px-3.5 py-2.5 shadow-[0_0_20px_rgba(16,185,129,0.22)] transition-all duration-200 focus-within:border-emerald-400 focus-within:shadow-[0_0_30px_rgba(16,185,129,0.4)]'>
-            <span className='grid size-7 shrink-0 place-items-center rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/50 shadow-[0_0_10px_rgba(16,185,129,0.5)]'>
-              <FaSearch className='size-3 drop-shadow-[0_0_5px_rgba(16,185,129,0.8)]' />
-            </span>
-            <input
-              type='text'
-              autoFocus
-              placeholder='Search articles, pages, or commands (ESC to close)...'
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className='w-full bg-transparent font-Monda text-sm font-medium text-slate-100 placeholder-slate-400 outline-none'
-            />
-            {search && (
-              <button
-                type='button'
-                onClick={() => setSearch('')}
-                className='rounded bg-slate-800 px-2 py-0.5 text-xs text-slate-300 hover:bg-slate-700'
-              >
-                Clear
-              </button>
-            )}
-          </div>
+        {/* Glowing Search Bar (Border removed) */}
+        <div className='flex items-center gap-3 border-b border-slate-800 bg-slate-950/70 px-4 py-3 shadow-[0_0_20px_rgba(16,185,129,0.12)]'>
+          <span className='grid size-7 shrink-0 place-items-center rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/50 shadow-[0_0_10px_rgba(16,185,129,0.5)]'>
+            <FaSearch className='size-3 drop-shadow-[0_0_5px_rgba(16,185,129,0.8)]' />
+          </span>
+          <input
+            type='text'
+            autoFocus
+            placeholder='Search articles, pages, or commands (ESC to close)...'
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className='w-full bg-transparent font-Monda text-sm font-medium text-slate-100 placeholder-slate-400 outline-none'
+          />
+          {search && (
+            <button
+              type='button'
+              onClick={() => setSearch('')}
+              className='rounded bg-slate-800 px-2 py-0.5 text-xs text-slate-300 hover:bg-slate-700'
+            >
+              Clear
+            </button>
+          )}
         </div>
         <ul className='m-0 max-h-80 list-none overflow-y-auto p-2.5 space-y-1'>
           {filtered.map((action) => {

@@ -45,33 +45,8 @@ const Sidebar = ({ adminEmail, currentView, currentProject, projects = [] }) => 
         >
           <FiArrowLeft className='size-3.5' /> Admin Command Hub
         </Link>
-        <div className='mt-2 flex items-center gap-1.5'>
-          <Link
-            href='/admin/articles/new'
-            title='Articles Studio'
-            className='flex-1 text-center py-1 px-1.5 rounded-lg border border-emerald-800/80 bg-emerald-900/40 text-[11px] font-medium text-emerald-200/80 hover:bg-emerald-800 hover:text-white transition'
-          >
-            Articles
-          </Link>
-          <Link
-            href='/admin/books'
-            title='Book Records & Library'
-            className='flex-1 text-center py-1 px-1.5 rounded-lg border border-emerald-800/80 bg-emerald-900/40 text-[11px] font-medium text-emerald-200/80 hover:bg-emerald-800 hover:text-white transition'
-          >
-            Books
-          </Link>
-        </div>
       </div>
 
-      <div className='flex items-center gap-3 px-2 pb-6'>
-        <div className='grid size-10 place-items-center rounded-xl bg-emerald-300 font-Inter font-bold text-emerald-950'>
-          IB
-        </div>
-        <div>
-          <strong className='block font-Inter text-base'>Issueboard</strong>
-          <span className='text-xs text-emerald-200/60'>SinghBuildsTech workspace</span>
-        </div>
-      </div>
       <div className='relative'>
         <button
           type='button'
@@ -81,7 +56,6 @@ const Sidebar = ({ adminEmail, currentView, currentProject, projects = [] }) => 
           className='flex w-full items-center justify-between rounded-xl border border-emerald-800 bg-emerald-900/70 px-3 py-2.5 text-left disabled:cursor-default'
         >
           <span className='min-w-0'>
-            <small className='block text-[10px] text-emerald-200/60'>Current project</small>
             <strong className='block truncate text-sm'>{currentProject?.name || 'No project'}</strong>
           </span>
           {projects.length > 0 && <FiChevronDown aria-hidden='true' className='shrink-0' />}
