@@ -16,15 +16,27 @@ export const readRawBody = (req, maxBytes = MAX_REQUEST_BODY_BYTES) =>
   new Promise((resolve, reject) => {
     const chunks = [];
     let total = 0;
+    let tooLarge = false;
     req.on('data', (chunk) => {
       total += chunk.length;
       if (total > maxBytes) {
-        req.destroy();
-        reject(new RequestBodyTooLargeError());
+        // Don't req.destroy() here -- that tears down the underlying socket
+        // (verified: the caller's res.status(413) never reaches the client,
+        // it just sees a connection reset), which defeats the point of
+        // returning a clean error. Instead keep draining without buffering
+        // further chunks, so memory stays bounded but the socket -- and the
+        // ability to write a real response on it -- stays alive.
+        tooLarge = true;
         return;
       }
       chunks.push(chunk);
     });
-    req.on('end', () => resolve(Buffer.concat(chunks)));
+    req.on('end', () => {
+      if (tooLarge) {
+        reject(new RequestBodyTooLargeError());
+        return;
+      }
+      resolve(Buffer.concat(chunks));
+    });
     req.on('error', reject);
   });
