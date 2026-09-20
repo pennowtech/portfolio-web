@@ -16,12 +16,10 @@ export default async function handler(req, res) {
   if (typeof provider !== 'string') return res.status(400).json({ ok: false, message: 'A provider is required.' });
 
   try {
-    // Listing models is a cheap, read-only call that proves the key and base
-    // URL actually work, without spending real completion tokens.
     const models = await listModels(provider, { apiKey: typeof apiKey === 'string' ? apiKey.trim() : '', baseUrl });
-    return res.status(200).json({ ok: true, message: `Connected. ${models.length} model(s) available.` });
+    return res.status(200).json({ ok: true, models });
   } catch (error) {
     if (error instanceof AiProviderError) return res.status(200).json({ ok: false, message: error.message });
-    return res.status(502).json({ ok: false, message: error.message || 'Connection test failed.' });
+    return res.status(502).json({ ok: false, message: error.message || 'Could not list models.' });
   }
 }

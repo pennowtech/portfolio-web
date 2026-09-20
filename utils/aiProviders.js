@@ -1,0 +1,103 @@
+// Shared server-side logic for talking to AI providers: listing models and
+// running a chat completion. Used by pages/api/admin/ai-test-connection.js,
+// ai-list-models.js, and ai-rephrase.js so provider-specific request shapes
+// (OpenAI-style chat/completions vs Anthropic's Messages API) live in one
+// place instead of three.
+const DEFAULT_BASE_URLS = {
+  groq: 'https://api.groq.com/openai/v1',
+  openai: 'https://api.openai.com/v1',
+  ollama: 'http://localhost:11434/v1',
+  anthropic: 'https://api.anthropic.com/v1'
+};
+
+const OPENAI_COMPATIBLE = new Set(['groq', 'openai', 'ollama']);
+
+export const resolveBaseUrl = (provider, baseUrl) => baseUrl?.trim() || DEFAULT_BASE_URLS[provider] || '';
+
+export class AiProviderError extends Error {}
+
+export const listModels = async (provider, { apiKey, baseUrl } = {}) => {
+  if (provider === 'builtin') return ['heuristic-transformer'];
+
+  const resolvedBaseUrl = resolveBaseUrl(provider, baseUrl);
+
+  if (OPENAI_COMPATIBLE.has(provider)) {
+    const headers = apiKey ? { Authorization: `Bearer ${apiKey}` } : {};
+    const response = await fetch(`${resolvedBaseUrl.replace(/\/$/, '')}/models`, { headers });
+    if (!response.ok) throw new AiProviderError(`Provider returned HTTP ${response.status} listing models.`);
+    const data = await response.json();
+    return (data.data || []).map((m) => m.id).sort();
+  }
+
+  if (provider === 'anthropic') {
+    if (!apiKey) throw new AiProviderError('API key is required for Anthropic.');
+    const response = await fetch('https://api.anthropic.com/v1/models', {
+      headers: { 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' }
+    });
+    if (!response.ok) throw new AiProviderError(`Anthropic returned HTTP ${response.status} listing models.`);
+    const data = await response.json();
+    return (data.data || []).map((m) => m.id).sort();
+  }
+
+  throw new AiProviderError(`Unknown provider "${provider}".`);
+};
+
+// Rough token estimate (chars/3.2 is a reasonable average for English prose)
+// used only to size max_tokens generously enough that a whole-article
+// rephrase isn't truncated.
+const estimateTokens = (text) => Math.ceil((text || '').length / 3.2);
+
+export const chatComplete = async (provider, { apiKey, baseUrl, model, systemPrompt, userText, temperature = 0.3 }) => {
+  const maxTokens = Math.min(8192, Math.max(1024, estimateTokens(userText) * 2));
+
+  if (OPENAI_COMPATIBLE.has(provider)) {
+    const resolvedBaseUrl = resolveBaseUrl(provider, baseUrl);
+    const headers = { 'Content-Type': 'application/json', ...(apiKey ? { Authorization: `Bearer ${apiKey}` } : {}) };
+    const response = await fetch(`${resolvedBaseUrl.replace(/\/$/, '')}/chat/completions`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        model,
+        temperature,
+        max_tokens: maxTokens,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userText }
+        ]
+      })
+    });
+    if (!response.ok) {
+      const detail = await response.text().catch(() => '');
+      throw new AiProviderError(`Provider returned HTTP ${response.status}. ${detail.slice(0, 300)}`);
+    }
+    const data = await response.json();
+    const content = data.choices?.[0]?.message?.content;
+    if (!content) throw new AiProviderError('Provider response did not include any content.');
+    return content;
+  }
+
+  if (provider === 'anthropic') {
+    if (!apiKey) throw new AiProviderError('API key is required for Anthropic.');
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify({
+        model,
+        max_tokens: maxTokens,
+        temperature,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userText }]
+      })
+    });
+    if (!response.ok) {
+      const detail = await response.text().catch(() => '');
+      throw new AiProviderError(`Anthropic returned HTTP ${response.status}. ${detail.slice(0, 300)}`);
+    }
+    const data = await response.json();
+    const content = data.content?.[0]?.text;
+    if (!content) throw new AiProviderError('Anthropic response did not include any content.');
+    return content;
+  }
+
+  throw new AiProviderError(`Unknown provider "${provider}".`);
+};
