@@ -39,6 +39,18 @@ const PROVIDER_PRESETS = {
     defaultBaseUrl: 'http://localhost:11434/v1',
     fallbackModels: ['deepseek-r1:14b', 'llama3.2:latest', 'qwen2.5-coder:7b']
   },
+  mistral: {
+    label: 'Mistral',
+    defaultModel: 'mistral-large-latest',
+    defaultBaseUrl: 'https://api.mistral.ai/v1',
+    fallbackModels: ['mistral-large-latest', 'mistral-small-latest', 'codestral-latest']
+  },
+  gemini: {
+    label: 'Gemini',
+    defaultModel: 'gemini-2.0-flash',
+    defaultBaseUrl: 'https://generativelanguage.googleapis.com/v1beta/openai',
+    fallbackModels: ['gemini-2.0-flash', 'gemini-1.5-pro', 'gemini-1.5-flash']
+  },
   builtin: {
     label: 'Built-in Rules (No API Key)',
     defaultModel: 'heuristic-transformer',
@@ -213,25 +225,17 @@ export const AIConfigModal = ({ isOpen, onClose, onSave }) => {
             <label className='block font-semibold text-slate-700 dark:text-slate-200 mb-1.5'>
               AI Inference Provider
             </label>
-            <div className='grid grid-cols-2 sm:grid-cols-3 gap-1.5'>
+            <select
+              value={config.provider}
+              onChange={(e) => handleProviderChange(e.target.value)}
+              className='w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-900 outline-none transition focus:border-purple-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white'
+            >
               {Object.entries(PROVIDER_PRESETS).map(([key, preset]) => (
-                <button
-                  key={key}
-                  type='button'
-                  onClick={() => handleProviderChange(key)}
-                  className={`flex flex-col items-start rounded-lg border p-2 text-left transition ${
-                    config.provider === key
-                      ? 'border-purple-500 bg-purple-50/60 text-purple-900 dark:bg-purple-950/40 dark:text-purple-200 dark:border-purple-500/60 shadow-2xs'
-                      : 'border-slate-200 bg-slate-50/70 text-slate-700 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-950/60 dark:text-slate-300'
-                  }`}
-                >
-                  <span className='font-bold truncate w-full'>{preset.label.split(' ')[0]}</span>
-                  <span className='text-[10px] text-slate-400 truncate w-full'>
-                    {preset.label.includes('(') ? preset.label.match(/\((.*?)\)/)?.[1] : 'Cloud API'}
-                  </span>
-                </button>
+                <option key={key} value={key}>
+                  {preset.label}
+                </option>
               ))}
-            </div>
+            </select>
           </div>
 
           {/* Model Selection & API Key */}
