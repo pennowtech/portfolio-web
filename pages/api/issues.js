@@ -1,21 +1,14 @@
 import { isIssueboardSupabaseConfigured, normalizeIssueboardDatastoreError } from '@utils/issueboard/supabaseAdmin';
-import { issueboardRequestId } from '@utils/issueboard/api';
+import { consumeIssueboardRateLimit, issueboardRequestId } from '@utils/issueboard/api';
 import { authenticateExternalApi } from '@utils/issueboard/externalAuth';
 import { createExternalIssue } from '@utils/issueboard/externalIssueService';
+import { readRawBody, RequestBodyTooLargeError } from '@utils/issueboard/readRawBody';
 
 export const config = {
   api: {
     bodyParser: false
   }
 };
-
-const readRawBody = (req) =>
-  new Promise((resolve, reject) => {
-    const chunks = [];
-    req.on('data', (chunk) => chunks.push(chunk));
-    req.on('end', () => resolve(Buffer.concat(chunks)));
-    req.on('error', reject);
-  });
 
 const parseJsonSafe = (str) => {
   try {
@@ -96,12 +89,27 @@ export default async function handler(req, res) {
     });
   }
 
+  // 5. Rate Limit
+  const allowed = await consumeIssueboardRateLimit({
+    actor: auth.actor,
+    operation: 'external-issues:create',
+    limit: 30,
+    windowSeconds: 60
+  });
+  if (!allowed) {
+    return res.status(429).json({
+      ok: false,
+      requestId,
+      error: { code: 'RATE_LIMITED', message: 'Too many requests. Try again shortly.' }
+    });
+  }
+
   try {
     const rawBuffer = await readRawBody(req);
     const contentType = req.headers['content-type'] || '';
     let payload = {};
 
-    // 5. Parse Payload (Multipart form or JSON)
+    // 6. Parse Payload (Multipart form or JSON)
     if (contentType.includes('multipart/form-data')) {
       const host = req.headers['x-forwarded-host'] || req.headers.host || 'localhost';
       const proto = req.headers['x-forwarded-proto'] || 'http';
@@ -177,7 +185,7 @@ export default async function handler(req, res) {
       }
     }
 
-    // 6. Validate Required Fields
+    // 7. Validate Required Fields
     if (!payload.projectKey || typeof payload.projectKey !== 'string') {
       return res.status(400).json({
         ok: false,
@@ -194,7 +202,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // 7. Create Issue via External Issue Service
+    // 8. Create Issue via External Issue Service
     const createdIssue = await createExternalIssue(payload, auth.actor);
 
     return res.status(201).json({
@@ -203,6 +211,13 @@ export default async function handler(req, res) {
       issue: createdIssue
     });
   } catch (error) {
+    if (error instanceof RequestBodyTooLargeError) {
+      return res.status(413).json({
+        ok: false,
+        requestId,
+        error: { code: 'PAYLOAD_TOO_LARGE', message: error.message }
+      });
+    }
     console.error('Error in /api/issues:', error);
     if (error.code === 'PROJECT_NOT_FOUND' || error.status === 404) {
       return res.status(404).json({
