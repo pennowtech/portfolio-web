@@ -7,10 +7,14 @@ const DEFAULT_BASE_URLS = {
   groq: 'https://api.groq.com/openai/v1',
   openai: 'https://api.openai.com/v1',
   ollama: 'http://localhost:11434/v1',
-  anthropic: 'https://api.anthropic.com/v1'
+  anthropic: 'https://api.anthropic.com/v1',
+  mistral: 'https://api.mistral.ai/v1',
+  // Google's OpenAI-compatibility layer: same /chat/completions and /models
+  // shapes as OpenAI, so it doesn't need a bespoke integration like Anthropic.
+  gemini: 'https://generativelanguage.googleapis.com/v1beta/openai'
 };
 
-const OPENAI_COMPATIBLE = new Set(['groq', 'openai', 'ollama']);
+const OPENAI_COMPATIBLE = new Set(['groq', 'openai', 'ollama', 'mistral', 'gemini']);
 
 export const resolveBaseUrl = (provider, baseUrl) => baseUrl?.trim() || DEFAULT_BASE_URLS[provider] || '';
 
