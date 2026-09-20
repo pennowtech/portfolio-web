@@ -171,9 +171,6 @@ const CoverImagePicker = ({
                 placeholder='https://images.unsplash.com/…'
                 className='w-full rounded-lg border border-slate-200 bg-slate-50/70 px-2.5 py-1.5 text-xs font-normal text-slate-900 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-500/20 dark:border-slate-700 dark:bg-slate-950/70 dark:text-white'
               />
-              <p className='text-[10px] text-slate-500 dark:text-slate-400'>
-                Paste a public HTTPS image URL from your CDN, Imgur, or cloud storage.
-              </p>
               <div className='flex flex-wrap items-center gap-1.5 pt-1'>
                 <span className='text-[10px] font-medium text-slate-400'>Free assets:</span>
                 {[
