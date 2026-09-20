@@ -15,6 +15,7 @@ import ArticleEditorHelp from './ArticleEditorHelp';
 import ArticleLibrary from './ArticleLibrary';
 import ArticleInspector from './admin/ArticleInspector';
 import AIConfigModal from './admin/AIConfigModal';
+import AIRephraseModal from './admin/AIRephraseModal';
 import FrostedSelectionBubble from './admin/FrostedSelectionBubble';
 import AmbientWordMeter from './admin/AmbientWordMeter';
 
@@ -104,6 +105,7 @@ const ArticleEditor = ({ adminEmail, defaultPublicationDate }) => {
   const [editingPublished, setEditingPublished] = useState(false);
   const [zenMode, setZenMode] = useState(false);
   const [aiModalOpen, setAiModalOpen] = useState(false);
+  const [rephraseTarget, setRephraseTarget] = useState(null); // { text, from, to, whole }
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -238,6 +240,21 @@ const ArticleEditor = ({ adminEmail, defaultPublicationDate }) => {
       [name]: value,
       ...(name === 'title' && !slugEdited ? { slug: slugify(value) } : {})
     }));
+  };
+
+  const applyRephraseResult = (newText) => {
+    if (!rephraseTarget) return;
+    if (rephraseTarget.whole) {
+      update('markdown', newText);
+      return;
+    }
+    const editorView = getEditorView();
+    if (!editorView) return;
+    editorView.dispatch({
+      changes: { from: rephraseTarget.from, to: rephraseTarget.to, insert: newText },
+      selection: { anchor: rephraseTarget.from, head: rephraseTarget.from + newText.length }
+    });
+    editorView.focus();
   };
 
   const save = async (published) => {
@@ -390,6 +407,18 @@ const ArticleEditor = ({ adminEmail, defaultPublicationDate }) => {
                 <span className='hidden sm:inline'>{zenMode ? 'Exit Zen' : 'Zen'}</span>
               </button>
 
+              {/* AI Rephrase Whole Article Button -- selection has its own trigger via FrostedSelectionBubble */}
+              <button
+                type='button'
+                onClick={() => setRephraseTarget({ text: form.markdown, whole: true })}
+                disabled={!form.markdown.trim()}
+                className='flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50/80 px-2.5 py-1.5 font-Monda text-xs font-semibold text-slate-700 shadow-2xs transition hover:border-emerald-500 hover:text-emerald-700 hover:bg-emerald-50/20 disabled:opacity-50 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300 dark:hover:border-emerald-500/50 dark:hover:text-emerald-300'
+                title='AI Rephrase the whole article (select text instead to rephrase just that part)'
+              >
+                <LuSparkles className='size-3.5 text-emerald-600 dark:text-emerald-400' />
+                <span className='hidden sm:inline'>AI Rephrase</span>
+              </button>
+
               {/* AI Configure Button */}
               <button
                 type='button'
@@ -453,7 +482,10 @@ const ArticleEditor = ({ adminEmail, defaultPublicationDate }) => {
                   />
 
                   {/* Frosted Floating Selection Bubble */}
-                  <FrostedSelectionBubble getEditorView={getEditorView} />
+                  <FrostedSelectionBubble
+                    getEditorView={getEditorView}
+                    onAIRephrase={({ text, from, to }) => setRephraseTarget({ text, from, to, whole: false })}
+                  />
 
                   <CodeMirror
                     value={form.markdown}
@@ -583,6 +615,13 @@ const ArticleEditor = ({ adminEmail, defaultPublicationDate }) => {
       </div>
       <ArticleEditorHelp open={helpOpen} onClose={() => setHelpOpen(false)} />
       <AIConfigModal isOpen={aiModalOpen} onClose={() => setAiModalOpen(false)} />
+      <AIRephraseModal
+        isOpen={!!rephraseTarget}
+        text={rephraseTarget?.text || ''}
+        scopeLabel={rephraseTarget?.whole ? 'whole article' : 'selected text'}
+        onApply={applyRephraseResult}
+        onClose={() => setRephraseTarget(null)}
+      />
     </main>
   );
 };
