@@ -9,10 +9,12 @@ import { languages } from '@codemirror/language-data';
 import { EditorView } from '@codemirror/view';
 import { undo, redo } from '@codemirror/commands';
 import { FiMoreHorizontal, FiColumns, FiEye, FiCode, FiFileText } from 'react-icons/fi';
+import { LuSparkles, LuMaximize2, LuMinimize2 } from 'react-icons/lu';
 import MarkdownToolbar from './MarkdownToolbar';
 import ArticleEditorHelp from './ArticleEditorHelp';
 import ArticleLibrary from './ArticleLibrary';
 import ArticleInspector from './admin/ArticleInspector';
+import AIConfigModal from './admin/AIConfigModal';
 import FrostedSelectionBubble from './admin/FrostedSelectionBubble';
 import AmbientWordMeter from './admin/AmbientWordMeter';
 
@@ -100,6 +102,18 @@ const ArticleEditor = ({ adminEmail, defaultPublicationDate }) => {
   const [editingArticleId, setEditingArticleId] = useState('');
   const [articleLoading, setArticleLoading] = useState(false);
   const [editingPublished, setEditingPublished] = useState(false);
+  const [zenMode, setZenMode] = useState(false);
+  const [aiModalOpen, setAiModalOpen] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape' && zenMode) {
+        setZenMode(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [zenMode]);
 
   useEffect(() => {
     setMounted(true);
@@ -313,37 +327,24 @@ const ArticleEditor = ({ adminEmail, defaultPublicationDate }) => {
 
   return (
     <main className='mx-auto w-full max-w-[1720px] px-3 py-6 sm:px-6 lg:px-8'>
-      <div className='mb-6 flex flex-col gap-4 border-b border-slate-200 pb-5 dark:border-slate-700 sm:flex-row sm:items-end sm:justify-between'>
-        <div>
-          <p className='font-Monda text-sm font-medium uppercase tracking-[0.16em] text-green-700 dark:text-green-400'>
-            Private author workspace
-          </p>
-          <h1 className='mt-1 font-Neuton text-4xl font-semibold text-slate-900 dark:text-white md:text-5xl'>
-            {editingArticleId ? 'Edit article' : 'New article'}
-          </h1>
-          <p className='mt-1 text-sm text-slate-500 dark:text-slate-300'>Signed in as {adminEmail}</p>
-        </div>
-        <div className='flex items-center gap-3 self-start'>
-          <button
-            type='button'
-            onClick={logout}
-            className='text-sm font-medium text-slate-600 underline underline-offset-4 dark:text-slate-300'
-          >
-            Sign out
-          </button>
-        </div>
-      </div>
-
-      <div className='grid gap-6 xl:grid-cols-[280px_minmax(0,1fr)_340px] 2xl:grid-cols-[310px_minmax(0,1fr)_380px] items-start'>
+      <div
+        className={`grid gap-6 items-start transition-all duration-300 ${
+          zenMode
+            ? 'mx-auto max-w-4xl grid-cols-1'
+            : 'xl:grid-cols-[280px_minmax(0,1fr)_340px] 2xl:grid-cols-[310px_minmax(0,1fr)_380px]'
+        }`}
+      >
         {/* Left Column: Concept 4 Interactive Drafts Deck */}
-        <aside className='min-w-0 xl:sticky xl:top-6'>
-          <ArticleLibrary
-            articles={taxonomy.articles}
-            loading={taxonomyLoading}
-            message={taxonomyMessage}
-            activeArticleId={editingArticleId}
-          />
-        </aside>
+        {!zenMode && (
+          <aside className='min-w-0 xl:sticky xl:top-6'>
+            <ArticleLibrary
+              articles={taxonomy.articles}
+              loading={taxonomyLoading}
+              message={taxonomyMessage}
+              activeArticleId={editingArticleId}
+            />
+          </aside>
+        )}
 
         {/* Center Column: Pure Editor Canvas */}
         <div className='min-w-0'>
@@ -373,6 +374,34 @@ const ArticleEditor = ({ adminEmail, defaultPublicationDate }) => {
             </div>
 
             <div className='flex items-center gap-2'>
+              {/* Zen Mode Button */}
+              <button
+                type='button'
+                onClick={() => setZenMode((prev) => !prev)}
+                aria-pressed={zenMode}
+                className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 font-Monda text-xs font-semibold transition ${
+                  zenMode
+                    ? 'border-emerald-500 bg-emerald-500/10 text-emerald-700 shadow-2xs dark:border-emerald-500/40 dark:bg-emerald-500/20 dark:text-emerald-300'
+                    : 'border-slate-200 bg-slate-50/80 text-slate-700 hover:border-emerald-500 hover:text-emerald-700 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300 dark:hover:border-emerald-500/50 dark:hover:text-emerald-300'
+                }`}
+                title={zenMode ? 'Exit Zen Mode (Esc)' : 'Enter Zen distraction-free writing mode'}
+              >
+                {zenMode ? <LuMinimize2 className='size-3.5' /> : <LuMaximize2 className='size-3.5' />}
+                <span className='hidden sm:inline'>{zenMode ? 'Exit Zen' : 'Zen'}</span>
+              </button>
+
+              {/* AI Configure Button */}
+              <button
+                type='button'
+                onClick={() => setAiModalOpen(true)}
+                className='flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50/80 px-2.5 py-1.5 font-Monda text-xs font-semibold text-slate-700 shadow-2xs transition hover:border-purple-500 hover:text-purple-700 hover:bg-purple-50/20 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300 dark:hover:border-purple-500/50 dark:hover:text-purple-300'
+                title='Configure AI Assistant Engine & Writing Tone'
+              >
+                <LuSparkles className='size-3.5 text-purple-600 dark:text-purple-400' />
+                <span className='hidden sm:inline'>AI Config</span>
+              </button>
+
+              {/* View Mode Switcher */}
               <div
                 className='flex items-center rounded-lg border border-slate-200 bg-slate-100/80 p-0.5 dark:border-slate-800 dark:bg-slate-900'
                 role='group'
@@ -428,8 +457,8 @@ const ArticleEditor = ({ adminEmail, defaultPublicationDate }) => {
 
                   <CodeMirror
                     value={form.markdown}
-                    minHeight='650px'
-                    maxHeight='650px'
+                    minHeight={zenMode ? '720px' : '650px'}
+                    maxHeight={zenMode ? '85vh' : '650px'}
                     theme={editorTheme}
                     extensions={editorExtensions}
                     basicSetup={{
@@ -450,19 +479,17 @@ const ArticleEditor = ({ adminEmail, defaultPublicationDate }) => {
                   {/* Ambient Circular Word & Reading Pace Meter */}
                   <AmbientWordMeter wordCount={wordCount} charCount={form.markdown.length} />
                 </div>
-                <div className='mt-2 flex justify-between text-xs text-slate-500 dark:text-slate-400'>
-                  <span>Markdown, GFM tables, task lists, code fences, HTML and custom article elements</span>
-                  <span>
-                    {wordCount.toLocaleString()} words · {form.markdown.length.toLocaleString()} characters
-                  </span>
-                </div>
                 <FieldError>{errors.markdown}</FieldError>
               </div>
             )}
 
             {viewMode !== 'edit' && (
               <div className='min-w-0'>
-                <div className='h-[650px] overflow-y-auto rounded-xl border border-slate-300 bg-white p-5 shadow-sm dark:border-slate-600 dark:bg-slate-900 md:p-8'>
+                <div
+                  className={`overflow-y-auto rounded-xl border border-slate-300 bg-white p-5 shadow-sm dark:border-slate-600 dark:bg-slate-900 md:p-8 ${
+                    zenMode ? 'h-[720px]' : 'h-[650px]'
+                  }`}
+                >
                   <ArticlePreview
                     mdxSource={`${form.markdown}${
                       form.coverCredit
@@ -477,7 +504,11 @@ const ArticleEditor = ({ adminEmail, defaultPublicationDate }) => {
 
           {message && (
             <div
-              className={`mt-6 rounded-lg px-4 py-3 text-sm ${message.type === 'success' ? 'bg-green-50 text-green-900 dark:bg-green-950/40 dark:text-green-100' : 'bg-red-50 text-red-900 dark:bg-red-950/40 dark:text-red-100'}`}
+              className={`mt-6 rounded-lg px-4 py-3 text-sm ${
+                message.type === 'success'
+                  ? 'bg-green-50 text-green-900 dark:bg-green-950/40 dark:text-green-100'
+                  : 'bg-red-50 text-red-900 dark:bg-red-950/40 dark:text-red-100'
+              }`}
             >
               <p>{message.text}</p>
               {message.article?.url && (
@@ -529,26 +560,29 @@ const ArticleEditor = ({ adminEmail, defaultPublicationDate }) => {
         </div>
 
         {/* Right Column: Concept A Publishing & Media Inspector */}
-        <aside className='min-w-0 xl:sticky xl:top-6'>
-          <ArticleInspector
-            form={form}
-            update={update}
-            errors={errors}
-            slugEdited={slugEdited}
-            setSlugEdited={setSlugEdited}
-            slugify={slugify}
-            taxonomy={taxonomy}
-            taxonomyMessage={taxonomyMessage}
-            articleLoading={articleLoading}
-            submitting={submitting}
-            editingArticleId={editingArticleId}
-            editingPublished={editingPublished}
-            save={save}
-            tags={tags}
-          />
-        </aside>
+        {!zenMode && (
+          <aside className='min-w-0 xl:sticky xl:top-6'>
+            <ArticleInspector
+              form={form}
+              update={update}
+              errors={errors}
+              slugEdited={slugEdited}
+              setSlugEdited={setSlugEdited}
+              slugify={slugify}
+              taxonomy={taxonomy}
+              taxonomyMessage={taxonomyMessage}
+              articleLoading={articleLoading}
+              submitting={submitting}
+              editingArticleId={editingArticleId}
+              editingPublished={editingPublished}
+              save={save}
+              tags={tags}
+            />
+          </aside>
+        )}
       </div>
       <ArticleEditorHelp open={helpOpen} onClose={() => setHelpOpen(false)} />
+      <AIConfigModal isOpen={aiModalOpen} onClose={() => setAiModalOpen(false)} />
     </main>
   );
 };
