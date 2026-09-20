@@ -11,9 +11,8 @@ import { undo, redo } from '@codemirror/commands';
 import { FiMoreHorizontal, FiColumns, FiEye, FiCode, FiFileText } from 'react-icons/fi';
 import MarkdownToolbar from './MarkdownToolbar';
 import ArticleEditorHelp from './ArticleEditorHelp';
-import CoverImagePicker from './CoverImagePicker';
-import PublicationDatePicker from './PublicationDatePicker';
 import ArticleLibrary from './ArticleLibrary';
+import ArticleInspector from './admin/ArticleInspector';
 import FrostedSelectionBubble from './admin/FrostedSelectionBubble';
 import AmbientWordMeter from './admin/AmbientWordMeter';
 
@@ -312,12 +311,9 @@ const ArticleEditor = ({ adminEmail, defaultPublicationDate }) => {
     }
   };
 
-  const inputClass =
-    'mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 font-normal text-slate-900 outline-none focus:border-green-700 focus:ring-2 focus:ring-green-700/20 dark:border-slate-600 dark:bg-slate-900 dark:text-white';
-
   return (
-    <main className='mx-auto w-full max-w-[1500px] px-4 py-8 lg:px-8'>
-      <div className='mb-8 flex flex-col gap-4 border-b border-slate-200 pb-6 dark:border-slate-700 sm:flex-row sm:items-end sm:justify-between'>
+    <main className='mx-auto w-full max-w-[1720px] px-3 py-6 sm:px-6 lg:px-8'>
+      <div className='mb-6 flex flex-col gap-4 border-b border-slate-200 pb-5 dark:border-slate-700 sm:flex-row sm:items-end sm:justify-between'>
         <div>
           <p className='font-Monda text-sm font-medium uppercase tracking-[0.16em] text-green-700 dark:text-green-400'>
             Private author workspace
@@ -325,7 +321,7 @@ const ArticleEditor = ({ adminEmail, defaultPublicationDate }) => {
           <h1 className='mt-1 font-Neuton text-4xl font-semibold text-slate-900 dark:text-white md:text-5xl'>
             {editingArticleId ? 'Edit article' : 'New article'}
           </h1>
-          <p className='mt-2 text-sm text-slate-500 dark:text-slate-300'>Signed in as {adminEmail}</p>
+          <p className='mt-1 text-sm text-slate-500 dark:text-slate-300'>Signed in as {adminEmail}</p>
         </div>
         <div className='flex items-center gap-3 self-start'>
           <button
@@ -338,147 +334,25 @@ const ArticleEditor = ({ adminEmail, defaultPublicationDate }) => {
         </div>
       </div>
 
-      <div className='grid gap-8 xl:grid-cols-[330px_minmax(0,1fr)] 2xl:grid-cols-[360px_minmax(0,1fr)] items-start'>
+      <div className='grid gap-6 xl:grid-cols-[280px_minmax(0,1fr)_340px] 2xl:grid-cols-[310px_minmax(0,1fr)_380px] items-start'>
         {/* Left Column: Concept 4 Interactive Drafts Deck */}
-        <div className='min-w-0 xl:sticky xl:top-6'>
+        <aside className='min-w-0 xl:sticky xl:top-6'>
           <ArticleLibrary
             articles={taxonomy.articles}
             loading={taxonomyLoading}
             message={taxonomyMessage}
             activeArticleId={editingArticleId}
           />
-        </div>
+        </aside>
 
-        {/* Center / Main Column */}
+        {/* Center Column: Pure Editor Canvas */}
         <div className='min-w-0'>
-          <section
-            id='article-form'
-            aria-busy={articleLoading}
-            className='grid scroll-mt-24 gap-5 rounded-xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-700 dark:bg-slate-800/60 lg:grid-cols-2 lg:p-6'
-          >
-            <label className='text-sm font-medium text-slate-700 dark:text-slate-200'>
-              Title
-              <input
-                value={form.title}
-                onChange={(event) => update('title', event.target.value)}
-                className={inputClass}
-                maxLength={180}
-              />
-              <FieldError>{errors.title}</FieldError>
-            </label>
-            <label className='text-sm font-medium text-slate-700 dark:text-slate-200'>
-              <span className='flex items-center justify-between gap-3'>
-                Slug
-                <button
-                  type='button'
-                  onClick={() => {
-                    setSlugEdited(false);
-                    update('slug', slugify(form.title));
-                  }}
-                  className='text-xs font-normal text-green-700 underline underline-offset-2 dark:text-green-400'
-                >
-                  Regenerate from title
-                </button>
-              </span>
-              <input
-                value={form.slug}
-                onChange={(event) => {
-                  setSlugEdited(true);
-                  update('slug', slugify(event.target.value));
-                }}
-                className={inputClass}
-                maxLength={180}
-              />
-              <FieldError>{errors.slug}</FieldError>
-            </label>
-            <label className='text-sm font-medium text-slate-700 dark:text-slate-200'>
-              Category
-              <select
-                value={form.category}
-                onChange={(event) => update('category', event.target.value)}
-                className={inputClass}
-              >
-                {[...new Set([form.category, ...taxonomy.categories])].filter(Boolean).map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </select>
-              <FieldError>{errors.category}</FieldError>
-            </label>
-            <PublicationDatePicker
-              value={form.publicationDate}
-              onChange={(value) => update('publicationDate', value)}
-              error={errors.publicationDate}
-            />
-            <label className='text-sm font-medium text-slate-700 dark:text-slate-200 lg:col-span-2'>
-              Description
-              <textarea
-                value={form.description}
-                onChange={(event) => update('description', event.target.value)}
-                className={`${inputClass} min-h-24`}
-                maxLength={500}
-              />
-              <span className='mt-1 block text-right text-xs text-slate-500'>{form.description.length}/500</span>
-              <FieldError>{errors.description}</FieldError>
-            </label>
-            <div className='grid gap-5 lg:col-span-2'>
-              <label className='text-sm font-medium text-slate-700 dark:text-slate-200'>
-                Tags, comma separated
-                <input
-                  list='notion-tags'
-                  value={form.tags}
-                  onChange={(event) => update('tags', event.target.value)}
-                  className={inputClass}
-                />
-                <datalist id='notion-tags'>
-                  {taxonomy.tags.map((tag) => (
-                    <option key={tag} value={tag} />
-                  ))}
-                </datalist>
-                {taxonomy.tags.length > 0 && (
-                  <div className='mt-2 flex flex-wrap gap-1.5'>
-                    {taxonomy.tags.map((tag) => (
-                      <button
-                        key={tag}
-                        type='button'
-                        onClick={() => {
-                          const current = tags.includes(tag) ? tags : [...tags, tag];
-                          update('tags', current.join(', '));
-                        }}
-                        className={`rounded-full border px-2.5 py-1 text-xs ${
-                          tags.includes(tag)
-                            ? 'border-green-700 bg-green-50 text-green-800 dark:bg-green-950/40 dark:text-green-300'
-                            : 'border-slate-300 text-slate-600 dark:border-slate-600 dark:text-slate-300'
-                        }`}
-                      >
-                        {tag}
-                      </button>
-                    ))}
-                  </div>
-                )}
-                <FieldError>{errors.tags}</FieldError>
-                {taxonomyMessage && (
-                  <p className='mt-2 text-xs text-amber-700 dark:text-amber-300'>{taxonomyMessage}</p>
-                )}
-              </label>
-            </div>
-            <CoverImagePicker
-              coverUrl={form.coverUrl}
-              coverUpload={form.coverUpload}
-              coverCredit={form.coverCredit}
-              onUrlChange={(value) => update('coverUrl', value)}
-              onUploadChange={(value) => update('coverUpload', value)}
-              onCreditChange={(value) => update('coverCredit', value)}
-              error={errors.coverUrl}
-            />
-          </section>
-
-          <div className='mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
+          {/* Header pill with title & viewMode switcher */}
+          <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
             <div className='flex items-center gap-2.5'>
-              <div className='flex items-center gap-2 rounded-lg border border-slate-200/80 bg-slate-50/80 px-3 py-1.5 font-mono text-xs font-semibold text-slate-700 shadow-sm dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-200'>
+              <div className='flex items-center gap-2 rounded-lg border border-slate-200/80 bg-slate-50/80 px-3 py-1.5 font-mono text-xs font-semibold text-slate-700 shadow-2xs dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-200'>
                 <FiFileText className='size-3.5 text-emerald-600 dark:text-emerald-400' />
-                <span className='max-w-[180px] sm:max-w-[280px] truncate'>
+                <span className='max-w-[180px] sm:max-w-[320px] truncate'>
                   {form.title ? `${form.title}.md` : 'Untitled Article.md'}
                 </span>
                 <span
@@ -516,7 +390,7 @@ const ArticleEditor = ({ adminEmail, defaultPublicationDate }) => {
                     aria-pressed={viewMode === id}
                     className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 font-Monda text-xs font-semibold capitalize transition ${
                       viewMode === id
-                        ? 'bg-white text-emerald-700 shadow-sm dark:bg-emerald-600 dark:text-white'
+                        ? 'bg-white text-emerald-700 shadow-2xs dark:bg-emerald-600 dark:text-white'
                         : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100'
                     }`}
                   >
@@ -528,8 +402,9 @@ const ArticleEditor = ({ adminEmail, defaultPublicationDate }) => {
             </div>
           </div>
 
+          {/* Editor & Preview section */}
           <section
-            className={`mt-4 grid min-w-0 gap-6 ${viewMode === 'split' ? 'lg:grid-cols-2' : 'grid-cols-1'}`}
+            className={`mt-3.5 grid min-w-0 gap-6 ${viewMode === 'split' ? 'lg:grid-cols-2' : 'grid-cols-1'}`}
             data-color-mode={editorTheme}
           >
             {viewMode !== 'preview' && (
@@ -620,7 +495,8 @@ const ArticleEditor = ({ adminEmail, defaultPublicationDate }) => {
             </div>
           )}
 
-          <div className='sticky bottom-4 z-20 mt-8 flex flex-col gap-3 rounded-xl border border-slate-200 bg-white/95 p-4 shadow-xl backdrop-blur dark:border-slate-700 dark:bg-slate-900/95 sm:flex-row sm:justify-end'>
+          {/* Bottom Action Bar for mobile/tablet (< xl) */}
+          <div className='sticky bottom-4 z-20 mt-8 flex flex-col gap-3 rounded-xl border border-slate-200 bg-white/95 p-4 shadow-xl backdrop-blur dark:border-slate-700 dark:bg-slate-900/95 sm:flex-row sm:justify-end xl:hidden'>
             <button
               type='button'
               disabled={submitting}
@@ -651,6 +527,26 @@ const ArticleEditor = ({ adminEmail, defaultPublicationDate }) => {
             </button>
           </div>
         </div>
+
+        {/* Right Column: Concept A Publishing & Media Inspector */}
+        <aside className='min-w-0 xl:sticky xl:top-6'>
+          <ArticleInspector
+            form={form}
+            update={update}
+            errors={errors}
+            slugEdited={slugEdited}
+            setSlugEdited={setSlugEdited}
+            slugify={slugify}
+            taxonomy={taxonomy}
+            taxonomyMessage={taxonomyMessage}
+            articleLoading={articleLoading}
+            submitting={submitting}
+            editingArticleId={editingArticleId}
+            editingPublished={editingPublished}
+            save={save}
+            tags={tags}
+          />
+        </aside>
       </div>
       <ArticleEditorHelp open={helpOpen} onClose={() => setHelpOpen(false)} />
     </main>

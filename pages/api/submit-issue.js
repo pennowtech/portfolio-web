@@ -2,20 +2,14 @@ import { App } from 'octokit';
 import { isIssueboardSupabaseConfigured } from '@utils/issueboard/supabaseAdmin';
 import { getProjectByKey, createProject } from '@utils/issueboard/projectService';
 import { createExternalIssue } from '@utils/issueboard/externalIssueService';
+import { readRawBody, RequestBodyTooLargeError } from '@utils/issueboard/readRawBody';
+import { consumeIssueboardRateLimit } from '@utils/issueboard/api';
 
 export const config = {
   api: {
     bodyParser: false
   }
 };
-
-const readRawBody = (req) =>
-  new Promise((resolve, reject) => {
-    const chunks = [];
-    req.on('data', (chunk) => chunks.push(chunk));
-    req.on('end', () => resolve(Buffer.concat(chunks)));
-    req.on('error', reject);
-  });
 
 const parseJsonSafe = (str) => {
   try {
@@ -162,6 +156,22 @@ export default async function handler(req, res) {
     return res.status(405).json({ success: false, error: 'Method Not Allowed' });
   }
 
+  // This endpoint is intentionally public and unauthenticated (it's the bridge
+  // for the site's own feedback form and external client apps), so IP-based
+  // rate limiting is the only abuse guard available for it.
+  const clientIp = String(req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown')
+    .split(',')[0]
+    .trim();
+  const allowed = await consumeIssueboardRateLimit({
+    actor: clientIp,
+    operation: 'submit-issue:create',
+    limit: 10,
+    windowSeconds: 60
+  });
+  if (!allowed) {
+    return res.status(429).json({ success: false, error: 'Too many requests. Try again shortly.' });
+  }
+
   let payload = {};
   let formData = null;
 
@@ -198,6 +208,9 @@ export default async function handler(req, res) {
       }
     }
   } catch (parseErr) {
+    if (parseErr instanceof RequestBodyTooLargeError) {
+      return res.status(413).json({ success: false, error: parseErr.message });
+    }
     return res.status(400).json({
       success: false,
       error: `Invalid request payload: ${parseErr.message}`

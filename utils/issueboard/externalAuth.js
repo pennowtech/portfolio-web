@@ -1,6 +1,16 @@
+import { timingSafeEqual } from 'node:crypto';
 import { getServerSession } from 'next-auth/next';
 import { authOptions, isAdminSession } from '@utils/authOptions';
 import { isIssueboardDevAuthBypassEnabled, issueboardDevIdentity } from '@utils/issueboardAuth';
+
+// Constant-time string compare -- a plain `===` on a secret leaks timing
+// information proportional to the matching prefix length.
+const secureEquals = (a, b) => {
+  const bufferA = Buffer.from(a);
+  const bufferB = Buffer.from(b);
+  if (bufferA.length !== bufferB.length) return false;
+  return timingSafeEqual(bufferA, bufferB);
+};
 
 /**
  * Authenticates external API requests to the Issueboard.
@@ -10,6 +20,11 @@ import { isIssueboardDevAuthBypassEnabled, issueboardDevIdentity } from '@utils/
  * - Query parameter apiKey (?apiKey=<key>)
  * - Interactive NextAuth admin session (if calling from browser)
  * - Development auth bypass (when NODE_ENV=development and ISSUEBOARD_DEV_AUTH_BYPASS=true)
+ *
+ * Deliberately does NOT fall back to NEXTAUTH_SECRET: that secret signs session
+ * JWTs for the whole site, and treating it as a shareable API credential would
+ * multiply its exposure. A missing ISSUEBOARD_API_KEY means the API-key path is
+ * simply unavailable, not silently backed by a more sensitive secret.
  */
 export const authenticateExternalApi = async (req, res) => {
   const authHeader = req.headers.authorization;
@@ -27,7 +42,7 @@ export const authenticateExternalApi = async (req, res) => {
   const configuredKey = process.env.ISSUEBOARD_API_KEY?.trim();
 
   // 1. Valid API key match
-  if (configuredKey && token && token === configuredKey) {
+  if (configuredKey && token && secureEquals(token, configuredKey)) {
     return { ok: true, actor: 'api' };
   }
 
@@ -44,11 +59,6 @@ export const authenticateExternalApi = async (req, res) => {
     }
   } catch {
     // ignore
-  }
-
-  // 4. Fallback to NEXTAUTH_SECRET if ISSUEBOARD_API_KEY is not explicitly set
-  if (!configuredKey && process.env.NEXTAUTH_SECRET && token && token === process.env.NEXTAUTH_SECRET) {
-    return { ok: true, actor: 'api' };
   }
 
   if (token) {

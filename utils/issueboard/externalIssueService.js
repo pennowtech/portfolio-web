@@ -60,15 +60,18 @@ export const createExternalIssue = async (input, actor = 'api') => {
   // 2. Resolve target status if provided by name or id
   let targetStatusId = input.statusId || null;
   if (!targetStatusId && input.status) {
+    // Matched in JS, not via a Postgrest .or() filter built from raw input --
+    // interpolating external text into a filter expression string is an
+    // injection vector (commas/parens are operators in Postgrest's filter syntax).
     const statusQuery = String(input.status).trim().toLowerCase();
-    const { data: matchedStatus } = await admin
+    const { data: projectStatuses } = await admin
       .from('issueboard_statuses')
-      .select('id')
+      .select('id,name,category')
       .eq('project_id', project.id)
-      .or(`name.ilike.${statusQuery},category.ilike.${statusQuery}`)
-      .order('position')
-      .limit(1)
-      .maybeSingle();
+      .order('position');
+    const matchedStatus = (projectStatuses || []).find(
+      (status) => status.name?.toLowerCase() === statusQuery || status.category?.toLowerCase() === statusQuery
+    );
     if (matchedStatus?.id) {
       targetStatusId = matchedStatus.id;
     }
