@@ -5,6 +5,7 @@ import { LuSparkles } from 'react-icons/lu';
 import { BOOK_SHELVES } from '@utils/books/bookService';
 import { createPersistedBook } from '@utils/books/bookApi';
 import { loadAiConfig } from '@utils/admin/aiConfigStore';
+import { loadBookSettings } from '@utils/books/bookSettingsStore';
 
 const EMPTY_AUTOFILL_EXTRA = {
   isbn: '',
@@ -12,7 +13,8 @@ const EMPTY_AUTOFILL_EXTRA = {
   publishedYear: null,
   coverUrl: '',
   targetAudience: [],
-  similarBooks: []
+  similarBooks: [],
+  notableQuotes: []
 };
 
 const MAX_COVER_PHOTO_BYTES = 4 * 1024 * 1024;
@@ -92,15 +94,31 @@ export const QuickAddModal = ({ isOpen, initialMode = 'issue', onClose, onBookCr
   const runAutofill = async (requestMode) => {
     setAutofillError('');
     setAutofillMessage('');
+
+    if (requestMode === 'isbn' && !bookIsbnInput.trim()) {
+      setAutofillError('Enter an ISBN first.');
+      return;
+    }
+    if (requestMode === 'title-author' && !bookTitle.trim()) {
+      setAutofillError('Enter a title below first, then come back to this button.');
+      return;
+    }
+    if (requestMode === 'image' && !coverImageDataUrl) {
+      setAutofillError('Upload a cover photo first.');
+      return;
+    }
+
     setAutofillMode(requestMode);
     try {
       const config = loadAiConfig();
+      const bookSettings = loadBookSettings();
       const payload = {
         mode: requestMode,
         provider: config.provider,
         apiKey: config.apiKey,
         baseUrl: config.baseUrl,
-        model: config.model
+        model: config.model,
+        googleBooksApiKey: bookSettings.googleBooksApiKey
       };
       if (requestMode === 'isbn') payload.isbn = bookIsbnInput.trim();
       if (requestMode === 'title-author') {
@@ -129,15 +147,27 @@ export const QuickAddModal = ({ isOpen, initialMode = 'issue', onClose, onBookCr
       if (b.description) setBookDescription(b.description.slice(0, 600));
       if (Array.isArray(b.keyThemes) && b.keyThemes.length) setBookKeyThemes(b.keyThemes.join(', '));
       if (typeof b.rating === 'number' && b.rating > 0) setBookRating(String(Math.round(b.rating)));
+      const targetAudience = Array.isArray(b.targetAudience) ? b.targetAudience : [];
+      const similarBooks = Array.isArray(b.similarBooks) ? b.similarBooks : [];
+      const notableQuotes = Array.isArray(b.notableQuotes) ? b.notableQuotes : [];
       setAutofillExtra({
         isbn: b.isbn13 || b.isbn || '',
         publisher: b.publisher || '',
         publishedYear: b.publishedYear || null,
         coverUrl: b.coverUrl || '',
-        targetAudience: Array.isArray(b.targetAudience) ? b.targetAudience : [],
-        similarBooks: Array.isArray(b.similarBooks) ? b.similarBooks : []
+        targetAudience,
+        similarBooks,
+        notableQuotes
       });
-      setAutofillMessage(`Filled from Google Books${b.isbn13 ? ` (ISBN ${b.isbn13})` : ''}.`);
+      const enrichedBits = [
+        targetAudience.length && `${targetAudience.length} audience`,
+        notableQuotes.length && `${notableQuotes.length} quote${notableQuotes.length > 1 ? 's' : ''}`,
+        similarBooks.length && `${similarBooks.length} similar title${similarBooks.length > 1 ? 's' : ''}`
+      ].filter(Boolean);
+      setAutofillMessage(
+        `Filled from Google Books${b.isbn13 ? ` (ISBN ${b.isbn13})` : ''}.` +
+          (enrichedBits.length ? ` Also added ${enrichedBits.join(', ')}.` : '')
+      );
     } catch {
       setAutofillError('Could not reach the server to autofill this book.');
     } finally {
@@ -174,6 +204,7 @@ export const QuickAddModal = ({ isOpen, initialMode = 'issue', onClose, onBookCr
         keyThemes: themes,
         targetAudience: autofillExtra.targetAudience,
         similarBooks: autofillExtra.similarBooks,
+        notableQuotes: autofillExtra.notableQuotes,
         description: bookDescription || '',
         notes: bookNotes,
         isbn: autofillExtra.isbn || undefined,
@@ -417,7 +448,7 @@ export const QuickAddModal = ({ isOpen, initialMode = 'issue', onClose, onBookCr
                 <button
                   type='button'
                   onClick={() => runAutofill('isbn')}
-                  disabled={!bookIsbnInput.trim() || Boolean(autofillMode)}
+                  disabled={Boolean(autofillMode)}
                   className='inline-flex items-center gap-1.5 rounded-lg border border-purple-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-purple-700 hover:bg-purple-100 disabled:opacity-40 dark:border-purple-500/40 dark:bg-slate-900 dark:text-purple-300 dark:hover:bg-purple-950/40'
                 >
                   {autofillMode === 'isbn' ? 'Looking up…' : 'From ISBN'}
@@ -428,8 +459,8 @@ export const QuickAddModal = ({ isOpen, initialMode = 'issue', onClose, onBookCr
                 <button
                   type='button'
                   onClick={() => runAutofill('title-author')}
-                  disabled={!bookTitle.trim() || Boolean(autofillMode)}
-                  title={!bookTitle.trim() ? 'Enter a title below first' : undefined}
+                  disabled={Boolean(autofillMode)}
+                  title='Enter a title (and optionally author) below, then click this'
                   className='inline-flex items-center gap-1.5 rounded-lg border border-purple-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-purple-700 hover:bg-purple-100 disabled:opacity-40 dark:border-purple-500/40 dark:bg-slate-900 dark:text-purple-300 dark:hover:bg-purple-950/40'
                 >
                   <FiSearch className='size-3.5' />
