@@ -43,10 +43,10 @@ const viewTitles = {
 };
 
 const badgeClass = (status) => {
-  if (status === 'Done') return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200';
-  if (status === 'In progress') return 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-200';
-  if (status === 'Review') return 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-200';
-  return 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200';
+  if (status === 'Done') return 'bg-emerald-200 text-emerald-900 dark:bg-emerald-900 dark:text-emerald-100';
+  if (status === 'In progress') return 'bg-blue-200 text-blue-900 dark:bg-blue-900 dark:text-blue-100';
+  if (status === 'Review') return 'bg-amber-200 text-amber-900 dark:bg-amber-900 dark:text-amber-100';
+  return 'bg-slate-200 text-slate-900 dark:bg-slate-700 dark:text-slate-100';
 };
 
 const daysRemaining = (endsAt) => Math.max(0, Math.ceil((new Date(endsAt).getTime() - Date.now()) / 86400000));
@@ -71,30 +71,34 @@ const capitalize = (value) => (value ? value.charAt(0).toUpperCase() + value.sli
 
 const workStateClass = (workState) => {
   if (workState === 'Blocked') {
-    return 'blocked-bg border-rose-300 dark:border-rose-800/60';
+    return 'blocked-bg border-rose-300 dark:border-rose-700';
   }
   if (workState === 'Rejected') {
-    return 'border-slate-300 bg-slate-100/80 opacity-75 dark:border-slate-800 dark:bg-slate-900/50';
+    return 'border-slate-300 bg-slate-100 dark:border-slate-700 dark:bg-slate-800';
   }
   if (workState === 'Approved') {
-    return 'border-emerald-300/60 bg-emerald-50/40 dark:border-emerald-800/40 dark:bg-emerald-950/20';
+    return 'border-emerald-300 bg-emerald-50 dark:border-emerald-700 dark:bg-emerald-950/30';
   }
   if (workState === 'Active') {
-    return 'border-sky-300/60 bg-sky-50/40 dark:border-sky-800/40 dark:bg-sky-950/20';
+    return 'border-sky-300 bg-sky-50 dark:border-sky-700 dark:bg-sky-950/30';
   }
   if (workState === 'Done') {
-    return 'border-purple-300/60 bg-purple-50/40 dark:border-purple-800/40 dark:bg-purple-950/20';
+    return 'border-purple-300 bg-purple-50 dark:border-purple-700 dark:bg-purple-950/30';
   }
-  return 'border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950';
+  return 'border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-950';
 };
 
 const stateCapsulePresentation = {
-  Approved: 'bg-emerald-500/15 text-emerald-700 border-emerald-500/30 dark:text-emerald-300',
-  Active: 'bg-sky-500/15 text-sky-700 border-sky-500/30 dark:text-sky-300',
-  Blocked: 'bg-rose-500/20 text-rose-700 border-rose-500/40 dark:text-rose-200 dark:bg-rose-900/40',
-  Done: 'bg-purple-500/15 text-purple-700 border-purple-500/30 dark:text-purple-300',
-  Rejected: 'bg-slate-500/15 text-slate-600 border-slate-500/30 dark:text-slate-400',
-  Normal: 'bg-slate-500/10 text-slate-600 border-slate-400/20 dark:text-slate-400'
+  Approved:
+    'bg-emerald-500/25 text-emerald-800 border-emerald-500/40 dark:bg-emerald-500/30 dark:text-emerald-200 dark:border-emerald-500/50',
+  Active: 'bg-sky-500/25 text-sky-800 border-sky-500/40 dark:bg-sky-500/30 dark:text-sky-200 dark:border-sky-500/50',
+  Blocked:
+    'bg-rose-500/30 text-rose-800 border-rose-500/50 dark:bg-rose-500/40 dark:text-rose-200 dark:border-rose-500/60',
+  Done: 'bg-purple-500/25 text-purple-800 border-purple-500/40 dark:bg-purple-500/30 dark:text-purple-200 dark:border-purple-500/50',
+  Rejected:
+    'bg-slate-500/25 text-slate-800 border-slate-500/40 dark:bg-slate-500/30 dark:text-slate-200 dark:border-slate-500/50',
+  Normal:
+    'bg-slate-500/20 text-slate-800 border-slate-400/30 dark:bg-slate-500/25 dark:text-slate-200 dark:border-slate-400/40'
 };
 
 const stateDotClass = {

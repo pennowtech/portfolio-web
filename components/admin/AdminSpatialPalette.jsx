@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { FiSearch, FiEdit3, FiTrello, FiBookOpen, FiArrowRight, FiCornerDownLeft, FiX } from 'react-icons/fi';
-import { getStoredBooks } from '@utils/books/bookService';
+import { fetchBooks } from '@utils/books/bookApi';
 
 export const AdminSpatialPalette = ({ isOpen, onClose, onOpenQuickAdd }) => {
   const router = useRouter();
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [books, setBooks] = useState([]);
   const inputRef = useRef(null);
 
   // Auto-focus input on open
@@ -18,8 +19,20 @@ export const AdminSpatialPalette = ({ isOpen, onClose, onOpenQuickAdd }) => {
     }
   }, [isOpen]);
 
-  // Load books for search
-  const books = getStoredBooks();
+  useEffect(() => {
+    if (!isOpen) return;
+    let cancelled = false;
+    fetchBooks()
+      .then((items) => {
+        if (!cancelled) setBooks(items);
+      })
+      .catch(() => {
+        if (!cancelled) setBooks([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [isOpen]);
 
   // Static + Dynamic Search Items across Articles, Books, and Issues
   const actions = [
@@ -409,7 +422,7 @@ export const AdminSpatialPalette = ({ isOpen, onClose, onOpenQuickAdd }) => {
                   </div>
 
                   <div className='flex items-center gap-2 shrink-0 pl-2'>
-                    <span className='rounded bg-slate-100 px-2 py-0.5 text-[10px] font-mono text-slate-600 border border-slate-200 dark:bg-slate-800/90 dark:text-slate-300 dark:border-slate-700/80'>
+                    <span className='rounded bg-slate-200 px-2 py-0.5 text-[10px] font-mono text-slate-800 border border-slate-300 dark:bg-slate-700 dark:text-slate-200 dark:border-slate-600'>
                       {item.badge}
                     </span>
                     {isSelected && (

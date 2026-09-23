@@ -58,3 +58,5 @@ __mocks__/fileMock.js
 .next-broken-issueboard-debug/
 /public/artifacts/
 /public/prototypes/
+public/preview/
+scratch/
