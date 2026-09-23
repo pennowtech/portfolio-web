@@ -3,12 +3,12 @@ import { FiCheck, FiEye, FiEyeOff, FiRotateCcw, FiX } from 'react-icons/fi';
 import { LuSparkles, LuWand } from 'react-icons/lu';
 import { AI_PERSONAS } from './aiPersonas';
 import DiffView from './DiffView';
-import { DEFAULT_AI_CONFIG, loadAiConfig } from '@utils/admin/aiConfigStore';
+import { DEFAULT_AI_CONFIG, loadAiConfig, getActiveProviderCreds } from '@utils/admin/aiConfigStore';
 
 // text: the text to rephrase. scopeLabel: "selected text" or "whole article", for copy only.
 // onApply(newText): caller decides how to splice it back in (CodeMirror range replace, or whole-doc form update).
 export const AIRephraseModal = ({ isOpen, text, scopeLabel = 'selected text', onApply, onClose }) => {
-  const [config, setConfig] = useState(DEFAULT_AI_CONFIG);
+  const [creds, setCreds] = useState(() => getActiveProviderCreds(DEFAULT_AI_CONFIG));
   const [selectedPersonas, setSelectedPersonas] = useState([]);
   const [customPrompt, setCustomPrompt] = useState('');
   const [loading, setLoading] = useState(false);
@@ -18,8 +18,8 @@ export const AIRephraseModal = ({ isOpen, text, scopeLabel = 'selected text', on
 
   useEffect(() => {
     if (!isOpen) return;
-    const saved = loadAiConfig();
-    setConfig(saved);
+    const saved = getActiveProviderCreds(loadAiConfig());
+    setCreds(saved);
     setSelectedPersonas(saved.personas.length > 0 ? saved.personas : ['clarity']);
     setCustomPrompt('');
     setError('');
@@ -49,12 +49,12 @@ export const AIRephraseModal = ({ isOpen, text, scopeLabel = 'selected text', on
           text,
           personaIds: selectedPersonas,
           customPrompt,
-          provider: config.provider,
-          model: config.model,
-          apiKey: config.apiKey,
-          baseUrl: config.baseUrl,
-          systemPrompt: config.systemPrompt,
-          temperature: config.temperature
+          provider: creds.provider,
+          model: creds.model,
+          apiKey: creds.apiKey,
+          baseUrl: creds.baseUrl,
+          systemPrompt: creds.systemPrompt,
+          temperature: creds.temperature
         })
       });
       const data = await response.json();
@@ -94,7 +94,7 @@ export const AIRephraseModal = ({ isOpen, text, scopeLabel = 'selected text', on
                 AI Rephrase
               </h3>
               <p className='text-xs text-slate-500 dark:text-slate-400 mt-0.5'>
-                Rewriting the {scopeLabel} ({text.length.toLocaleString()} characters) with {config.provider}
+                Rewriting the {scopeLabel} ({text.length.toLocaleString()} characters) with {creds.provider}
               </p>
             </div>
           </div>
