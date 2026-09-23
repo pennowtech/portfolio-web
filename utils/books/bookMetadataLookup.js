@@ -39,8 +39,9 @@ const fromVolume = (volume) => {
   };
 };
 
-const searchGoogleBooks = async (query) => {
-  const url = `${GOOGLE_BOOKS_API}?q=${encodeURIComponent(query)}&maxResults=5`;
+const searchGoogleBooks = async (query, apiKey) => {
+  const keyParam = apiKey ? `&key=${encodeURIComponent(apiKey)}` : '';
+  const url = `${GOOGLE_BOOKS_API}?q=${encodeURIComponent(query)}&maxResults=5${keyParam}`;
   let response;
   try {
     response = await fetch(url);
@@ -62,16 +63,16 @@ const searchGoogleBooks = async (query) => {
   return null;
 };
 
-export const lookupByIsbn = async (isbn) => {
+export const lookupByIsbn = async (isbn, apiKey) => {
   const clean = normalizeIsbn(isbn);
   if (!clean) return null;
-  return searchGoogleBooks(`isbn:${clean}`);
+  return searchGoogleBooks(`isbn:${clean}`, apiKey);
 };
 
-export const lookupByTitleAuthor = async (title, author) => {
+export const lookupByTitleAuthor = async (title, author, apiKey) => {
   const t = String(title || '').trim();
   const a = String(author || '').trim();
   if (!t) return null;
   const query = a ? `intitle:${t} inauthor:${a}` : `intitle:${t}`;
-  return searchGoogleBooks(query);
+  return searchGoogleBooks(query, apiKey);
 };

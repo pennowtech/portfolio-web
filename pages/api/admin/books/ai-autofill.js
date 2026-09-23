@@ -20,7 +20,8 @@ const requestSchema = z.object({
   provider: z.string().trim().min(1),
   apiKey: z.string().max(500).optional(),
   baseUrl: z.string().max(500).optional(),
-  model: z.string().max(200).optional()
+  model: z.string().max(200).optional(),
+  googleBooksApiKey: z.string().max(200).optional()
 });
 
 const parseJsonLoose = (text) => {
@@ -57,12 +58,15 @@ const extractTitleAuthorFromImage = async (provider, creds, imageDataUrl) => {
 
 const ENRICHMENT_INSTRUCTION =
   'Based only on what you already know about this specific book, respond with ONLY valid JSON (no markdown fences) ' +
-  'in this exact shape: {"keyThemes": string[], "targetAudience": string[], "similarBooks": string[]} -- ' +
-  '3-6 keyThemes, 2-4 targetAudience phrases, 3-5 similarBooks as "Title by Author". ' +
-  'If you are not confident about this specific book, return empty arrays instead of guessing.';
+  'in this exact shape: {"keyThemes": string[], "targetAudience": string[], "similarBooks": string[], "notableQuotes": string[]} -- ' +
+  '3-6 keyThemes, 2-4 targetAudience phrases, 3-5 similarBooks as "Title by Author", and up to 3 notableQuotes ' +
+  '(short, verbatim if you know them precisely). ' +
+  'If you are not confident about any of these for this specific book, return an empty array for that field instead of guessing.';
+
+const EMPTY_ENRICHMENT = { keyThemes: [], targetAudience: [], similarBooks: [], notableQuotes: [] };
 
 const enrichWithAi = async (provider, creds, book) => {
-  if (!provider || provider === 'builtin') return { keyThemes: [], targetAudience: [], similarBooks: [] };
+  if (!provider || provider === 'builtin') return EMPTY_ENRICHMENT;
   try {
     const raw = await chatComplete(provider, {
       ...creds,
@@ -78,12 +82,13 @@ const enrichWithAi = async (provider, creds, book) => {
     return {
       keyThemes: Array.isArray(parsed.keyThemes) ? parsed.keyThemes.slice(0, 6).map(String) : [],
       targetAudience: Array.isArray(parsed.targetAudience) ? parsed.targetAudience.slice(0, 4).map(String) : [],
-      similarBooks: Array.isArray(parsed.similarBooks) ? parsed.similarBooks.slice(0, 5).map(String) : []
+      similarBooks: Array.isArray(parsed.similarBooks) ? parsed.similarBooks.slice(0, 5).map(String) : [],
+      notableQuotes: Array.isArray(parsed.notableQuotes) ? parsed.notableQuotes.slice(0, 3).map(String) : []
     };
   } catch {
     // Enrichment is a nice-to-have on top of the Google Books facts below --
     // never fail the whole autofill just because the model call/parse failed.
-    return { keyThemes: [], targetAudience: [], similarBooks: [] };
+    return EMPTY_ENRICHMENT;
   }
 };
 
@@ -101,6 +106,7 @@ export default async function handler(req, res) {
   const { mode, isbn, imageDataUrl, provider, model } = parsed.data;
   let { title, author } = parsed.data;
   const creds = { apiKey: (parsed.data.apiKey || '').trim(), baseUrl: parsed.data.baseUrl, model };
+  const googleBooksApiKey = (parsed.data.googleBooksApiKey || '').trim() || undefined;
 
   if (mode === 'isbn' && !isbn?.trim()) return res.status(400).json({ ok: false, message: 'Enter an ISBN first.' });
   if (mode === 'title-author' && !title?.trim())
@@ -127,7 +133,10 @@ export default async function handler(req, res) {
       author = extracted.author;
     }
 
-    const found = mode === 'isbn' ? await lookupByIsbn(isbn) : await lookupByTitleAuthor(title, author);
+    const found =
+      mode === 'isbn'
+        ? await lookupByIsbn(isbn, googleBooksApiKey)
+        : await lookupByTitleAuthor(title, author, googleBooksApiKey);
 
     if (!found) {
       const what = mode === 'isbn' ? `ISBN ${isbn}` : `"${title}"`;
