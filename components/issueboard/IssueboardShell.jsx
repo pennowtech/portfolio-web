@@ -17,7 +17,9 @@ import {
   FiSettings,
   FiX
 } from 'react-icons/fi';
+import { LuSparkles } from 'react-icons/lu';
 import ThemeToggle from '@components/ThemeToggle';
+import AIConfigModal from '@components/admin/AIConfigModal';
 import { workspaceHref } from '@utils/issueboardNavigation';
 
 const navigation = [
@@ -136,6 +138,7 @@ const IssueboardShell = ({
 }) => {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [aiConfigOpen, setAiConfigOpen] = useState(false);
 
   useEffect(() => setMenuOpen(false), [router.asPath]);
   useEffect(() => {
@@ -210,6 +213,15 @@ const IssueboardShell = ({
             </div>
           </div>
           {headerActions && <div className='flex items-center gap-2'>{headerActions}</div>}
+          <button
+            type='button'
+            onClick={() => setAiConfigOpen(true)}
+            className='grid size-10 place-items-center rounded-lg border border-slate-300 text-slate-600 hover:border-purple-400 hover:text-purple-600 transition dark:border-slate-700 dark:text-slate-300 dark:hover:border-purple-500 dark:hover:text-purple-400'
+            title='AI Configure'
+            aria-label='AI Configure'
+          >
+            <LuSparkles className='size-4' />
+          </button>
           {onCreate && (
             <button type='button' onClick={onCreate} className='button inline-flex items-center gap-2 text-sm'>
               <FiPlus /> <span className='hidden sm:inline'>Create issue</span>
@@ -224,6 +236,8 @@ const IssueboardShell = ({
           {children}
         </main>
       </div>
+
+      <AIConfigModal isOpen={aiConfigOpen} onClose={() => setAiConfigOpen(false)} />
     </div>
   );
 };
