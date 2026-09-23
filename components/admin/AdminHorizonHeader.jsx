@@ -12,10 +12,8 @@ import {
   FiMoon,
   FiLogOut
 } from 'react-icons/fi';
-import { LuSparkles } from 'react-icons/lu';
 import { useTheme } from 'next-themes';
 import { signOut } from 'next-auth/react';
-import AIConfigModal from './AIConfigModal';
 
 const TABS = [
   {
@@ -47,7 +45,6 @@ export const AdminHorizonHeader = ({ adminEmail, onOpenCommandPalette, onOpenQui
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [quickAddOpen, setQuickAddOpen] = useState(false);
-  const [aiConfigOpen, setAiConfigOpen] = useState(false);
   const quickAddRef = useRef(null);
 
   useEffect(() => {
@@ -206,17 +203,6 @@ export const AdminHorizonHeader = ({ adminEmail, onOpenCommandPalette, onOpenQui
           )}
         </div>
 
-        {/* AI Configure -- shared provider/persona settings across Articles, Issueboard, and Books */}
-        <button
-          type='button'
-          onClick={() => setAiConfigOpen(true)}
-          className='flex size-8 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-600 hover:border-purple-400 hover:text-purple-600 transition dark:border-slate-700/80 dark:bg-slate-800/60 dark:text-slate-400 dark:hover:border-purple-500 dark:hover:text-purple-400'
-          title='AI Configure'
-          aria-label='AI Configure'
-        >
-          <LuSparkles className='size-3.5' />
-        </button>
-
         {/* Theme Toggle Button */}
         {mounted && (
           <button
@@ -249,8 +235,6 @@ export const AdminHorizonHeader = ({ adminEmail, onOpenCommandPalette, onOpenQui
           </button>
         </div>
       </div>
-
-      <AIConfigModal isOpen={aiConfigOpen} onClose={() => setAiConfigOpen(false)} />
     </header>
   );
 };

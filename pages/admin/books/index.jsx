@@ -39,13 +39,11 @@ import {
   FiCheckCircle,
   FiAward,
   FiTrendingUp,
-  FiImage,
-  FiSettings
+  FiImage
 } from 'react-icons/fi';
 import { getBookCoverSrc, BOOK_SHELVES } from '@utils/books/bookService';
 import { deletePersistedBook, fetchBooks, updatePersistedBook } from '@utils/books/bookApi';
 import QuickAddModal from '@components/admin/QuickAddModal';
-import BookShelfSettingsModal from '@components/admin/BookShelfSettingsModal';
 
 const SHELF_DEFINITIONS = [
   {
@@ -828,7 +826,6 @@ const BooksPage = ({ adminEmail }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState('shelves'); // 'shelves' default on opening
   const [addModalOpen, setAddModalOpen] = useState(false);
-  const [bookSettingsOpen, setBookSettingsOpen] = useState(false);
   const [editingBook, setEditingBook] = useState(null);
   const [updatePageInput, setUpdatePageInput] = useState('');
   const [activeDetailBook, setActiveDetailBook] = useState(null); // Studio Editorial Modal
@@ -1146,15 +1143,6 @@ const BooksPage = ({ adminEmail }) => {
                 className='sr-only'
                 aria-label='Select book metadata JSON file'
               />
-              <button
-                type='button'
-                onClick={() => setBookSettingsOpen(true)}
-                className='inline-flex min-h-11 items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-3 text-xs font-bold text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800'
-                title='Book shelf settings'
-                aria-label='Book shelf settings'
-              >
-                <FiSettings className='size-4' />
-              </button>
               <button
                 type='button'
                 onClick={() => setAddModalOpen(true)}
@@ -1865,8 +1853,6 @@ const BooksPage = ({ adminEmail }) => {
           onClose={() => setAddModalOpen(false)}
           onBookCreated={() => refreshBooks()}
         />
-
-        <BookShelfSettingsModal isOpen={bookSettingsOpen} onClose={() => setBookSettingsOpen(false)} />
 
         {/* ============================================================== */}
         {/* STUDIO EDITORIAL MODAL (MATCHED TO REFERENCE IMAGE)            */}

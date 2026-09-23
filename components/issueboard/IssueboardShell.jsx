@@ -17,9 +17,8 @@ import {
   FiSettings,
   FiX
 } from 'react-icons/fi';
-import { LuSparkles } from 'react-icons/lu';
 import ThemeToggle from '@components/ThemeToggle';
-import AIConfigModal from '@components/admin/AIConfigModal';
+import SettingsModal from '@components/admin/SettingsModal';
 import { workspaceHref } from '@utils/issueboardNavigation';
 
 const navigation = [
@@ -35,6 +34,7 @@ const navigation = [
 
 const Sidebar = ({ adminEmail, currentView, currentProject, projects = [] }) => {
   const [switcherOpen, setSwitcherOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const navExtra = currentProject ? { project: currentProject.key } : {};
 
   return (
@@ -114,6 +114,15 @@ const Sidebar = ({ adminEmail, currentView, currentProject, projects = [] }) => 
           <ThemeToggle />
           <button
             type='button'
+            onClick={() => setSettingsOpen(true)}
+            title='Settings'
+            aria-label='Settings'
+            className='rounded-lg p-1.5 text-emerald-100/70 hover:bg-emerald-900 hover:text-white'
+          >
+            <FiSettings className='size-4' />
+          </button>
+          <button
+            type='button'
             onClick={() => signOut({ callbackUrl: '/admin/login' })}
             className='rounded-lg px-2 py-1 text-xs font-semibold text-emerald-100/70 hover:bg-emerald-900 hover:text-white'
           >
@@ -121,6 +130,8 @@ const Sidebar = ({ adminEmail, currentView, currentProject, projects = [] }) => 
           </button>
         </div>
       </div>
+
+      <SettingsModal isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />
     </aside>
   );
 };
@@ -138,7 +149,6 @@ const IssueboardShell = ({
 }) => {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [aiConfigOpen, setAiConfigOpen] = useState(false);
 
   useEffect(() => setMenuOpen(false), [router.asPath]);
   useEffect(() => {
@@ -213,15 +223,6 @@ const IssueboardShell = ({
             </div>
           </div>
           {headerActions && <div className='flex items-center gap-2'>{headerActions}</div>}
-          <button
-            type='button'
-            onClick={() => setAiConfigOpen(true)}
-            className='grid size-10 place-items-center rounded-lg border border-slate-300 text-slate-600 hover:border-purple-400 hover:text-purple-600 transition dark:border-slate-700 dark:text-slate-300 dark:hover:border-purple-500 dark:hover:text-purple-400'
-            title='AI Configure'
-            aria-label='AI Configure'
-          >
-            <LuSparkles className='size-4' />
-          </button>
           {onCreate && (
             <button type='button' onClick={onCreate} className='button inline-flex items-center gap-2 text-sm'>
               <FiPlus /> <span className='hidden sm:inline'>Create issue</span>
@@ -236,8 +237,6 @@ const IssueboardShell = ({
           {children}
         </main>
       </div>
-
-      <AIConfigModal isOpen={aiConfigOpen} onClose={() => setAiConfigOpen(false)} />
     </div>
   );
 };
