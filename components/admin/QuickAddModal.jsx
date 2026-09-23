@@ -4,7 +4,7 @@ import { FiX, FiBookOpen, FiTrello, FiEdit3, FiCheck, FiCamera, FiHash, FiSearch
 import { LuSparkles } from 'react-icons/lu';
 import { BOOK_SHELVES } from '@utils/books/bookService';
 import { createPersistedBook } from '@utils/books/bookApi';
-import { loadAiConfig } from '@utils/admin/aiConfigStore';
+import { loadAiConfig, getActiveProviderCreds } from '@utils/admin/aiConfigStore';
 import { loadBookSettings } from '@utils/books/bookSettingsStore';
 
 const EMPTY_AUTOFILL_EXTRA = {
@@ -110,14 +110,14 @@ export const QuickAddModal = ({ isOpen, initialMode = 'issue', onClose, onBookCr
 
     setAutofillMode(requestMode);
     try {
-      const config = loadAiConfig();
+      const creds = getActiveProviderCreds(loadAiConfig());
       const bookSettings = loadBookSettings();
       const payload = {
         mode: requestMode,
-        provider: config.provider,
-        apiKey: config.apiKey,
-        baseUrl: config.baseUrl,
-        model: config.model,
+        provider: creds.provider,
+        apiKey: creds.apiKey,
+        baseUrl: creds.baseUrl,
+        model: creds.model,
         googleBooksApiKey: bookSettings.googleBooksApiKey
       };
       if (requestMode === 'isbn') payload.isbn = bookIsbnInput.trim();

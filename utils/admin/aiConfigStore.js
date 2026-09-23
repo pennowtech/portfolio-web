@@ -1,29 +1,92 @@
 // Single source of truth for the AI provider/persona configuration shared by
 // every admin surface (Article Studio, Issueboard, Book Library) — the
 // settings are one browser-wide config, not scoped per feature.
+//
+// Each provider keeps its own independent block (apiKey/baseUrl/model/
+// enabled/fetchedModels), so switching the active provider never clobbers
+// another provider's key or model choice -- they're configured once and
+// remembered, not overwritten by whichever provider you last touched.
 const STORAGE_KEY = 'sb_admin_ai_config';
 const LEGACY_STORAGE_KEY = 'article_studio_ai_config';
 
-export const DEFAULT_AI_CONFIG = {
-  provider: 'groq',
-  model: 'llama-3.3-70b-versatile',
+export const PROVIDER_DEFAULTS = {
+  groq: { baseUrl: 'https://api.groq.com/openai/v1', model: 'llama-3.3-70b-versatile' },
+  openai: { baseUrl: 'https://api.openai.com/v1', model: 'gpt-4o' },
+  anthropic: { baseUrl: 'https://api.anthropic.com/v1', model: 'claude-3-5-sonnet-latest' },
+  ollama: { baseUrl: 'http://localhost:11434/v1', model: 'deepseek-r1:14b' },
+  mistral: { baseUrl: 'https://api.mistral.ai/v1', model: 'mistral-large-latest' },
+  gemini: { baseUrl: 'https://generativelanguage.googleapis.com/v1beta/openai', model: 'gemini-2.0-flash' },
+  builtin: { baseUrl: '', model: 'heuristic-transformer' }
+};
+
+export const PROVIDER_IDS = Object.keys(PROVIDER_DEFAULTS);
+
+const emptyProviderBlock = (id) => ({
   apiKey: '',
-  baseUrl: 'https://api.groq.com/openai/v1',
+  baseUrl: PROVIDER_DEFAULTS[id].baseUrl,
+  model: PROVIDER_DEFAULTS[id].model,
+  enabled: id === 'builtin'
+});
+
+const emptyProviders = () =>
+  PROVIDER_IDS.reduce((acc, id) => {
+    acc[id] = emptyProviderBlock(id);
+    return acc;
+  }, {});
+
+export const DEFAULT_AI_CONFIG = {
+  activeProvider: 'groq',
+  providers: emptyProviders(),
   temperature: 0.3,
   systemPrompt:
     'You are a Principal Software Architect and elite technical writer. Provide crisp, pragmatic explanations with concrete code and no fluff.',
   personas: ['architecture']
 };
 
-// Migrates the old single-select `tone` field (pre-multi-persona) forward.
+// Migrates both the pre-multi-persona `tone` field and the pre-per-provider
+// flat shape ({ provider, apiKey, baseUrl, model, ... } at the top level)
+// forward into the current per-provider-block shape.
 export const normalizeAiConfig = (raw) => {
   if (!raw || typeof raw !== 'object') return DEFAULT_AI_CONFIG;
-  if (Array.isArray(raw.personas)) return { ...DEFAULT_AI_CONFIG, ...raw };
-  if (typeof raw.tone === 'string') {
-    const { tone, ...rest } = raw;
-    return { ...DEFAULT_AI_CONFIG, ...rest, personas: [tone] };
+
+  const personas = Array.isArray(raw.personas) ? raw.personas : typeof raw.tone === 'string' ? [raw.tone] : undefined;
+
+  if (raw.providers && typeof raw.providers === 'object') {
+    const providers = emptyProviders();
+    for (const id of PROVIDER_IDS) {
+      providers[id] = { ...providers[id], ...raw.providers[id] };
+    }
+    return {
+      ...DEFAULT_AI_CONFIG,
+      ...raw,
+      providers,
+      personas: personas || DEFAULT_AI_CONFIG.personas
+    };
   }
-  return { ...DEFAULT_AI_CONFIG, ...raw };
+
+  // Legacy flat shape: { provider, apiKey, baseUrl, model, temperature, systemPrompt, tone|personas }
+  if (typeof raw.provider === 'string') {
+    const providers = emptyProviders();
+    if (providers[raw.provider]) {
+      providers[raw.provider] = {
+        ...providers[raw.provider],
+        apiKey: raw.apiKey || '',
+        baseUrl: raw.baseUrl || providers[raw.provider].baseUrl,
+        model: raw.model || providers[raw.provider].model,
+        enabled: raw.provider === 'builtin' || Boolean(raw.apiKey) || raw.provider === 'ollama'
+      };
+    }
+    return {
+      ...DEFAULT_AI_CONFIG,
+      activeProvider: providers[raw.provider] ? raw.provider : DEFAULT_AI_CONFIG.activeProvider,
+      providers,
+      temperature: typeof raw.temperature === 'number' ? raw.temperature : DEFAULT_AI_CONFIG.temperature,
+      systemPrompt: typeof raw.systemPrompt === 'string' ? raw.systemPrompt : DEFAULT_AI_CONFIG.systemPrompt,
+      personas: personas || DEFAULT_AI_CONFIG.personas
+    };
+  }
+
+  return { ...DEFAULT_AI_CONFIG, ...raw, personas: personas || DEFAULT_AI_CONFIG.personas };
 };
 
 export const loadAiConfig = () => {
@@ -42,4 +105,23 @@ export const saveAiConfig = (config) => {
   } catch {
     // ignore -- config just won't persist across reloads
   }
+};
+
+// Flattens the active provider's block into the {provider, apiKey, baseUrl,
+// model} shape the /api/admin/ai-* routes and AI Rephrase/Autofill already
+// expect, plus the shared writing settings. Callers that used to read
+// config.provider/apiKey/baseUrl/model directly should use this instead.
+export const getActiveProviderCreds = (config) => {
+  const provider =
+    config.activeProvider && config.providers?.[config.activeProvider] ? config.activeProvider : 'builtin';
+  const block = config.providers?.[provider] || emptyProviderBlock(provider);
+  return {
+    provider,
+    apiKey: block.apiKey || '',
+    baseUrl: block.baseUrl || '',
+    model: block.model || '',
+    temperature: config.temperature,
+    systemPrompt: config.systemPrompt,
+    personas: config.personas
+  };
 };
