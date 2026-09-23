@@ -1,8 +1,21 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import { FiX, FiBookOpen, FiTrello, FiEdit3, FiCheck } from 'react-icons/fi';
+import { FiX, FiBookOpen, FiTrello, FiEdit3, FiCheck, FiCamera, FiHash, FiSearch } from 'react-icons/fi';
+import { LuSparkles } from 'react-icons/lu';
 import { BOOK_SHELVES } from '@utils/books/bookService';
 import { createPersistedBook } from '@utils/books/bookApi';
+import { loadAiConfig } from '@utils/admin/aiConfigStore';
+
+const EMPTY_AUTOFILL_EXTRA = {
+  isbn: '',
+  publisher: '',
+  publishedYear: null,
+  coverUrl: '',
+  targetAudience: [],
+  similarBooks: []
+};
+
+const MAX_COVER_PHOTO_BYTES = 4 * 1024 * 1024;
 
 export const QuickAddModal = ({ isOpen, initialMode = 'issue', onClose, onBookCreated }) => {
   const router = useRouter();
@@ -25,6 +38,16 @@ export const QuickAddModal = ({ isOpen, initialMode = 'issue', onClose, onBookCr
   const [bookDescription, setBookDescription] = useState('');
   const [bookNotes, setBookNotes] = useState('');
 
+  // AI Autofill state -- fills the form above from Google Books + the
+  // configured AI provider, keyed off title+author, ISBN, or a cover photo.
+  const [bookIsbnInput, setBookIsbnInput] = useState('');
+  const [coverImageDataUrl, setCoverImageDataUrl] = useState('');
+  const [coverImageName, setCoverImageName] = useState('');
+  const [autofillMode, setAutofillMode] = useState(''); // '' | 'isbn' | 'title-author' | 'image'
+  const [autofillMessage, setAutofillMessage] = useState('');
+  const [autofillError, setAutofillError] = useState('');
+  const [autofillExtra, setAutofillExtra] = useState(EMPTY_AUTOFILL_EXTRA);
+
   // Issue Form State
   const [issueProject, setIssueProject] = useState('PORT');
   const [issueTitle, setIssueTitle] = useState('');
@@ -38,10 +61,89 @@ export const QuickAddModal = ({ isOpen, initialMode = 'issue', onClose, onBookCr
       setMode(initialMode || 'issue');
       setSuccessMessage('');
       setBookError('');
+      setBookIsbnInput('');
+      setCoverImageDataUrl('');
+      setCoverImageName('');
+      setAutofillMode('');
+      setAutofillMessage('');
+      setAutofillError('');
+      setAutofillExtra(EMPTY_AUTOFILL_EXTRA);
     }
   }, [isOpen, initialMode]);
 
   if (!isOpen) return null;
+
+  const handleCoverFileChange = (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    setAutofillError('');
+    if (file.size > MAX_COVER_PHOTO_BYTES) {
+      setAutofillError('That cover photo is too large (max 4MB).');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => setCoverImageDataUrl(typeof reader.result === 'string' ? reader.result : '');
+    reader.onerror = () => setAutofillError('Could not read that image file.');
+    reader.readAsDataURL(file);
+    setCoverImageName(file.name);
+  };
+
+  const runAutofill = async (requestMode) => {
+    setAutofillError('');
+    setAutofillMessage('');
+    setAutofillMode(requestMode);
+    try {
+      const config = loadAiConfig();
+      const payload = {
+        mode: requestMode,
+        provider: config.provider,
+        apiKey: config.apiKey,
+        baseUrl: config.baseUrl,
+        model: config.model
+      };
+      if (requestMode === 'isbn') payload.isbn = bookIsbnInput.trim();
+      if (requestMode === 'title-author') {
+        payload.title = bookTitle.trim();
+        payload.author = bookAuthor.trim();
+      }
+      if (requestMode === 'image') payload.imageDataUrl = coverImageDataUrl;
+
+      const response = await fetch('/api/admin/books/ai-autofill', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await response.json();
+      if (!data.ok) {
+        setAutofillError(data.message || 'Autofill failed.');
+        return;
+      }
+
+      const b = data.book;
+      if (b.title) setBookTitle(b.title);
+      if (b.author) setBookAuthor(b.author);
+      if (b.genre) setBookGenre(b.genre);
+      if (b.language) setBookLanguage(b.language);
+      if (b.totalPages) setBookTotalPages(String(b.totalPages));
+      if (b.description) setBookDescription(b.description.slice(0, 600));
+      if (Array.isArray(b.keyThemes) && b.keyThemes.length) setBookKeyThemes(b.keyThemes.join(', '));
+      if (typeof b.rating === 'number' && b.rating > 0) setBookRating(String(Math.round(b.rating)));
+      setAutofillExtra({
+        isbn: b.isbn13 || b.isbn || '',
+        publisher: b.publisher || '',
+        publishedYear: b.publishedYear || null,
+        coverUrl: b.coverUrl || '',
+        targetAudience: Array.isArray(b.targetAudience) ? b.targetAudience : [],
+        similarBooks: Array.isArray(b.similarBooks) ? b.similarBooks : []
+      });
+      setAutofillMessage(`Filled from Google Books${b.isbn13 ? ` (ISBN ${b.isbn13})` : ''}.`);
+    } catch {
+      setAutofillError('Could not reach the server to autofill this book.');
+    } finally {
+      setAutofillMode('');
+    }
+  };
 
   const handleCreateBook = async (e) => {
     e.preventDefault();
@@ -68,9 +170,15 @@ export const QuickAddModal = ({ isOpen, initialMode = 'issue', onClose, onBookCr
         genre: bookGenre || 'General',
         language: bookLanguage || 'English',
         coverLocalPath: bookCoverLocalPath || null,
+        coverUrl: autofillExtra.coverUrl || null,
         keyThemes: themes,
+        targetAudience: autofillExtra.targetAudience,
+        similarBooks: autofillExtra.similarBooks,
         description: bookDescription || '',
-        notes: bookNotes
+        notes: bookNotes,
+        isbn: autofillExtra.isbn || undefined,
+        publisher: autofillExtra.publisher || undefined,
+        publishedYear: autofillExtra.publishedYear || undefined
       });
 
       setSuccessMessage(`"${created.title}" added to your ${bookShelf} shelf!`);
@@ -288,6 +396,73 @@ export const QuickAddModal = ({ isOpen, initialMode = 'issue', onClose, onBookCr
                 {bookError}
               </div>
             )}
+
+            {/* AI Autofill -- populate the fields below from title+author, ISBN, or a cover photo */}
+            <div className='rounded-xl border border-purple-200 bg-purple-50/60 p-3 space-y-2.5 dark:border-purple-500/30 dark:bg-purple-950/20'>
+              <div className='flex items-center gap-1.5 text-xs font-bold text-purple-800 dark:text-purple-300'>
+                <LuSparkles className='size-3.5' /> AI Autofill
+              </div>
+
+              <div className='flex flex-wrap items-center gap-2'>
+                <div className='relative flex-1 min-w-[9rem]'>
+                  <FiHash className='absolute left-2.5 top-2 size-3.5 text-slate-400' />
+                  <input
+                    type='text'
+                    value={bookIsbnInput}
+                    onChange={(e) => setBookIsbnInput(e.target.value)}
+                    placeholder='ISBN-10 or ISBN-13'
+                    className='w-full rounded-lg border border-slate-300 bg-white pl-8 pr-2.5 py-1.5 text-xs text-slate-900 outline-none focus:border-purple-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100'
+                  />
+                </div>
+                <button
+                  type='button'
+                  onClick={() => runAutofill('isbn')}
+                  disabled={!bookIsbnInput.trim() || Boolean(autofillMode)}
+                  className='inline-flex items-center gap-1.5 rounded-lg border border-purple-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-purple-700 hover:bg-purple-100 disabled:opacity-40 dark:border-purple-500/40 dark:bg-slate-900 dark:text-purple-300 dark:hover:bg-purple-950/40'
+                >
+                  {autofillMode === 'isbn' ? 'Looking up…' : 'From ISBN'}
+                </button>
+              </div>
+
+              <div className='flex flex-wrap items-center gap-2'>
+                <button
+                  type='button'
+                  onClick={() => runAutofill('title-author')}
+                  disabled={!bookTitle.trim() || Boolean(autofillMode)}
+                  title={!bookTitle.trim() ? 'Enter a title below first' : undefined}
+                  className='inline-flex items-center gap-1.5 rounded-lg border border-purple-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-purple-700 hover:bg-purple-100 disabled:opacity-40 dark:border-purple-500/40 dark:bg-slate-900 dark:text-purple-300 dark:hover:bg-purple-950/40'
+                >
+                  <FiSearch className='size-3.5' />
+                  {autofillMode === 'title-author' ? 'Looking up…' : 'From Title + Author'}
+                </button>
+
+                <label className='inline-flex items-center gap-1.5 rounded-lg border border-purple-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-purple-700 hover:bg-purple-100 cursor-pointer dark:border-purple-500/40 dark:bg-slate-900 dark:text-purple-300 dark:hover:bg-purple-950/40'>
+                  <FiCamera className='size-3.5' />
+                  {coverImageName ? 'Change photo' : 'Upload cover photo'}
+                  <input type='file' accept='image/*' onChange={handleCoverFileChange} className='hidden' />
+                </label>
+                {coverImageDataUrl && (
+                  <button
+                    type='button'
+                    onClick={() => runAutofill('image')}
+                    disabled={Boolean(autofillMode)}
+                    className='inline-flex items-center gap-1.5 rounded-lg bg-purple-600 px-2.5 py-1.5 text-xs font-semibold text-white hover:bg-purple-500 disabled:opacity-40'
+                  >
+                    {autofillMode === 'image' ? 'Identifying…' : `Identify "${coverImageName}"`}
+                  </button>
+                )}
+              </div>
+
+              {autofillMessage && (
+                <p className='flex items-center gap-1 text-[11px] font-semibold text-emerald-700 dark:text-emerald-400'>
+                  <FiCheck className='size-3' /> {autofillMessage}
+                </p>
+              )}
+              {autofillError && (
+                <p className='text-[11px] font-semibold text-rose-600 dark:text-rose-400'>{autofillError}</p>
+              )}
+            </div>
+
             <div className='grid grid-cols-2 gap-3'>
               <div>
                 <label className='block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1'>
