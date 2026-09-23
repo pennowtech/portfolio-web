@@ -20,6 +20,45 @@ export const resolveBaseUrl = (provider, baseUrl) => baseUrl?.trim() || DEFAULT_
 
 export class AiProviderError extends Error {}
 
+// Builds a diagnostic message for a failed response, distinguishing "the
+// provider rejected this" from "something between us and the provider
+// intercepted this" (a corporate proxy/firewall doing SSL inspection or
+// category blocking, which shows up as a redirect to an unrelated host and/or
+// an HTML block page instead of the provider's real JSON response) -- the
+// latter looks identical to a generic HTTP error otherwise and is genuinely
+// confusing to debug from the error code alone.
+const describeFailedResponse = async (response, requestedHost) => {
+  const bodyText = await response.text().catch(() => '');
+  const contentType = response.headers.get('content-type') || '';
+  const finalHost = (() => {
+    try {
+      return new URL(response.url).host;
+    } catch {
+      return '';
+    }
+  })();
+
+  const redirectedElsewhere = response.redirected && finalHost && finalHost !== requestedHost;
+  if (!contentType.includes('json') || redirectedElsewhere) {
+    const where = redirectedElsewhere
+      ? `redirected to ${finalHost} instead of reaching ${requestedHost}`
+      : `got HTTP ${response.status} back as ${contentType || 'a non-JSON response'} instead of ${requestedHost}'s API response`;
+    return (
+      `Request ${where} -- this looks like a network security proxy (e.g. a corporate firewall doing SSL inspection) ` +
+      `intercepted the request, not a rejection from the provider itself. Check network/VPN/proxy settings, or try a different network.`
+    );
+  }
+
+  try {
+    const parsed = JSON.parse(bodyText);
+    const message = parsed?.error?.message || parsed?.message;
+    if (message) return `HTTP ${response.status}: ${message}`;
+  } catch {
+    // fall through to the raw-text message below
+  }
+  return `HTTP ${response.status}. ${bodyText.slice(0, 300)}`;
+};
+
 export const listModels = async (provider, { apiKey, baseUrl } = {}) => {
   if (provider === 'builtin') return ['heuristic-transformer'];
 
@@ -28,7 +67,7 @@ export const listModels = async (provider, { apiKey, baseUrl } = {}) => {
   if (OPENAI_COMPATIBLE.has(provider)) {
     const headers = apiKey ? { Authorization: `Bearer ${apiKey}` } : {};
     const response = await fetch(`${resolvedBaseUrl.replace(/\/$/, '')}/models`, { headers });
-    if (!response.ok) throw new AiProviderError(`Provider returned HTTP ${response.status} listing models.`);
+    if (!response.ok) throw new AiProviderError(await describeFailedResponse(response, new URL(resolvedBaseUrl).host));
     const data = await response.json();
     return (data.data || []).map((m) => m.id).sort();
   }
@@ -38,7 +77,7 @@ export const listModels = async (provider, { apiKey, baseUrl } = {}) => {
     const response = await fetch('https://api.anthropic.com/v1/models', {
       headers: { 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' }
     });
-    if (!response.ok) throw new AiProviderError(`Anthropic returned HTTP ${response.status} listing models.`);
+    if (!response.ok) throw new AiProviderError(await describeFailedResponse(response, 'api.anthropic.com'));
     const data = await response.json();
     return (data.data || []).map((m) => m.id).sort();
   }
@@ -70,10 +109,7 @@ export const chatComplete = async (provider, { apiKey, baseUrl, model, systemPro
         ]
       })
     });
-    if (!response.ok) {
-      const detail = await response.text().catch(() => '');
-      throw new AiProviderError(`Provider returned HTTP ${response.status}. ${detail.slice(0, 300)}`);
-    }
+    if (!response.ok) throw new AiProviderError(await describeFailedResponse(response, new URL(resolvedBaseUrl).host));
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content;
     if (!content) throw new AiProviderError('Provider response did not include any content.');
@@ -93,10 +129,7 @@ export const chatComplete = async (provider, { apiKey, baseUrl, model, systemPro
         messages: [{ role: 'user', content: userText }]
       })
     });
-    if (!response.ok) {
-      const detail = await response.text().catch(() => '');
-      throw new AiProviderError(`Anthropic returned HTTP ${response.status}. ${detail.slice(0, 300)}`);
-    }
+    if (!response.ok) throw new AiProviderError(await describeFailedResponse(response, 'api.anthropic.com'));
     const data = await response.json();
     const content = data.content?.[0]?.text;
     if (!content) throw new AiProviderError('Anthropic response did not include any content.');

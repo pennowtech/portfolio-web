@@ -54,7 +54,7 @@ const ArticleLibrary = ({ articles = [], loading, message, activeArticleId = '' 
               <h2 className='font-Neuton text-base font-bold text-slate-900 dark:text-white leading-none'>
                 Drafts Deck
               </h2>
-              <span className='rounded-full bg-slate-100 px-1.5 py-0 text-[10px] font-bold leading-tight text-slate-600 dark:bg-slate-800 dark:text-slate-300'>
+              <span className='rounded-full bg-slate-200 px-1.5 py-0 text-[10px] font-bold leading-tight text-slate-800 dark:bg-slate-700 dark:text-slate-200'>
                 {articles.length}
               </span>
             </div>
@@ -119,11 +119,11 @@ const ArticleLibrary = ({ articles = [], loading, message, activeArticleId = '' 
                 className={`flex flex-1 items-center justify-center gap-1 rounded-md py-0.5 text-[10px] font-semibold transition ${
                   status === id
                     ? 'bg-white text-emerald-700 shadow-xs dark:bg-slate-800 dark:text-emerald-400'
-                    : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200'
+                    : 'text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100'
                 }`}
               >
                 <span>{label}</span>
-                <span className={`text-[9px] ${status === id ? 'opacity-85' : 'opacity-60'}`}>({count})</span>
+                <span className={`text-[9px] ${status === id ? 'opacity-90' : 'opacity-70'}`}>({count})</span>
               </button>
             ))}
           </div>

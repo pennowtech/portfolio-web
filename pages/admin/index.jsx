@@ -17,7 +17,6 @@ import {
   FiPlus,
   FiFolder
 } from 'react-icons/fi';
-import { getStoredBooks } from '@utils/books/bookService';
 
 // Seed showcase books matching Artefact 2
 const SHOWCASE_BOOKS = [

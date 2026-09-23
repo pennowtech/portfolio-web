@@ -77,7 +77,7 @@ const StatusChart = ({ byStatus, total }) => {
 };
 
 const Legend = ({ color, label }) => (
-  <span className='flex items-center gap-1.5'>
+  <span className='flex items-center gap-1.5 text-slate-700 dark:text-slate-300'>
     <i className={`size-2.5 rounded-sm ${color}`} />
     {label}
   </span>

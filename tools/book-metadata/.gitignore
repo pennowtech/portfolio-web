@@ -1,0 +1,23 @@
+# Environment files
+.env
+.env.local
+
+# Output directory
+output/
+
+# Logs directory
+logs/
+
+# Node.js temporary files
+*.tmp
+*.temp
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db

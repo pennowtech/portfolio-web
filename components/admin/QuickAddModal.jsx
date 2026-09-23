@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { FiX, FiBookOpen, FiTrello, FiEdit3, FiCheck } from 'react-icons/fi';
-import { createBook, BOOK_SHELVES } from '@utils/books/bookService';
+import { BOOK_SHELVES } from '@utils/books/bookService';
+import { createPersistedBook } from '@utils/books/bookApi';
 
 export const QuickAddModal = ({ isOpen, initialMode = 'issue', onClose, onBookCreated }) => {
   const router = useRouter();
   const [mode, setMode] = useState(initialMode || 'issue');
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const [bookError, setBookError] = useState('');
 
   // Book Form State
   const [bookTitle, setBookTitle] = useState('');
@@ -16,6 +18,11 @@ export const QuickAddModal = ({ isOpen, initialMode = 'issue', onClose, onBookCr
   const [bookTotalPages, setBookTotalPages] = useState('320');
   const [bookCurrentPage, setBookCurrentPage] = useState('0');
   const [bookRating, setBookRating] = useState('5');
+  const [bookGenre, setBookGenre] = useState('');
+  const [bookLanguage, setBookLanguage] = useState('English');
+  const [bookCoverLocalPath, setBookCoverLocalPath] = useState('');
+  const [bookKeyThemes, setBookKeyThemes] = useState('');
+  const [bookDescription, setBookDescription] = useState('');
   const [bookNotes, setBookNotes] = useState('');
 
   // Issue Form State
@@ -30,24 +37,39 @@ export const QuickAddModal = ({ isOpen, initialMode = 'issue', onClose, onBookCr
     if (isOpen) {
       setMode(initialMode || 'issue');
       setSuccessMessage('');
+      setBookError('');
     }
   }, [isOpen, initialMode]);
 
   if (!isOpen) return null;
 
-  const handleCreateBook = (e) => {
+  const handleCreateBook = async (e) => {
     e.preventDefault();
     if (!bookTitle.trim() || !bookAuthor.trim()) return;
 
     setLoading(true);
     try {
-      const created = createBook({
+      const themes = bookKeyThemes
+        ? bookKeyThemes
+            .split(',')
+            .map((t) => t.trim())
+            .filter(Boolean)
+        : [];
+
+      const totalPages = Math.max(1, Number(bookTotalPages) || 1);
+      const created = await createPersistedBook({
         title: bookTitle,
         author: bookAuthor,
         shelf: bookShelf,
-        totalPages: Number(bookTotalPages),
-        currentPage: Number(bookCurrentPage),
+        totalPages,
+        pages: totalPages,
+        currentPage: Math.min(totalPages, Math.max(0, Number(bookCurrentPage) || 0)),
         rating: Number(bookRating),
+        genre: bookGenre || 'General',
+        language: bookLanguage || 'English',
+        coverLocalPath: bookCoverLocalPath || null,
+        keyThemes: themes,
+        description: bookDescription || '',
         notes: bookNotes
       });
 
@@ -59,6 +81,7 @@ export const QuickAddModal = ({ isOpen, initialMode = 'issue', onClose, onBookCr
       }, 700);
     } catch (err) {
       console.error(err);
+      setBookError(err.message || 'Could not save this book. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -257,6 +280,14 @@ export const QuickAddModal = ({ isOpen, initialMode = 'issue', onClose, onBookCr
         {/* FORM 2: ADD BOOK RECORD */}
         {mode === 'book' && (
           <form onSubmit={handleCreateBook} className='mt-4 space-y-4'>
+            {bookError && (
+              <div
+                role='alert'
+                className='rounded-lg border border-rose-300 bg-rose-50 px-3 py-2 text-xs text-rose-700 dark:border-rose-900 dark:bg-rose-950/40 dark:text-rose-300'
+              >
+                {bookError}
+              </div>
+            )}
             <div className='grid grid-cols-2 gap-3'>
               <div>
                 <label className='block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1'>
@@ -326,12 +357,72 @@ export const QuickAddModal = ({ isOpen, initialMode = 'issue', onClose, onBookCr
               </div>
             </div>
 
+            <div className='grid grid-cols-2 gap-3'>
+              <div>
+                <label className='block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1'>Genre</label>
+                <input
+                  type='text'
+                  value={bookGenre}
+                  onChange={(e) => setBookGenre(e.target.value)}
+                  placeholder='e.g. Distributed Systems'
+                  className='w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-xs text-slate-900 outline-none focus:border-amber-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100'
+                />
+              </div>
+              <div>
+                <label className='block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1'>Language</label>
+                <input
+                  type='text'
+                  value={bookLanguage}
+                  onChange={(e) => setBookLanguage(e.target.value)}
+                  placeholder='e.g. English'
+                  className='w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-xs text-slate-900 outline-none focus:border-amber-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100'
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className='block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1'>Description</label>
+              <textarea
+                rows={2}
+                value={bookDescription}
+                onChange={(e) => setBookDescription(e.target.value)}
+                placeholder='A short synopsis or reason this book matters…'
+                className='w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-xs text-slate-900 placeholder-slate-400 outline-none focus:border-amber-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-500'
+              />
+            </div>
+
+            <div>
+              <label className='block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1'>
+                Cover Local Filename (from covers folder)
+              </label>
+              <input
+                type='text'
+                value={bookCoverLocalPath}
+                onChange={(e) => setBookCoverLocalPath(e.target.value)}
+                placeholder='e.g. Think_and_Grow_Rich.jpg'
+                className='w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-xs text-slate-900 font-mono outline-none focus:border-amber-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100'
+              />
+            </div>
+
+            <div>
+              <label className='block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1'>
+                Key Themes (comma-separated)
+              </label>
+              <input
+                type='text'
+                value={bookKeyThemes}
+                onChange={(e) => setBookKeyThemes(e.target.value)}
+                placeholder='e.g. Replication, Partitioning, Consensus'
+                className='w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-xs text-slate-900 outline-none focus:border-amber-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100'
+              />
+            </div>
+
             <div>
               <label className='block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1'>
                 Personal Notes / Takeaways
               </label>
               <textarea
-                rows={3}
+                rows={2}
                 value={bookNotes}
                 onChange={(e) => setBookNotes(e.target.value)}
                 placeholder='Core thesis, mental models, or why you want to read it…'
