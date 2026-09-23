@@ -39,6 +39,19 @@ const fromVolume = (volume) => {
   };
 };
 
+// Google Books' relevance ranking often puts a sparse record (an audiobook,
+// a foreign edition, a stub with just a title) ahead of a richer one for the
+// same book. Score every candidate on how complete it is and take the best,
+// instead of just the first result with a title.
+const completenessScore = (book) =>
+  (book.totalPages ? 1 : 0) +
+  (book.genre ? 1 : 0) +
+  (book.publisher ? 1 : 0) +
+  (book.isbn13 ? 1 : 0) +
+  (book.coverUrl ? 1 : 0) +
+  (book.description ? 1 : 0) +
+  (book.publishedYear ? 1 : 0);
+
 const searchGoogleBooks = async (query, apiKey) => {
   const keyParam = apiKey ? `&key=${encodeURIComponent(apiKey)}` : '';
   const url = `${GOOGLE_BOOKS_API}?q=${encodeURIComponent(query)}&maxResults=5${keyParam}`;
@@ -56,11 +69,11 @@ const searchGoogleBooks = async (query, apiKey) => {
   }
   const data = await response.json();
   const items = Array.isArray(data.items) ? data.items : [];
-  for (const item of items) {
-    const book = fromVolume(item);
-    if (book) return book;
-  }
-  return null;
+  const candidates = items.map(fromVolume).filter(Boolean);
+  if (candidates.length === 0) return null;
+  return candidates.reduce((best, candidate) =>
+    completenessScore(candidate) > completenessScore(best) ? candidate : best
+  );
 };
 
 export const lookupByIsbn = async (isbn, apiKey) => {

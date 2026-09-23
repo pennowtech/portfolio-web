@@ -484,10 +484,22 @@ export const QuickAddModal = ({ isOpen, initialMode = 'issue', onClose, onBookCr
                 )}
               </div>
 
-              {autofillMessage && (
-                <p className='flex items-center gap-1 text-[11px] font-semibold text-emerald-700 dark:text-emerald-400'>
-                  <FiCheck className='size-3' /> {autofillMessage}
-                </p>
+              {(autofillMessage || autofillExtra.coverUrl) && (
+                <div className='flex items-start gap-3'>
+                  {autofillExtra.coverUrl && (
+                    // eslint-disable-next-line @next/next/no-img-element -- external Google Books thumbnail URL
+                    <img
+                      src={autofillExtra.coverUrl}
+                      alt={`Cover of ${bookTitle || 'the book'}`}
+                      className='h-20 w-14 shrink-0 rounded-md border border-purple-200 object-cover shadow-sm dark:border-purple-500/30'
+                    />
+                  )}
+                  {autofillMessage && (
+                    <p className='flex items-center gap-1 text-[11px] font-semibold text-emerald-700 dark:text-emerald-400'>
+                      <FiCheck className='size-3 shrink-0' /> {autofillMessage}
+                    </p>
+                  )}
+                </div>
               )}
               {autofillError && (
                 <p className='text-[11px] font-semibold text-rose-600 dark:text-rose-400'>{autofillError}</p>

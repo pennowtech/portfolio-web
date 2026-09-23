@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FiGrid, FiEdit3, FiTrello, FiBookOpen, FiSettings, FiSidebar, FiExternalLink } from 'react-icons/fi';
+import SettingsModal from './SettingsModal';
 
 const NAV_ITEMS = [
   {
@@ -47,6 +48,7 @@ const NAV_ITEMS = [
 export const AdminActivityRail = ({ sidebarExpanded, onToggleSidebar, hideToggle = false }) => {
   const router = useRouter();
   const currentPath = router.pathname;
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   return (
     <aside
@@ -126,7 +128,22 @@ export const AdminActivityRail = ({ sidebarExpanded, onToggleSidebar, hideToggle
         >
           <FiExternalLink className='size-4' />
         </Link>
+
+        <div className='h-px w-6 bg-slate-200 dark:bg-slate-800' />
+
+        {/* Common Settings -- AI provider and Google Books, always available here */}
+        <button
+          type='button'
+          onClick={() => setSettingsOpen(true)}
+          title='Settings'
+          aria-label='Settings'
+          className='flex size-9 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-200 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200'
+        >
+          <FiSettings className='size-4' />
+        </button>
       </div>
+
+      <SettingsModal isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />
     </aside>
   );
 };
