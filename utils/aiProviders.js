@@ -90,12 +90,29 @@ export const listModels = async (provider, { apiKey, baseUrl } = {}) => {
 // rephrase isn't truncated.
 const estimateTokens = (text) => Math.ceil((text || '').length / 3.2);
 
-export const chatComplete = async (provider, { apiKey, baseUrl, model, systemPrompt, userText, temperature = 0.3 }) => {
+// Parses a data: URL (e.g. "data:image/jpeg;base64,...") into its media type
+// and raw base64 payload, as Anthropic's image blocks need them split apart.
+const parseImageDataUrl = (imageDataUrl) => {
+  const match = /^data:(image\/[a-zA-Z0-9.+-]+);base64,(.+)$/.exec(imageDataUrl || '');
+  if (!match) throw new AiProviderError('Invalid image data.');
+  return { mediaType: match[1], data: match[2] };
+};
+
+export const chatComplete = async (
+  provider,
+  { apiKey, baseUrl, model, systemPrompt, userText, temperature = 0.3, imageDataUrl }
+) => {
   const maxTokens = Math.min(8192, Math.max(1024, estimateTokens(userText) * 2));
 
   if (OPENAI_COMPATIBLE.has(provider)) {
     const resolvedBaseUrl = resolveBaseUrl(provider, baseUrl);
     const headers = { 'Content-Type': 'application/json', ...(apiKey ? { Authorization: `Bearer ${apiKey}` } : {}) };
+    const userContent = imageDataUrl
+      ? [
+          { type: 'text', text: userText },
+          { type: 'image_url', image_url: { url: imageDataUrl } }
+        ]
+      : userText;
     const response = await fetch(`${resolvedBaseUrl.replace(/\/$/, '')}/chat/completions`, {
       method: 'POST',
       headers,
@@ -105,7 +122,7 @@ export const chatComplete = async (provider, { apiKey, baseUrl, model, systemPro
         max_tokens: maxTokens,
         messages: [
           { role: 'system', content: systemPrompt },
-          { role: 'user', content: userText }
+          { role: 'user', content: userContent }
         ]
       })
     });
@@ -118,6 +135,15 @@ export const chatComplete = async (provider, { apiKey, baseUrl, model, systemPro
 
   if (provider === 'anthropic') {
     if (!apiKey) throw new AiProviderError('API key is required for Anthropic.');
+    const userContent = imageDataUrl
+      ? (() => {
+          const { mediaType, data } = parseImageDataUrl(imageDataUrl);
+          return [
+            { type: 'image', source: { type: 'base64', media_type: mediaType, data } },
+            { type: 'text', text: userText }
+          ];
+        })()
+      : userText;
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
@@ -126,7 +152,7 @@ export const chatComplete = async (provider, { apiKey, baseUrl, model, systemPro
         max_tokens: maxTokens,
         temperature,
         system: systemPrompt,
-        messages: [{ role: 'user', content: userText }]
+        messages: [{ role: 'user', content: userContent }]
       })
     });
     if (!response.ok) throw new AiProviderError(await describeFailedResponse(response, 'api.anthropic.com'));
