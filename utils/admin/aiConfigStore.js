@@ -38,13 +38,28 @@ const emptyProviders = () =>
     return acc;
   }, {});
 
+const MAX_CUSTOM_MODEL_HISTORY = 5;
+
 export const DEFAULT_AI_CONFIG = {
   activeProvider: 'groq',
   providers: emptyProviders(),
   temperature: 0.3,
   systemPrompt:
     'You are a Principal Software Architect and elite technical writer. Provide crisp, pragmatic explanations with concrete code and no fluff.',
-  personas: ['architecture']
+  personas: ['architecture'],
+  // Manually-typed model IDs the user has applied before, kept per provider
+  // so they're offered again as quick picks instead of having to retype.
+  customModelHistory: {}
+};
+
+// Records a manually-typed model id for this provider (most-recent-first,
+// deduped, capped) and returns the updated config -- call before saveAiConfig.
+export const rememberCustomModel = (config, provider, modelId) => {
+  const trimmed = String(modelId || '').trim();
+  if (!trimmed) return config;
+  const existing = config.customModelHistory?.[provider] || [];
+  const next = [trimmed, ...existing.filter((m) => m !== trimmed)].slice(0, MAX_CUSTOM_MODEL_HISTORY);
+  return { ...config, customModelHistory: { ...config.customModelHistory, [provider]: next } };
 };
 
 // Migrates both the pre-multi-persona `tone` field and the pre-per-provider

@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { FiCheck, FiChevronDown, FiEye, FiEyeOff, FiKey, FiRefreshCw, FiServer, FiZap } from 'react-icons/fi';
 import { AI_PERSONAS } from '../aiPersonas';
-import { DEFAULT_AI_CONFIG, PROVIDER_IDS, loadAiConfig, saveAiConfig } from '@utils/admin/aiConfigStore';
+import {
+  DEFAULT_AI_CONFIG,
+  PROVIDER_IDS,
+  loadAiConfig,
+  saveAiConfig,
+  rememberCustomModel
+} from '@utils/admin/aiConfigStore';
 
 const PROVIDER_META = {
   groq: {
@@ -36,7 +42,17 @@ const hasCredentials = (provider, block) => {
 // One provider's card: its own key/baseUrl/model, its own fetched-models
 // list and test-connection result -- fully independent of every other
 // provider's block, so configuring or testing one never touches another's.
-const ProviderCard = ({ provider, block, isActive, expanded, onToggleExpand, onSetActive, onChange }) => {
+const ProviderCard = ({
+  provider,
+  block,
+  isActive,
+  expanded,
+  onToggleExpand,
+  onSetActive,
+  onChange,
+  customModelHistory,
+  onApplyCustomModel
+}) => {
   const meta = PROVIDER_META[provider];
   const [showKey, setShowKey] = useState(false);
   const [fetchedModels, setFetchedModels] = useState(null);
@@ -44,10 +60,22 @@ const ProviderCard = ({ provider, block, isActive, expanded, onToggleExpand, onS
   const [modelsError, setModelsError] = useState('');
   const [testingStatus, setTestingStatus] = useState(null);
   const [testMessage, setTestMessage] = useState('');
+  const [customModelInput, setCustomModelInput] = useState('');
 
   const configured = hasCredentials(provider, block);
   const canListModels = provider !== 'builtin' && configured;
-  const modelOptions = fetchedModels || meta.fallbackModels;
+  // Always include the currently-set model, even if it came from manual entry
+  // and isn't in the fetched/fallback list, so the dropdown never silently
+  // shows something other than what's actually configured.
+  const knownModels = fetchedModels || meta.fallbackModels;
+  const modelOptions = block.model && !knownModels.includes(block.model) ? [block.model, ...knownModels] : knownModels;
+
+  const applyCustomModel = () => {
+    const trimmed = customModelInput.trim();
+    if (!trimmed) return;
+    onApplyCustomModel(trimmed);
+    setCustomModelInput('');
+  };
 
   const fetchModels = async () => {
     if (!canListModels || modelsLoading) return;
@@ -223,29 +251,23 @@ const ProviderCard = ({ provider, block, isActive, expanded, onToggleExpand, onS
                   {fetchedModels ? 'Refresh' : 'Fetch models'}
                 </button>
               </div>
-              {/* A free-text field (not a locked dropdown) so a model ID can always be
-                  entered by hand -- the escape hatch for when a corporate firewall/proxy
-                  blocks the models-list request but chat completions still work, or for
-                  a brand-new model id not in our fallback list yet. */}
-              <input
-                list={`models-${provider}`}
-                type='text'
+              <select
                 value={block.model}
                 onFocus={() => {
                   if (!fetchedModels) fetchModels();
                 }}
                 onChange={(e) => onChange({ ...block, model: e.target.value })}
-                placeholder='Model ID'
                 className='w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs text-slate-900 outline-none transition focus:border-purple-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white'
-              />
-              <datalist id={`models-${provider}`}>
+              >
                 {modelOptions.map((m) => (
-                  <option key={m} value={m} />
+                  <option key={m} value={m}>
+                    {m}
+                  </option>
                 ))}
-              </datalist>
+              </select>
               {modelsError && (
                 <p className='mt-1 text-[10px] text-rose-600 dark:text-rose-400'>
-                  {modelsError} You can still type a model ID above by hand.
+                  {modelsError} Use Custom Model ID below instead.
                 </p>
               )}
               {fetchedModels && !modelsError && (
@@ -253,6 +275,52 @@ const ProviderCard = ({ provider, block, isActive, expanded, onToggleExpand, onS
                   {fetchedModels.length} live model(s) from the provider.
                 </p>
               )}
+
+              {/* Always-available manual entry -- the escape hatch for when a
+                  corporate firewall/proxy blocks the models-list request but
+                  chat completions still work, or for a model id not in the
+                  fetched/fallback list yet. */}
+              <div className='mt-2 border-t border-slate-100 pt-2 dark:border-slate-800'>
+                <label className='block font-semibold text-slate-700 dark:text-slate-200 text-xs mb-1'>
+                  Custom Model ID
+                </label>
+                <div className='flex gap-1.5'>
+                  <input
+                    type='text'
+                    value={customModelInput}
+                    onChange={(e) => setCustomModelInput(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && applyCustomModel()}
+                    placeholder='e.g. gpt-4o-2024-11-20'
+                    className='min-w-0 flex-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs text-slate-900 outline-none transition focus:border-purple-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white'
+                  />
+                  <button
+                    type='button'
+                    onClick={applyCustomModel}
+                    disabled={!customModelInput.trim()}
+                    className='shrink-0 rounded-lg bg-purple-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-purple-500 disabled:opacity-40'
+                  >
+                    Apply
+                  </button>
+                </div>
+                {customModelHistory.length > 0 && (
+                  <div className='mt-1.5 flex flex-wrap gap-1'>
+                    {customModelHistory.map((m) => (
+                      <button
+                        key={m}
+                        type='button'
+                        onClick={() => onApplyCustomModel(m)}
+                        className={`rounded-full border px-2 py-0.5 text-[10px] font-medium transition ${
+                          block.model === m
+                            ? 'border-purple-500 bg-purple-100 text-purple-800 dark:bg-purple-950/50 dark:text-purple-300'
+                            : 'border-slate-200 text-slate-500 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800'
+                        }`}
+                      >
+                        {m}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
@@ -314,6 +382,16 @@ export const AiProviderSettingsPanel = ({ onSaved }) => {
     }));
   };
 
+  // Changing the model doesn't invalidate an already-verified key/baseUrl --
+  // only editing the credentials themselves does (handled in ProviderCard).
+  const handleApplyCustomModel = (provider, modelId) => {
+    setConfig((prev) => {
+      const nextBlock = { ...prev.providers[provider], model: modelId };
+      const withHistory = rememberCustomModel(prev, provider, modelId);
+      return { ...withHistory, providers: { ...prev.providers, [provider]: nextBlock } };
+    });
+  };
+
   const handleSave = () => {
     saveAiConfig(config);
     onSaved?.(config);
@@ -339,6 +417,8 @@ export const AiProviderSettingsPanel = ({ onSaved }) => {
                 onToggleExpand={() => setExpandedProvider((prev) => (prev === provider ? null : provider))}
                 onSetActive={(id) => setConfig((prev) => ({ ...prev, activeProvider: id }))}
                 onChange={(nextBlock) => handleProviderChange(provider, nextBlock)}
+                customModelHistory={config.customModelHistory?.[provider] || []}
+                onApplyCustomModel={(modelId) => handleApplyCustomModel(provider, modelId)}
               />
             ))}
           </div>
