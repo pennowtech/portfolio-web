@@ -27,6 +27,26 @@ export class AiProviderError extends Error {}
 // an HTML block page instead of the provider's real JSON response) -- the
 // latter looks identical to a generic HTTP error otherwise and is genuinely
 // confusing to debug from the error code alone.
+// Response headers added by known SSL-inspection/security proxies, checked
+// regardless of content-type or redirect target -- some of these proxies
+// serve a block page with a JSON-looking content-type or without changing
+// the host, so content-type/redirect checks alone can miss them.
+const PROXY_VENDOR_HEADER_SIGNATURES = [
+  { header: 'server', pattern: /zscaler/i, vendor: 'Zscaler' },
+  { header: 'x-via', pattern: /zscaler/i, vendor: 'Zscaler' },
+  { header: 'server', pattern: /forcepoint/i, vendor: 'Forcepoint' },
+  { header: 'server', pattern: /fortinet|fortigate/i, vendor: 'Fortinet' },
+  { header: 'x-proxy-error', pattern: /.+/i, vendor: 'a network proxy' }
+];
+
+const detectProxyVendor = (response) => {
+  for (const { header, pattern, vendor } of PROXY_VENDOR_HEADER_SIGNATURES) {
+    const value = response.headers.get(header);
+    if (value && pattern.test(value)) return vendor;
+  }
+  return null;
+};
+
 const describeFailedResponse = async (response, requestedHost) => {
   const bodyText = await response.text().catch(() => '');
   const contentType = response.headers.get('content-type') || '';
@@ -38,14 +58,18 @@ const describeFailedResponse = async (response, requestedHost) => {
     }
   })();
 
+  const proxyVendor = detectProxyVendor(response);
   const redirectedElsewhere = response.redirected && finalHost && finalHost !== requestedHost;
-  if (!contentType.includes('json') || redirectedElsewhere) {
+  if (proxyVendor || !contentType.includes('json') || redirectedElsewhere) {
     const where = redirectedElsewhere
       ? `redirected to ${finalHost} instead of reaching ${requestedHost}`
       : `got HTTP ${response.status} back as ${contentType || 'a non-JSON response'} instead of ${requestedHost}'s API response`;
+    const via = proxyVendor
+      ? `this network's ${proxyVendor} security proxy`
+      : `a network security proxy (e.g. a corporate firewall doing SSL inspection)`;
     return (
-      `Request ${where} -- this looks like a network security proxy (e.g. a corporate firewall doing SSL inspection) ` +
-      `intercepted the request, not a rejection from the provider itself. Check network/VPN/proxy settings, or try a different network.`
+      `Request ${where} -- this looks like ${via} intercepted the request, not a rejection from the provider itself. ` +
+      `Check network/VPN/proxy settings, or try a different network. You can still enter a model ID by hand below.`
     );
   }
 

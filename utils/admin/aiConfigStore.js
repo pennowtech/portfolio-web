@@ -25,7 +25,11 @@ const emptyProviderBlock = (id) => ({
   apiKey: '',
   baseUrl: PROVIDER_DEFAULTS[id].baseUrl,
   model: PROVIDER_DEFAULTS[id].model,
-  enabled: id === 'builtin'
+  enabled: id === 'builtin',
+  // Only set by a successful "Test connection" -- entering a key just means
+  // it's present, not that it's actually valid, so the two are tracked
+  // separately rather than treating "has text" as "configured".
+  validated: id === 'builtin'
 });
 
 const emptyProviders = () =>

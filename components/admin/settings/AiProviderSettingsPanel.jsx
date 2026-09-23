@@ -25,7 +25,9 @@ const PROVIDER_META = {
   builtin: { label: 'Built-in Rules', hint: 'No API key needed', fallbackModels: ['heuristic-transformer'] }
 };
 
-const isConfigured = (provider, block) => {
+// "Has credentials entered" -- used to gate the fetch/test actions. This is
+// NOT the same as "verified working"; see block.validated for that.
+const hasCredentials = (provider, block) => {
   if (provider === 'builtin') return true;
   if (provider === 'ollama') return Boolean(block.baseUrl?.trim());
   return Boolean(block.apiKey?.trim());
@@ -43,9 +45,8 @@ const ProviderCard = ({ provider, block, isActive, expanded, onToggleExpand, onS
   const [testingStatus, setTestingStatus] = useState(null);
   const [testMessage, setTestMessage] = useState('');
 
-  const configured = isConfigured(provider, block);
-  const canListModels =
-    provider !== 'builtin' && (provider === 'ollama' ? Boolean(block.baseUrl?.trim()) : Boolean(block.apiKey?.trim()));
+  const configured = hasCredentials(provider, block);
+  const canListModels = provider !== 'builtin' && configured;
   const modelOptions = fetchedModels || meta.fallbackModels;
 
   const fetchModels = async () => {
@@ -94,9 +95,13 @@ const ProviderCard = ({ provider, block, isActive, expanded, onToggleExpand, onS
       const result = await response.json();
       setTestingStatus(result.ok ? 'success' : 'error');
       setTestMessage(result.message || (result.ok ? 'Connected.' : 'Connection failed.'));
+      // Only a real successful round-trip marks this provider as verified --
+      // typing a key never does, however plausible-looking it is.
+      onChange({ ...block, validated: Boolean(result.ok) });
     } catch {
       setTestingStatus('error');
       setTestMessage('Could not reach the server to run the test.');
+      onChange({ ...block, validated: false });
     }
     setTimeout(() => setTestingStatus(null), 5000);
   };
@@ -130,9 +135,13 @@ const ProviderCard = ({ provider, block, isActive, expanded, onToggleExpand, onS
           <span className='flex items-center gap-1.5'>
             <span className='text-xs font-bold text-slate-800 dark:text-slate-100'>{meta.label}</span>
             {meta.hint && <span className='text-[10px] text-slate-400'>{meta.hint}</span>}
-            {configured ? (
+            {block.validated ? (
               <span className='inline-flex items-center gap-0.5 rounded-full bg-emerald-100 px-1.5 py-0.5 text-[9px] font-bold text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400'>
-                <FiCheck className='size-2.5' /> Configured
+                <FiCheck className='size-2.5' /> Verified
+              </span>
+            ) : configured ? (
+              <span className='rounded-full bg-amber-100 px-1.5 py-0.5 text-[9px] font-bold text-amber-700 dark:bg-amber-950/60 dark:text-amber-400'>
+                Not verified
               </span>
             ) : (
               <span className='rounded-full bg-slate-100 px-1.5 py-0.5 text-[9px] font-bold text-slate-500 dark:bg-slate-800 dark:text-slate-400'>
@@ -160,7 +169,7 @@ const ProviderCard = ({ provider, block, isActive, expanded, onToggleExpand, onS
                     type={showKey ? 'text' : 'password'}
                     value={block.apiKey}
                     onChange={(e) => {
-                      onChange({ ...block, apiKey: e.target.value });
+                      onChange({ ...block, apiKey: e.target.value, validated: false });
                       setFetchedModels(null);
                       setModelsError('');
                     }}
@@ -187,7 +196,7 @@ const ProviderCard = ({ provider, block, isActive, expanded, onToggleExpand, onS
                     type='url'
                     value={block.baseUrl}
                     onChange={(e) => {
-                      onChange({ ...block, baseUrl: e.target.value });
+                      onChange({ ...block, baseUrl: e.target.value, validated: false });
                       setFetchedModels(null);
                       setModelsError('');
                     }}
@@ -301,7 +310,7 @@ export const AiProviderSettingsPanel = ({ onSaved }) => {
   const handleProviderChange = (provider, nextBlock) => {
     setConfig((prev) => ({
       ...prev,
-      providers: { ...prev.providers, [provider]: { ...nextBlock, enabled: isConfigured(provider, nextBlock) } }
+      providers: { ...prev.providers, [provider]: { ...nextBlock, enabled: hasCredentials(provider, nextBlock) } }
     }));
   };
 
