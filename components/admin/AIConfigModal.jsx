@@ -2,17 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FiCheck, FiEye, FiEyeOff, FiKey, FiRefreshCw, FiServer, FiX, FiZap } from 'react-icons/fi';
 import { LuSparkles } from 'react-icons/lu';
 import { AI_PERSONAS } from './aiPersonas';
-
-const DEFAULT_AI_CONFIG = {
-  provider: 'groq',
-  model: 'llama-3.3-70b-versatile',
-  apiKey: '',
-  baseUrl: 'https://api.groq.com/openai/v1',
-  temperature: 0.3,
-  systemPrompt:
-    'You are a Principal Software Architect and elite technical writer. Provide crisp, pragmatic explanations with concrete code and no fluff.',
-  personas: ['architecture']
-};
+import { DEFAULT_AI_CONFIG, loadAiConfig, saveAiConfig } from '@utils/admin/aiConfigStore';
 
 const PROVIDER_PRESETS = {
   groq: {
@@ -59,17 +49,6 @@ const PROVIDER_PRESETS = {
   }
 };
 
-// Migrates the old single-select `tone` field (pre-multi-persona) forward.
-const normalizeConfig = (raw) => {
-  if (!raw || typeof raw !== 'object') return DEFAULT_AI_CONFIG;
-  if (Array.isArray(raw.personas)) return { ...DEFAULT_AI_CONFIG, ...raw };
-  if (typeof raw.tone === 'string') {
-    const { tone, ...rest } = raw;
-    return { ...DEFAULT_AI_CONFIG, ...rest, personas: [tone] };
-  }
-  return { ...DEFAULT_AI_CONFIG, ...raw };
-};
-
 export const AIConfigModal = ({ isOpen, onClose, onSave }) => {
   const [config, setConfig] = useState(DEFAULT_AI_CONFIG);
   const [showKey, setShowKey] = useState(false);
@@ -81,12 +60,7 @@ export const AIConfigModal = ({ isOpen, onClose, onSave }) => {
 
   useEffect(() => {
     if (!isOpen) return;
-    try {
-      const stored = localStorage.getItem('article_studio_ai_config');
-      setConfig(stored ? normalizeConfig(JSON.parse(stored)) : DEFAULT_AI_CONFIG);
-    } catch {
-      setConfig(DEFAULT_AI_CONFIG);
-    }
+    setConfig(loadAiConfig());
     setFetchedModels(null);
     setModelsError('');
   }, [isOpen]);
@@ -144,11 +118,7 @@ export const AIConfigModal = ({ isOpen, onClose, onSave }) => {
   };
 
   const handleSave = () => {
-    try {
-      localStorage.setItem('article_studio_ai_config', JSON.stringify(config));
-    } catch {
-      // ignore
-    }
+    saveAiConfig(config);
     onSave?.(config);
     onClose();
   };

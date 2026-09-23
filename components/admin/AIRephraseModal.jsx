@@ -3,28 +3,7 @@ import { FiCheck, FiEye, FiEyeOff, FiRotateCcw, FiX } from 'react-icons/fi';
 import { LuSparkles, LuWand } from 'react-icons/lu';
 import { AI_PERSONAS } from './aiPersonas';
 import DiffView from './DiffView';
-
-const DEFAULT_AI_CONFIG = {
-  provider: 'groq',
-  model: '',
-  apiKey: '',
-  baseUrl: '',
-  temperature: 0.3,
-  systemPrompt: '',
-  personas: []
-};
-
-const loadSavedConfig = () => {
-  try {
-    const stored = localStorage.getItem('article_studio_ai_config');
-    if (!stored) return DEFAULT_AI_CONFIG;
-    const parsed = JSON.parse(stored);
-    const personas = Array.isArray(parsed.personas) ? parsed.personas : parsed.tone ? [parsed.tone] : [];
-    return { ...DEFAULT_AI_CONFIG, ...parsed, personas };
-  } catch {
-    return DEFAULT_AI_CONFIG;
-  }
-};
+import { DEFAULT_AI_CONFIG, loadAiConfig } from '@utils/admin/aiConfigStore';
 
 // text: the text to rephrase. scopeLabel: "selected text" or "whole article", for copy only.
 // onApply(newText): caller decides how to splice it back in (CodeMirror range replace, or whole-doc form update).
@@ -39,7 +18,7 @@ export const AIRephraseModal = ({ isOpen, text, scopeLabel = 'selected text', on
 
   useEffect(() => {
     if (!isOpen) return;
-    const saved = loadSavedConfig();
+    const saved = loadAiConfig();
     setConfig(saved);
     setSelectedPersonas(saved.personas.length > 0 ? saved.personas : ['clarity']);
     setCustomPrompt('');
