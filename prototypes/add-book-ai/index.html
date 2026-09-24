@@ -1,0 +1,1403 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>AI-native Add Book — Five UX Artefacts</title>
+    <style>
+      :root {
+        --bg: #eef1ed;
+        --paper: #fff;
+        --ink: #172019;
+        --muted: #617067;
+        --line: #d6dfd8;
+        --green: #176b47;
+        --green2: #0d4b31;
+        --mint: #e5f3e9;
+        --amber: #e89528;
+        --amber2: #fff3de;
+        --violet: #7653a5;
+        --violet2: #f2ecfa;
+        --red: #b84848;
+        --shadow: 0 24px 70px rgba(20, 44, 30, 0.13);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font:
+          14px/1.45 Inter,
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          sans-serif;
+      }
+      button,
+      input,
+      select,
+      textarea {
+        font: inherit;
+      }
+      button {
+        cursor: pointer;
+      }
+      .top {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 15px clamp(18px, 4vw, 52px);
+        border-bottom: 1px solid var(--line);
+        background: rgba(238, 241, 237, 0.94);
+        backdrop-filter: blur(14px);
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 850;
+      }
+      .mark {
+        display: grid;
+        place-items: center;
+        width: 34px;
+        height: 34px;
+        border: 2px solid var(--green);
+        border-radius: 9px;
+        color: var(--green);
+      }
+      .tabs {
+        display: flex;
+        gap: 6px;
+        overflow: auto;
+      }
+      .tab {
+        white-space: nowrap;
+        border: 1px solid transparent;
+        border-radius: 9px;
+        background: transparent;
+        padding: 8px 10px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 800;
+      }
+      .tab[aria-selected='true'] {
+        background: var(--ink);
+        color: #fff;
+      }
+      .main {
+        width: min(1220px, calc(100% - 32px));
+        margin: 32px auto 64px;
+      }
+      .intro {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 30px;
+        margin-bottom: 18px;
+      }
+      .intro h1 {
+        margin: 0;
+        font-size: clamp(30px, 4vw, 50px);
+        line-height: 1;
+        letter-spacing: -0.035em;
+      }
+      .intro p {
+        max-width: 65ch;
+        margin: 10px 0 0;
+        color: var(--muted);
+      }
+      .recommend {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 24px;
+        padding: 13px 16px;
+        border: 1px solid #a9ceb5;
+        border-radius: 12px;
+        background: var(--mint);
+        color: #28543a;
+      }
+      .recommend strong {
+        color: var(--green2);
+      }
+      .artifact {
+        display: none;
+      }
+      .artifact.active {
+        display: block;
+        animation: enter 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      @keyframes enter {
+        from {
+          opacity: 0.35;
+          transform: translateY(9px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .frame {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: var(--paper);
+        box-shadow: var(--shadow);
+      }
+      .frame-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 18px 22px;
+        border-bottom: 1px solid var(--line);
+      }
+      .frame-head h2 {
+        margin: 0;
+        font-size: 19px;
+      }
+      .frame-head p {
+        margin: 3px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border: 1px solid #b7d3c0;
+        border-radius: 999px;
+        background: var(--mint);
+        padding: 5px 9px;
+        color: #27563b;
+        font-size: 11px;
+        font-weight: 800;
+      }
+      .body {
+        padding: 24px;
+      }
+      .split {
+        display: grid;
+        grid-template-columns: 1.35fr 0.65fr;
+        gap: 24px;
+      }
+      .source-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 9px;
+        margin-bottom: 20px;
+      }
+      .source {
+        min-height: 64px;
+        border: 1px solid var(--line);
+        border-radius: 11px;
+        background: #fafcf9;
+        color: var(--muted);
+        font-weight: 800;
+      }
+      .source span {
+        display: block;
+        margin-top: 3px;
+        font-size: 10px;
+        font-weight: 600;
+      }
+      .source.on {
+        border-color: var(--green);
+        background: var(--mint);
+        color: var(--green2);
+        box-shadow: 0 0 0 2px rgba(23, 107, 71, 0.1);
+      }
+      .field {
+        display: grid;
+        gap: 6px;
+      }
+      .fields {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+      .full {
+        grid-column: 1/-1;
+      }
+      label {
+        font-size: 12px;
+        font-weight: 800;
+        color: #33473a;
+      }
+      .input {
+        width: 100%;
+        min-height: 44px;
+        border: 1px solid #c9d5cc;
+        border-radius: 10px;
+        background: #fff;
+        padding: 10px 12px;
+        color: var(--ink);
+        outline: 0;
+      }
+      .input:focus {
+        border-color: var(--green);
+        box-shadow: 0 0 0 3px rgba(23, 107, 71, 0.12);
+      }
+      textarea.input {
+        min-height: 84px;
+        resize: vertical;
+      }
+      .actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 9px;
+        margin-top: 20px;
+      }
+      .btn {
+        min-height: 44px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fff;
+        padding: 0 15px;
+        color: var(--ink);
+        font-weight: 800;
+      }
+      .btn.primary {
+        border-color: var(--green);
+        background: var(--green);
+        color: #fff;
+      }
+      .btn.primary:hover {
+        background: var(--green2);
+      }
+      .btn.amber {
+        border-color: #d98b25;
+        background: var(--amber);
+        color: #261708;
+      }
+      .ai-run {
+        display: none;
+        margin: 16px 0;
+        border: 1px solid #c8b9df;
+        border-radius: 12px;
+        background: var(--violet2);
+        padding: 13px;
+      }
+      .ai-run.show {
+        display: block;
+      }
+      .pipeline {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .node {
+        border-radius: 8px;
+        background: white;
+        padding: 7px 9px;
+        color: #58436f;
+        font-size: 11px;
+        font-weight: 800;
+      }
+      .arrow {
+        color: #8d78a7;
+      }
+      .review {
+        align-self: start;
+        border-radius: 14px;
+        background: #15221a;
+        color: #fff;
+        padding: 18px;
+        min-height: 390px;
+      }
+      .cover {
+        width: 126px;
+        aspect-ratio: 2/3;
+        border-radius: 8px;
+        background: linear-gradient(145deg, #287a55, #102d20);
+        padding: 13px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        box-shadow: -8px 13px 24px rgba(0, 0, 0, 0.32);
+      }
+      .review h3 {
+        margin: 18px 0 3px;
+      }
+      .review p {
+        margin: 0;
+        color: #c6d3ca;
+        font-size: 12px;
+      }
+      .facts {
+        margin-top: 16px;
+      }
+      .fact {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 9px 0;
+        border-top: 1px solid #33423a;
+        font-size: 12px;
+      }
+      .fact small {
+        color: #aebbb2;
+      }
+      .fact b {
+        font-weight: 750;
+      }
+      .confidence {
+        color: #8ae1ae;
+      }
+      .scanner {
+        display: grid;
+        grid-template-columns: 1fr 360px;
+        min-height: 520px;
+      }
+      .camera {
+        position: relative;
+        display: grid;
+        place-items: center;
+        background: #1a211d;
+        color: white;
+        overflow: hidden;
+      }
+      .camera:before,
+      .camera:after {
+        content: '';
+        position: absolute;
+        width: 64%;
+        height: 68%;
+        border: 2px solid rgba(255, 255, 255, 0.65);
+        border-radius: 16px;
+      }
+      .camera:after {
+        width: 56%;
+        height: 2px;
+        border: 0;
+        background: var(--amber);
+        box-shadow: 0 5px 9px rgba(12, 21, 17, 0.28);
+        animation: scan 2s ease-in-out infinite;
+      }
+      @keyframes scan {
+        0%,
+        100% {
+          transform: translateY(-150px);
+        }
+        50% {
+          transform: translateY(150px);
+        }
+      }
+      .camera-copy {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+      }
+      .camera-copy h3 {
+        font-size: 22px;
+      }
+      .side {
+        padding: 22px;
+      }
+      .candidate {
+        border: 1px solid var(--line);
+        border-radius: 11px;
+        padding: 12px;
+        margin-top: 10px;
+      }
+      .candidate.on {
+        border-color: var(--green);
+        background: var(--mint);
+      }
+      .chat-layout {
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        min-height: 540px;
+      }
+      .chat {
+        padding: 22px;
+        border-right: 1px solid var(--line);
+        background: #fafbf9;
+      }
+      .bubble {
+        max-width: 78%;
+        margin: 10px 0;
+        padding: 11px 13px;
+        border-radius: 12px;
+        background: #e7ece8;
+      }
+      .bubble.ai {
+        border-radius: 4px 12px 12px 12px;
+        background: var(--mint);
+      }
+      .bubble.me {
+        margin-left: auto;
+        border-radius: 12px 4px 12px 12px;
+        background: var(--ink);
+        color: #fff;
+      }
+      .composer {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 8px;
+        margin-top: 18px;
+      }
+      .record {
+        padding: 22px;
+      }
+      .record-line {
+        padding: 12px 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .record-line small {
+        display: block;
+        color: var(--muted);
+      }
+      .ledger {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .ledger th,
+      .ledger td {
+        padding: 12px;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+        vertical-align: top;
+      }
+      .ledger th {
+        font-size: 11px;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .provenance {
+        display: inline-flex;
+        border-radius: 999px;
+        padding: 4px 8px;
+        font-size: 10px;
+        font-weight: 850;
+      }
+      .google {
+        background: #e3f2e8;
+        color: #1c6940;
+      }
+      .ai {
+        background: var(--violet2);
+        color: #624681;
+      }
+      .user {
+        background: var(--amber2);
+        color: #8a5212;
+      }
+      .diff {
+        color: var(--red);
+        text-decoration: line-through;
+      }
+      .accepted {
+        color: var(--green);
+        font-weight: 800;
+      }
+      .batch {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        min-height: 520px;
+      }
+      .batch-rail {
+        padding: 20px;
+        border-right: 1px solid var(--line);
+        background: #f7f9f6;
+      }
+      .queue {
+        width: 100%;
+        border: 0;
+        border-radius: 9px;
+        background: transparent;
+        padding: 11px;
+        text-align: left;
+        color: var(--muted);
+        font-weight: 800;
+      }
+      .queue.on {
+        background: var(--mint);
+        color: var(--green2);
+      }
+      .batch-main {
+        padding: 22px;
+      }
+      .book-row {
+        display: grid;
+        grid-template-columns: 1.4fr 0.7fr 0.7fr auto;
+        gap: 12px;
+        align-items: center;
+        padding: 13px 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .ok {
+        color: var(--green);
+        font-weight: 800;
+      }
+      .warn {
+        color: #9b5d12;
+        font-weight: 800;
+      }
+      .toast {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        z-index: 40;
+        transform: translateY(140%);
+        border-radius: 11px;
+        background: var(--ink);
+        color: #fff;
+        padding: 13px 16px;
+        box-shadow: var(--shadow);
+        transition: 0.25s;
+      }
+      .toast.show {
+        transform: none;
+      }
+      .hidden {
+        display: none !important;
+      }
+      .contract {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin: 14px 0 0;
+      }
+      .contract span {
+        padding: 6px 9px;
+        border-radius: 8px;
+        background: #f0f3f0;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 750;
+      }
+      .contract .ai-source {
+        background: var(--violet2);
+        color: #60467e;
+      }
+      .contract .cover-source {
+        background: var(--mint);
+        color: var(--green2);
+      }
+      .dropzone {
+        display: grid;
+        place-items: center;
+        min-height: 160px;
+        border: 1px dashed #8eaa96;
+        border-radius: 12px;
+        background: #f7faf7;
+        padding: 24px;
+        text-align: center;
+      }
+      .dropzone strong {
+        display: block;
+        margin-bottom: 4px;
+      }
+      .dropzone p {
+        margin: 0 0 12px;
+        color: var(--muted);
+      }
+      .result-screen {
+        display: none;
+        margin-top: 22px;
+        border-top: 1px solid var(--line);
+        padding-top: 22px;
+      }
+      .result-screen.show {
+        display: block;
+        animation: enter 0.34s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .detail-head {
+        display: grid;
+        grid-template-columns: 114px 1fr auto;
+        gap: 18px;
+        align-items: start;
+      }
+      .book-cover {
+        width: 114px;
+        aspect-ratio: 2/3;
+        border-radius: 8px;
+        background: linear-gradient(145deg, #287a55, #102d20);
+        color: #fff;
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        box-shadow: -7px 11px 20px rgba(0, 0, 0, 0.25);
+      }
+      .detail-head h3 {
+        margin: 2px 0 4px;
+        font-size: 24px;
+      }
+      .detail-head p {
+        margin: 0;
+        color: var(--muted);
+      }
+      .detail-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px 22px;
+        margin-top: 20px;
+      }
+      .detail-item {
+        padding: 11px 0;
+        border-top: 1px solid var(--line);
+      }
+      .detail-item small {
+        display: block;
+        color: var(--muted);
+        margin-bottom: 3px;
+      }
+      .detail-wide {
+        grid-column: 1/-1;
+      }
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .chip {
+        padding: 5px 8px;
+        border-radius: 7px;
+        background: var(--violet2);
+        color: #60467e;
+        font-size: 11px;
+        font-weight: 750;
+      }
+      .process {
+        display: grid;
+        gap: 9px;
+        margin: 18px 0;
+      }
+      .process-row {
+        display: grid;
+        grid-template-columns: 22px 1fr auto;
+        gap: 9px;
+        align-items: center;
+        padding: 10px;
+        border-radius: 10px;
+        background: #f6f8f6;
+      }
+      .process-row strong {
+        font-size: 12px;
+      }
+      .process-row small {
+        color: var(--muted);
+      }
+      .status-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #aab6ad;
+      }
+      .done .status-dot {
+        background: var(--green);
+      }
+      .working .status-dot {
+        background: var(--amber);
+        animation: pulse 1s infinite alternate;
+      }
+      @keyframes pulse {
+        to {
+          transform: scale(1.45);
+        }
+      }
+      .match-strip {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-top: 14px;
+      }
+      .match {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #fff;
+        padding: 12px;
+        text-align: left;
+      }
+      .match.on {
+        border-color: var(--green);
+        background: var(--mint);
+      }
+      .match small {
+        display: block;
+        color: var(--muted);
+        margin-top: 4px;
+      }
+      .lane-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+      .lane {
+        border-radius: 13px;
+        padding: 18px;
+        background: #f7f8f7;
+      }
+      .lane.ai-lane {
+        background: var(--violet2);
+      }
+      .lane.cover-lane {
+        background: var(--mint);
+      }
+      .lane h3 {
+        margin-top: 0;
+      }
+      .stepper {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        margin-bottom: 22px;
+      }
+      .step {
+        padding: 10px;
+        border-bottom: 2px solid var(--line);
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 800;
+      }
+      .step.on {
+        border-color: var(--green);
+        color: var(--green2);
+      }
+      .inspector {
+        display: grid;
+        grid-template-columns: 260px 1fr;
+        min-height: 560px;
+      }
+      .inspector-nav {
+        padding: 18px;
+        border-right: 1px solid var(--line);
+        background: #f7f9f7;
+      }
+      .inspector-nav button {
+        width: 100%;
+        border: 0;
+        border-radius: 9px;
+        background: transparent;
+        padding: 10px;
+        text-align: left;
+        font-weight: 750;
+        color: var(--muted);
+      }
+      .inspector-nav button.on {
+        background: var(--mint);
+        color: var(--green2);
+      }
+      .inspector-main {
+        padding: 22px;
+      }
+      @media (max-width: 800px) {
+        .top {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+        .tabs {
+          width: 100%;
+        }
+        .intro {
+          display: block;
+        }
+        .recommend {
+          display: block;
+        }
+        .split,
+        .scanner,
+        .chat-layout,
+        .batch {
+          grid-template-columns: 1fr;
+        }
+        .source-row,
+        .fields {
+          grid-template-columns: 1fr;
+        }
+        .review {
+          margin-top: 4px;
+        }
+        .camera {
+          min-height: 390px;
+        }
+        .chat {
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+        .batch-rail {
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+        .book-row {
+          grid-template-columns: 1fr 1fr;
+        }
+        .body {
+          padding: 18px;
+        }
+        .detail-head,
+        .detail-grid,
+        .lane-grid,
+        .inspector {
+          grid-template-columns: 1fr;
+        }
+        .match-strip {
+          grid-template-columns: 1fr;
+        }
+        .stepper {
+          grid-template-columns: 1fr 1fr;
+        }
+        .inspector-nav {
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- AI-native extension of the existing admin world. AI owns metadata; Google Books is used only to locate the cover image. -->
+    <header class="top">
+      <div class="brand"><span class="mark">S</span><span>SinghBuildsTech / AI Book Capture</span></div>
+      <nav class="tabs" aria-label="Artefact selector"></nav>
+    </header>
+    <main class="main">
+      <div class="intro">
+        <div>
+          <h1>Five ways to turn a cover into a complete book.</h1>
+          <p>
+            AI identifies the photographed book and generates every metadata field. Google Books enters only after
+            identification, and contributes only the cover image.
+          </p>
+        </div>
+        <span class="badge">Interactive prototypes · no persistence</span>
+      </div>
+      <div class="recommend">
+        <span
+          ><strong>Recommended: Evidence Studio.</strong> Cover search is now a visible three-step path—AI reads the
+          photo, you confirm the identity, then Google Books finds the cover while AI builds the complete record.</span
+        ><span>Best UX + highest trust</span>
+      </div>
+
+      <section class="artifact active" data-name="Evidence Studio" data-sub="Recommended: fast, reviewable autofill">
+        <div class="frame">
+          <div class="frame-head">
+            <div>
+              <h2>Evidence Studio</h2>
+              <p>One input surface, explicit source boundaries, and a complete review screen.</p>
+            </div>
+            <span class="badge">Recommended</span>
+          </div>
+          <div class="body split">
+            <div>
+              <div class="source-row">
+                <button class="source on" data-input="title">Title + author<span>AI generates all details</span></button
+                ><button class="source" data-input="isbn">ISBN<span>AI resolves the edition</span></button
+                ><button class="source" data-input="cover">Cover photo<span>AI identifies the book</span></button>
+              </div>
+              <div class="fields" id="studioTextInput">
+                <div class="field full">
+                  <label>What are you adding?</label
+                  ><input
+                    id="studioQuery"
+                    class="input"
+                    value="Designing Data-Intensive Applications by Martin Kleppmann"
+                  />
+                </div>
+                <div class="field">
+                  <label>Shelf</label
+                  ><select class="input">
+                    <option>Tech & Architecture</option>
+                    <option>Wishlist & Up Next</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Reading state</label
+                  ><select class="input">
+                    <option>Wishlist</option>
+                    <option>Reading</option>
+                    <option>Completed</option>
+                  </select>
+                </div>
+              </div>
+              <div class="dropzone hidden" id="studioCoverInput">
+                <div>
+                  <strong>Photograph the front cover or spine</strong>
+                  <p>
+                    AI vision reads the visible title and author. The uploaded image is not used as the final cover.
+                  </p>
+                  <button class="btn" id="chooseCover">Choose cover photo</button>
+                </div>
+              </div>
+              <div class="contract">
+                <span class="ai-source">AI → every metadata field</span
+                ><span class="cover-source">Google Books → cover image only</span><span>You → confirm before save</span>
+              </div>
+              <button id="studioRun" class="btn primary" style="margin-top: 14px">Find and enrich</button>
+              <div class="ai-run" id="studioPipeline">
+                <div class="pipeline">
+                  <span class="node">AI identifies + generates details</span><span class="arrow">→</span
+                  ><span class="node">Google Books finds cover</span><span class="arrow">→</span
+                  ><span class="node">Review ready</span>
+                </div>
+                <p style="margin: 10px 0 0; color: #665278; font-size: 12px">
+                  18 AI-generated fields · 1 Google Books cover · nothing saved yet
+                </p>
+              </div>
+            </div>
+            <aside class="review">
+              <div class="cover">
+                <small>O'REILLY</small><b>Designing Data-Intensive Applications</b><small>Martin Kleppmann</small>
+              </div>
+              <h3>Designing Data-Intensive Applications</h3>
+              <p>Martin Kleppmann · 615 pages</p>
+              <div class="facts">
+                <div class="fact">
+                  <small>Publisher</small><b>O'Reilly <span style="color: #c4a8e8">AI</span></b>
+                </div>
+                <div class="fact">
+                  <small>Genre</small><b>Technology <span style="color: #c4a8e8">AI</span></b>
+                </div>
+                <div class="fact">
+                  <small>Pages</small><b>615 <span style="color: #c4a8e8">AI</span></b>
+                </div>
+              </div>
+            </aside>
+          </div>
+          <div class="body result-screen" id="studioDetails">
+            <div class="detail-head">
+              <div class="book-cover">
+                <small>GOOGLE BOOKS COVER</small><b>Designing Data-Intensive Applications</b><small>O'REILLY</small>
+              </div>
+              <div>
+                <span class="provenance ai">Metadata by AI</span>
+                <h3>Designing Data-Intensive Applications</h3>
+                <p>Martin Kleppmann · Technology · 2017</p>
+              </div>
+              <button class="btn">Edit all fields</button>
+            </div>
+            <div class="detail-grid">
+              <div class="detail-item"><small>Publisher</small><b>O'Reilly Media</b></div>
+              <div class="detail-item"><small>Pages</small><b>615</b></div>
+              <div class="detail-item"><small>Language</small><b>English</b></div>
+              <div class="detail-item detail-wide">
+                <small>Description</small
+                ><span
+                  >A practical exploration of the principles, trade-offs, and design decisions behind reliable,
+                  scalable, and maintainable data systems.</span
+                >
+              </div>
+              <div class="detail-item detail-wide">
+                <small>Key themes</small>
+                <div class="chips">
+                  <span class="chip">Distributed systems</span><span class="chip">Replication</span
+                  ><span class="chip">Consistency</span><span class="chip">Data models</span>
+                </div>
+              </div>
+              <div class="detail-item"><small>Target audience</small><b>Software engineers, architects</b></div>
+              <div class="detail-item"><small>ISBN-13</small><b>9781449373320</b></div>
+              <div class="detail-item"><small>Awards</small><b>None listed</b></div>
+              <div class="detail-item"><small>Series</small><b>Standalone</b></div>
+              <div class="detail-item"><small>Sales</small><b>Unknown</b></div>
+              <div class="detail-item"><small>Notable editions</small><b>First edition, 2017</b></div>
+              <div class="detail-item detail-wide">
+                <small>Notable quote</small><span>No reliably attributed quotation returned</span>
+              </div>
+              <div class="detail-item detail-wide">
+                <small>Similar books</small><span>Database Internals · Fundamentals of Software Architecture</span>
+              </div>
+              <div class="detail-item detail-wide">
+                <small>Legacy</small
+                ><span>A widely used guide for reasoning about modern data-intensive architecture.</span>
+              </div>
+            </div>
+            <div class="actions">
+              <button class="btn">Regenerate metadata</button
+              ><button class="btn primary" data-save>Add reviewed book</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="artifact" data-name="Cover Detective" data-sub="Understand exactly how photo search works">
+        <div class="frame">
+          <div class="frame-head">
+            <div>
+              <h2>Cover Detective</h2>
+              <p>The clearest explanation of how a photographed cover becomes a matched book.</p>
+            </div>
+            <span class="badge">Vision provider required</span>
+          </div>
+          <div class="scanner">
+            <div class="camera">
+              <div class="camera-copy">
+                <h3>Place the title and author inside the frame</h3>
+                <p>AI reads visible text and visual clues. It does not search Google Books with the raw photo.</p>
+                <button id="scanBtn" class="btn amber">Choose photo & identify</button>
+              </div>
+            </div>
+            <aside class="side">
+              <h3>What happens next</h3>
+              <div class="process">
+                <div class="process-row">
+                  <span class="status-dot"></span>
+                  <div><strong>AI reads the photo</strong><br /><small>Extracts likely title and author</small></div>
+                  <b>1</b>
+                </div>
+                <div class="process-row">
+                  <span class="status-dot"></span>
+                  <div>
+                    <strong>You confirm the match</strong><br /><small
+                      >Prevents a wrong edition entering the shelf</small
+                    >
+                  </div>
+                  <b>2</b>
+                </div>
+                <div class="process-row">
+                  <span class="status-dot"></span>
+                  <div>
+                    <strong>AI generates full metadata</strong><br /><small
+                      >Genre, pages, themes, audience, and more</small
+                    >
+                  </div>
+                  <b>3</b>
+                </div>
+                <div class="process-row">
+                  <span class="status-dot"></span>
+                  <div><strong>Google Books supplies cover</strong><br /><small>Cover image only</small></div>
+                  <b>4</b>
+                </div>
+              </div>
+              <div id="candidates">
+                <div class="candidate">
+                  <b>Waiting for cover…</b>
+                  <p>No image has been analyzed.</p>
+                </div>
+              </div>
+              <div class="actions">
+                <button id="confirmMatch" class="btn primary" disabled>Confirm & enrich</button>
+              </div>
+            </aside>
+          </div>
+          <div class="body result-screen" id="detectiveDetails">
+            <div class="detail-head">
+              <div class="book-cover">
+                <small>COVER FOUND</small><b>Designing Data-Intensive Applications</b><small>GOOGLE BOOKS</small>
+              </div>
+              <div>
+                <span class="provenance ai">18 fields generated by AI</span>
+                <h3>Match confirmed</h3>
+                <p>The complete record is ready for review.</p>
+              </div>
+              <button class="btn primary" data-save>Add book</button>
+            </div>
+            <div class="detail-grid">
+              <div class="detail-item"><small>Genre</small><b>Technology</b></div>
+              <div class="detail-item"><small>Pages</small><b>615</b></div>
+              <div class="detail-item"><small>Publisher</small><b>O'Reilly</b></div>
+              <div class="detail-item detail-wide">
+                <small>Key themes</small>
+                <div class="chips">
+                  <span class="chip">Reliability</span><span class="chip">Scalability</span
+                  ><span class="chip">Maintainability</span>
+                </div>
+              </div>
+              <div class="detail-item"><small>Target audience</small><b>Engineers and architects</b></div>
+              <div class="detail-item"><small>Similar books</small><b>Database Internals</b></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="artifact" data-name="Two-Lane Enrichment" data-sub="Metadata and cover progress independently">
+        <div class="frame">
+          <div class="frame-head">
+            <div>
+              <h2>Two-Lane Enrichment</h2>
+              <p>Make the source contract impossible to misunderstand.</p>
+            </div>
+            <span class="badge">Best source clarity</span>
+          </div>
+          <div class="body">
+            <div class="fields">
+              <div class="field full">
+                <label>Book title, ISBN, or identified cover</label
+                ><input class="input" value="The Pragmatic Programmer, 20th Anniversary Edition" />
+              </div>
+            </div>
+            <div class="lane-grid" style="margin-top: 18px">
+              <div class="lane ai-lane">
+                <span class="provenance ai">Configured AI</span>
+                <h3>Complete metadata lane</h3>
+                <p>
+                  Title, author, year, genre, publisher, pages, language, ISBN, description, key themes, target
+                  audience, quotes, awards, sales, series, editions, legacy, and similar books.
+                </p>
+                <button id="runLanes" class="btn primary">Run both lanes</button>
+              </div>
+              <div class="lane cover-lane">
+                <span class="provenance google">Google Books</span>
+                <h3>Cover-only lane</h3>
+                <p>Receives the AI-resolved title, author, and ISBN. Returns only the best available cover image.</p>
+                <button class="btn">Change cover source</button>
+              </div>
+            </div>
+            <div class="result-screen" id="laneDetails">
+              <div class="detail-head">
+                <div class="book-cover">
+                  <small>GOOGLE BOOKS</small><b>The Pragmatic Programmer</b><small>COVER ONLY</small>
+                </div>
+                <div>
+                  <span class="provenance ai">All text by AI</span>
+                  <h3>The Pragmatic Programmer</h3>
+                  <p>David Thomas & Andrew Hunt · Software Development · 352 pages</p>
+                </div>
+                <button class="btn">Edit</button>
+              </div>
+              <div class="detail-grid">
+                <div class="detail-item detail-wide">
+                  <small>Description</small
+                  ><span
+                    >A practical guide to adaptable thinking, deliberate practice, and sustainable software
+                    development.</span
+                  >
+                </div>
+                <div class="detail-item detail-wide">
+                  <small>Key themes</small>
+                  <div class="chips">
+                    <span class="chip">Pragmatism</span><span class="chip">Craftsmanship</span
+                    ><span class="chip">Continuous learning</span>
+                  </div>
+                </div>
+                <div class="detail-item"><small>Target audience</small><b>Software developers</b></div>
+                <div class="detail-item"><small>Publisher</small><b>Addison-Wesley</b></div>
+                <div class="detail-item"><small>Published</small><b>2019</b></div>
+              </div>
+              <div class="actions"><button class="btn primary" data-save>Add complete record</button></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="artifact" data-name="Edition Matchboard" data-sub="Choose the right identity before generation">
+        <div class="frame">
+          <div class="frame-head">
+            <div>
+              <h2>Edition Matchboard</h2>
+              <p>AI proposes likely identities from the photo; the user settles ambiguity before enrichment.</p>
+            </div>
+            <span class="badge">Best for ambiguous covers</span>
+          </div>
+          <div class="body">
+            <div class="dropzone">
+              <div>
+                <strong>Uploaded: pragmatic-programmer-cover.jpg</strong>
+                <p>AI vision read “The Pragmatic Programmer” and two author surnames.</p>
+              </div>
+            </div>
+            <div class="match-strip">
+              <button class="match on">
+                <b>20th Anniversary Edition</b><small>David Thomas, Andrew Hunt · 96% AI confidence</small></button
+              ><button class="match"><b>First Edition</b><small>Andrew Hunt, David Thomas · 72%</small></button
+              ><button class="match"><b>Not one of these</b><small>Enter title manually</small></button>
+            </div>
+            <div class="actions">
+              <button id="matchEnrich" class="btn primary">Use selected identity & enrich</button>
+            </div>
+            <div class="result-screen" id="matchDetails">
+              <div class="detail-head">
+                <div class="book-cover">
+                  <small>COVER RESULT</small><b>The Pragmatic Programmer</b><small>GOOGLE BOOKS</small>
+                </div>
+                <div>
+                  <h3>20th Anniversary Edition</h3>
+                  <p>Complete AI metadata is shown only after identity confirmation.</p>
+                </div>
+                <span class="badge">Ready to review</span>
+              </div>
+              <div class="detail-grid">
+                <div class="detail-item"><small>Genre</small><b>Software Development</b></div>
+                <div class="detail-item"><small>Pages</small><b>352</b></div>
+                <div class="detail-item"><small>ISBN-13</small><b>9780135957059</b></div>
+                <div class="detail-item detail-wide">
+                  <small>Target audience</small><b>Developers at every career stage</b>
+                </div>
+                <div class="detail-item detail-wide">
+                  <small>Key themes</small>
+                  <div class="chips">
+                    <span class="chip">Career ownership</span><span class="chip">Adaptability</span
+                    ><span class="chip">Quality</span>
+                  </div>
+                </div>
+              </div>
+              <div class="actions"><button class="btn primary" data-save>Add book</button></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="artifact" data-name="Guided Proof" data-sub="A reassuring step-by-step flow">
+        <div class="frame">
+          <div class="frame-head">
+            <div>
+              <h2>Guided Proof</h2>
+              <p>A linear flow for first-time users who want to understand every handoff.</p>
+            </div>
+            <span class="badge">Best onboarding</span>
+          </div>
+          <div class="body">
+            <div class="stepper">
+              <div class="step on">Identify</div>
+              <div class="step">Confirm</div>
+              <div class="step">Enrich + cover</div>
+              <div class="step">Review</div>
+            </div>
+            <div id="guidedStage">
+              <div class="dropzone">
+                <div>
+                  <strong>Start with a title, ISBN, or cover photo</strong>
+                  <p>For a photo, AI identifies the title and author before anything else happens.</p>
+                  <button id="guidedNext" class="btn primary">Simulate cover photo</button>
+                </div>
+              </div>
+            </div>
+            <div class="result-screen" id="guidedDetails">
+              <div class="detail-head">
+                <div class="book-cover">
+                  <small>GOOGLE BOOKS COVER</small><b>Atomic Habits</b><small>JAMES CLEAR</small>
+                </div>
+                <div>
+                  <span class="provenance ai">Complete metadata by AI</span>
+                  <h3>Atomic Habits</h3>
+                  <p>James Clear · Self-help · 320 pages · 2018</p>
+                </div>
+                <button class="btn">Edit</button>
+              </div>
+              <div class="detail-grid">
+                <div class="detail-item detail-wide">
+                  <small>Description</small
+                  ><span
+                    >A practical framework for building good habits, breaking bad ones, and improving through small
+                    repeated changes.</span
+                  >
+                </div>
+                <div class="detail-item detail-wide">
+                  <small>Key themes</small>
+                  <div class="chips">
+                    <span class="chip">Behavior change</span><span class="chip">Identity</span
+                    ><span class="chip">Systems</span>
+                  </div>
+                </div>
+                <div class="detail-item"><small>Target audience</small><b>Readers building sustainable habits</b></div>
+                <div class="detail-item"><small>Publisher</small><b>Avery</b></div>
+                <div class="detail-item"><small>Language</small><b>English</b></div>
+                <div class="detail-item detail-wide">
+                  <small>Similar books</small><span>The Power of Habit · Tiny Habits</span>
+                </div>
+              </div>
+              <div class="actions"><button class="btn primary" data-save>Add reviewed book</button></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <div class="toast" role="status" aria-live="polite"></div>
+    <script>
+      const arts = [...document.querySelectorAll('.artifact')],
+        tabs = document.querySelector('.tabs'),
+        toast = document.querySelector('.toast');
+      arts.forEach((a, i) => {
+        const b = document.createElement('button');
+        b.className = 'tab';
+        b.textContent = `${i + 1}. ${a.dataset.name}`;
+        b.title = a.dataset.sub;
+        b.setAttribute('aria-selected', i === 0);
+        b.onclick = () => {
+          arts.forEach((x, j) => {
+            x.classList.toggle('active', i === j);
+            tabs.children[j].setAttribute('aria-selected', i === j);
+          });
+        };
+        tabs.appendChild(b);
+      });
+      const say = (t) => {
+        toast.textContent = t;
+        toast.classList.add('show');
+        clearTimeout(window.toastTimer);
+        window.toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
+      };
+      document
+        .querySelectorAll('[data-save]')
+        .forEach((b) => (b.onclick = () => say('Prototype complete — no data was saved.')));
+      document.querySelectorAll('.source').forEach(
+        (b) =>
+          (b.onclick = () => {
+            document.querySelectorAll('.source').forEach((x) => x.classList.remove('on'));
+            b.classList.add('on');
+            const usesCover = b.dataset.input === 'cover';
+            document.querySelector('#studioTextInput').classList.toggle('hidden', usesCover);
+            document.querySelector('#studioCoverInput').classList.toggle('hidden', !usesCover);
+            say(`${b.childNodes[0].textContent.trim()} input selected.`);
+          })
+      );
+      document.querySelector('#chooseCover').onclick = () => say('Demo cover selected. Click Find and enrich.');
+      document.querySelector('#studioRun').onclick = () => {
+        const b = document.querySelector('#studioRun');
+        b.disabled = true;
+        b.textContent = 'AI is generating 18 fields…';
+        setTimeout(() => {
+          b.disabled = false;
+          b.textContent = 'Regenerate complete record';
+          document.querySelector('#studioPipeline').classList.add('show');
+          document.querySelector('#studioDetails').classList.add('show');
+          say('Complete record ready. Review before saving.');
+        }, 900);
+      };
+      document.querySelector('#scanBtn').onclick = () => {
+        const c = document.querySelector('#candidates');
+        c.innerHTML =
+          '<div class="candidate on"><b>Designing Data-Intensive Applications</b><p>Martin Kleppmann · 94% AI confidence</p><span class="provenance ai">AI identification</span></div><div class="candidate"><b>Database Internals</b><p>Alex Petrov · 41% AI confidence</p></div>';
+        document.querySelectorAll('.process-row')[0].classList.add('done');
+        document.querySelector('#confirmMatch').disabled = false;
+        say('AI found 2 possible identities. Confirm the right one.');
+      };
+      document.querySelector('#confirmMatch').onclick = () => {
+        document.querySelectorAll('.process-row').forEach((row) => row.classList.add('done'));
+        document.querySelector('#detectiveDetails').classList.add('show');
+        say('AI metadata generated; Google Books cover found.');
+      };
+      document.querySelector('#runLanes').onclick = () => {
+        document.querySelector('#laneDetails').classList.add('show');
+        say('Both lanes complete: AI metadata + Google Books cover.');
+      };
+      document.querySelectorAll('.match').forEach(
+        (b) =>
+          (b.onclick = () => {
+            document.querySelectorAll('.match').forEach((x) => x.classList.remove('on'));
+            b.classList.add('on');
+          })
+      );
+      document.querySelector('#matchEnrich').onclick = () => {
+        document.querySelector('#matchDetails').classList.add('show');
+        say('Selected identity enriched by AI. Cover retrieved separately.');
+      };
+      let guidedStep = 0;
+      document.querySelector('#guidedNext').onclick = () => {
+        const labels = [
+          'Identity found: Atomic Habits by James Clear',
+          'Identity confirmed',
+          'AI metadata and Google Books cover ready'
+        ];
+        guidedStep += 1;
+        document.querySelectorAll('.step').forEach((step, index) => step.classList.toggle('on', index <= guidedStep));
+        if (guidedStep < 3) {
+          document.querySelector('#guidedNext').textContent =
+            guidedStep === 1 ? 'Confirm identity' : 'Generate details & find cover';
+          say(labels[guidedStep - 1]);
+        } else {
+          document.querySelector('#guidedDetails').classList.add('show');
+          document.querySelector('#guidedStage').classList.add('hidden');
+          say(labels[2]);
+        }
+      };
+    </script>
+  </body>
+</html>

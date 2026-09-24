@@ -41,9 +41,11 @@ import {
   FiTrendingUp,
   FiImage
 } from 'react-icons/fi';
+import { LuSparkles } from 'react-icons/lu';
 import { getBookCoverSrc, BOOK_SHELVES } from '@utils/books/bookService';
 import { deletePersistedBook, fetchBooks, updatePersistedBook } from '@utils/books/bookApi';
 import QuickAddModal from '@components/admin/QuickAddModal';
+import BookAskAiModal from '@components/admin/BookAskAiModal';
 
 const SHELF_DEFINITIONS = [
   {
@@ -826,10 +828,12 @@ const BooksPage = ({ adminEmail }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState('shelves'); // 'shelves' default on opening
   const [addModalOpen, setAddModalOpen] = useState(false);
+  const [addModalInitialMode, setAddModalInitialMode] = useState('book');
   const [editingBook, setEditingBook] = useState(null);
   const [updatePageInput, setUpdatePageInput] = useState('');
   const [activeDetailBook, setActiveDetailBook] = useState(null); // Studio Editorial Modal
   const [detailEditMode, setDetailEditMode] = useState(false);
+  const [askAiBook, setAskAiBook] = useState(null);
   const [copiedQuote, setCopiedQuote] = useState(false);
   const [importingMetadata, setImportingMetadata] = useState(false);
   const [importMessage, setImportMessage] = useState('');
@@ -1145,7 +1149,21 @@ const BooksPage = ({ adminEmail }) => {
               />
               <button
                 type='button'
-                onClick={() => setAddModalOpen(true)}
+                onClick={() => {
+                  setAddModalInitialMode('batch');
+                  setAddModalOpen(true);
+                }}
+                className='inline-flex min-h-11 items-center gap-1.5 rounded-xl border border-indigo-200 bg-indigo-50/70 dark:border-indigo-800/80 dark:bg-indigo-950/40 px-3.5 text-xs font-bold text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 transition active:scale-95'
+                title='Batch import books via CSV or ISBN list'
+              >
+                <FiLayers className='size-4' /> Batch Import
+              </button>
+              <button
+                type='button'
+                onClick={() => {
+                  setAddModalInitialMode('book');
+                  setAddModalOpen(true);
+                }}
                 className='inline-flex min-h-11 items-center gap-1.5 rounded-xl bg-amber-500 px-4 text-xs font-bold text-black shadow-lg shadow-amber-500/30 hover:bg-amber-400 transition active:scale-95'
               >
                 <FiPlus className='size-4' /> Add Book
@@ -1716,9 +1734,9 @@ const BooksPage = ({ adminEmail }) => {
                   <div className='p-5 space-y-3.5'>
                     <div className='flex items-center justify-between'>
                       {renderStatusBadge(book.status)}
-                      <div className='flex items-center gap-0.5 text-amber-500 dark:text-amber-400 text-xs'>
+                      <div className='flex items-center gap-0.5 text-amber-500 dark:text-amber-400 text-xs font-sans'>
                         <FiStar className='size-3 fill-amber-400' />
-                        <span className='font-mono font-bold'>{book.rating}</span>
+                        <span className='font-sans font-bold'>{book.rating}</span>
                       </div>
                     </div>
 
@@ -1735,15 +1753,15 @@ const BooksPage = ({ adminEmail }) => {
                     </div>
 
                     {book.description && (
-                      <p className='text-[11px] leading-relaxed text-slate-600 dark:text-slate-300 line-clamp-2 bg-slate-50 dark:bg-neutral-950 p-2 rounded-xl border border-slate-200 dark:border-neutral-800'>
+                      <p className='text-[11px] leading-relaxed text-slate-600 dark:text-slate-300 line-clamp-2 bg-slate-50 dark:bg-neutral-950 p-2 rounded-xl border border-slate-200 dark:border-neutral-800 font-sans'>
                         {book.description}
                       </p>
                     )}
                   </div>
 
                   {/* Actions Footer */}
-                  <div className='flex items-center justify-between border-t border-slate-200 bg-slate-50/80 px-4 py-2.5 text-xs dark:border-slate-800/80 dark:bg-slate-950/60'>
-                    <span className='text-[11px] font-mono text-slate-400'>{book.publishedYear}</span>
+                  <div className='flex items-center justify-between border-t border-slate-200 bg-slate-50/80 px-4 py-2.5 text-xs dark:border-slate-800/80 dark:bg-slate-950/60 font-sans'>
+                    <span className='text-[11px] font-sans text-slate-400'>{book.publishedYear}</span>
                     <button
                       type='button'
                       onClick={(e) => {
@@ -1849,9 +1867,14 @@ const BooksPage = ({ adminEmail }) => {
         {/* Quick Add Modal */}
         <QuickAddModal
           isOpen={addModalOpen}
-          initialMode='book'
+          initialMode={addModalInitialMode}
           onClose={() => setAddModalOpen(false)}
           onBookCreated={() => refreshBooks()}
+          onOpenDetail={(book) => {
+            setAddModalOpen(false);
+            setActiveDetailBook(book);
+          }}
+          existingBooks={books}
         />
 
         {/* ============================================================== */}
@@ -1880,6 +1903,15 @@ const BooksPage = ({ adminEmail }) => {
                 <div className='flex items-center gap-2'>
                   {!detailEditMode ? (
                     <>
+                      <button
+                        type='button'
+                        onClick={() => setAskAiBook(activeDetailBook)}
+                        className='inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 px-3 py-1.5 text-xs font-bold text-white transition shadow-sm shadow-indigo-600/30'
+                        title='Ask questions in context of this book'
+                      >
+                        <LuSparkles className='size-3.5 text-amber-300 animate-pulse' />
+                        Ask AI
+                      </button>
                       <button
                         type='button'
                         onClick={() => setDetailEditMode(true)}
@@ -2215,6 +2247,38 @@ const BooksPage = ({ adminEmail }) => {
                     )}
                   </div>
 
+                  {/* Why Read & Core Value Proposition Card - Full Width */}
+                  {(detailEditMode || activeDetailBook.whyRead || activeDetailBook.notes) && (
+                    <div className='rounded-2xl border border-indigo-200/90 bg-gradient-to-br from-indigo-50/70 via-purple-50/40 to-transparent p-4 space-y-2 dark:border-indigo-800/60 dark:bg-gradient-to-br dark:from-indigo-950/30 dark:via-purple-950/15 dark:to-transparent'>
+                      <div className='flex items-center justify-between'>
+                        <h4 className='text-xs font-bold font-sans text-indigo-700 uppercase tracking-wider dark:text-indigo-300 flex items-center gap-1.5'>
+                          <FiAward className='size-3.5 text-indigo-500' />
+                          Why Read &amp; Core Value Proposition
+                        </h4>
+                        <span className='text-[10px] font-sans font-semibold text-indigo-600 dark:text-indigo-300 bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded-full'>
+                          Reader ROI &amp; Worth
+                        </span>
+                      </div>
+                      {detailEditMode ? (
+                        <InlineText
+                          value={activeDetailBook.whyRead || ''}
+                          onChange={(val) => {
+                            const updated = { ...activeDetailBook, whyRead: val };
+                            setActiveDetailBook(updated);
+                          }}
+                          placeholder='Why should one read this book, what value does it provide, and is it really worth reading?...'
+                          multiline
+                          rows={3}
+                          className='text-sm leading-relaxed text-slate-800 dark:text-neutral-200 font-sans'
+                        />
+                      ) : (
+                        <p className='text-sm leading-relaxed text-slate-800 dark:text-neutral-200 font-sans font-medium'>
+                          {activeDetailBook.whyRead || activeDetailBook.notes}
+                        </p>
+                      )}
+                    </div>
+                  )}
+
                   {/* Target Audience & Key Themes Side by Side */}
                   <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                     {/* Target Audience Card */}
@@ -2487,6 +2551,22 @@ const BooksPage = ({ adminEmail }) => {
             </div>
           </div>
         )}
+
+        {/* BOOK ASK AI MODAL (CONTEXT-GROUNDED TO OPENED BOOK) */}
+        <BookAskAiModal
+          isOpen={Boolean(askAiBook)}
+          onClose={() => setAskAiBook(null)}
+          book={askAiBook}
+          onSaveNote={async (noteAppend) => {
+            if (!askAiBook) return;
+            const nextNotes = (askAiBook.notes || '').trim()
+              ? `${(askAiBook.notes || '').trim()}\n\n${noteAppend.trim()}`
+              : noteAppend.trim();
+            const updated = await updatePersistedBook(askAiBook.id, { notes: nextNotes });
+            setBooks((curr) => curr.map((b) => (b.id === updated.id ? updated : b)));
+            if (activeDetailBook?.id === updated.id) setActiveDetailBook(updated);
+          }}
+        />
       </div>
     </AdminLayout>
   );

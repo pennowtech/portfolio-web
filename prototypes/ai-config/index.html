@@ -1,0 +1,1154 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>AI Configuration — Five UX Artefacts</title>
+    <style>
+      :root {
+        --bg: #eef1ed;
+        --paper: #fff;
+        --ink: #172019;
+        --muted: #627067;
+        --line: #d5ddd7;
+        --green: #176b47;
+        --green2: #0d4b31;
+        --mint: #e5f3e9;
+        --amber: #e89528;
+        --amber2: #fff3de;
+        --violet: #7653a5;
+        --violet2: #f2ecfa;
+        --red: #b84848;
+        --shadow: 0 24px 70px rgba(20, 44, 30, 0.13);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font:
+          14px/1.45 Inter,
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          sans-serif;
+      }
+      button,
+      input,
+      select,
+      textarea {
+        font: inherit;
+      }
+      button {
+        cursor: pointer;
+      }
+      .top {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 15px clamp(18px, 4vw, 52px);
+        border-bottom: 1px solid var(--line);
+        background: rgba(238, 241, 237, 0.94);
+        backdrop-filter: blur(14px);
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 850;
+      }
+      .mark {
+        display: grid;
+        place-items: center;
+        width: 34px;
+        height: 34px;
+        border: 2px solid var(--green);
+        border-radius: 9px;
+        color: var(--green);
+      }
+      .tabs {
+        display: flex;
+        gap: 6px;
+        overflow: auto;
+      }
+      .tab {
+        white-space: nowrap;
+        border: 1px solid transparent;
+        border-radius: 9px;
+        background: transparent;
+        padding: 8px 10px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 800;
+      }
+      .tab[aria-selected='true'] {
+        background: var(--ink);
+        color: #fff;
+      }
+      .main {
+        width: min(1240px, calc(100% - 32px));
+        margin: 32px auto 64px;
+      }
+      .intro {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 30px;
+        margin-bottom: 18px;
+      }
+      .intro h1 {
+        margin: 0;
+        font-size: clamp(30px, 4vw, 50px);
+        line-height: 1;
+        letter-spacing: -0.035em;
+      }
+      .intro p {
+        max-width: 70ch;
+        margin: 10px 0 0;
+        color: var(--muted);
+      }
+      .recommend {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 24px;
+        padding: 13px 16px;
+        border-radius: 12px;
+        background: var(--mint);
+        color: #28543a;
+      }
+      .recommend strong {
+        color: var(--green2);
+      }
+      .artifact {
+        display: none;
+      }
+      .artifact.active {
+        display: block;
+        animation: enter 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      @keyframes enter {
+        from {
+          opacity: 0.35;
+          transform: translateY(9px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .frame {
+        overflow: hidden;
+        border-radius: 16px;
+        background: var(--paper);
+        box-shadow: var(--shadow);
+      }
+      .frame-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 18px 22px;
+        border-bottom: 1px solid var(--line);
+      }
+      .frame-head h2 {
+        margin: 0;
+        font-size: 19px;
+      }
+      .frame-head p {
+        margin: 3px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .badge,
+      .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border-radius: 999px;
+        padding: 5px 9px;
+        font-size: 11px;
+        font-weight: 800;
+      }
+      .badge {
+        background: var(--mint);
+        color: #27563b;
+      }
+      .status.good {
+        background: var(--mint);
+        color: var(--green2);
+      }
+      .status.warn {
+        background: var(--amber2);
+        color: #895315;
+      }
+      .status.off {
+        background: #edf0ed;
+        color: #68746c;
+      }
+      .status.ai {
+        background: var(--violet2);
+        color: #60467e;
+      }
+      .btn {
+        min-height: 42px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fff;
+        padding: 0 14px;
+        color: var(--ink);
+        font-weight: 800;
+      }
+      .btn.primary {
+        border-color: var(--green);
+        background: var(--green);
+        color: #fff;
+      }
+      .btn.primary:hover {
+        background: var(--green2);
+      }
+      .btn:disabled {
+        cursor: not-allowed;
+        opacity: 0.45;
+      }
+      .input {
+        width: 100%;
+        min-height: 43px;
+        border: 1px solid #c9d5cc;
+        border-radius: 10px;
+        background: #fff;
+        padding: 9px 11px;
+        color: var(--ink);
+        outline: 0;
+      }
+      .input:focus {
+        border-color: var(--green);
+        box-shadow: 0 0 0 3px rgba(23, 107, 71, 0.12);
+      }
+      textarea.input {
+        min-height: 90px;
+        resize: vertical;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        color: #33473a;
+        font-size: 12px;
+        font-weight: 800;
+      }
+      .field {
+        margin-bottom: 14px;
+      }
+      .actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 9px;
+        margin-top: 20px;
+      }
+      .provider-list {
+        display: grid;
+        gap: 5px;
+      }
+      .provider {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 10px 1fr auto;
+        gap: 10px;
+        align-items: center;
+        border: 0;
+        border-radius: 10px;
+        background: transparent;
+        padding: 10px;
+        text-align: left;
+        color: var(--muted);
+      }
+      .provider.on {
+        background: var(--mint);
+        color: var(--green2);
+      }
+      .dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: #aab5ad;
+      }
+      .dot.good {
+        background: var(--green);
+      }
+      .dot.warn {
+        background: var(--amber);
+      }
+      .workbench {
+        display: grid;
+        grid-template-columns: 220px 1fr 300px;
+        min-height: 610px;
+      }
+      .rail {
+        padding: 18px;
+        border-right: 1px solid var(--line);
+        background: #f7f9f7;
+      }
+      .rail h3,
+      .panel h3,
+      .aside h3 {
+        margin: 0 0 14px;
+      }
+      .panel {
+        padding: 22px;
+      }
+      .aside {
+        padding: 22px;
+        background: #16231b;
+        color: #fff;
+      }
+      .aside p {
+        color: #bdcbc1;
+      }
+      .aside .status-card {
+        padding: 13px 0;
+        border-top: 1px solid #33443a;
+      }
+      .aside small {
+        display: block;
+        color: #aebbb2;
+      }
+      .aside b {
+        display: block;
+        margin-top: 3px;
+      }
+      .switch {
+        width: 44px;
+        height: 24px;
+        border: 0;
+        border-radius: 99px;
+        background: #b9c1bb;
+        padding: 3px;
+      }
+      .switch:after {
+        content: '';
+        display: block;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: #fff;
+        transition: 0.2s;
+      }
+      .switch.on {
+        background: var(--green);
+      }
+      .switch.on:after {
+        transform: translateX(20px);
+      }
+      .security {
+        padding: 11px;
+        border-radius: 10px;
+        background: #f2f5f2;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .progress {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        margin-bottom: 26px;
+      }
+      .step {
+        padding: 10px;
+        border-bottom: 2px solid var(--line);
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 850;
+      }
+      .step.on {
+        border-color: var(--green);
+        color: var(--green2);
+      }
+      .wizard {
+        max-width: 760px;
+        min-height: 570px;
+        margin: auto;
+        padding: 28px;
+      }
+      .wizard h3 {
+        font-size: 25px;
+        margin: 0 0 6px;
+      }
+      .choice-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-top: 22px;
+      }
+      .choice {
+        min-height: 128px;
+        border: 1px solid var(--line);
+        border-radius: 13px;
+        background: #fff;
+        padding: 16px;
+        text-align: left;
+      }
+      .choice.on {
+        border-color: var(--green);
+        background: var(--mint);
+      }
+      .choice b {
+        display: block;
+        margin-bottom: 6px;
+      }
+      .choice small {
+        color: var(--muted);
+      }
+      .matrix-wrap {
+        overflow: auto;
+        padding: 22px;
+      }
+      .matrix {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .matrix th,
+      .matrix td {
+        padding: 13px;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+      }
+      .matrix th {
+        color: var(--muted);
+        font-size: 11px;
+      }
+      .matrix tr.selected {
+        background: #f2f8f4;
+      }
+      .matrix-actions {
+        display: flex;
+        gap: 7px;
+      }
+      .impact {
+        display: grid;
+        grid-template-columns: 1fr 370px;
+        min-height: 610px;
+      }
+      .impact-main {
+        padding: 22px;
+      }
+      .impact-aside {
+        padding: 22px;
+        border-left: 1px solid var(--line);
+        background: #f7f9f7;
+      }
+      .use-map {
+        display: grid;
+        gap: 10px;
+        margin-top: 18px;
+      }
+      .use {
+        display: grid;
+        grid-template-columns: 38px 1fr auto;
+        gap: 11px;
+        align-items: center;
+        padding: 13px;
+        border-radius: 12px;
+        background: #fff;
+      }
+      .use-mark {
+        display: grid;
+        place-items: center;
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        background: var(--violet2);
+        color: var(--violet);
+        font-weight: 900;
+      }
+      .preview {
+        padding: 15px;
+        border-radius: 12px;
+        background: #fff;
+      }
+      .preview + .preview {
+        margin-top: 10px;
+      }
+      .preview small {
+        color: var(--muted);
+      }
+      .recipe {
+        display: grid;
+        grid-template-columns: 320px 1fr;
+        min-height: 620px;
+      }
+      .recipe-nav {
+        padding: 20px;
+        background: #172019;
+        color: #fff;
+      }
+      .recipe-nav p {
+        color: #b9c7bd;
+      }
+      .recipe-search {
+        background: #26322a;
+        border-color: #3b4a40;
+        color: #fff;
+      }
+      .recipe-item {
+        width: 100%;
+        margin-top: 6px;
+        border: 0;
+        border-radius: 10px;
+        background: transparent;
+        padding: 11px;
+        text-align: left;
+        color: #becbc2;
+      }
+      .recipe-item.on {
+        background: #2b4938;
+        color: #fff;
+      }
+      .recipe-main {
+        padding: 24px;
+      }
+      .token-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+      }
+      .token {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: #fff;
+        padding: 7px 10px;
+        font-size: 11px;
+        font-weight: 750;
+      }
+      .token.on {
+        border-color: var(--violet);
+        background: var(--violet2);
+        color: #60467e;
+      }
+      .temperature {
+        display: grid;
+        grid-template-columns: 1fr 72px;
+        gap: 10px;
+        align-items: center;
+      }
+      .toast {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        z-index: 40;
+        transform: translateY(140%);
+        border-radius: 11px;
+        background: var(--ink);
+        color: #fff;
+        padding: 13px 16px;
+        box-shadow: var(--shadow);
+        transition: 0.25s;
+      }
+      .toast.show {
+        transform: none;
+      }
+      .hidden {
+        display: none !important;
+      }
+      .success-panel {
+        display: none;
+        margin-top: 16px;
+        padding: 14px;
+        border-radius: 11px;
+        background: var(--mint);
+        color: var(--green2);
+      }
+      .success-panel.show {
+        display: block;
+      }
+      .divider {
+        height: 1px;
+        margin: 20px 0;
+        background: var(--line);
+      }
+      @media (max-width: 850px) {
+        .top {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+        .tabs {
+          width: 100%;
+        }
+        .intro,
+        .recommend {
+          display: block;
+        }
+        .workbench,
+        .impact,
+        .recipe {
+          grid-template-columns: 1fr;
+        }
+        .rail {
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+        .aside {
+          min-height: 0;
+        }
+        .impact-aside {
+          border-left: 0;
+          border-top: 1px solid var(--line);
+        }
+        .choice-grid {
+          grid-template-columns: 1fr;
+        }
+        .progress {
+          grid-template-columns: 1fr 1fr;
+        }
+        .provider-list {
+          grid-template-columns: 1fr 1fr;
+        }
+        .wizard {
+          padding: 20px;
+        }
+        .matrix-actions {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- THESIS: AI configuration is a verified activation workflow, not a wall of accordions. OWN-WORLD: restrained forest surfaces with violet reserved for AI behavior and amber for unresolved connection state. STORY: connect a provider, prove it works, understand its global impact, then activate and save. FIRST VIEWPORT: five switchable full-flow prototypes with status visible beside every decision. FORM: an established admin-world extension in Operate mode. FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md. -->
+    <header class="top">
+      <div class="brand"><span class="mark">S</span><span>SinghBuildsTech / AI Configuration Lab</span></div>
+      <nav class="tabs" aria-label="Artefact selector"></nav>
+    </header>
+    <main class="main">
+      <div class="intro">
+        <div>
+          <h1>Five better ways to configure AI.</h1>
+          <p>
+            Grounded in the current implementation: seven providers retain independent credentials and models; one
+            provider is active globally; connections can be tested, models fetched or entered manually, and writing
+            behavior is shared.
+          </p>
+        </div>
+        <span class="badge">Interactive prototypes · local simulation</span>
+      </div>
+      <div class="recommend">
+        <span
+          ><strong>Recommended: Connection Workbench.</strong> It keeps expert flexibility but creates a safe order:
+          configure → test → activate → save.</span
+        ><span>Fastest + clearest</span>
+      </div>
+
+      <section
+        class="artifact active"
+        data-name="Connection Workbench"
+        data-sub="Recommended: configure, verify, activate"
+      >
+        <div class="frame">
+          <div class="frame-head">
+            <div>
+              <h2>Connection Workbench</h2>
+              <p>A three-pane control surface with context, configuration, and readiness visible together.</p>
+            </div>
+            <span class="badge">Recommended</span>
+          </div>
+          <div class="workbench">
+            <aside class="rail">
+              <h3>Providers</h3>
+              <div class="provider-list" id="workbenchProviders">
+                <button class="provider on" data-provider="Groq">
+                  <span class="dot warn"></span><b>Groq</b><span class="status warn">Untested</span></button
+                ><button class="provider" data-provider="OpenAI">
+                  <span class="dot good"></span><b>OpenAI</b><span class="status good">Verified</span></button
+                ><button class="provider" data-provider="Anthropic">
+                  <span class="dot"></span><b>Anthropic</b><span class="status off">Empty</span></button
+                ><button class="provider" data-provider="Ollama">
+                  <span class="dot good"></span><b>Ollama</b><span class="status good">Verified</span></button
+                ><button class="provider" data-provider="Mistral">
+                  <span class="dot"></span><b>Mistral</b><span class="status off">Empty</span></button
+                ><button class="provider" data-provider="Gemini">
+                  <span class="dot"></span><b>Gemini</b><span class="status off">Empty</span></button
+                ><button class="provider" data-provider="Built-in Rules">
+                  <span class="dot good"></span><b>Built-in Rules</b><span class="status good">Ready</span>
+                </button>
+              </div>
+            </aside>
+            <div class="panel">
+              <div style="display: flex; justify-content: space-between; gap: 16px">
+                <div>
+                  <span class="status warn" id="wbState">Credentials present · not tested</span>
+                  <h3 id="wbTitle" style="font-size: 24px; margin-top: 10px">Groq connection</h3>
+                </div>
+                <button class="switch" id="activeSwitch" aria-label="Set provider active"></button>
+              </div>
+              <div class="field">
+                <label>API key · stored in this browser</label
+                ><input class="input" type="password" value="gsk_demo_key_not_saved" />
+              </div>
+              <div class="field">
+                <label>Model</label>
+                <div style="display: grid; grid-template-columns: 1fr auto; gap: 8px">
+                  <select class="input">
+                    <option>llama-3.3-70b-versatile</option>
+                    <option>llama-3.1-8b-instant</option></select
+                  ><button class="btn" id="fetchModels">Fetch models</button>
+                </div>
+              </div>
+              <details>
+                <summary style="cursor: pointer; font-weight: 800">Custom model ID</summary>
+                <div class="field" style="margin-top: 10px">
+                  <input class="input" placeholder="Enter an exact provider model ID" />
+                </div>
+              </details>
+              <div class="security">
+                Credentials remain in browser storage. They are sent only to the selected provider when an AI action
+                runs.
+              </div>
+              <div class="actions">
+                <button class="btn" id="testConnection">Test connection</button
+                ><button class="btn primary" id="saveWorkbench" disabled>Activate & save</button>
+              </div>
+            </div>
+            <aside class="aside">
+              <h3>Activation readiness</h3>
+              <p>This provider affects Book Autofill, cover recognition, and AI Rephrase across the admin.</p>
+              <div class="status-card"><small>Connection</small><b id="readyConnection">Not tested</b></div>
+              <div class="status-card"><small>Selected model</small><b>llama-3.3-70b-versatile</b></div>
+              <div class="status-card">
+                <small>Global writing profile</small><b>Principal Architect · 0.3 temperature</b>
+              </div>
+              <div class="status-card"><small>Current active provider</small><b id="readyActive">OpenAI</b></div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section class="artifact" data-name="Guided Setup" data-sub="Best for first-time configuration">
+        <div class="frame">
+          <div class="frame-head">
+            <div>
+              <h2>Guided Setup</h2>
+              <p>A short decision path that explains consequences before asking for credentials.</p>
+            </div>
+            <span class="badge">Best onboarding</span>
+          </div>
+          <div class="wizard">
+            <div class="progress">
+              <div class="step on">Goal</div>
+              <div class="step">Connect</div>
+              <div class="step">Model</div>
+              <div class="step">Activate</div>
+            </div>
+            <div id="wizardBody">
+              <h3>What matters most for this setup?</h3>
+              <p style="color: var(--muted)">This changes the recommendation, never the providers available to you.</p>
+              <div class="choice-grid">
+                <button class="choice on" data-choice="Cloud speed">
+                  <b>Cloud speed</b><small>Start with Groq; bring your own API key.</small></button
+                ><button class="choice" data-choice="Local privacy">
+                  <b>Local privacy</b><small>Start with Ollama on your own machine.</small></button
+                ><button class="choice" data-choice="No setup">
+                  <b>No setup</b><small>Use built-in rules with limited AI capabilities.</small>
+                </button>
+              </div>
+              <div class="actions"><button class="btn primary" id="wizardNext">Continue with Groq</button></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="artifact" data-name="Provider Switchboard" data-sub="Operate many saved providers efficiently">
+        <div class="frame">
+          <div class="frame-head">
+            <div>
+              <h2>Provider Switchboard</h2>
+              <p>A dense but legible fleet view for users who keep several providers configured.</p>
+            </div>
+            <span class="badge">Best for power users</span>
+          </div>
+          <div class="matrix-wrap">
+            <table class="matrix">
+              <thead>
+                <tr>
+                  <th>Provider</th>
+                  <th>Connection</th>
+                  <th>Model</th>
+                  <th>Last test</th>
+                  <th>Role</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="selected">
+                  <td><b>OpenAI</b></td>
+                  <td><span class="status good">Verified</span></td>
+                  <td>gpt-4o</td>
+                  <td>Today</td>
+                  <td><span class="status ai">Active globally</span></td>
+                  <td>
+                    <div class="matrix-actions">
+                      <button class="btn row-test">Retest</button><button class="btn">Edit</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><b>Groq</b></td>
+                  <td><span class="status warn">Untested</span></td>
+                  <td>llama-3.3-70b-versatile</td>
+                  <td>Never</td>
+                  <td>Standby</td>
+                  <td>
+                    <div class="matrix-actions">
+                      <button class="btn row-test">Test</button
+                      ><button class="btn activate-row" disabled>Activate</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><b>Ollama</b><br /><small>Local · localhost:11434</small></td>
+                  <td><span class="status good">Verified</span></td>
+                  <td>deepseek-r1:14b</td>
+                  <td>Yesterday</td>
+                  <td>Standby</td>
+                  <td>
+                    <div class="matrix-actions">
+                      <button class="btn row-test">Retest</button><button class="btn activate-row">Activate</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><b>Anthropic</b></td>
+                  <td><span class="status off">Not configured</span></td>
+                  <td>claude-3-5-sonnet-latest</td>
+                  <td>—</td>
+                  <td>Unavailable</td>
+                  <td><button class="btn">Configure</button></td>
+                </tr>
+                <tr>
+                  <td><b>Mistral</b></td>
+                  <td><span class="status off">Not configured</span></td>
+                  <td>mistral-large-latest</td>
+                  <td>—</td>
+                  <td>Unavailable</td>
+                  <td><button class="btn">Configure</button></td>
+                </tr>
+                <tr>
+                  <td><b>Gemini</b></td>
+                  <td><span class="status off">Not configured</span></td>
+                  <td>gemini-2.0-flash</td>
+                  <td>—</td>
+                  <td>Unavailable</td>
+                  <td><button class="btn">Configure</button></td>
+                </tr>
+                <tr>
+                  <td><b>Built-in Rules</b></td>
+                  <td><span class="status good">Always ready</span></td>
+                  <td>heuristic-transformer</td>
+                  <td>Not required</td>
+                  <td>Fallback</td>
+                  <td><button class="btn activate-row">Activate</button></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="security" style="margin-top: 18px">
+              <b>Guardrail:</b> an untested provider cannot become active. Test it successfully first.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="artifact" data-name="Impact Preview" data-sub="Configure by understanding downstream effects">
+        <div class="frame">
+          <div class="frame-head">
+            <div>
+              <h2>Impact Preview</h2>
+              <p>Configuration choices are explained through the product experiences they change.</p>
+            </div>
+            <span class="badge">Best mental model</span>
+          </div>
+          <div class="impact">
+            <div class="impact-main">
+              <h3>Active engine</h3>
+              <div class="field">
+                <select class="input" id="impactProvider">
+                  <option>OpenAI · verified</option>
+                  <option>Ollama · verified</option>
+                  <option>Built-in Rules · ready</option>
+                </select>
+              </div>
+              <div class="use-map">
+                <div class="use">
+                  <span class="use-mark">B</span>
+                  <div><b>Book Autofill</b><br /><small>Generates the complete metadata record</small></div>
+                  <span class="status good">Available</span>
+                </div>
+                <div class="use">
+                  <span class="use-mark">V</span>
+                  <div>
+                    <b>Cover-photo recognition</b><br /><small>Reads visible title and author from an image</small>
+                  </div>
+                  <span class="status good visionState">Available</span>
+                </div>
+                <div class="use">
+                  <span class="use-mark">R</span>
+                  <div><b>AI Rephrase</b><br /><small>Uses the shared personas and system prompt</small></div>
+                  <span class="status good">Available</span>
+                </div>
+              </div>
+              <div class="divider"></div>
+              <h3>Shared writing behavior</h3>
+              <div class="token-row">
+                <button class="token on">Principal Architect</button><button class="token">Concise</button
+                ><button class="token">Storyteller</button><button class="token">SEO Editor</button>
+              </div>
+              <div class="field" style="margin-top: 16px">
+                <label>Creativity · <span id="tempValue">0.30 balanced</span></label
+                ><input
+                  id="tempRange"
+                  type="range"
+                  min="0"
+                  max="1"
+                  step=".05"
+                  value=".3"
+                  style="width: 100%; accent-color: var(--violet)"
+                />
+              </div>
+            </div>
+            <aside class="impact-aside">
+              <h3>Before you save</h3>
+              <div class="preview">
+                <small>Book metadata</small>
+                <p><b>Structured and deterministic</b></p>
+                <p style="color: var(--muted)">Lower creativity preserves JSON reliability.</p>
+              </div>
+              <div class="preview">
+                <small>Writing tone</small>
+                <p id="tonePreview"><b>Principal, crisp, pragmatic</b></p>
+                <p style="color: var(--muted)">Applies when AI Rephrase opens.</p>
+              </div>
+              <div class="actions"><button class="btn primary" data-save>Save global configuration</button></div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section class="artifact" data-name="Configuration Recipe" data-sub="Searchable, keyboard-friendly expert flow">
+        <div class="frame">
+          <div class="frame-head">
+            <div>
+              <h2>Configuration Recipe</h2>
+              <p>A command-palette-inspired flow that exposes advanced settings only when requested.</p>
+            </div>
+            <span class="badge">Best for keyboard users</span>
+          </div>
+          <div class="recipe">
+            <aside class="recipe-nav">
+              <h3>Build a configuration</h3>
+              <p>Search providers and settings without scanning seven expanded cards.</p>
+              <input class="input recipe-search" id="recipeSearch" placeholder="Search provider or setting…" /><button
+                class="recipe-item on"
+              >
+                Groq · active draft</button
+              ><button class="recipe-item">OpenAI · verified</button
+              ><button class="recipe-item">Anthropic · empty</button
+              ><button class="recipe-item">Ollama · verified</button
+              ><button class="recipe-item">Writing personas</button><button class="recipe-item">System prompt</button
+              ><button class="recipe-item">Temperature</button>
+            </aside>
+            <div class="recipe-main">
+              <span class="status warn" id="recipeState">Draft · not tested</span>
+              <h3 style="font-size: 25px; margin: 10px 0 20px">Groq / llama-3.3-70b-versatile</h3>
+              <div class="field">
+                <label>API key</label><input class="input" type="password" value="gsk_demo_key_not_saved" />
+              </div>
+              <div class="field">
+                <label>Model strategy</label>
+                <div class="token-row">
+                  <button class="token on">Recommended default</button><button class="token">Fetch live models</button
+                  ><button class="token">Enter exact ID</button>
+                </div>
+              </div>
+              <details style="margin-top: 18px">
+                <summary style="cursor: pointer; font-weight: 800">Advanced connection details</summary>
+                <div class="field" style="margin-top: 12px">
+                  <label>Base URL</label><input class="input" value="https://api.groq.com/openai/v1" />
+                </div>
+              </details>
+              <div class="divider"></div>
+              <div class="security">
+                <b>Recipe summary:</b> Groq credentials + recommended model + Principal Architect persona + 0.30
+                temperature. Saving changes the active provider for every admin AI feature.
+              </div>
+              <div class="actions">
+                <button class="btn" id="recipeTest">Test recipe</button
+                ><button class="btn primary" id="recipeSave" disabled>Save & activate</button>
+              </div>
+              <div class="success-panel" id="recipeSuccess">
+                Connection verified. This recipe can now be activated safely.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <div class="toast" role="status" aria-live="polite"></div>
+    <script>
+      const artifacts = [...document.querySelectorAll('.artifact')],
+        tabs = document.querySelector('.tabs'),
+        toast = document.querySelector('.toast');
+      artifacts.forEach((artifact, index) => {
+        const button = document.createElement('button');
+        button.className = 'tab';
+        button.textContent = `${index + 1}. ${artifact.dataset.name}`;
+        button.title = artifact.dataset.sub;
+        button.setAttribute('aria-selected', index === 0);
+        button.onclick = () => {
+          artifacts.forEach((item, itemIndex) => {
+            item.classList.toggle('active', index === itemIndex);
+            tabs.children[itemIndex].setAttribute('aria-selected', index === itemIndex);
+          });
+        };
+        tabs.appendChild(button);
+      });
+      const say = (text) => {
+        toast.textContent = text;
+        toast.classList.add('show');
+        clearTimeout(window.toastTimer);
+        window.toastTimer = setTimeout(() => toast.classList.remove('show'), 2400);
+      };
+      document
+        .querySelectorAll('[data-save]')
+        .forEach((button) => (button.onclick = () => say('Prototype complete — configuration was not persisted.')));
+      document.querySelectorAll('#workbenchProviders .provider').forEach(
+        (button) =>
+          (button.onclick = () => {
+            document.querySelectorAll('#workbenchProviders .provider').forEach((item) => item.classList.remove('on'));
+            button.classList.add('on');
+            document.querySelector('#wbTitle').textContent = `${button.dataset.provider} connection`;
+            say(`${button.dataset.provider} configuration opened.`);
+          })
+      );
+      document.querySelector('#fetchModels').onclick = (event) => {
+        event.currentTarget.disabled = true;
+        event.currentTarget.textContent = 'Fetching…';
+        setTimeout(() => {
+          event.currentTarget.disabled = false;
+          event.currentTarget.textContent = '12 models found';
+          say('Live model list loaded from Groq.');
+        }, 650);
+      };
+      document.querySelector('#testConnection').onclick = (event) => {
+        event.currentTarget.disabled = true;
+        event.currentTarget.textContent = 'Testing…';
+        setTimeout(() => {
+          event.currentTarget.disabled = false;
+          event.currentTarget.textContent = 'Test again';
+          document.querySelector('#wbState').className = 'status good';
+          document.querySelector('#wbState').textContent = 'Verified just now';
+          document.querySelector('#readyConnection').textContent = 'Verified · 12 models available';
+          document.querySelector('#saveWorkbench').disabled = false;
+          say('Connection verified. Activation is now available.');
+        }, 750);
+      };
+      document.querySelector('#saveWorkbench').onclick = () => {
+        document.querySelector('#activeSwitch').classList.add('on');
+        document.querySelector('#readyActive').textContent = 'Groq';
+        say('Prototype complete — Groq would now become active globally.');
+      };
+      let wizardStep = 0;
+      const setWizardStep = (step) => {
+        wizardStep = step;
+        document.querySelectorAll('.step').forEach((item, index) => item.classList.toggle('on', index <= wizardStep));
+        const body = document.querySelector('#wizardBody');
+        if (step === 1) {
+          body.innerHTML =
+            '<h3>Connect Groq</h3><p style="color:var(--muted)">Your key stays in this browser. Testing makes one read-only models request.</p><div class="field"><label>Groq API key</label><input class="input" type="password" value="gsk_demo_key_not_saved"></div><div class="actions"><button class="btn primary" id="wizardContinue">Test connection</button></div>';
+          document.querySelector('#wizardContinue').onclick = () => setWizardStep(2);
+        } else if (step === 2) {
+          body.innerHTML =
+            '<h3>Connection verified</h3><p style="color:var(--muted)">12 models are available. The recommended model is preselected.</p><div class="field"><label>Model</label><select class="input"><option>llama-3.3-70b-versatile · recommended</option><option>llama-3.1-8b-instant</option></select></div><div class="security">Activating Groq changes Book Autofill, cover recognition, and AI Rephrase.</div><div class="actions"><button class="btn primary" data-wizard-save>Activate & save</button></div>';
+          document.querySelector('[data-wizard-save]').onclick = () => {
+            setWizardStep(3);
+            say('Prototype complete — configuration was not persisted.');
+          };
+        } else if (step === 3) {
+          body.innerHTML =
+            '<h3>AI is ready</h3><p style="color:var(--muted)">Groq would now be active for Book Autofill, cover recognition, and AI Rephrase.</p><div class="success-panel show">Connection verified · llama-3.3-70b-versatile · Principal Architect persona</div>';
+        }
+      };
+      document.querySelectorAll('.choice').forEach(
+        (choice) =>
+          (choice.onclick = () => {
+            document.querySelectorAll('.choice').forEach((item) => item.classList.remove('on'));
+            choice.classList.add('on');
+            document.querySelector('#wizardNext').textContent =
+              `Continue with ${choice.dataset.choice === 'Local privacy' ? 'Ollama' : choice.dataset.choice === 'No setup' ? 'Built-in Rules' : 'Groq'}`;
+          })
+      );
+      document.querySelector('#wizardNext').onclick = () => setWizardStep(1);
+      document.querySelectorAll('.row-test').forEach(
+        (button) =>
+          (button.onclick = () => {
+            button.textContent = 'Verified';
+            button.classList.add('primary');
+            const row = button.closest('tr'),
+              activate = row.querySelector('.activate-row');
+            if (activate) activate.disabled = false;
+            say('Provider connection verified.');
+          })
+      );
+      document.querySelectorAll('.activate-row').forEach(
+        (button) =>
+          (button.onclick = () => {
+            document.querySelectorAll('.matrix tr').forEach((row) => row.classList.remove('selected'));
+            button.closest('tr').classList.add('selected');
+            say(`${button.closest('tr').querySelector('b').textContent} would become active globally.`);
+          })
+      );
+      document.querySelector('#impactProvider').onchange = (event) => {
+        const builtin = event.target.value.startsWith('Built-in');
+        document.querySelectorAll('.visionState').forEach((state) => {
+          state.className = `status ${builtin ? 'warn' : 'good'} visionState`;
+          state.textContent = builtin ? 'Unavailable' : 'Available';
+        });
+        say(builtin ? 'Built-in Rules cannot read cover photos.' : 'Full AI capabilities available.');
+      };
+      document.querySelectorAll('.token').forEach((token) => (token.onclick = () => token.classList.toggle('on')));
+      document.querySelector('#tempRange').oninput = (event) => {
+        const value = Number(event.target.value);
+        document.querySelector('#tempValue').textContent =
+          `${value.toFixed(2)} ${value < 0.25 ? 'precise' : value < 0.6 ? 'balanced' : 'expressive'}`;
+      };
+      document.querySelector('#recipeSearch').oninput = (event) => {
+        const query = event.target.value.toLowerCase();
+        document
+          .querySelectorAll('.recipe-item')
+          .forEach((item) => item.classList.toggle('hidden', !item.textContent.toLowerCase().includes(query)));
+      };
+      document.querySelectorAll('.recipe-item').forEach(
+        (item) =>
+          (item.onclick = () => {
+            document.querySelectorAll('.recipe-item').forEach((entry) => entry.classList.remove('on'));
+            item.classList.add('on');
+            say(`${item.textContent.trim()} opened.`);
+          })
+      );
+      document.querySelector('#recipeTest').onclick = (event) => {
+        event.currentTarget.disabled = true;
+        event.currentTarget.textContent = 'Testing recipe…';
+        setTimeout(() => {
+          event.currentTarget.disabled = false;
+          event.currentTarget.textContent = 'Test again';
+          document.querySelector('#recipeState').className = 'status good';
+          document.querySelector('#recipeState').textContent = 'Verified · ready to activate';
+          document.querySelector('#recipeSave').disabled = false;
+          document.querySelector('#recipeSuccess').classList.add('show');
+        }, 700);
+      };
+      document.querySelector('#recipeSave').onclick = () =>
+        say('Prototype complete — recipe would now be active globally.');
+    </script>
+  </body>
+</html>

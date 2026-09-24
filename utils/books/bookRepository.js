@@ -48,44 +48,71 @@ const toRow = (book, { partial = false } = {}) => {
   set('cover_url', book.coverUrl?.trim() || null);
   set('cover_image', book.coverImage?.trim() || null);
   set('cover_color', book.coverColor?.trim() || null);
-  set('notes', book.notes || '');
+  let notesText = (book.notes || '').trim();
+  const whyReadText = (book.whyRead !== undefined ? book.whyRead : '').trim();
+  if (whyReadText) {
+    if (notesText.startsWith('Why Read:')) {
+      const parts = notesText.split('\n\n');
+      parts.shift();
+      const remainder = parts.join('\n\n').trim();
+      notesText = remainder ? `Why Read: ${whyReadText}\n\n${remainder}` : `Why Read: ${whyReadText}`;
+    } else {
+      notesText = notesText ? `Why Read: ${whyReadText}\n\n${notesText}` : `Why Read: ${whyReadText}`;
+    }
+    set('notes', notesText);
+  } else if (book.notes !== undefined) {
+    set('notes', notesText);
+  }
   set('legacy', book.legacy || '');
   set('sales', book.sales || '');
   return row;
 };
 
-const fromRow = (row) => ({
-  id: row.id,
-  title: row.title,
-  author: row.author,
-  shelf: row.shelf,
-  status: row.status,
-  currentPage: row.current_page,
-  totalPages: row.total_pages,
-  pages: row.total_pages,
-  rating: Number(row.rating),
-  format: row.format,
-  genre: row.genre,
-  language: row.language,
-  publisher: row.publisher,
-  publishedYear: row.published_year,
-  isbn: row.isbn,
-  isbn13: row.isbn,
-  description: row.description,
-  keyThemes: row.key_themes,
-  targetAudience: row.target_audience,
-  similarBooks: row.similar_books,
-  notableQuotes: row.notable_quotes,
-  quotes: row.notable_quotes,
-  coverLocalPath: row.cover_local_path,
-  coverUrl: row.cover_url,
-  coverImage: row.cover_image,
-  coverColor: row.cover_color,
-  notes: row.notes,
-  legacy: row.legacy,
-  sales: row.sales,
-  updatedAt: row.updated_at
-});
+const fromRow = (row) => {
+  const rawNotes = row.notes || '';
+  const hasWhyReadPrefix = rawNotes.startsWith('Why Read:');
+  const extractedWhyRead = hasWhyReadPrefix
+    ? rawNotes
+        .replace(/^Why Read:\s*/, '')
+        .split('\n\n')[0]
+        .trim()
+    : '';
+  const extractedNotes = hasWhyReadPrefix ? rawNotes.split('\n\n').slice(1).join('\n\n').trim() : rawNotes;
+
+  return {
+    id: row.id,
+    title: row.title,
+    author: row.author,
+    shelf: row.shelf,
+    status: row.status,
+    currentPage: row.current_page,
+    totalPages: row.total_pages,
+    pages: row.total_pages,
+    rating: Number(row.rating),
+    format: row.format,
+    genre: row.genre,
+    language: row.language,
+    publisher: row.publisher,
+    publishedYear: row.published_year,
+    isbn: row.isbn,
+    isbn13: row.isbn,
+    description: row.description,
+    keyThemes: row.key_themes,
+    targetAudience: row.target_audience,
+    similarBooks: row.similar_books,
+    notableQuotes: row.notable_quotes,
+    quotes: row.notable_quotes,
+    coverLocalPath: row.cover_local_path,
+    coverUrl: row.cover_url,
+    coverImage: row.cover_image,
+    coverColor: row.cover_color,
+    notes: extractedNotes,
+    whyRead: row.why_read || extractedWhyRead || '',
+    legacy: row.legacy,
+    sales: row.sales,
+    updatedAt: row.updated_at
+  };
+};
 
 const throwIfError = (error) => {
   if (error) throw error;

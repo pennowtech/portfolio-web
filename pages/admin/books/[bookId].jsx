@@ -26,8 +26,10 @@ import {
   FiX,
   FiPlus
 } from 'react-icons/fi';
+import { LuSparkles } from 'react-icons/lu';
 import { getBookCoverSrc, BOOK_SHELVES } from '@utils/books/bookService';
 import { deletePersistedBook, fetchBook, updatePersistedBook } from '@utils/books/bookApi';
+import BookAskAiModal from '@components/admin/BookAskAiModal';
 
 // ─── Inline editable text component ────────────────────────────────────────
 const InlineText = ({
@@ -430,6 +432,7 @@ const BookDetailPage = ({ adminEmail }) => {
   const [copiedQuote, setCopiedQuote] = useState(null);
   const [saveError, setSaveError] = useState('');
   const [saveFlash, setSaveFlash] = useState(false);
+  const [askAiOpen, setAskAiOpen] = useState(false);
 
   useEffect(() => {
     if (!bookId) return;
@@ -662,6 +665,15 @@ const BookDetailPage = ({ adminEmail }) => {
             >
               <FiCheck className='size-3.5' /> Saved
             </span>
+            <button
+              type='button'
+              onClick={() => setAskAiOpen(true)}
+              className='inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 hover:from-indigo-500 hover:to-purple-500 text-white font-bold px-3.5 py-1.5 text-xs shadow-md shadow-indigo-600/30 transition active:scale-95 font-sans'
+              title='Ask questions in context of this book'
+            >
+              <LuSparkles className='size-3.5 text-amber-300 animate-pulse' />
+              <span>Ask AI</span>
+            </button>
             <span className='text-xs text-neutral-500 italic hidden sm:block'>Click any text to edit inline</span>
             <button
               type='button'
@@ -724,8 +736,8 @@ const BookDetailPage = ({ adminEmail }) => {
                     const isUrl = v.startsWith('http');
                     await handleFieldSave(isUrl ? 'coverUrl' : 'coverLocalPath', v);
                   }}
-                  className='w-full text-[11px] font-mono text-neutral-400 block'
-                  inputClassName='font-mono text-[11px]'
+                  className='w-full text-[11px] font-sans text-neutral-400 block'
+                  inputClassName='font-sans text-[11px]'
                 />
               </div>
 
@@ -779,7 +791,7 @@ const BookDetailPage = ({ adminEmail }) => {
               <div className='mt-5 space-y-2'>
                 <div className='flex items-center justify-between text-xs text-neutral-400'>
                   <span>Page Progress</span>
-                  <div className='flex items-center gap-1.5 font-mono text-neutral-200'>
+                  <div className='flex items-center gap-1.5 font-sans text-neutral-200'>
                     <input
                       type='number'
                       min='0'
@@ -833,7 +845,7 @@ const BookDetailPage = ({ adminEmail }) => {
                         />
                       </button>
                     ))}
-                    <span className='ml-1 font-mono text-xs font-bold text-amber-400'>
+                    <span className='ml-1 font-sans text-xs font-bold text-amber-400'>
                       {(book.rating || 0).toFixed(1)}
                     </span>
                   </div>
@@ -884,7 +896,7 @@ const BookDetailPage = ({ adminEmail }) => {
                   <InlineText
                     value={String(book.publishedYear || '')}
                     onSave={(v) => handleFieldSave('publishedYear', Number(v) || book.publishedYear)}
-                    className='text-neutral-500 font-mono text-sm'
+                    className='text-neutral-500 font-sans text-sm'
                     inputClassName='w-16 text-center'
                     placeholder='Year'
                   />
@@ -939,14 +951,14 @@ const BookDetailPage = ({ adminEmail }) => {
                     inputClassName='w-32'
                   />
                 </span>
-                <span className='inline-flex items-center gap-1.5 rounded-full bg-neutral-900 border border-neutral-800 px-3 py-1 text-xs font-mono'>
+                <span className='inline-flex items-center gap-1.5 rounded-full bg-neutral-900 border border-neutral-800 px-3 py-1 text-xs font-sans'>
                   <span className='text-neutral-400'>ISBN:</span>
                   <InlineText
                     value={book.isbn13 || ''}
                     onSave={(v) => handleFieldSave('isbn13', v)}
                     placeholder='Add ISBN-13...'
                     className='text-neutral-300'
-                    inputClassName='w-32 font-mono'
+                    inputClassName='w-32 font-sans'
                   />
                 </span>
               </div>
@@ -965,6 +977,58 @@ const BookDetailPage = ({ adminEmail }) => {
                 className='w-full text-sm leading-relaxed text-neutral-300 sm:text-base font-normal block'
                 inputClassName='text-sm sm:text-base font-normal leading-relaxed'
               />
+            </div>
+
+            {/* Why Read & Core Value Proposition */}
+            <div className='rounded-2xl border border-indigo-200 dark:border-indigo-500/30 bg-gradient-to-br from-indigo-50/70 via-purple-50/40 to-transparent dark:from-indigo-500/10 dark:via-purple-500/5 dark:to-neutral-900/50 p-6 shadow-sm backdrop-blur-sm'>
+              <div className='flex items-center justify-between mb-3'>
+                <h2 className='text-xs font-bold uppercase tracking-wider text-indigo-700 dark:text-indigo-400 flex items-center gap-2'>
+                  <FiAward className='size-3.5 text-indigo-500 dark:text-indigo-400' />
+                  Why Read &amp; Core Value Proposition
+                </h2>
+                <span className='text-[10px] uppercase tracking-wider font-semibold text-indigo-700 dark:text-indigo-300/80 bg-indigo-500/10 border border-indigo-500/20 dark:border-indigo-500/30 px-2 py-0.5 rounded-full'>
+                  Reader ROI &amp; Worth
+                </span>
+              </div>
+              <InlineText
+                value={book.whyRead || book.notes || ''}
+                onSave={(v) => handleFieldSave('whyRead', v)}
+                multiline
+                placeholder='Why should one read this book, what value does it deliver, and is it really worth reading?...'
+                className='w-full text-sm leading-relaxed text-slate-800 dark:text-neutral-200 sm:text-base font-normal block'
+                inputClassName='text-sm sm:text-base font-normal leading-relaxed'
+              />
+            </div>
+
+            {/* Interactive Ask AI Companion Card */}
+            <div className='rounded-2xl border border-indigo-200 dark:border-indigo-500/30 bg-gradient-to-br from-indigo-50/80 via-purple-50/40 to-white dark:from-indigo-950/40 dark:via-purple-950/20 dark:to-neutral-900/60 p-5 shadow-sm dark:shadow-lg dark:shadow-indigo-950/20 backdrop-blur-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 font-sans'>
+              <div className='flex items-center gap-3.5 min-w-0'>
+                <div className='size-11 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 dark:bg-indigo-500/20 dark:border-indigo-500/40 flex items-center justify-center shrink-0 text-indigo-600 dark:text-indigo-400 shadow-sm dark:shadow-md dark:shadow-indigo-500/10'>
+                  <LuSparkles className='size-5 text-amber-500 dark:text-amber-300 animate-pulse' />
+                </div>
+                <div className='space-y-0.5 min-w-0'>
+                  <div className='flex items-center gap-2'>
+                    <span className='h-[20px] inline-flex items-center gap-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 dark:bg-indigo-500/20 dark:border-indigo-500/40 px-2.5 text-[10px] font-bold uppercase tracking-wider text-indigo-700 dark:text-indigo-300 font-sans leading-none'>
+                      Context-Aware Intelligence
+                    </span>
+                  </div>
+                  <h3 className='text-sm sm:text-base font-bold text-slate-900 dark:text-white truncate font-sans'>
+                    Have questions about &ldquo;{book.title}&rdquo;?
+                  </h3>
+                  <p className='text-xs text-slate-600 dark:text-neutral-400 font-sans'>
+                    Ask for chapter breakdowns, critical trade-offs, actionable insights, or practical examples.
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type='button'
+                onClick={() => setAskAiOpen(true)}
+                className='inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold px-4 py-2.5 text-xs shadow-lg shadow-indigo-600/30 transition active:scale-95 shrink-0 font-sans'
+              >
+                <LuSparkles className='size-3.5 text-amber-300' />
+                <span>Ask AI Companion</span>
+              </button>
             </div>
 
             {/* Key Themes */}
@@ -1132,6 +1196,20 @@ const BookDetailPage = ({ adminEmail }) => {
           </div>
         </div>
       </div>
+
+      {/* ASK AI MODAL (CONTEXT-GROUNDED TO THIS BOOK) */}
+      <BookAskAiModal
+        isOpen={askAiOpen}
+        onClose={() => setAskAiOpen(false)}
+        book={book}
+        onSaveNote={async (noteAppend) => {
+          const nextNotes = (book.notes || '').trim()
+            ? `${(book.notes || '').trim()}\n\n${noteAppend.trim()}`
+            : noteAppend.trim();
+          await handleFieldSave('notes', nextNotes);
+          setNotesInput(nextNotes);
+        }}
+      />
     </AdminLayout>
   );
 };
