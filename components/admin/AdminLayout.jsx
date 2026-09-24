@@ -13,7 +13,9 @@ export const AdminLayout = ({
   description = 'Private SinghBuildsTech administration console.',
   adminEmail = '',
   defaultSidebarExpanded = true,
-  hideContextSidebar = false
+  hideContextSidebar = false,
+  hideHeader = false,
+  focusMode = false
 }) => {
   const router = useRouter();
   const [sidebarExpanded, setSidebarExpanded] = useState(defaultSidebarExpanded);
@@ -99,23 +101,29 @@ export const AdminLayout = ({
       </Head>
 
       {/* TIER 1: 54px Iconic Activity Rail (Artefact 3) */}
-      <AdminActivityRail
-        sidebarExpanded={sidebarExpanded}
-        onToggleSidebar={handleToggleSidebar}
-        hideToggle={hideContextSidebar}
-      />
+      {!focusMode && (
+        <AdminActivityRail
+          sidebarExpanded={sidebarExpanded}
+          onToggleSidebar={handleToggleSidebar}
+          hideToggle={hideContextSidebar}
+        />
+      )}
 
       {/* TIER 2: 230px Contextual Shelf & Sub-tree Drawer (Artefact 3) */}
-      {!hideContextSidebar && <AdminContextSidebar expanded={sidebarExpanded} onOpenQuickAdd={handleOpenQuickAdd} />}
+      {!focusMode && !hideContextSidebar && (
+        <AdminContextSidebar expanded={sidebarExpanded} onOpenQuickAdd={handleOpenQuickAdd} />
+      )}
 
       {/* MAIN VIEWPORT CANVAS */}
       <div className='flex min-w-0 flex-1 flex-col overflow-hidden bg-slate-100 dark:bg-slate-950'>
         {/* TOP: Horizon Glass Panoramic Header (Artefact 4) */}
-        <AdminHorizonHeader
-          adminEmail={adminEmail}
-          onOpenCommandPalette={() => setPaletteOpen(true)}
-          onOpenQuickAdd={handleOpenQuickAdd}
-        />
+        {!focusMode && !hideHeader && (
+          <AdminHorizonHeader
+            adminEmail={adminEmail}
+            onOpenCommandPalette={() => setPaletteOpen(true)}
+            onOpenQuickAdd={handleOpenQuickAdd}
+          />
+        )}
 
         {/* CONTENT CANVAS */}
         <main className='relative flex-1 overflow-y-auto bg-slate-50/80 dark:bg-slate-950/60'>{children}</main>

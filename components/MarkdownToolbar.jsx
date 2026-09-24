@@ -18,6 +18,7 @@ import { EditorView } from '@codemirror/view';
 import { undo, redo } from '@codemirror/commands';
 import { FaLinkedin, FaYoutube, FaXTwitter } from 'react-icons/fa6';
 import { MdHighlight } from 'react-icons/md';
+import styles from './admin/ArticleStudio.module.css';
 
 const headingSlug = (value) =>
   value
@@ -35,7 +36,9 @@ const MarkdownToolbar = ({
   showLineNumbers,
   onToggleLineNumbers,
   compact = false,
-  excludeFloatingTools = false
+  excludeFloatingTools = false,
+  studio = false,
+  extraActions
 }) => {
   const headings = useMemo(
     () =>
@@ -234,7 +237,7 @@ const MarkdownToolbar = ({
     },
     {
       icon: FiMoreVertical,
-      title: 'More options',
+      title: 'Insert note',
       action: () => insertBlock('<note heading="Design note">\nImportant context\n</note>\n\n'),
       extended: true
     }
@@ -260,6 +263,81 @@ const MarkdownToolbar = ({
       editorView.focus();
     }
   };
+
+  if (studio) {
+    const primaryTools = [0, 1, 3, 7];
+    const runMenuAction = (event, action) => {
+      event.currentTarget.closest('details')?.removeAttribute('open');
+      action();
+    };
+    return (
+      <div className={styles.toolbar} aria-label='Markdown formatting'>
+        <select
+          aria-label='Text style'
+          defaultValue=''
+          onChange={(event) => {
+            setHeading(Number(event.target.value));
+            event.target.value = '';
+          }}
+        >
+          <option value='' disabled>
+            Text style
+          </option>
+          <option value='0'>Paragraph</option>
+          <option value='2'>Heading 2</option>
+          <option value='3'>Heading 3</option>
+          <option value='4'>Heading 4</option>
+        </select>
+        {tools
+          .filter((_, index) => primaryTools.includes(index))
+          .map(({ icon: Icon, title, action }) => (
+            <button key={title} type='button' className={styles.tool} title={title} aria-label={title} onClick={action}>
+              <Icon />
+            </button>
+          ))}
+        <span className={styles.separator} />
+        <details className={styles.menu}>
+          <summary>+ Insert</summary>
+          <div className={styles.menuContent}>
+            {tools
+              .filter((_, index) => !primaryTools.includes(index))
+              .map(({ icon: Icon, title, action }) => (
+                <button key={title} type='button' onClick={(event) => runMenuAction(event, action)}>
+                  <Icon />
+                  {title.replace(/^Toggle /, '')}
+                </button>
+              ))}
+            <button type='button' onClick={(event) => runMenuAction(event, insertToc)}>
+              <LuListTree />
+              Table of contents
+            </button>
+          </div>
+        </details>
+        <details className={`${styles.menu} ${styles.menuRight}`}>
+          <summary aria-label='More writing tools'>•••</summary>
+          <div className={styles.menuContent}>
+            <button type='button' onClick={handleUndo}>
+              <LuUndo />
+              Undo (Ctrl/⌘ Z)
+            </button>
+            <button type='button' onClick={handleRedo}>
+              <LuRedo />
+              Redo (Ctrl/⌘ Shift Z)
+            </button>
+            <button type='button' onClick={onToggleLineNumbers}>
+              <FiHash />
+              {showLineNumbers ? 'Hide' : 'Show'} line numbers
+            </button>
+            <button type='button' onClick={(event) => runMenuAction(event, onHelp)}>
+              <FiHelpCircle />
+              Markdown reference
+            </button>
+            {extraActions}
+          </div>
+        </details>
+      </div>
+    );
+  }
 
   if (compact) {
     const compactButton =

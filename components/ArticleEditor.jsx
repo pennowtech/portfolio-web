@@ -1,629 +1,712 @@
+/* eslint-disable @next/next/no-img-element -- article previews accept user-provided cover URLs */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
-import { signOut } from 'next-auth/react';
 import { markdown as markdownLanguage } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
-import { EditorView } from '@codemirror/view';
-import { undo, redo } from '@codemirror/commands';
-import { FiMoreHorizontal, FiColumns, FiEye, FiCode, FiFileText } from 'react-icons/fi';
-import { LuSparkles, LuMaximize2, LuMinimize2 } from 'react-icons/lu';
+import { EditorView, keymap } from '@codemirror/view';
+import { FiArrowRight, FiDownload, FiFileText, FiMaximize2, FiMinimize2, FiSettings, FiX } from 'react-icons/fi';
+import { LuSparkles } from 'react-icons/lu';
 import MarkdownToolbar from './MarkdownToolbar';
-import ArticleEditorHelp from './ArticleEditorHelp';
-import ArticleLibrary from './ArticleLibrary';
 import ArticleInspector from './admin/ArticleInspector';
-import AIConfigModal from './admin/AIConfigModal';
-import AIRephraseModal from './admin/AIRephraseModal';
-import FrostedSelectionBubble from './admin/FrostedSelectionBubble';
-import AmbientWordMeter from './admin/AmbientWordMeter';
+import StudioDialog from './admin/StudioDialog';
+import useArticleDraft from './admin/useArticleDraft';
+import { articleSlug, articleTags } from '@utils/articleDraft';
+import { validateArticle } from '@utils/articleValidation';
+import styles from './admin/ArticleStudio.module.css';
 
 const CodeMirror = dynamic(() => import('@uiw/react-codemirror'), {
   ssr: false,
-  loading: () => <div className='h-[650px] animate-pulse rounded-lg bg-slate-100 dark:bg-slate-800' />
+  loading: () => <p className={styles.loading}>Preparing your writing surface…</p>
 });
 const ArticlePreview = dynamic(() => import('./Article'), { ssr: false });
+const ArticleLibrary = dynamic(() => import('./ArticleLibrary'));
+const ArticleEditorHelp = dynamic(() => import('./ArticleEditorHelp'));
+const AIConfigModal = dynamic(() => import('./admin/AIConfigModal'));
+const AIRephraseModal = dynamic(() => import('./admin/AIRephraseModal'));
+const FrostedSelectionBubble = dynamic(() => import('./admin/FrostedSelectionBubble'));
 
-const INITIAL_MARKDOWN = `## Start with the reader's problem
-
-Open with a concrete engineering situation, the decision that needs to be made, and why it matters.
-
-## Explain the design
-
-Use diagrams, tables, lists, links, and code where they make the architecture easier to understand.
-
-\`\`\`cpp
-struct Example {
-  bool production_ready{true};
-};
-\`\`\`
-
-## Close with practical guidance
-
-Summarize the trade-offs and leave the reader with decisions they can apply.`;
-
-const slugify = (value) => {
-  const normalized = value
-    .normalize('NFKD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/&/g, ' and ')
-    .replace(/\+/g, ' plus ')
-    .replace(/@/g, ' at ')
-    .replace(/%/g, ' percent ')
-    .toLowerCase()
-    .replace(/['’]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .replace(/-{2,}/g, '-');
-  if (!normalized) {
-    const hash = [...value].reduce((result, character) => (result * 31 + character.codePointAt(0)) >>> 0, 2166136261);
-    return value.trim() ? `article-${hash.toString(36)}` : '';
+const formatShortcut = (marker) => (view) => {
+  const selection = view.state.selection.main;
+  const selected = view.state.sliceDoc(selection.from, selection.to);
+  const wrapped =
+    selection.from >= marker.length &&
+    view.state.sliceDoc(selection.from - marker.length, selection.from) === marker &&
+    view.state.sliceDoc(selection.to, selection.to + marker.length) === marker;
+  if (wrapped) {
+    view.dispatch({
+      changes: [
+        { from: selection.from - marker.length, to: selection.from, insert: '' },
+        { from: selection.to, to: selection.to + marker.length, insert: '' }
+      ],
+      selection: { anchor: selection.from - marker.length, head: selection.to - marker.length }
+    });
+  } else {
+    const text = selected || 'text';
+    view.dispatch({
+      changes: { from: selection.from, to: selection.to, insert: `${marker}${text}${marker}` },
+      selection: { anchor: selection.from + marker.length, head: selection.from + marker.length + text.length }
+    });
   }
-  if (normalized.length <= 160) return normalized;
-  return (
-    normalized
-      .slice(0, 160)
-      .replace(/-[^-]*$/, '')
-      .replace(/-+$/g, '') || normalized.slice(0, 160)
-  );
+  return true;
 };
 
-const FieldError = ({ children }) =>
-  children ? <span className='mt-1 block text-sm text-red-700 dark:text-red-300'>{children}</span> : null;
-
-const ArticleEditor = ({ adminEmail, defaultPublicationDate }) => {
+function ArticleWorkspace({ articleId, adminEmail, defaultPublicationDate, focusMode, onFocusModeChange }) {
   const router = useRouter();
-  const editorViewRef = useRef(null);
-  const taxonomyLoadingRef = useRef(false);
   const { resolvedTheme } = useTheme();
-  const [form, setForm] = useState({
-    title: '',
-    slug: '',
-    description: '',
-    coverUrl: '',
-    coverUpload: null,
-    coverCredit: null,
-    publicationDate: defaultPublicationDate,
-    category: 'Software Architecture',
-    tags: '',
-    markdown: INITIAL_MARKDOWN
-  });
-  const [slugEdited, setSlugEdited] = useState(false);
+  const draft = useArticleDraft({ articleId, adminEmail, defaultPublicationDate, router });
+  const { form, setForm, slugEdited, setSlugEdited } = draft;
+  const editorRef = useRef(null);
+  const titleRef = useRef(null);
+  const savingRef = useRef(false);
+  const activeRef = useRef(true);
+  const createdIdRef = useRef('');
   const [viewMode, setViewMode] = useState('edit');
-  const [showLineNumbers, setShowLineNumbers] = useState(true);
+  const [settingsOpen, setSettingsOpen] = useState(true);
+  const [mobile, setMobile] = useState(false);
+  const [libraryOpen, setLibraryOpen] = useState(false);
+  const [showLineNumbers, setShowLineNumbers] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
+  const [aiConfigOpen, setAIConfigOpen] = useState(false);
+  const [rephraseTarget, setRephraseTarget] = useState(null);
+  const [publishAction, setPublishAction] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState(null);
-  const [submitting, setSubmitting] = useState(false);
   const [taxonomy, setTaxonomy] = useState({ categories: [], tags: [], articles: [] });
   const [taxonomyLoading, setTaxonomyLoading] = useState(true);
-  const [taxonomyMessage, setTaxonomyMessage] = useState('Loading categories and tags from Notion…');
-  const [mounted, setMounted] = useState(false);
-  const [editingArticleId, setEditingArticleId] = useState('');
-  const [articleLoading, setArticleLoading] = useState(false);
-  const [editingPublished, setEditingPublished] = useState(false);
-  const [zenMode, setZenMode] = useState(false);
-  const [aiModalOpen, setAiModalOpen] = useState(false);
-  const [rephraseTarget, setRephraseTarget] = useState(null); // { text, from, to, whole }
+  const [taxonomyMessage, setTaxonomyMessage] = useState('');
+  const [taxonomyRevision, setTaxonomyRevision] = useState(0);
+  const disabled = !draft.ready || Boolean(draft.recovery) || submitting;
+  const getEditorView = useCallback(() => editorRef.current, []);
 
   useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (event.key === 'Escape' && zenMode) {
-        setZenMode(false);
-      }
+    activeRef.current = true;
+    return () => {
+      activeRef.current = false;
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [zenMode]);
+  }, []);
 
   useEffect(() => {
-    setMounted(true);
-    document.documentElement.setAttribute('data-color-mode', resolvedTheme === 'dark' ? 'dark' : 'light');
-  }, [resolvedTheme]);
+    const query = window.matchMedia('(max-width: 850px)');
+    const change = () => {
+      setMobile(query.matches);
+      setSettingsOpen(!query.matches);
+    };
+    change();
+    query.addEventListener('change', change);
+    return () => query.removeEventListener('change', change);
+  }, []);
 
-  const loadTaxonomy = useCallback(() => {
-    if (taxonomyLoadingRef.current) return;
-    taxonomyLoadingRef.current = true;
-    fetch('/api/admin/articles')
+  useEffect(() => {
+    const controller = new AbortController();
+    setTaxonomyLoading(true);
+    fetch('/api/admin/articles', { signal: controller.signal })
       .then(async (response) => {
         const result = await response.json();
-        if (!response.ok) throw new Error(result.message || 'Taxonomy could not be loaded.');
-        return result;
-      })
-      .then((result) => {
-        setTaxonomy(result);
+        if (!response.ok) throw new Error(result.message || 'Could not load your articles.');
+        setTaxonomy({ categories: result.categories || [], tags: result.tags || [], articles: result.articles || [] });
         setTaxonomyMessage('');
-        setTaxonomyLoading(false);
-        taxonomyLoadingRef.current = false;
       })
       .catch((error) => {
-        setTaxonomy({ categories: [], tags: [], articles: [] });
-        setTaxonomyMessage(error.message);
-        setTaxonomyLoading(false);
-        taxonomyLoadingRef.current = false;
+        if (error.name !== 'AbortError') setTaxonomyMessage(error.message);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setTaxonomyLoading(false);
       });
-  }, []);
-  const getEditorView = useCallback(() => editorViewRef.current, []);
+    return () => controller.abort();
+  }, [taxonomyRevision]);
 
   useEffect(() => {
-    loadTaxonomy();
-  }, [loadTaxonomy]);
+    const title = titleRef.current;
+    if (!title) return;
+    const resize = () => {
+      title.style.height = '0px';
+      title.style.height = `${title.scrollHeight}px`;
+    };
+    resize();
+    let width = title.parentElement.clientWidth;
+    const observer = new ResizeObserver(() => {
+      const nextWidth = title.parentElement.clientWidth;
+      if (nextWidth !== width) {
+        width = nextWidth;
+        resize();
+      }
+    });
+    observer.observe(title.parentElement);
+    return () => observer.disconnect();
+  }, [form.title, draft.ready, viewMode]);
 
   useEffect(() => {
-    if (!router.isReady) return;
-    const articleId = typeof router.query.id === 'string' ? router.query.id : '';
-    if (!articleId) {
-      setEditingArticleId('');
-      setEditingPublished(false);
-      return;
-    }
-    setArticleLoading(true);
-    fetch(`/api/admin/articles?id=${encodeURIComponent(articleId)}`)
-      .then(async (response) => {
-        const result = await response.json();
-        if (!response.ok) throw new Error(result.message || 'The article could not be loaded.');
-        return result;
-      })
-      .then((article) => {
-        setEditingArticleId(article.id);
-        setEditingPublished(article.published);
-        setSlugEdited(true);
-        setForm({
-          title: article.title,
-          slug: article.slug,
-          description: article.description,
-          coverUrl: article.coverUrl,
-          coverUpload: null,
-          coverCredit: null,
-          publicationDate: article.publicationDate || defaultPublicationDate,
-          category: article.category || 'Software Architecture',
-          tags: article.tags.join(', '),
-          markdown: article.markdown || INITIAL_MARKDOWN
-        });
-        setMessage({
-          type: 'success',
-          text: `Loaded ${article.published ? 'published article' : 'draft'} for editing.`
-        });
-        requestAnimationFrame(() => document.getElementById('article-form')?.scrollIntoView({ behavior: 'smooth' }));
-      })
-      .catch((error) => setMessage({ type: 'error', text: error.message }))
-      .finally(() => setArticleLoading(false));
-  }, [defaultPublicationDate, router.isReady, router.query.id]);
+    const escape = (event) => {
+      if (
+        event.key !== 'Escape' ||
+        document.querySelector('dialog[open]') ||
+        helpOpen ||
+        aiConfigOpen ||
+        rephraseTarget
+      )
+        return;
+      document
+        .querySelectorAll('[data-article-studio] details[open]')
+        .forEach((details) => details.removeAttribute('open'));
+      onFocusModeChange(false);
+    };
+    window.addEventListener('keydown', escape);
+    return () => window.removeEventListener('keydown', escape);
+  }, [onFocusModeChange, helpOpen, aiConfigOpen, rephraseTarget]);
 
-  const tags = useMemo(
-    () =>
-      form.tags
-        .split(',')
-        .map((tag) => tag.trim())
-        .filter(Boolean),
-    [form.tags]
-  );
-  const wordCount = useMemo(() => {
-    const plainText = form.markdown
-      .replace(/```[\s\S]*?```/g, ' ')
-      .replace(/<[^>]+>/g, ' ')
-      .replace(/!?(?:\[([^\]]*)\])\([^)]+\)/g, '$1')
-      .replace(/[#>*_`~|\-[\]]/g, ' ');
-    return plainText.trim() ? plainText.trim().split(/\s+/u).length : 0;
-  }, [form.markdown]);
-  const editorExtensions = useMemo(
+  const extensions = useMemo(
     () => [
       markdownLanguage({ codeLanguages: languages }),
       EditorView.lineWrapping,
-      EditorView.theme({
-        '&': {
-          fontFamily:
-            "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace !important",
-          fontSize: '14px'
-        },
-        '.cm-content': {
-          fontFamily:
-            "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace !important"
-        },
-        '.cm-gutters': {
-          fontFamily:
-            "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace !important",
-          backgroundColor: 'rgba(22, 101, 52, 0.10)',
-          borderRight: '1px solid rgba(22, 101, 52, 0.20)'
-        },
-        '.cm-lineNumbers .cm-gutterElement': { paddingLeft: '10px', paddingRight: '10px' }
-      })
+      EditorView.contentAttributes.of({ 'aria-label': 'Article body', 'aria-describedby': 'article-body-help' }),
+      keymap.of([
+        { key: 'Mod-b', run: formatShortcut('**') },
+        { key: 'Mod-i', run: formatShortcut('*') }
+      ])
     ],
     []
   );
-  const editorTheme = mounted && resolvedTheme === 'dark' ? 'dark' : 'light';
 
   const update = (name, value) => {
     setForm((current) => ({
       ...current,
       [name]: value,
-      ...(name === 'title' && !slugEdited ? { slug: slugify(value) } : {})
+      ...(name === 'title' && !slugEdited ? { slug: articleSlug(value) } : {})
     }));
+    setErrors((current) => ({ ...current, [name]: undefined }));
   };
 
-  const applyRephraseResult = (newText) => {
-    if (!rephraseTarget) return;
-    if (rephraseTarget.whole) {
-      update('markdown', newText);
-      return;
+  const wordCount = useMemo(() => {
+    const text = form.markdown
+      .replace(/```[\s\S]*?```/g, ' ')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/!?(?:\[([^\]]*)\])\([^)]+\)/g, '$1')
+      .replace(/[#>*_`~|\-[\]]/g, ' ');
+    return text.trim() ? text.trim().split(/\s+/u).length : 0;
+  }, [form.markdown]);
+  const previewMarkdown = `${form.markdown}${form.coverCredit ? `\n\n---\n\n<small>Cover photo by [${form.coverCredit.photographer}](${form.coverCredit.profileUrl}) on [${form.coverCredit.provider}](${form.coverCredit.providerUrl}).</small>` : ''}`;
+
+  const showErrors = (validationErrors) => {
+    setErrors(validationErrors);
+    setViewMode('edit');
+    onFocusModeChange(false);
+    if (Object.keys(validationErrors).some((name) => !['title', 'markdown'].includes(name))) setSettingsOpen(true);
+    else
+      requestAnimationFrame(() => {
+        if (validationErrors.title) titleRef.current?.focus();
+        else editorRef.current?.focus();
+      });
+  };
+
+  const validate = (published) => {
+    const result = validateArticle({ ...form, tags: articleTags(form.tags), published });
+    if (Object.keys(result.errors).length) {
+      showErrors(result.errors);
+      setMessage({ type: 'error', text: 'Check the highlighted fields before continuing.' });
+      return false;
     }
-    const editorView = getEditorView();
-    if (!editorView) return;
-    editorView.dispatch({
-      changes: { from: rephraseTarget.from, to: rephraseTarget.to, insert: newText },
-      selection: { anchor: rephraseTarget.from, head: rephraseTarget.from + newText.length }
-    });
-    editorView.focus();
+    setErrors({});
+    return true;
   };
 
   const save = async (published) => {
-    if (published && !editingPublished && !window.confirm('Publish this article immediately on the portfolio?')) return;
+    if (savingRef.current || disabled || !validate(published)) return;
+    savingRef.current = true;
     setSubmitting(true);
-    setErrors({});
     setMessage(null);
-
+    draft.persist();
+    const id = articleId || createdIdRef.current;
     try {
-      const response = await fetch(
-        editingArticleId ? `/api/admin/articles?id=${encodeURIComponent(editingArticleId)}` : '/api/admin/articles',
-        {
-          method: editingArticleId ? 'PATCH' : 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...form, tags, published })
-        }
-      );
+      const response = await fetch(id ? `/api/admin/articles?id=${encodeURIComponent(id)}` : '/api/admin/articles', {
+        method: id ? 'PATCH' : 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...form, tags: articleTags(form.tags), published })
+      });
       const result = await response.json();
-      if (response.status === 401) {
-        await router.replace('/admin/login');
+      if (!activeRef.current) return;
+      if (!response.ok) {
+        if (result.errors) {
+          setPublishAction(null);
+          showErrors(result.errors);
+        }
+        throw new Error(
+          response.status === 401
+            ? 'Your session expired. Download a backup, then sign in again to save to Notion.'
+            : result.message || 'Could not save to Notion. Your edits are still here.'
+        );
+      }
+      if (!result.article?.id)
+        throw new Error('Notion did not return an article ID. Please check the article library before trying again.');
+      const savedForm = { ...form, slug: result.article.slug || form.slug };
+      createdIdRef.current = result.article.id;
+      draft.markSaved(savedForm, published, savedForm.slug, !id);
+      setSlugEdited(true);
+      setPublishAction(null);
+      setMessage({ type: 'success', text: published ? 'Published to your portfolio.' : 'Draft saved to Notion.' });
+      setTaxonomyRevision((value) => value + 1);
+      if (!id) {
+        try {
+          await router.replace({ pathname: '/admin/articles/new', query: { id: result.article.id } }, undefined, {
+            shallow: true,
+            scroll: false
+          });
+        } catch {
+          draft.markSaved(savedForm, published, savedForm.slug);
+        }
+      }
+    } catch (error) {
+      if (activeRef.current) setMessage({ type: 'error', text: error.message });
+    } finally {
+      savingRef.current = false;
+      if (activeRef.current) setSubmitting(false);
+    }
+  };
+
+  const requestPublish = (published) => {
+    if (disabled || !validate(published)) return;
+    setMessage(null);
+    setPublishAction(published);
+  };
+
+  const downloadBackup = () => {
+    const blob = new Blob([JSON.stringify({ title: form.title, version: 1, form, slugEdited }, null, 2)], {
+      type: 'application/json'
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${form.slug || 'article-draft'}.json`;
+    link.click();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+
+  const applyRephrase = (text) => {
+    if (rephraseTarget.whole) update('markdown', text);
+    else {
+      const view = editorRef.current;
+      if (!view || view.state.sliceDoc(rephraseTarget.from, rephraseTarget.to) !== rephraseTarget.text) {
+        setMessage({ type: 'error', text: 'That selection changed. Select the text again before applying a rewrite.' });
         return;
       }
-      if (!response.ok) {
-        setErrors(result.errors || {});
-        throw new Error(result.message || 'The article could not be saved.');
-      }
-      setMessage({ type: 'success', text: result.message, article: result.article });
-      setEditingPublished(published);
-      loadTaxonomy();
-    } catch (error) {
-      setMessage((current) => current || { type: 'error', text: error.message });
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const logout = async () => {
-    await signOut({ callbackUrl: '/admin/login' });
-  };
-
-  const handleEditorShortcut = (event) => {
-    const editorView = editorViewRef.current;
-    if (!editorView || (!event.ctrlKey && !event.metaKey)) return;
-    const key = event.key.toLowerCase();
-
-    if (key === 'z' && event.shiftKey) {
-      event.preventDefault();
-      redo(editorView);
-      return;
-    }
-    if (key === 'z') {
-      event.preventDefault();
-      undo(editorView);
-      return;
-    }
-    if (key === 'y') {
-      event.preventDefault();
-      redo(editorView);
-      return;
-    }
-
-    if (!['b', 'i'].includes(key)) return;
-    event.preventDefault();
-    const marker = key === 'b' ? '**' : '*';
-    const selection = editorView.state.selection.main;
-    const selected = editorView.state.sliceDoc(selection.from, selection.to);
-    const wrappedOutside =
-      selection.from >= marker.length &&
-      editorView.state.sliceDoc(selection.from - marker.length, selection.from) === marker &&
-      editorView.state.sliceDoc(selection.to, selection.to + marker.length) === marker;
-    if (wrappedOutside) {
-      editorView.dispatch({
-        changes: [
-          { from: selection.to, to: selection.to + marker.length, insert: '' },
-          { from: selection.from - marker.length, to: selection.from, insert: '' }
-        ],
-        selection: { anchor: selection.from - marker.length, head: selection.to - marker.length }
+      view.dispatch({
+        changes: { from: rephraseTarget.from, to: rephraseTarget.to, insert: text },
+        selection: { anchor: rephraseTarget.from, head: rephraseTarget.from + text.length }
       });
-    } else {
-      const content = selected || 'text';
-      editorView.dispatch({
-        changes: { from: selection.from, to: selection.to, insert: `${marker}${content}${marker}` },
-        selection: { anchor: selection.from + marker.length, head: selection.from + marker.length + content.length }
-      });
+      view.focus();
     }
   };
+
+  const inspector = (
+    <ArticleInspector
+      form={form}
+      update={update}
+      errors={errors}
+      setSlugEdited={setSlugEdited}
+      taxonomy={taxonomy}
+      disabled={disabled}
+      published={draft.published}
+      onUnpublish={() => {
+        setSettingsOpen(false);
+        requestPublish(false);
+      }}
+    />
+  );
+  const preview = (
+    <div className={styles.preview} aria-label='Article preview'>
+      {form.coverUpload?.dataUrl || form.coverUrl ? (
+        <img className={styles.previewCover} src={form.coverUpload?.dataUrl || form.coverUrl} alt='Article cover' />
+      ) : null}
+      {form.description && <p className={styles.previewDescription}>{form.description}</p>}
+      <ArticlePreview mdxSource={previewMarkdown} />
+    </div>
+  );
 
   return (
-    <main className='mx-auto w-full max-w-[1720px] px-3 py-6 sm:px-6 lg:px-8'>
-      <div
-        className={`grid gap-6 items-start transition-all duration-300 ${
-          zenMode
-            ? 'mx-auto max-w-4xl grid-cols-1'
-            : 'xl:grid-cols-[280px_minmax(0,1fr)_340px] 2xl:grid-cols-[310px_minmax(0,1fr)_380px]'
-        }`}
+    <section
+      className={`${styles.studio} ${focusMode ? styles.focus : ''}`}
+      data-article-studio
+      aria-label='Article Studio'
+    >
+      <header className={styles.header}>
+        <div className={styles.brand}>
+          <span className={styles.brandMark}>s</span>
+          <span>Article Studio</span>
+          {!focusMode && (
+            <button className={styles.button} type='button' disabled={submitting} onClick={() => setLibraryOpen(true)}>
+              <FiFileText />
+              Articles
+            </button>
+          )}
+        </div>
+        <div className={styles.headerActions}>
+          <span className={styles.saveStatus} role='status'>
+            {submitting ? 'Saving to Notion…' : draft.status}
+          </span>
+          <button
+            className={`${styles.button} ${focusMode ? styles.active : ''}`}
+            type='button'
+            aria-pressed={focusMode}
+            title='Focus mode (Escape to exit)'
+            onClick={() => onFocusModeChange(!focusMode)}
+          >
+            {focusMode ? <FiMinimize2 /> : <FiMaximize2 />}
+            {focusMode ? 'Exit focus' : 'Focus'}
+          </button>
+          <div className={styles.segmented} role='group' aria-label='Editor view'>
+            {[
+              ['edit', 'Write'],
+              ['split', 'Split'],
+              ['preview', 'Preview']
+            ].map(([mode, label]) => (
+              <button
+                type='button'
+                key={mode}
+                className={viewMode === mode ? styles.selected : ''}
+                aria-pressed={viewMode === mode}
+                onClick={() => {
+                  setViewMode(mode);
+                  if (mode === 'split') setSettingsOpen(false);
+                }}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          {!focusMode && (
+            <button
+              className={`${styles.button} ${settingsOpen ? styles.active : ''}`}
+              type='button'
+              aria-expanded={settingsOpen}
+              onClick={() => setSettingsOpen(!settingsOpen)}
+            >
+              <FiSettings />
+              Settings
+            </button>
+          )}
+          {!draft.published && (
+            <button className={styles.button} type='button' disabled={disabled} onClick={() => save(false)}>
+              Save draft
+            </button>
+          )}
+          <button className={styles.primary} type='button' disabled={disabled} onClick={() => requestPublish(true)}>
+            {draft.published ? 'Publish changes' : 'Publish'}
+            <FiArrowRight />
+          </button>
+        </div>
+      </header>
+
+      {draft.recovery && (
+        <div className={styles.notice} role='status'>
+          <div>
+            <strong>
+              {draft.recovery.fromOtherTab ? 'Another tab saved a different draft.' : 'A local draft is available.'}
+            </strong>
+            <p>Your Notion version has not been changed. Choose which copy to work on.</p>
+          </div>
+          <div className={styles.row}>
+            <button className={styles.button} type='button' onClick={() => draft.resolveRecovery(false)}>
+              {draft.recovery.fromOtherTab ? 'Keep this tab' : 'Use Notion version'}
+            </button>
+            <button className={styles.primary} type='button' onClick={() => draft.resolveRecovery(true)}>
+              Recover local draft
+            </button>
+          </div>
+        </div>
+      )}
+      {draft.storageError && (
+        <div className={`${styles.notice} ${styles.errorNotice}`} role='alert'>
+          <p>{draft.storageError}</p>
+          <div className={styles.row}>
+            <button className={styles.button} type='button' onClick={draft.persist}>
+              Retry local save
+            </button>
+            <button className={styles.button} type='button' onClick={downloadBackup}>
+              <FiDownload />
+              Download backup
+            </button>
+          </div>
+        </div>
+      )}
+      {message && (
+        <div
+          className={`${styles.notice} ${message.type === 'error' ? styles.errorNotice : ''}`}
+          role={message.type === 'error' ? 'alert' : 'status'}
+        >
+          <p>{message.text}</p>
+          <button
+            className={styles.iconButton}
+            type='button'
+            onClick={() => setMessage(null)}
+            aria-label='Dismiss message'
+          >
+            <FiX />
+          </button>
+        </div>
+      )}
+
+      {!draft.ready ? (
+        <div className={styles.loading}>
+          {draft.loadError ? (
+            <>
+              <p role='alert'>{draft.loadError}</p>
+              <button type='button' className={styles.button} onClick={draft.retryLoad}>
+                Retry loading article
+              </button>
+            </>
+          ) : (
+            'Loading your article…'
+          )}
+        </div>
+      ) : (
+        <div className={`${styles.body} ${settingsOpen && !focusMode && !mobile ? styles.withSettings : ''}`}>
+          <div className={styles.canvas}>
+            <div className={`${styles.paper} ${viewMode === 'split' ? styles.splitPaper : ''}`}>
+              <fieldset
+                className={styles.settingsFields}
+                disabled={disabled}
+                hidden={viewMode === 'preview' || focusMode}
+              >
+                <legend className='sr-only'>Writing tools</legend>
+                <MarkdownToolbar
+                  studio
+                  getEditorView={getEditorView}
+                  markdown={form.markdown}
+                  onHelp={() => setHelpOpen(true)}
+                  showLineNumbers={showLineNumbers}
+                  onToggleLineNumbers={() => setShowLineNumbers((value) => !value)}
+                  extraActions={
+                    <>
+                      <button
+                        type='button'
+                        disabled={!form.markdown.trim()}
+                        onClick={() => setRephraseTarget({ text: form.markdown, whole: true })}
+                      >
+                        <LuSparkles />
+                        Rephrase article
+                      </button>
+                      <button type='button' onClick={() => setAIConfigOpen(true)}>
+                        <FiSettings />
+                        AI settings
+                      </button>
+                      <button type='button' onClick={downloadBackup}>
+                        <FiDownload />
+                        Download draft backup
+                      </button>
+                    </>
+                  }
+                />
+              </fieldset>
+              <div className={styles.document} id='article-form'>
+                <span className={styles.eyebrow}>
+                  {viewMode === 'preview'
+                    ? 'Reader preview'
+                    : draft.published
+                      ? draft.dirty
+                        ? 'Published · Unpublished edits'
+                        : 'Published article'
+                      : 'Working draft'}
+                </span>
+                <label htmlFor='article-title' className='sr-only'>
+                  Article title
+                </label>
+                <textarea
+                  ref={titleRef}
+                  id='article-title'
+                  className={styles.title}
+                  value={form.title}
+                  onChange={(event) => update('title', event.target.value)}
+                  placeholder='Give your idea a title…'
+                  rows={1}
+                  maxLength={180}
+                  disabled={disabled}
+                  readOnly={viewMode === 'preview'}
+                  aria-invalid={Boolean(errors.title)}
+                  aria-describedby={errors.title ? 'error-title' : undefined}
+                />
+                {errors.title && (
+                  <p className={styles.error} id='error-title'>
+                    {errors.title}
+                  </p>
+                )}
+                <div className={viewMode === 'split' ? styles.split : ''}>
+                  <div className={styles.editor} hidden={viewMode === 'preview'}>
+                    <CodeMirror
+                      value={form.markdown}
+                      theme={resolvedTheme === 'dark' ? 'dark' : 'light'}
+                      extensions={extensions}
+                      editable={!disabled}
+                      placeholder='Start with the reader’s problem. What do you want them to understand?'
+                      basicSetup={{
+                        lineNumbers: showLineNumbers,
+                        foldGutter: false,
+                        highlightActiveLine: false,
+                        highlightActiveLineGutter: false,
+                        highlightSelectionMatches: false,
+                        bracketMatching: true,
+                        closeBrackets: true,
+                        autocompletion: true
+                      }}
+                      onCreateEditor={(view) => {
+                        editorRef.current = view;
+                      }}
+                      onChange={(value) => update('markdown', value)}
+                    />
+                    {!disabled && (
+                      <FrostedSelectionBubble
+                        getEditorView={getEditorView}
+                        onAIRephrase={({ text, from, to }) => setRephraseTarget({ text, from, to, whole: false })}
+                      />
+                    )}
+                    {errors.markdown && (
+                      <p id='error-markdown' className={styles.error}>
+                        {errors.markdown}
+                      </p>
+                    )}
+                  </div>
+                  {viewMode !== 'edit' && preview}
+                </div>
+              </div>
+              <footer className={styles.footer}>
+                <span>
+                  {wordCount.toLocaleString()} words · {Math.max(1, Math.ceil(wordCount / 220))} min read
+                </span>
+                <span>
+                  {draft.published
+                    ? 'Edits stay on this device until you publish changes'
+                    : 'Private until you publish'}
+                </span>
+              </footer>
+            </div>
+            <div className={styles.underCanvas}>
+              <p id='article-body-help' className={styles.hint}>
+                Markdown supported · Ctrl/⌘ B for bold · Ctrl/⌘ I for italic
+              </p>
+              {draft.published && draft.liveSlug && (
+                <Link className={styles.link} href={`/blog/${draft.liveSlug}`} target='_blank' rel='noreferrer'>
+                  View live article ↗
+                </Link>
+              )}
+            </div>
+          </div>
+          {settingsOpen && !focusMode && !mobile && (
+            <aside className={styles.inspector} aria-label='Article settings'>
+              <div className={styles.settingsHeading}>
+                <h2>Article settings</h2>
+                <button
+                  className={styles.iconButton}
+                  type='button'
+                  onClick={() => setSettingsOpen(false)}
+                  aria-label='Close article settings'
+                >
+                  <FiX />
+                </button>
+              </div>
+              {inspector}
+            </aside>
+          )}
+        </div>
+      )}
+
+      <StudioDialog
+        open={mobile && settingsOpen && !focusMode}
+        title='Article settings'
+        drawer
+        onClose={() => setSettingsOpen(false)}
       >
-        {/* Left Column: Concept 4 Interactive Drafts Deck */}
-        {!zenMode && (
-          <aside className='min-w-0 xl:sticky xl:top-6'>
+        {mobile && inspector}
+      </StudioDialog>
+      <StudioDialog open={libraryOpen} title='Your articles' drawer onClose={() => setLibraryOpen(false)}>
+        {libraryOpen && (
+          <>
             <ArticleLibrary
               articles={taxonomy.articles}
               loading={taxonomyLoading}
               message={taxonomyMessage}
-              activeArticleId={editingArticleId}
+              activeArticleId={articleId}
             />
-          </aside>
+            {taxonomyMessage && (
+              <button type='button' className={styles.button} onClick={() => setTaxonomyRevision((value) => value + 1)}>
+                Retry loading articles
+              </button>
+            )}
+            <p className={styles.hint}>Your edits are backed up on this device when you switch articles.</p>
+          </>
         )}
-
-        {/* Center Column: Pure Editor Canvas */}
-        <div className='min-w-0'>
-          {/* Header pill with title & viewMode switcher */}
-          <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
-            <div className='flex items-center gap-2.5'>
-              <div className='flex items-center gap-2 rounded-lg border border-slate-200/80 bg-slate-50/80 px-3 py-1.5 font-mono text-xs font-semibold text-slate-700 shadow-2xs dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-200'>
-                <FiFileText className='size-3.5 text-emerald-600 dark:text-emerald-400' />
-                <span className='max-w-[180px] sm:max-w-[320px] truncate'>
-                  {form.title ? `${form.title}.md` : 'Untitled Article.md'}
-                </span>
-                <span
-                  className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold ${
-                    editingPublished
-                      ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
-                      : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
-                  }`}
-                >
-                  <span
-                    className={`size-1.5 rounded-full ${
-                      editingPublished ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'
-                    }`}
-                  />
-                  {editingPublished ? 'Published' : 'Draft'}
-                </span>
-              </div>
-            </div>
-
-            <div className='flex items-center gap-2'>
-              {/* Zen Mode Button */}
-              <button
-                type='button'
-                onClick={() => setZenMode((prev) => !prev)}
-                aria-pressed={zenMode}
-                className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 font-Monda text-xs font-semibold transition ${
-                  zenMode
-                    ? 'border-emerald-500 bg-emerald-500/10 text-emerald-700 shadow-2xs dark:border-emerald-500/40 dark:bg-emerald-500/20 dark:text-emerald-300'
-                    : 'border-slate-200 bg-slate-50/80 text-slate-700 hover:border-emerald-500 hover:text-emerald-700 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300 dark:hover:border-emerald-500/50 dark:hover:text-emerald-300'
-                }`}
-                title={zenMode ? 'Exit Zen Mode (Esc)' : 'Enter Zen distraction-free writing mode'}
-              >
-                {zenMode ? <LuMinimize2 className='size-3.5' /> : <LuMaximize2 className='size-3.5' />}
-                <span className='hidden sm:inline'>{zenMode ? 'Exit Zen' : 'Zen'}</span>
-              </button>
-
-              {/* AI Rephrase Whole Article Button -- selection has its own trigger via FrostedSelectionBubble */}
-              <button
-                type='button'
-                onClick={() => setRephraseTarget({ text: form.markdown, whole: true })}
-                disabled={!form.markdown.trim()}
-                className='flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50/80 px-2.5 py-1.5 font-Monda text-xs font-semibold text-slate-700 shadow-2xs transition hover:border-emerald-500 hover:text-emerald-700 hover:bg-emerald-50/20 disabled:opacity-50 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300 dark:hover:border-emerald-500/50 dark:hover:text-emerald-300'
-                title='AI Rephrase the whole article (select text instead to rephrase just that part)'
-              >
-                <LuSparkles className='size-3.5 text-emerald-600 dark:text-emerald-400' />
-                <span className='hidden sm:inline'>AI Rephrase</span>
-              </button>
-
-              {/* AI Configure Button */}
-              <button
-                type='button'
-                onClick={() => setAiModalOpen(true)}
-                className='flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50/80 px-2.5 py-1.5 font-Monda text-xs font-semibold text-slate-700 shadow-2xs transition hover:border-purple-500 hover:text-purple-700 hover:bg-purple-50/20 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300 dark:hover:border-purple-500/50 dark:hover:text-purple-300'
-                title='Configure AI Assistant Engine & Writing Tone'
-              >
-                <LuSparkles className='size-3.5 text-purple-600 dark:text-purple-400' />
-                <span className='hidden sm:inline'>AI Config</span>
-              </button>
-
-              {/* View Mode Switcher */}
-              <div
-                className='flex items-center rounded-lg border border-slate-200 bg-slate-100/80 p-0.5 dark:border-slate-800 dark:bg-slate-900'
-                role='group'
-                aria-label='Editor view mode'
-              >
-                {[
-                  { id: 'edit', label: 'Edit', icon: FiCode },
-                  { id: 'split', label: 'Split', icon: FiColumns },
-                  { id: 'preview', label: 'Preview', icon: FiEye }
-                ].map(({ id, label, icon: Icon }) => (
-                  <button
-                    key={id}
-                    type='button'
-                    onClick={() => setViewMode(id)}
-                    aria-pressed={viewMode === id}
-                    className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 font-Monda text-xs font-semibold capitalize transition ${
-                      viewMode === id
-                        ? 'bg-white text-emerald-700 shadow-2xs dark:bg-emerald-600 dark:text-white'
-                        : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100'
-                    }`}
-                  >
-                    <Icon className='size-3.5' />
-                    <span>{label}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Editor & Preview section */}
-          <section
-            className={`mt-3.5 grid min-w-0 gap-6 ${viewMode === 'split' ? 'lg:grid-cols-2' : 'grid-cols-1'}`}
-            data-color-mode={editorTheme}
-          >
-            {viewMode !== 'preview' && (
-              <div className='min-w-0'>
-                <div
-                  onKeyDownCapture={handleEditorShortcut}
-                  className='relative overflow-hidden rounded-xl border border-slate-300 shadow-sm dark:border-slate-700'
-                >
-                  {/* Permanent Top-Level Formatting Bar */}
-                  <MarkdownToolbar
-                    getEditorView={getEditorView}
-                    markdown={form.markdown}
-                    onHelp={() => setHelpOpen(true)}
-                    showLineNumbers={showLineNumbers}
-                    onToggleLineNumbers={() => setShowLineNumbers((current) => !current)}
-                    excludeFloatingTools={true}
-                  />
-
-                  {/* Frosted Floating Selection Bubble */}
-                  <FrostedSelectionBubble
-                    getEditorView={getEditorView}
-                    onAIRephrase={({ text, from, to }) => setRephraseTarget({ text, from, to, whole: false })}
-                  />
-
-                  <CodeMirror
-                    value={form.markdown}
-                    minHeight={zenMode ? '720px' : '650px'}
-                    maxHeight={zenMode ? '85vh' : '650px'}
-                    theme={editorTheme}
-                    extensions={editorExtensions}
-                    basicSetup={{
-                      lineNumbers: showLineNumbers,
-                      foldGutter: true,
-                      highlightActiveLine: true,
-                      highlightSelectionMatches: true,
-                      bracketMatching: true,
-                      closeBrackets: true,
-                      autocompletion: true
-                    }}
-                    onCreateEditor={(view) => {
-                      editorViewRef.current = view;
-                    }}
-                    onChange={(value) => update('markdown', value || '')}
-                  />
-
-                  {/* Ambient Circular Word & Reading Pace Meter */}
-                  <AmbientWordMeter wordCount={wordCount} charCount={form.markdown.length} />
-                </div>
-                <FieldError>{errors.markdown}</FieldError>
-              </div>
-            )}
-
-            {viewMode !== 'edit' && (
-              <div className='min-w-0'>
-                <div
-                  className={`overflow-y-auto rounded-xl border border-slate-300 bg-white p-5 shadow-sm dark:border-slate-600 dark:bg-slate-900 md:p-8 ${
-                    zenMode ? 'h-[720px]' : 'h-[650px]'
-                  }`}
-                >
-                  <ArticlePreview
-                    mdxSource={`${form.markdown}${
-                      form.coverCredit
-                        ? `\n\n---\n\n<small>Cover photo by [${form.coverCredit.photographer}](${form.coverCredit.profileUrl}) on [${form.coverCredit.provider}](${form.coverCredit.providerUrl}).</small>`
-                        : ''
-                    }`}
-                  />
-                </div>
-              </div>
-            )}
-          </section>
-
-          {message && (
-            <div
-              className={`mt-6 rounded-lg px-4 py-3 text-sm ${
-                message.type === 'success'
-                  ? 'bg-green-50 text-green-900 dark:bg-green-950/40 dark:text-green-100'
-                  : 'bg-red-50 text-red-900 dark:bg-red-950/40 dark:text-red-100'
-              }`}
-            >
-              <p>{message.text}</p>
-              {message.article?.url && (
-                <p className='mt-2 flex flex-wrap gap-4'>
-                  <a href={message.article.url} target='_blank' rel='noreferrer' className='font-medium underline'>
-                    Open in Notion
-                  </a>
-                  {message.article.published && (
-                    <Link href={`/blog/${message.article.slug}`} className='font-medium underline'>
-                      Open portfolio article
-                    </Link>
-                  )}
-                </p>
-              )}
-            </div>
-          )}
-
-          {/* Bottom Action Bar for mobile/tablet (< xl) */}
-          <div className='sticky bottom-4 z-20 mt-8 flex flex-col gap-3 rounded-xl border border-slate-200 bg-white/95 p-4 shadow-xl backdrop-blur dark:border-slate-700 dark:bg-slate-900/95 sm:flex-row sm:justify-end xl:hidden'>
+      </StudioDialog>
+      <StudioDialog
+        open={publishAction !== null}
+        title={
+          publishAction === false
+            ? 'Move this article to draft?'
+            : draft.published
+              ? 'Publish these changes?'
+              : 'Ready for your readers?'
+        }
+        onClose={() => setPublishAction(null)}
+        busy={submitting}
+        actions={
+          <>
             <button
+              className={styles.button}
               type='button'
               disabled={submitting}
-              onClick={() => save(false)}
-              className='min-h-12 rounded-lg border border-green-700 px-6 py-3 font-Monda font-semibold text-green-800 hover:bg-green-50 disabled:opacity-60 dark:border-green-500 dark:text-green-300 dark:hover:bg-green-950/40'
+              onClick={() => setPublishAction(null)}
             >
-              {submitting
-                ? 'Saving…'
-                : editingArticleId
-                  ? editingPublished
-                    ? 'Move to draft'
-                    : 'Update draft'
-                  : 'Save as Notion draft'}
+              Keep writing
             </button>
-            <button
-              type='button'
-              disabled={submitting}
-              onClick={() => save(true)}
-              className='min-h-12 rounded-lg bg-green-700 px-6 py-3 font-Monda font-semibold text-white hover:bg-green-800 disabled:opacity-60 dark:bg-green-600 dark:hover:bg-green-500'
-            >
+            <button className={styles.primary} type='button' disabled={submitting} onClick={() => save(publishAction)}>
               {submitting
-                ? 'Publishing…'
-                : editingArticleId && editingPublished
-                  ? 'Update published article'
-                  : editingArticleId
-                    ? 'Publish draft'
+                ? 'Saving to Notion…'
+                : publishAction === false
+                  ? 'Move to draft'
+                  : draft.published
+                    ? 'Publish changes'
                     : 'Publish article'}
             </button>
-          </div>
-        </div>
-
-        {/* Right Column: Concept A Publishing & Media Inspector */}
-        {!zenMode && (
-          <aside className='min-w-0 xl:sticky xl:top-6'>
-            <ArticleInspector
-              form={form}
-              update={update}
-              errors={errors}
-              slugEdited={slugEdited}
-              setSlugEdited={setSlugEdited}
-              slugify={slugify}
-              taxonomy={taxonomy}
-              taxonomyMessage={taxonomyMessage}
-              articleLoading={articleLoading}
-              submitting={submitting}
-              editingArticleId={editingArticleId}
-              editingPublished={editingPublished}
-              save={save}
-              tags={tags}
-            />
-          </aside>
+          </>
+        }
+      >
+        <p className={styles.reviewTitle}>{form.title}</p>
+        <div className={styles.url}>/blog/{form.slug}</div>
+        <p>
+          {publishAction === false
+            ? 'This removes the article from the public portfolio and saves the current content as a Notion draft.'
+            : draft.published
+              ? 'This replaces the public article with the version you just reviewed.'
+              : 'This will make your article available on your public portfolio.'}
+        </p>
+        <p className={styles.hint}>
+          {wordCount.toLocaleString()} words · {form.category} · {form.publicationDate}
+        </p>
+        {message?.type === 'error' && (
+          <p className={styles.error} role='alert'>
+            {message.text}
+          </p>
         )}
-      </div>
-      <ArticleEditorHelp open={helpOpen} onClose={() => setHelpOpen(false)} />
-      <AIConfigModal isOpen={aiModalOpen} onClose={() => setAiModalOpen(false)} />
-      <AIRephraseModal
-        isOpen={!!rephraseTarget}
-        text={rephraseTarget?.text || ''}
-        scopeLabel={rephraseTarget?.whole ? 'whole article' : 'selected text'}
-        onApply={applyRephraseResult}
-        onClose={() => setRephraseTarget(null)}
-      />
-    </main>
+      </StudioDialog>
+      {helpOpen && <ArticleEditorHelp open={helpOpen} onClose={() => setHelpOpen(false)} />}
+      {aiConfigOpen && <AIConfigModal isOpen={aiConfigOpen} onClose={() => setAIConfigOpen(false)} />}
+      {rephraseTarget && (
+        <AIRephraseModal
+          isOpen
+          text={rephraseTarget.text}
+          scopeLabel={rephraseTarget.whole ? 'whole article' : 'selected text'}
+          onApply={applyRephrase}
+          onClose={() => setRephraseTarget(null)}
+        />
+      )}
+    </section>
   );
-};
+}
 
-export default ArticleEditor;
+export default function ArticleEditor(props) {
+  const router = useRouter();
+  if (!router.isReady) return <p className={styles.loading}>Opening Article Studio…</p>;
+  const articleId = typeof router.query.id === 'string' ? router.query.id : '';
+  // A new document gets its own editor history, backup key, and pending network requests.
+  return <ArticleWorkspace key={`${props.adminEmail}:${articleId || 'new'}`} articleId={articleId} {...props} />;
+}

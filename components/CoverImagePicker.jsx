@@ -9,10 +9,12 @@ const CoverImagePicker = ({
   onUrlChange,
   onUploadChange,
   onCreditChange,
-  error
+  error,
+  compact = false
 }) => {
   const inputRef = useRef(null);
   const [tab, setTab] = useState('link');
+  const [sourcesOpen, setSourcesOpen] = useState(!compact);
   const [query, setQuery] = useState('software architecture');
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -134,7 +136,21 @@ const CoverImagePicker = ({
       </div>
 
       {/* Tabs & Source Controls */}
-      <div className='overflow-hidden rounded-xl border border-slate-200/90 bg-white dark:border-slate-800 dark:bg-slate-900/80'>
+      {compact && (
+        <button
+          type='button'
+          aria-expanded={sourcesOpen}
+          onClick={() => setSourcesOpen((open) => !open)}
+          className='text-xs text-emerald-700 underline underline-offset-4 dark:text-emerald-300'
+        >
+          {sourcesOpen ? 'Hide cover options' : preview ? 'Change cover artwork' : 'Choose cover artwork'}
+        </button>
+      )}
+      {compact && !sourcesOpen && error && <p className='text-xs text-red-700 dark:text-red-300'>{error}</p>}
+      <div
+        hidden={!sourcesOpen}
+        className='overflow-hidden rounded-xl border border-slate-200/90 bg-white dark:border-slate-800 dark:bg-slate-900/80'
+      >
         <div className='flex border-b border-slate-100 bg-slate-50/60 p-1 dark:border-slate-800 dark:bg-slate-950/40'>
           {[
             ['link', FiLink, 'Link'],
@@ -162,6 +178,7 @@ const CoverImagePicker = ({
             <div className='space-y-2'>
               <input
                 type='url'
+                aria-label='Cover image URL'
                 value={coverUrl}
                 onChange={(event) => {
                   onUploadChange(null);
