@@ -31,7 +31,7 @@ export const SettingsModal = ({ isOpen, onClose }) => {
   return (
     <div className='fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-xs'>
       <div
-        className='flex max-h-[85vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-slate-800 dark:bg-slate-900 text-slate-900 dark:text-white'
+        className='flex h-[min(46rem,calc(100vh-2rem))] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-900 shadow-2xl dark:border-slate-800 dark:bg-slate-900 dark:text-white'
         role='dialog'
         aria-modal='true'
         aria-labelledby='settings-modal-title'
@@ -73,8 +73,10 @@ export const SettingsModal = ({ isOpen, onClose }) => {
           })}
         </div>
 
-        {activeTab === 'ai' && <AiProviderSettingsPanel />}
-        {activeTab === 'books' && <GoogleBooksSettingsPanel />}
+        <div className='flex min-h-0 flex-1 flex-col'>
+          {activeTab === 'ai' && <AiProviderSettingsPanel />}
+          {activeTab === 'books' && <GoogleBooksSettingsPanel />}
+        </div>
       </div>
     </div>
   );
