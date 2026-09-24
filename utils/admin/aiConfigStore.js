@@ -15,8 +15,7 @@ export const PROVIDER_DEFAULTS = {
   anthropic: { baseUrl: 'https://api.anthropic.com/v1', model: 'claude-3-5-sonnet-latest' },
   ollama: { baseUrl: 'http://localhost:11434/v1', model: 'deepseek-r1:14b' },
   mistral: { baseUrl: 'https://api.mistral.ai/v1', model: 'mistral-large-latest' },
-  gemini: { baseUrl: 'https://generativelanguage.googleapis.com/v1beta/openai', model: 'gemini-2.0-flash' },
-  builtin: { baseUrl: '', model: 'heuristic-transformer' }
+  gemini: { baseUrl: 'https://generativelanguage.googleapis.com/v1beta/openai', model: 'gemini-2.0-flash' }
 };
 
 export const PROVIDER_IDS = Object.keys(PROVIDER_DEFAULTS);
@@ -25,11 +24,11 @@ const emptyProviderBlock = (id) => ({
   apiKey: '',
   baseUrl: PROVIDER_DEFAULTS[id].baseUrl,
   model: PROVIDER_DEFAULTS[id].model,
-  enabled: id === 'builtin',
+  enabled: false,
   // Only set by a successful "Test connection" -- entering a key just means
   // it's present, not that it's actually valid, so the two are tracked
   // separately rather than treating "has text" as "configured".
-  validated: id === 'builtin'
+  validated: false
 });
 
 const emptyProviders = () =>
@@ -78,6 +77,7 @@ export const normalizeAiConfig = (raw) => {
     return {
       ...DEFAULT_AI_CONFIG,
       ...raw,
+      activeProvider: providers[raw.activeProvider] ? raw.activeProvider : DEFAULT_AI_CONFIG.activeProvider,
       providers,
       personas: personas || DEFAULT_AI_CONFIG.personas
     };
@@ -92,7 +92,7 @@ export const normalizeAiConfig = (raw) => {
         apiKey: raw.apiKey || '',
         baseUrl: raw.baseUrl || providers[raw.provider].baseUrl,
         model: raw.model || providers[raw.provider].model,
-        enabled: raw.provider === 'builtin' || Boolean(raw.apiKey) || raw.provider === 'ollama'
+        enabled: Boolean(raw.apiKey) || raw.provider === 'ollama'
       };
     }
     return {
@@ -105,7 +105,12 @@ export const normalizeAiConfig = (raw) => {
     };
   }
 
-  return { ...DEFAULT_AI_CONFIG, ...raw, personas: personas || DEFAULT_AI_CONFIG.personas };
+  return {
+    ...DEFAULT_AI_CONFIG,
+    ...raw,
+    activeProvider: PROVIDER_DEFAULTS[raw.activeProvider] ? raw.activeProvider : DEFAULT_AI_CONFIG.activeProvider,
+    personas: personas || DEFAULT_AI_CONFIG.personas
+  };
 };
 
 export const loadAiConfig = () => {
@@ -132,7 +137,9 @@ export const saveAiConfig = (config) => {
 // config.provider/apiKey/baseUrl/model directly should use this instead.
 export const getActiveProviderCreds = (config) => {
   const provider =
-    config.activeProvider && config.providers?.[config.activeProvider] ? config.activeProvider : 'builtin';
+    config.activeProvider && config.providers?.[config.activeProvider]
+      ? config.activeProvider
+      : DEFAULT_AI_CONFIG.activeProvider;
   const block = config.providers?.[provider] || emptyProviderBlock(provider);
   return {
     provider,

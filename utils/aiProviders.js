@@ -84,8 +84,6 @@ const describeFailedResponse = async (response, requestedHost) => {
 };
 
 export const listModels = async (provider, { apiKey, baseUrl } = {}) => {
-  if (provider === 'builtin') return ['heuristic-transformer'];
-
   const resolvedBaseUrl = resolveBaseUrl(provider, baseUrl);
 
   if (OPENAI_COMPATIBLE.has(provider)) {

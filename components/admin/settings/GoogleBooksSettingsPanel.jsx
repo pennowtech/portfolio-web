@@ -21,8 +21,8 @@ export const GoogleBooksSettingsPanel = ({ onSaved }) => {
   };
 
   return (
-    <div className='flex flex-col'>
-      <div className='p-4 space-y-3 text-xs'>
+    <div className='flex min-h-0 flex-1 flex-col'>
+      <div className='min-h-0 flex-1 overflow-y-auto p-4 space-y-3 text-xs'>
         <div>
           <label className='block font-semibold text-slate-700 dark:text-slate-200 mb-1'>Google Books API Key</label>
           <div className='relative'>

@@ -12,29 +12,6 @@ const OUTPUT_CONTRACT =
   'Respond with ONLY the rewritten text in clean Markdown -- no preamble, no explanation, ' +
   'no "Here is the rewritten text" framing, and no wrapping code fence around the whole answer.';
 
-// No network call: a small set of mechanical, deterministic rewrites so the
-// "Built-in Rules" provider is honest about what it can do without an API key,
-// rather than pretending to be a real model.
-const builtinRewrite = (text, personaIds) => {
-  let result = text;
-  if (personaIds.includes('brevity') || personaIds.includes('concise')) {
-    result = result
-      .replace(/in order to/gi, 'to')
-      .replace(/due to the fact that/gi, 'because')
-      .replace(/at this point in time/gi, 'now')
-      .replace(/utilize/gi, 'use')
-      .replace(/\butilizes\b/gi, 'uses');
-  }
-  if (personaIds.includes('grammar') || personaIds.includes('clarity')) {
-    result = result
-      .split('\n')
-      .map((line) => (line.trim() ? line.charAt(0).toUpperCase() + line.slice(1) : line))
-      .join('\n');
-    if (result.trim() && !/[.!?:`)]$/.test(result.trim())) result = `${result.trim()}.`;
-  }
-  return result;
-};
-
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
   if (req.method !== 'POST') return res.status(405).json({ ok: false, message: 'Method not allowed.' });
@@ -59,9 +36,8 @@ export default async function handler(req, res) {
 
   const directive = buildCombinedInstruction(cleanPersonaIds, customPrompt || '');
 
-  if (!provider || provider === 'builtin') {
-    return res.status(200).json({ ok: true, result: builtinRewrite(text, cleanPersonaIds) });
-  }
+  if (!provider || provider === 'builtin')
+    return res.status(400).json({ ok: false, message: 'Configure an AI provider before using AI Rephrase.' });
 
   const combinedSystemPrompt = [systemPrompt?.trim(), directive, OUTPUT_CONTRACT].filter(Boolean).join('\n\n');
 
