@@ -579,6 +579,8 @@ async function saveCoverImage(coverUrl, title) {
 function generateBookPrompt(title) {
   return `You are an expert literary analyst. Provide comprehensive metadata for the book "${title}".
 
+CRITICAL LANGUAGE REQUIREMENT: Regardless of the original language of the book (even for non-English books such as German, French, Spanish, Japanese, etc.), the "description", "whyRead", "keyThemes", "targetAudience", and "legacy" fields MUST ALWAYS be written in fluent English.
+
 Return strict JSON matching this schema:
 {
   "title": "${title}",
@@ -587,17 +589,14 @@ Return strict JSON matching this schema:
   "genre": "Primary genre or genres separated by commas",
   "publisher": "Original publisher or 'Unknown'",
   "pages": "Approximate page count as number or 'Unknown'",
-  "language": "Primary language",
+  "language": "Primary language (e.g., 'German', 'English', etc.)",
   "isbn13": "ISBN-13 code or null",
-  "description": "Brief overview of the book (2-4 sentences)",
-  "keyThemes": ["Theme 1", "Theme 2", "Theme 3"],
-  "targetAudience": ["Primary audience", "Secondary audience"],
+  "description": "Brief overview/synopsis of the book written in ENGLISH (2-4 sentences)",
+  "whyRead": "Why one should read this book, the concrete value and ROI it provides, and whether it is truly worth reading written in ENGLISH (2-3 sentences)",
+  "keyThemes": ["Theme 1 in English", "Theme 2 in English", "Theme 3 in English"],
+  "targetAudience": ["Primary audience in English", "Secondary audience in English"],
   "notableQuotes": ["Famous quote from the book"],
-  "awards": "Notable awards or 'None'",
-  "sales": "Approximate sales figures or 'Unknown'",
-  "series": "Series name if applicable or null",
-  "editions": "Notable editions or null",
-  "legacy": "Cultural impact or influence (1-2 sentences)",
+  "legacy": "Cultural impact or influence written in English (1-2 sentences)",
   "similarBooks": ["Book 1 similar to this", "Book 2 similar to this"]
 }
 
@@ -718,13 +717,10 @@ function validateBookEntry(entry, requestedTitle) {
     language: 'Unknown',
     isbn13: null,
     description: 'No description available',
+    whyRead: null,
     keyThemes: [],
     targetAudience: [],
     notableQuotes: [],
-    awards: null,
-    sales: null,
-    series: null,
-    editions: null,
     legacy: null,
     similarBooks: [],
     coverUrl: null,
@@ -743,10 +739,6 @@ function validateBookEntry(entry, requestedTitle) {
     'publisher',
     'language',
     'description',
-    'awards',
-    'sales',
-    'series',
-    'editions',
     'legacy'
   ].forEach((f) => {
     if (typeof result[f] !== 'string' || result[f].trim() === '') {

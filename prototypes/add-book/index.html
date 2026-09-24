@@ -1,0 +1,989 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Add Book — Five Interactive Artefacts</title>
+    <style>
+      :root {
+        --ink: #17201b;
+        --muted: #607066;
+        --line: #d8e1da;
+        --paper: #f4f6f2;
+        --panel: #fff;
+        --forest: #176a46;
+        --forest2: #0e4c32;
+        --amber: #e89220;
+        --soft: #e9f4ed;
+        --danger: #b43b3b;
+        --shadow: 0 18px 50px rgba(23, 43, 31, 0.12);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font:
+          14px/1.45 Inter,
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          sans-serif;
+      }
+      button,
+      input,
+      select,
+      textarea {
+        font: inherit;
+      }
+      button {
+        cursor: pointer;
+      }
+      .shell {
+        min-height: 100vh;
+      }
+      .top {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 16px clamp(18px, 4vw, 54px);
+        border-bottom: 1px solid var(--line);
+        background: rgba(244, 246, 242, 0.92);
+        backdrop-filter: blur(14px);
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        font-weight: 850;
+      }
+      .mark {
+        display: grid;
+        place-items: center;
+        width: 34px;
+        height: 34px;
+        border: 2px solid var(--forest);
+        border-radius: 9px;
+        color: var(--forest);
+      }
+      .prototype {
+        font-size: 11px;
+        color: var(--muted);
+        font-weight: 700;
+      }
+      .tabs {
+        display: flex;
+        gap: 6px;
+        overflow: auto;
+        padding: 0 2px;
+      }
+      .tab {
+        white-space: nowrap;
+        border: 1px solid transparent;
+        border-radius: 9px;
+        background: transparent;
+        padding: 8px 11px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 750;
+      }
+      .tab[aria-selected='true'] {
+        background: var(--ink);
+        color: white;
+      }
+      .main {
+        width: min(1180px, calc(100% - 32px));
+        margin: 32px auto 64px;
+      }
+      .intro {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        gap: 30px;
+        margin-bottom: 24px;
+      }
+      .intro h1 {
+        margin: 0;
+        font-size: clamp(28px, 4vw, 48px);
+        line-height: 1;
+        letter-spacing: -0.035em;
+      }
+      .intro p {
+        max-width: 56ch;
+        margin: 10px 0 0;
+        color: var(--muted);
+      }
+      .count {
+        font-weight: 800;
+        color: var(--forest);
+      }
+      .recommendation {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        margin: -6px 0 22px;
+        padding: 14px 16px;
+        border: 1px solid #acd1b8;
+        border-radius: 12px;
+        background: var(--soft);
+        color: #214c34;
+      }
+      .recommendation strong {
+        color: var(--forest2);
+      }
+      .sourcebar {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin-bottom: 18px;
+      }
+      .source {
+        min-height: 54px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fafcf9;
+        color: var(--muted);
+        font-weight: 800;
+      }
+      .source.on {
+        border-color: var(--forest);
+        background: var(--soft);
+        color: var(--forest2);
+      }
+      .advanced {
+        display: none;
+        margin-top: 14px;
+        padding-top: 14px;
+        border-top: 1px solid var(--line);
+      }
+      .advanced.open {
+        display: grid;
+      }
+      .artefact {
+        display: none;
+      }
+      .artefact.active {
+        display: block;
+        animation: enter 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      @keyframes enter {
+        from {
+          opacity: 0.4;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .frame {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: var(--panel);
+        box-shadow: var(--shadow);
+      }
+      .frame-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 18px 22px;
+        border-bottom: 1px solid var(--line);
+      }
+      .frame-head h2 {
+        margin: 0;
+        font-size: 18px;
+      }
+      .frame-head p {
+        margin: 2px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .body {
+        padding: 24px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1.35fr 0.65fr;
+        gap: 28px;
+      }
+      .fields {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .field {
+        display: grid;
+        gap: 6px;
+      }
+      .field.full {
+        grid-column: 1/-1;
+      }
+      label {
+        font-size: 12px;
+        font-weight: 800;
+        color: #33473a;
+      }
+      .input {
+        width: 100%;
+        min-height: 44px;
+        border: 1px solid #cbd7ce;
+        border-radius: 10px;
+        background: white;
+        padding: 10px 12px;
+        color: var(--ink);
+        outline: 0;
+      }
+      .input:focus {
+        border-color: var(--forest);
+        box-shadow: 0 0 0 3px rgba(23, 106, 70, 0.12);
+      }
+      textarea.input {
+        min-height: 92px;
+        resize: vertical;
+      }
+      .actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 22px;
+      }
+      .btn {
+        min-height: 44px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: white;
+        padding: 0 16px;
+        font-weight: 800;
+        color: var(--ink);
+      }
+      .btn.primary {
+        border-color: var(--forest);
+        background: var(--forest);
+        color: white;
+      }
+      .btn.primary:hover {
+        background: var(--forest2);
+      }
+      .btn.amber {
+        border-color: #ca7913;
+        background: var(--amber);
+        color: #241707;
+      }
+      .preview {
+        position: sticky;
+        top: 92px;
+        align-self: start;
+        border-radius: 14px;
+        background: #14231b;
+        color: white;
+        padding: 18px;
+        min-height: 330px;
+      }
+      .cover {
+        width: 128px;
+        aspect-ratio: 2/3;
+        border-radius: 8px;
+        background: linear-gradient(145deg, #1c7651, #0e2b1e);
+        box-shadow: -8px 12px 22px rgba(0, 0, 0, 0.34);
+        padding: 14px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .cover b {
+        font-size: 16px;
+        line-height: 1.1;
+      }
+      .preview h3 {
+        margin: 20px 0 3px;
+      }
+      .preview p {
+        margin: 0;
+        color: #c8d5cc;
+        font-size: 12px;
+      }
+      .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 12px;
+      }
+      .chip {
+        border: 1px solid #bdd6c5;
+        border-radius: 999px;
+        background: var(--soft);
+        padding: 5px 9px;
+        color: #28523a;
+        font-size: 11px;
+        font-weight: 750;
+      }
+      .searchline {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+      }
+      .lookup {
+        padding: 34px;
+        background: linear-gradient(135deg, #e6f3ea, #fff 65%);
+      }
+      .result {
+        display: none;
+        margin-top: 20px;
+        padding: 18px;
+        border: 1px solid #a9cdb6;
+        border-radius: 14px;
+        background: white;
+      }
+      .result.show {
+        display: grid;
+        grid-template-columns: 92px 1fr auto;
+        gap: 18px;
+        align-items: center;
+      }
+      .mini-cover {
+        height: 128px;
+        border-radius: 7px;
+        background: linear-gradient(145deg, #c47b20, #5b2c13);
+        color: white;
+        padding: 10px;
+        font-weight: 850;
+      }
+      .steps {
+        display: flex;
+        gap: 0;
+        margin-bottom: 24px;
+      }
+      .step {
+        flex: 1;
+        border-bottom: 3px solid var(--line);
+        padding: 0 4px 9px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 800;
+      }
+      .step.on {
+        border-color: var(--forest);
+        color: var(--forest);
+      }
+      .step-panel {
+        display: none;
+      }
+      .step-panel.on {
+        display: block;
+      }
+      .choice-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+      .choice {
+        min-height: 100px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #fafcf9;
+        padding: 14px;
+        text-align: left;
+      }
+      .choice.selected {
+        border-color: var(--forest);
+        background: var(--soft);
+        box-shadow: 0 0 0 2px rgba(23, 106, 70, 0.1);
+      }
+      .choice b,
+      .choice span {
+        display: block;
+      }
+      .choice span {
+        margin-top: 5px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .shelf-layout {
+        display: grid;
+        grid-template-columns: 260px 1fr;
+        min-height: 480px;
+      }
+      .rail {
+        padding: 22px;
+        border-right: 1px solid var(--line);
+        background: #f7f9f6;
+      }
+      .rail button {
+        width: 100%;
+        border: 0;
+        border-radius: 9px;
+        background: transparent;
+        padding: 12px;
+        text-align: left;
+        font-weight: 800;
+        color: var(--muted);
+      }
+      .rail button.on {
+        background: var(--soft);
+        color: var(--forest);
+      }
+      .workspace {
+        padding: 28px;
+      }
+      .book-row {
+        display: flex;
+        gap: 18px;
+        align-items: center;
+        padding: 18px 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .book-spine {
+        width: 54px;
+        height: 80px;
+        border-radius: 6px;
+        background: linear-gradient(145deg, #804829, #d38e3a);
+      }
+      .meter {
+        height: 7px;
+        border-radius: 9px;
+        background: #e1e7e2;
+        overflow: hidden;
+      }
+      .meter i {
+        display: block;
+        width: 32%;
+        height: 100%;
+        background: var(--forest);
+      }
+      .drop {
+        display: grid;
+        place-items: center;
+        min-height: 220px;
+        border: 2px dashed #9eb7a5;
+        border-radius: 14px;
+        background: #f8fbf8;
+        text-align: center;
+        padding: 28px;
+      }
+      .drop.drag {
+        border-color: var(--forest);
+        background: var(--soft);
+      }
+      .drop strong {
+        display: block;
+        font-size: 18px;
+      }
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 18px;
+      }
+      .table th,
+      .table td {
+        padding: 11px;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+      }
+      .table th {
+        font-size: 11px;
+        color: var(--muted);
+        text-transform: uppercase;
+      }
+      .status {
+        font-size: 11px;
+        font-weight: 800;
+        color: var(--forest);
+      }
+      .toast {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        z-index: 50;
+        transform: translateY(130%);
+        border-radius: 12px;
+        background: #15221a;
+        color: white;
+        padding: 13px 17px;
+        box-shadow: var(--shadow);
+        transition: transform 0.25s;
+      }
+      .toast.show {
+        transform: none;
+      }
+      .hint {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .hidden {
+        display: none !important;
+      }
+      @media (max-width: 760px) {
+        .top {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+        .tabs {
+          width: 100%;
+        }
+        .main {
+          margin-top: 22px;
+        }
+        .intro {
+          display: block;
+        }
+        .count {
+          display: block;
+          margin-top: 12px;
+        }
+        .grid,
+        .shelf-layout {
+          grid-template-columns: 1fr;
+        }
+        .preview {
+          position: static;
+        }
+        .fields,
+        .choice-grid,
+        .sourcebar {
+          grid-template-columns: 1fr;
+        }
+        .rail {
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+        .result.show {
+          grid-template-columns: 70px 1fr;
+        }
+        .result .btn {
+          grid-column: 1/-1;
+        }
+        .body {
+          padding: 18px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Prototype only: five task models inside the existing SinghBuildsTech admin visual world. -->
+    <div class="shell">
+      <header class="top">
+        <div class="brand">
+          <span class="mark">S</span><span>SinghBuildsTech <small class="prototype">/ Add Book concepts</small></span>
+        </div>
+        <nav class="tabs" aria-label="Artefact selector"></nav>
+      </header>
+      <main class="main">
+        <div class="intro">
+          <div>
+            <h1>Five ways to add a book.</h1>
+            <p>
+              Each artefact prioritizes a different real workflow. Interact with the fields, lookup, stepper, shelf
+              selector, and import validator.
+            </p>
+          </div>
+          <span class="count">Prototype · no data is saved</span>
+        </div>
+        <div class="recommendation">
+          <span
+            ><strong>Recommended:</strong> Capture Console — identify first, confirm essentials, then reveal enrichment
+            only when needed.</span
+          >
+          <span class="prototype">Best fit for the current bookshelf</span>
+        </div>
+
+        <section class="artefact active" data-name="Capture console" data-sub="Recommended adaptive workflow">
+          <div class="frame">
+            <div class="frame-head">
+              <div>
+                <h2>Capture console</h2>
+                <p>Begin from title, ISBN, or cover photo; confirm one compact record.</p>
+              </div>
+              <span class="chip">⌘ Enter to save</span>
+            </div>
+            <div class="body grid">
+              <form id="quickForm">
+                <div class="sourcebar" aria-label="Book identification method">
+                  <button type="button" class="source on">Title + author</button>
+                  <button type="button" class="source">ISBN lookup</button>
+                  <button type="button" class="source">Cover recognition</button>
+                </div>
+                <div class="fields">
+                  <div class="field full">
+                    <label>Book title</label
+                    ><input class="input live-title" required value="Designing Data-Intensive Applications" />
+                  </div>
+                  <div class="field">
+                    <label>Author</label><input class="input live-author" required value="Martin Kleppmann" />
+                  </div>
+                  <div class="field">
+                    <label>Shelf</label
+                    ><select class="input">
+                      <option>Tech & Architecture</option>
+                      <option>Philosophy & Mind</option>
+                      <option>Fiction & Sci-Fi</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label>Total pages</label><input class="input" type="number" value="615" min="1" />
+                  </div>
+                  <div class="field">
+                    <label>Current page</label><input class="input" type="number" value="0" min="0" />
+                  </div>
+                  <div class="field full">
+                    <label>One-line note <span class="hint">optional</span></label
+                    ><textarea class="input">Definitive reference for reliable data systems.</textarea>
+                  </div>
+                </div>
+                <button type="button" id="advancedToggle" class="btn" style="margin-top: 14px">
+                  Show enrichment fields
+                </button>
+                <div id="advancedFields" class="advanced fields">
+                  <div class="field"><label>Genre</label><input class="input" value="Distributed Systems" /></div>
+                  <div class="field"><label>Language</label><input class="input" value="English" /></div>
+                  <div class="field full">
+                    <label>Key themes</label><input class="input" value="Replication, Partitioning, Consensus" />
+                  </div>
+                </div>
+                <div class="actions">
+                  <button type="button" class="btn">Save draft</button
+                  ><button class="btn primary">Add to library</button>
+                </div>
+              </form>
+              <aside class="preview">
+                <div class="cover">
+                  <small>TECH & ARCHITECTURE</small><b class="preview-title">Designing Data-Intensive Applications</b
+                  ><small class="preview-author">Martin Kleppmann</small>
+                </div>
+                <h3 class="preview-title">Designing Data-Intensive Applications</h3>
+                <p class="preview-author">Martin Kleppmann</p>
+                <div class="meta"><span class="chip">Wishlist</span><span class="chip">615 pages</span></div>
+              </aside>
+            </div>
+          </div>
+        </section>
+
+        <section class="artefact" data-name="ISBN scout" data-sub="Search and confirm metadata">
+          <div class="frame">
+            <div class="frame-head">
+              <div>
+                <h2>ISBN scout</h2>
+                <p>Lookup first, inspect the match, then import it.</p>
+              </div>
+              <span class="chip">Metadata-assisted</span>
+            </div>
+            <div class="lookup">
+              <label for="isbn">ISBN, title, or author</label>
+              <div class="searchline">
+                <input id="isbn" class="input" value="9781449373320" /><button id="lookupBtn" class="btn primary">
+                  Find book
+                </button>
+              </div>
+              <p class="hint">Try any value—the prototype returns a representative match.</p>
+              <div class="result" id="lookupResult">
+                <div class="mini-cover">DATA<br />INTENSIVE<br />APPLICATIONS</div>
+                <div>
+                  <span class="status">High-confidence match</span>
+                  <h3>Designing Data-Intensive Applications</h3>
+                  <p>Martin Kleppmann · O'Reilly Media · 2017 · 615 pages</p>
+                  <div class="meta"><span class="chip">Distributed Systems</span><span class="chip">English</span></div>
+                </div>
+                <button class="btn amber" data-save>Add matched book</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="artefact" data-name="Guided setup" data-sub="Step-by-step for rich records">
+          <div class="frame">
+            <div class="frame-head">
+              <div>
+                <h2>Guided setup</h2>
+                <p>A calm sequence for complete, consistent records.</p>
+              </div>
+              <span class="chip" id="stepCount">Step 1 of 3</span>
+            </div>
+            <div class="body">
+              <div class="steps">
+                <div class="step on">Identity</div>
+                <div class="step">Reading state</div>
+                <div class="step">Knowledge</div>
+              </div>
+              <div class="step-panel on">
+                <div class="fields">
+                  <div class="field full">
+                    <label>Title</label><input class="input" value="The Pragmatic Programmer" />
+                  </div>
+                  <div class="field">
+                    <label>Author</label><input class="input" value="David Thomas, Andrew Hunt" />
+                  </div>
+                  <div class="field"><label>ISBN</label><input class="input" value="9780135957059" /></div>
+                </div>
+              </div>
+              <div class="step-panel">
+                <h3>Where does this book belong?</h3>
+                <div class="choice-grid">
+                  <button class="choice selected"><b>Reading now</b><span>Track progress from today</span></button
+                  ><button class="choice"><b>Wishlist</b><span>Keep it in the queue</span></button
+                  ><button class="choice"><b>Reference</b><span>Return to it repeatedly</span></button>
+                </div>
+              </div>
+              <div class="step-panel">
+                <div class="fields">
+                  <div class="field full">
+                    <label>Key themes</label><input class="input" value="Craftsmanship, Orthogonality, Refactoring" />
+                  </div>
+                  <div class="field full">
+                    <label>Why it matters</label
+                    ><textarea class="input">
+Timeless principles for maintaining a durable engineering practice.</textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="actions">
+                <button id="stepBack" class="btn" disabled>Back</button
+                ><button id="stepNext" class="btn primary">Continue</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="artefact" data-name="Shelf first" data-sub="Choose context before metadata">
+          <div class="frame">
+            <div class="frame-head">
+              <div>
+                <h2>Shelf-first cataloguing</h2>
+                <p>Start with intent, then capture only what that shelf needs.</p>
+              </div>
+              <span class="chip" id="shelfLabel">Tech & Architecture</span>
+            </div>
+            <div class="shelf-layout">
+              <aside class="rail">
+                <button class="on">Tech & Architecture</button><button>Philosophy & Mind</button
+                ><button>Fiction & Sci-Fi</button><button>Product & Leadership</button
+                ><button>Wishlist & Up Next</button>
+              </aside>
+              <div class="workspace">
+                <h3 id="shelfTitle">Add to Tech & Architecture</h3>
+                <p class="hint">Shelf defaults: Reference status · physical format · architecture themes</p>
+                <div class="book-row">
+                  <div class="book-spine"></div>
+                  <div style="flex: 1">
+                    <div class="fields">
+                      <div class="field"><label>Title</label><input class="input" value="Clean Architecture" /></div>
+                      <div class="field"><label>Author</label><input class="input" value="Robert C. Martin" /></div>
+                    </div>
+                    <div style="margin-top: 16px">
+                      <label>Reading progress</label>
+                      <div class="meter"><i></i></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="actions"><button class="btn primary" data-save>Add to selected shelf</button></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="artefact" data-name="Batch import" data-sub="Validate JSON before commit">
+          <div class="frame">
+            <div class="frame-head">
+              <div>
+                <h2>Safe batch import</h2>
+                <p>Inspect every record before one atomic database commit.</p>
+              </div>
+              <span class="chip">All-or-nothing</span>
+            </div>
+            <div class="body">
+              <div class="drop" id="drop">
+                <div>
+                  <strong>Drop books.json here</strong>
+                  <p class="hint">or choose the sample file simulation</p>
+                  <button id="simulate" class="btn primary">Validate sample JSON</button>
+                </div>
+              </div>
+              <div id="importReview" class="hidden">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Book</th>
+                      <th>Match</th>
+                      <th>Cover</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>The Alchemist</td>
+                      <td>ISBN match</td>
+                      <td><span class="status">Found</span></td>
+                      <td>Update metadata</td>
+                    </tr>
+                    <tr>
+                      <td>System Design Interview</td>
+                      <td>New record</td>
+                      <td><span class="status">Found</span></td>
+                      <td>Create</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <p class="hint">Personal notes, rating, shelf, and reading progress will be preserved.</p>
+                <div class="actions">
+                  <button id="resetImport" class="btn">Choose another</button
+                  ><button class="btn primary" data-save>Import 2 books atomically</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <div class="toast" role="status" aria-live="polite"></div>
+    <script>
+      const artefacts = [...document.querySelectorAll('.artefact')],
+        tabs = document.querySelector('.tabs'),
+        toast = document.querySelector('.toast');
+      artefacts.forEach((a, i) => {
+        const b = document.createElement('button');
+        b.className = 'tab';
+        b.textContent = `${i + 1}. ${a.dataset.name}`;
+        b.title = a.dataset.sub;
+        b.setAttribute('aria-selected', i === 0);
+        b.onclick = () => {
+          artefacts.forEach((x, j) => {
+            x.classList.toggle('active', i === j);
+            tabs.children[j].setAttribute('aria-selected', i === j);
+          });
+        };
+        tabs.appendChild(b);
+      });
+      const say = (t) => {
+        toast.textContent = t;
+        toast.classList.add('show');
+        clearTimeout(window.tt);
+        window.tt = setTimeout(() => toast.classList.remove('show'), 2200);
+      };
+      document
+        .querySelectorAll('[data-save]')
+        .forEach((b) => (b.onclick = () => say('Prototype complete — no data was saved.')));
+      document.querySelector('#quickForm').onsubmit = (e) => {
+        e.preventDefault();
+        say('Book is ready to add.');
+      };
+      document
+        .querySelectorAll('.live-title')
+        .forEach(
+          (x) =>
+            (x.oninput = (e) =>
+              document
+                .querySelectorAll('.preview-title')
+                .forEach((n) => (n.textContent = e.target.value || 'Untitled book')))
+        );
+      document
+        .querySelectorAll('.live-author')
+        .forEach(
+          (x) =>
+            (x.oninput = (e) =>
+              document
+                .querySelectorAll('.preview-author')
+                .forEach((n) => (n.textContent = e.target.value || 'Unknown author')))
+        );
+      document.querySelectorAll('.source').forEach(
+        (button) =>
+          (button.onclick = () => {
+            document.querySelectorAll('.source').forEach((item) => item.classList.remove('on'));
+            button.classList.add('on');
+            say(`${button.textContent} selected.`);
+          })
+      );
+      document.querySelector('#advancedToggle').onclick = (event) => {
+        const fields = document.querySelector('#advancedFields');
+        fields.classList.toggle('open');
+        event.currentTarget.textContent = fields.classList.contains('open')
+          ? 'Hide enrichment fields'
+          : 'Show enrichment fields';
+      };
+      document.querySelector('#lookupBtn').onclick = () => {
+        const b = document.querySelector('#lookupBtn');
+        b.textContent = 'Searching…';
+        b.disabled = true;
+        setTimeout(() => {
+          b.textContent = 'Find book';
+          b.disabled = false;
+          document.querySelector('#lookupResult').classList.add('show');
+        }, 650);
+      };
+      let step = 0;
+      const panels = [...document.querySelectorAll('.step-panel')],
+        steps = [...document.querySelectorAll('.step')],
+        next = document.querySelector('#stepNext'),
+        back = document.querySelector('#stepBack');
+      function paintStep() {
+        panels.forEach((p, i) => p.classList.toggle('on', i === step));
+        steps.forEach((p, i) => p.classList.toggle('on', i <= step));
+        back.disabled = step === 0;
+        next.textContent = step === 2 ? 'Review & add' : 'Continue';
+        document.querySelector('#stepCount').textContent = `Step ${step + 1} of 3`;
+      }
+      next.onclick = () => {
+        if (step < 2) {
+          step++;
+          paintStep();
+        } else say('Guided record is ready to add.');
+      };
+      back.onclick = () => {
+        if (step) {
+          step--;
+          paintStep();
+        }
+      };
+      document.querySelectorAll('.choice').forEach(
+        (b) =>
+          (b.onclick = () => {
+            document.querySelectorAll('.choice').forEach((x) => x.classList.remove('selected'));
+            b.classList.add('selected');
+          })
+      );
+      document.querySelectorAll('.rail button').forEach(
+        (b) =>
+          (b.onclick = () => {
+            document.querySelectorAll('.rail button').forEach((x) => x.classList.remove('on'));
+            b.classList.add('on');
+            document.querySelector('#shelfLabel').textContent = b.textContent;
+            document.querySelector('#shelfTitle').textContent = `Add to ${b.textContent}`;
+          })
+      );
+      const review = document.querySelector('#importReview'),
+        drop = document.querySelector('#drop');
+      document.querySelector('#simulate').onclick = () => {
+        drop.classList.add('hidden');
+        review.classList.remove('hidden');
+        say('2 valid records. Safe to import.');
+      };
+      document.querySelector('#resetImport').onclick = () => {
+        review.classList.add('hidden');
+        drop.classList.remove('hidden');
+      };
+      ['dragenter', 'dragover'].forEach((e) =>
+        drop.addEventListener(e, (x) => {
+          x.preventDefault();
+          drop.classList.add('drag');
+        })
+      );
+      ['dragleave', 'drop'].forEach((e) =>
+        drop.addEventListener(e, (x) => {
+          x.preventDefault();
+          drop.classList.remove('drag');
+          if (e === 'drop') {
+            drop.classList.add('hidden');
+            review.classList.remove('hidden');
+            say('File validated locally.');
+          }
+        })
+      );
+    </script>
+  </body>
+</html>

@@ -1,9 +1,9 @@
-// Free, keyless Google Books lookups used to autofill bibliographic fields.
-// The AI provider (utils/aiProviders.js) is only used on top of this for
-// qualitative enrichment (themes, audience, similar titles) that Google
-// Books doesn't provide -- bibliographic facts come from Google Books, not
-// the model, to avoid hallucinated titles/authors/page counts.
+// Free, keyless lookups used to autofill bibliographic fields.
+// Primary source: Google Books API (https://www.googleapis.com/books/v1/volumes)
+// Secondary/fallback source: Open Library API (https://openlibrary.org & https://covers.openlibrary.org)
 const GOOGLE_BOOKS_API = 'https://www.googleapis.com/books/v1/volumes';
+const OPENLIBRARY_COVERS_API = 'https://covers.openlibrary.org';
+const OPENLIBRARY_SEARCH_API = 'https://openlibrary.org/search.json';
 
 export class BookLookupError extends Error {}
 
@@ -39,10 +39,6 @@ const fromVolume = (volume) => {
   };
 };
 
-// Google Books' relevance ranking often puts a sparse record (an audiobook,
-// a foreign edition, a stub with just a title) ahead of a richer one for the
-// same book. Score every candidate on how complete it is and take the best,
-// instead of just the first result with a title.
 const completenessScore = (book) =>
   (book.totalPages ? 1 : 0) +
   (book.genre ? 1 : 0) +
@@ -76,10 +72,105 @@ const searchGoogleBooks = async (query, apiKey) => {
   );
 };
 
+export const lookupCoverFromOpenLibrary = async ({ isbn, title, author }) => {
+  const clean = normalizeIsbn(isbn);
+  if (clean) {
+    try {
+      const url = `${OPENLIBRARY_COVERS_API}/b/isbn/${encodeURIComponent(clean)}-L.jpg?default=false`;
+      const res = await fetch(url, { method: 'HEAD' });
+      if (res.ok) return url;
+    } catch {
+      // Fall through to title+author search
+    }
+  }
+
+  const t = String(title || '').trim();
+  const a = String(author || '').trim();
+  if (!t) return null;
+
+  try {
+    const q = a ? `title=${encodeURIComponent(t)}&author=${encodeURIComponent(a)}` : `title=${encodeURIComponent(t)}`;
+    const res = await fetch(`${OPENLIBRARY_SEARCH_API}?${q}&limit=1`);
+    if (!res.ok) return null;
+    const data = await res.json();
+    const doc = data?.docs?.[0];
+    const coverId = doc?.cover_i || doc?.cover_id;
+    if (coverId) {
+      const coverUrl = `${OPENLIBRARY_COVERS_API}/b/id/${coverId}-L.jpg`;
+      const verify = await fetch(coverUrl, { method: 'HEAD' });
+      if (verify.ok) return coverUrl;
+    }
+  } catch {
+    // Graceful fallback
+  }
+  return null;
+};
+
+const searchOpenLibrary = async ({ isbn, title, author }) => {
+  try {
+    let url;
+    if (isbn) {
+      url = `${OPENLIBRARY_SEARCH_API}?isbn=${encodeURIComponent(isbn)}&limit=1`;
+    } else {
+      const t = String(title || '').trim();
+      const a = String(author || '').trim();
+      if (!t) return null;
+      url = `${OPENLIBRARY_SEARCH_API}?title=${encodeURIComponent(t)}${a ? `&author=${encodeURIComponent(a)}` : ''}&limit=1`;
+    }
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    const data = await res.json();
+    const doc = data?.docs?.[0];
+    if (!doc || !doc.title) return null;
+
+    const coverId = doc.cover_i || doc.cover_id;
+    const coverUrl = coverId ? `${OPENLIBRARY_COVERS_API}/b/id/${coverId}-L.jpg` : '';
+    const isbn13 = (doc.isbn || []).find((id) => id.length === 13) || '';
+    const isbn10 = (doc.isbn || []).find((id) => id.length === 10) || '';
+
+    return {
+      title: doc.title,
+      author: Array.isArray(doc.author_name) ? doc.author_name.join(', ') : doc.author_name || '',
+      totalPages: doc.number_of_pages_median || undefined,
+      publishedYear: doc.first_publish_year || null,
+      genre: (doc.subject || [])[0] || '',
+      language: Array.isArray(doc.language) ? (doc.language[0] === 'eng' ? 'English' : doc.language[0]) : '',
+      publisher: Array.isArray(doc.publisher) ? doc.publisher[0] : doc.publisher || '',
+      isbn: isbn13 || isbn10,
+      isbn13,
+      description: '',
+      coverUrl,
+      rating: doc.ratings_average ? Number(doc.ratings_average.toFixed(1)) : undefined
+    };
+  } catch {
+    return null;
+  }
+};
+
 export const lookupByIsbn = async (isbn, apiKey) => {
   const clean = normalizeIsbn(isbn);
   if (!clean) return null;
-  return searchGoogleBooks(`isbn:${clean}`, apiKey);
+  let book = null;
+  try {
+    book = await searchGoogleBooks(`isbn:${clean}`, apiKey);
+  } catch (err) {
+    if (err instanceof BookLookupError && err.message.includes('rate-limited')) {
+      book = await searchOpenLibrary({ isbn: clean });
+    } else {
+      throw err;
+    }
+  }
+
+  if (!book) {
+    book = await searchOpenLibrary({ isbn: clean });
+  }
+
+  if (book && !book.coverUrl) {
+    const olCover = await lookupCoverFromOpenLibrary({ isbn: clean, title: book.title, author: book.author });
+    if (olCover) book.coverUrl = olCover;
+  }
+
+  return book;
 };
 
 export const lookupByTitleAuthor = async (title, author, apiKey) => {
@@ -87,5 +178,29 @@ export const lookupByTitleAuthor = async (title, author, apiKey) => {
   const a = String(author || '').trim();
   if (!t) return null;
   const query = a ? `intitle:${t} inauthor:${a}` : `intitle:${t}`;
-  return searchGoogleBooks(query, apiKey);
+  let book = null;
+  try {
+    book = await searchGoogleBooks(query, apiKey);
+  } catch (err) {
+    if (err instanceof BookLookupError && err.message.includes('rate-limited')) {
+      book = await searchOpenLibrary({ title: t, author: a });
+    } else {
+      throw err;
+    }
+  }
+
+  if (!book) {
+    book = await searchOpenLibrary({ title: t, author: a });
+  }
+
+  if (book && !book.coverUrl) {
+    const olCover = await lookupCoverFromOpenLibrary({
+      isbn: book.isbn13 || book.isbn,
+      title: book.title,
+      author: book.author
+    });
+    if (olCover) book.coverUrl = olCover;
+  }
+
+  return book;
 };
