@@ -3,8 +3,22 @@ const { applyNextAuthUrlDefaults } = require('./utils/resolveAuthUrl');
 
 applyNextAuthUrlDefaults();
 
+const sharpBinaries = ['./node_modules/@img/sharp-linux-x64/**/*', './node_modules/@img/sharp-libvips-linux-x64/**/*'];
+
 module.exports = {
   outputFileTracingRoot: path.resolve(__dirname),
+  // react-syntax-highlighter is CommonJS but requires refractor, which is ESM-only. Left external, Vercel's
+  // runtime throws ERR_REQUIRE_ESM and every page that renders markdown code (the issue board) returns 500.
+  // Bundling both lets the bundler resolve the ESM import itself.
+  transpilePackages: ['react-syntax-highlighter', 'refractor'],
+  // sharp loads libvips (a shared library) at runtime through its native addon, which file tracing can't see, so
+  // the Vercel function shipped without it ("libvips-cpp.so ... cannot open shared object file").
+  // Attachment handling on the issue routes uses sharp, so include the Linux binaries for those routes.
+  outputFileTracingIncludes: {
+    '/api/submit-issue': sharpBinaries,
+    '/api/issues': sharpBinaries,
+    '/api/issueboard/**': sharpBinaries
+  },
   turbopack: {
     root: path.resolve(__dirname)
   },
