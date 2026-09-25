@@ -277,3 +277,29 @@ export const createNotionArticle = async ({
   const realSlug = page.properties?.Slug?.formula?.string || slug;
   return { id: page.id, url: page.url, slug: realSlug, published };
 };
+
+// Renames an article without changing its public URL. The Slug property is a formula that falls back
+// to the slugified Name when the URL property is empty, so an article relying on that fallback would
+// silently get a new address; pin the current slug into URL first.
+export const renameNotionArticle = async (pageId, title) => {
+  const dataSource = await getDataSource();
+  const schema = dataSource.properties || {};
+  const current = await notion.pages.retrieve({ page_id: pageId });
+  const properties = {};
+  setProperty(properties, schema, 'Name', 'title', title);
+  if (!current.properties?.URL?.url) {
+    const currentSlug = current.properties?.Slug?.formula?.string;
+    if (currentSlug) setProperty(properties, schema, 'URL', 'url', currentSlug);
+  }
+  if (!properties.Name) throw new Error('The Notion articles database must contain a Name title property.');
+  const page = await notion.pages.update({ page_id: pageId, properties });
+  return { id: page.id, title };
+};
+
+export const setNotionArticlePublished = async (pageId, published) => {
+  const dataSource = await getDataSource();
+  const properties = {};
+  setProperty(properties, dataSource.properties || {}, 'Published', 'checkbox', published);
+  await notion.pages.update({ page_id: pageId, properties });
+  return { id: pageId, published };
+};
