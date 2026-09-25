@@ -14,6 +14,7 @@ export const PROVIDER_DEFAULTS = {
   openai: { baseUrl: 'https://api.openai.com/v1', model: 'gpt-4o' },
   anthropic: { baseUrl: 'https://api.anthropic.com/v1', model: 'claude-3-5-sonnet-latest' },
   ollama: { baseUrl: 'http://localhost:11434/v1', model: 'deepseek-r1:14b' },
+  unsloth: { baseUrl: 'http://127.0.0.1:8888/v1', model: 'unsloth-model' },
   mistral: { baseUrl: 'https://api.mistral.ai/v1', model: 'mistral-large-latest' },
   gemini: { baseUrl: 'https://generativelanguage.googleapis.com/v1beta/openai', model: 'gemini-2.0-flash' }
 };
@@ -92,7 +93,7 @@ export const normalizeAiConfig = (raw) => {
         apiKey: raw.apiKey || '',
         baseUrl: raw.baseUrl || providers[raw.provider].baseUrl,
         model: raw.model || providers[raw.provider].model,
-        enabled: Boolean(raw.apiKey) || raw.provider === 'ollama'
+        enabled: Boolean(raw.apiKey) || raw.provider === 'ollama' || raw.provider === 'unsloth'
       };
     }
     return {
@@ -122,6 +123,9 @@ export const loadAiConfig = () => {
   }
 };
 
+// Lets open AI windows refresh their "provider · model" label as soon as settings are saved.
+export const AI_CONFIG_CHANGED_EVENT = 'sbt:ai-config-changed';
+
 export const saveAiConfig = (config) => {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
@@ -129,6 +133,7 @@ export const saveAiConfig = (config) => {
   } catch {
     // ignore -- config just won't persist across reloads
   }
+  if (typeof window !== 'undefined') window.dispatchEvent(new Event(AI_CONFIG_CHANGED_EVENT));
 };
 
 // Flattens the active provider's block into the {provider, apiKey, baseUrl,

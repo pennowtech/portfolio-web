@@ -22,10 +22,12 @@ import {
 } from 'react-icons/fi';
 import { LuSparkles } from 'react-icons/lu';
 import { getBookCoverSrc, BOOK_SHELVES } from '@utils/books/bookService';
-import { createPersistedBook } from '@utils/books/bookApi';
+import { createPersistedBook, updatePersistedBook } from '@utils/books/bookApi';
 import { loadAiConfig, getActiveProviderCreds } from '@utils/admin/aiConfigStore';
 import { loadBookSettings } from '@utils/books/bookSettingsStore';
 import BatchImportStudio from './books/BatchImportStudio';
+import WhyReadContent from './books/WhyReadContent';
+import AIModelBadge from './AIModelBadge';
 
 const renderHighlightedJson = (obj) => {
   if (!obj) return '';
@@ -167,6 +169,7 @@ export const QuickAddModal = ({
 
   // Existing book in DB detection
   const [existingBookFound, setExistingBookFound] = useState(null);
+  const [overwritingBookId, setOverwritingBookId] = useState(null);
 
   // Review & Edit controls
   const [showResultScreen, setShowResultScreen] = useState(false);
@@ -212,6 +215,7 @@ export const QuickAddModal = ({
       setShowJsonModal(false);
       setCopiedJson(false);
       setExistingBookFound(null);
+      setOverwritingBookId(null);
       setShowResultScreen(false);
       setIsEditingFields(false);
     }
@@ -235,33 +239,36 @@ export const QuickAddModal = ({
     setCoverImageName(file.name);
   };
 
-  const runEvidenceStudioEnrichment = async () => {
+  const runEvidenceStudioEnrichment = async (options = {}) => {
     setAutofillError('');
     setAutofillMessage('');
+    // A normal lookup is a new book; only an explicit refetch may target an existing record.
+    if (!options.forceRefetch) setOverwritingBookId(null);
 
-    if (studioSource === 'title' && !studioQuery.trim() && !bookTitle.trim()) {
+    if (!options.forceRefetch && studioSource === 'title' && !studioQuery.trim() && !bookTitle.trim()) {
       setAutofillError('Enter a title (and optionally author) first.');
       return;
     }
-    if (studioSource === 'isbn' && !studioQuery.trim()) {
+    if (!options.forceRefetch && studioSource === 'isbn' && !studioQuery.trim()) {
       setAutofillError('Enter an ISBN first.');
       return;
     }
-    if (studioSource === 'cover' && !coverImageDataUrl) {
+    if (!options.forceRefetch && studioSource === 'cover' && !coverImageDataUrl) {
       setAutofillError('Select or drop a cover photo first.');
       return;
     }
 
-    const requestMode = studioSource === 'cover' ? 'image' : studioSource === 'isbn' ? 'isbn' : 'title-author';
+    const requestMode =
+      options.mode || (studioSource === 'cover' ? 'image' : studioSource === 'isbn' ? 'isbn' : 'title-author');
     setAutofillMode(requestMode);
     setPipelineStep(1);
 
-    // Fast client-side duplicate check if existingBooks is provided
-    if (Array.isArray(existingBooks) && existingBooks.length > 0) {
-      const queryText = studioQuery.trim() || bookTitle.trim();
+    // Fast client-side duplicate check if existingBooks is provided (unless forceRefetching)
+    if (!options.forceRefetch && Array.isArray(existingBooks) && existingBooks.length > 0) {
+      const queryText = options.title ? options.title : studioQuery.trim() || bookTitle.trim();
       const clientMatch = findBookInList(existingBooks, {
         title: requestMode === 'title-author' ? queryText : '',
-        isbn: requestMode === 'isbn' ? queryText : ''
+        isbn: requestMode === 'isbn' ? options.isbn || queryText : ''
       });
       if (clientMatch) {
         setExistingBookFound(clientMatch);
@@ -280,20 +287,23 @@ export const QuickAddModal = ({
         apiKey: creds.apiKey,
         baseUrl: creds.baseUrl,
         model: creds.model,
-        googleBooksApiKey: bookSettings.googleBooksApiKey
+        googleBooksApiKey: bookSettings.googleBooksApiKey,
+        forceRefetch: Boolean(options.forceRefetch)
       };
 
       if (requestMode === 'isbn') {
-        payload.isbn = studioQuery.trim();
+        payload.isbn = options.isbn || studioQuery.trim();
       } else if (requestMode === 'title-author') {
-        const queryText = studioQuery.trim() || bookTitle.trim();
+        const queryText = options.title
+          ? (options.title + (options.author ? ` by ${options.author}` : '')).trim()
+          : studioQuery.trim() || bookTitle.trim();
         if (/\s+by\s+/i.test(queryText)) {
           const parts = queryText.split(/\s+by\s+/i);
           payload.title = parts[0].trim();
           payload.author = parts.slice(1).join(' by ').trim();
         } else {
-          payload.title = queryText;
-          if (bookAuthor.trim()) payload.author = bookAuthor.trim();
+          payload.title = options.title || queryText;
+          if (options.author || bookAuthor.trim()) payload.author = options.author || bookAuthor.trim();
         }
       } else if (requestMode === 'image') {
         payload.imageDataUrl = coverImageDataUrl;
@@ -313,8 +323,8 @@ export const QuickAddModal = ({
         return;
       }
 
-      // Check if book was identified as already existing in DB
-      if (data.alreadyExists && data.existingBook) {
+      // Check if book was identified as already existing in DB (unless forceRefetching)
+      if (!options.forceRefetch && data.alreadyExists && data.existingBook) {
         setExistingBookFound(data.existingBook);
         setRawAiResponse(data.existingBook);
         setPipelineStep(3);
@@ -322,14 +332,14 @@ export const QuickAddModal = ({
         return;
       }
 
-      const b = data.book;
+      const b = data.book || data;
       setRawAiResponse(data.book || data);
       if (b.shelf) setStudioShelf(b.shelf);
       if (b.title) setBookTitle(b.title);
       if (b.author) setBookAuthor(b.author);
       if (b.genre) setBookGenre(b.genre);
       if (b.language) setBookLanguage(b.language);
-      if (b.totalPages) setBookTotalPages(String(b.totalPages));
+      if (b.totalPages || b.pages) setBookTotalPages(String(b.totalPages || b.pages));
       if (b.description) setBookDescription(b.description);
       if (b.whyRead) setBookWhyRead(b.whyRead);
       if (Array.isArray(b.keyThemes) && b.keyThemes.length) setBookKeyThemes(b.keyThemes.join(', '));
@@ -353,12 +363,37 @@ export const QuickAddModal = ({
 
       setPipelineStep(3);
       setShowResultScreen(true);
-      setAutofillMessage('Complete record generated by AI and Google Books. Review details below before saving.');
+      setAutofillMessage(
+        options.forceRefetch
+          ? 'Fresh metadata refetched with AI. Review details below before saving to overwrite your database record.'
+          : 'Complete record generated by AI and Google Books. Review details below before saving.'
+      );
     } catch {
       setAutofillError('Could not reach the server to autofill this book.');
       setPipelineStep(0);
     } finally {
       setAutofillMode('');
+    }
+  };
+
+  const handleRefetchAndOverwrite = async () => {
+    if (!existingBookFound) return;
+    const targetId = existingBookFound.id;
+    const refetchTitle = existingBookFound.title;
+    const refetchAuthor = existingBookFound.author;
+    const refetchIsbn = existingBookFound.isbn || existingBookFound.isbn13;
+    setOverwritingBookId(targetId);
+    setExistingBookFound(null);
+
+    if (refetchIsbn) {
+      await runEvidenceStudioEnrichment({ mode: 'isbn', forceRefetch: true, isbn: refetchIsbn });
+    } else {
+      await runEvidenceStudioEnrichment({
+        mode: 'title-author',
+        forceRefetch: true,
+        title: refetchTitle,
+        author: refetchAuthor
+      });
     }
   };
 
@@ -385,7 +420,7 @@ export const QuickAddModal = ({
           : [];
 
       const totalPages = Math.max(1, Number(bookTotalPages) || 300);
-      const created = await createPersistedBook({
+      const bookPayload = {
         title: finalTitle,
         author: finalAuthor,
         shelf: studioShelf,
@@ -409,11 +444,20 @@ export const QuickAddModal = ({
         publisher: autofillExtra.publisher || undefined,
         publishedYear: autofillExtra.publishedYear || undefined,
         legacy: autofillExtra.legacy || undefined
-      });
+      };
 
-      setSuccessMessage(`"${created.title}" successfully added to your ${studioShelf} shelf!`);
+      let created;
+      if (overwritingBookId) {
+        created = await updatePersistedBook(overwritingBookId, bookPayload);
+        setSuccessMessage(`"${created.title}" successfully updated & overwritten in your ${studioShelf} shelf!`);
+      } else {
+        created = await createPersistedBook(bookPayload);
+        setSuccessMessage(`"${created.title}" successfully added to your ${studioShelf} shelf!`);
+      }
+
       onBookCreated?.(created);
       setTimeout(() => {
+        setOverwritingBookId(null);
         onClose();
         router.push(`/admin/books?shelf=${studioShelf}`);
       }, 700);
@@ -674,6 +718,7 @@ export const QuickAddModal = ({
                 <p className='text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-sans'>
                   One unified input surface, explicit source boundaries, and complete editorial review before saving.
                 </p>
+                <AIModelBadge className='mt-1.5' />
               </div>
 
               {showResultScreen && (
@@ -1093,11 +1138,6 @@ export const QuickAddModal = ({
                     <h3 className='text-base sm:text-lg font-bold text-slate-900 dark:text-white font-sans'>
                       &ldquo;{existingBookFound.title}&rdquo; is already in your database!
                     </h3>
-                    <p className='text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-sans'>
-                      This book was already added to your <strong>{existingBookFound.shelf || 'technical'}</strong>{' '}
-                      shelf with status <strong>{existingBookFound.status || 'reading'}</strong>. You do not need to
-                      create a duplicate.
-                    </p>
                   </div>
                 </div>
 
@@ -1176,7 +1216,17 @@ export const QuickAddModal = ({
                     ← Search for a different book
                   </button>
 
-                  <div className='flex items-center gap-2.5 font-sans w-full sm:w-auto justify-end'>
+                  <div className='flex items-center gap-2.5 font-sans w-full sm:w-auto justify-end flex-wrap sm:flex-nowrap'>
+                    <button
+                      type='button'
+                      onClick={handleRefetchAndOverwrite}
+                      disabled={loading || pipelineStep === 1 || pipelineStep === 2}
+                      className='inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 via-purple-600 to-indigo-600 hover:from-amber-600 hover:to-indigo-700 px-4 py-2 text-xs font-bold text-white shadow-md shadow-indigo-500/20 transition active:scale-95 font-sans disabled:opacity-50'
+                      title='Refetch fresh metadata with AI and overwrite this existing record'
+                    >
+                      <LuSparkles className='size-3.5 text-amber-200 animate-pulse' />
+                      Refetch with AI &amp; Overwrite
+                    </button>
                     {rawAiResponse && (
                       <button
                         type='button'
@@ -1224,6 +1274,31 @@ export const QuickAddModal = ({
             {/* ============================================================== */}
             {!existingBookFound && showResultScreen && (
               <div className='mt-5 border-t border-slate-200 dark:border-slate-800 pt-5 space-y-4 font-sans animate-in fade-in duration-300'>
+                {overwritingBookId && (
+                  <div className='rounded-xl border border-amber-500/40 bg-amber-500/10 p-3.5 flex items-center justify-between text-amber-900 dark:text-amber-200 font-sans text-xs shadow-xs'>
+                    <div className='flex items-center gap-2.5'>
+                      <FiRotateCw
+                        className='size-4 text-amber-500 shrink-0 animate-spin'
+                        style={{ animationDuration: '4s' }}
+                      />
+                      <div>
+                        <strong className='font-bold block text-slate-900 dark:text-white'>
+                          Overwrite Mode Active
+                        </strong>
+                        <span className='text-slate-600 dark:text-slate-300'>
+                          Saving this reviewed metadata will update and overwrite the existing record in your database.
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      type='button'
+                      onClick={() => setOverwritingBookId(null)}
+                      className='text-[11px] font-semibold text-amber-700 dark:text-amber-400 hover:underline shrink-0 ml-2 font-sans'
+                    >
+                      Cancel Overwrite
+                    </button>
+                  </div>
+                )}
                 {/* Result Screen Header */}
                 <div className='flex flex-col sm:flex-row items-start justify-between gap-4 bg-slate-50 dark:bg-slate-950/70 p-4 rounded-2xl border border-slate-200 dark:border-slate-800'>
                   <div className='flex items-start gap-4'>
@@ -1307,11 +1382,13 @@ export const QuickAddModal = ({
                           Why Read — Is It Really Worth It?
                         </small>
                       </div>
-                      <p className='text-xs text-slate-800 dark:text-slate-200 leading-relaxed font-sans font-medium'>
-                        {bookWhyRead ||
+                      <WhyReadContent
+                        text={
+                          bookWhyRead ||
                           autofillExtra.whyRead ||
-                          'Essential reading for mastering resilient distributed systems, offering immense mental model returns that justify every hour invested.'}
-                      </p>
+                          'Essential reading for mastering resilient distributed systems, offering immense mental model returns that justify every hour invested.'
+                        }
+                      />
                     </div>
 
                     {/* Key Themes Chips (Wide) */}
@@ -1531,6 +1608,7 @@ export const QuickAddModal = ({
                       onClick={() => {
                         setShowResultScreen(false);
                         setPipelineStep(0);
+                        setOverwritingBookId(null);
                       }}
                       className='inline-flex items-center gap-1.5 rounded-xl border border-slate-300 bg-slate-100 px-3.5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 transition font-sans'
                     >

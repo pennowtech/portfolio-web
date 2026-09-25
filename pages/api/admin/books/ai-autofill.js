@@ -95,7 +95,8 @@ const requestSchema = z.object({
   apiKey: z.string().max(500).optional(),
   baseUrl: z.string().max(500).optional(),
   model: z.string().max(200).optional(),
-  googleBooksApiKey: z.string().max(200).optional()
+  googleBooksApiKey: z.string().max(200).optional(),
+  forceRefetch: z.boolean().optional()
 });
 
 const parseJsonLoose = (text) => {
@@ -196,7 +197,7 @@ const ENRICHMENT_INSTRUCTION =
   '"wishlist" (general non-fiction, memoirs, essays). ' +
   'Provide the author name, primary genre or genres separated by commas (e.g. "Fiction, Romance"), original publishing house (e.g. "Heyne Verlag"), publication year as integer, approximate page count as integer, language, ISBN-13 if known, ' +
   'CRITICAL LANGUAGE REQUIREMENT: Even if the book is in German, French, Spanish, or any other non-English language, the "description", "whyRead", "keyThemes", "targetAudience", and "legacy" fields MUST ALWAYS BE WRITTEN IN FLUENT ENGLISH (translate or provide an English synopsis). ' +
-  'Provide a clear 2-4 sentence synopsis in English for "description", a compelling 2-3 sentence English "whyRead" explaining the concrete value and emotional/intellectual return that justifies reading it, ' +
+  'Provide a clear 2-4 sentence synopsis in English for "description", a compelling structured 3-5 point English "whyRead" explaining why one must read this book formatted as "Key Point: Brief description" separated by newlines (e.g. "Timeless principles: ... \\n Proven methodology: ..."), ' +
   '3-6 keyThemes in English, 2-4 targetAudience phrases in English, 3-5 similarBooks as "Title by Author", up to 3 notableQuotes (or empty array [] if unverified), ' +
   'and a brief 1-2 sentence cultural legacy or impact in English if applicable.';
 
@@ -271,7 +272,7 @@ export default async function handler(req, res) {
 
   const parsed = requestSchema.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ ok: false, message: 'Invalid autofill request.' });
-  const { mode, isbn, imageDataUrl, provider, model } = parsed.data;
+  const { mode, isbn, imageDataUrl, provider, model, forceRefetch } = parsed.data;
   let { title, author } = parsed.data;
 
   // Auto-split "Title by Author" if author wasn't explicitly supplied
@@ -295,6 +296,8 @@ export default async function handler(req, res) {
     else if (provider === 'gemini') apiKey = process.env.GEMINI_API_KEY?.trim() || envFallbacks.GEMINI_API_KEY || '';
     else if (provider === 'anthropic')
       apiKey = process.env.ANTHROPIC_API_KEY?.trim() || envFallbacks.ANTHROPIC_API_KEY || '';
+    else if (provider === 'ollama') apiKey = process.env.OLLAMA_API_KEY?.trim() || envFallbacks.OLLAMA_API_KEY || '';
+    else if (provider === 'unsloth') apiKey = process.env.UNSLOTH_API_KEY?.trim() || envFallbacks.UNSLOTH_API_KEY || '';
   }
 
   const creds = { apiKey, baseUrl: parsed.data.baseUrl, model };
@@ -307,16 +310,18 @@ export default async function handler(req, res) {
     // 1. Fetch existing books from database once to perform fast local duplicate detection
     const existingBooks = await listBooks().catch(() => []);
 
-    // 2. Pre-check if book is already in database based on initial input
-    if (mode === 'isbn' || mode === 'title-author') {
-      const match = findBookInList(existingBooks, { title, author, isbn });
-      if (match) {
-        return res.status(200).json({
-          ok: true,
-          alreadyExists: true,
-          existingBook: match,
-          message: `"${match.title}" is already in your database.`
-        });
+    // 2. Pre-check if book is already in database based on initial input (unless forceRefetch is true)
+    if (!forceRefetch) {
+      if (mode === 'isbn' || mode === 'title-author') {
+        const match = findBookInList(existingBooks, { title, author, isbn });
+        if (match) {
+          return res.status(200).json({
+            ok: true,
+            alreadyExists: true,
+            existingBook: match,
+            message: `"${match.title}" is already in your database.`
+          });
+        }
       }
     }
 
@@ -339,15 +344,17 @@ export default async function handler(req, res) {
       title = extracted.title;
       author = extracted.author;
 
-      // Check if the book recognized from image is already in DB
-      const imageMatch = findBookInList(existingBooks, { title, author });
-      if (imageMatch) {
-        return res.status(200).json({
-          ok: true,
-          alreadyExists: true,
-          existingBook: imageMatch,
-          message: `"${imageMatch.title}" is already in your database.`
-        });
+      // Check if the book recognized from image is already in DB (unless forceRefetch is true)
+      if (!forceRefetch) {
+        const imageMatch = findBookInList(existingBooks, { title, author });
+        if (imageMatch) {
+          return res.status(200).json({
+            ok: true,
+            alreadyExists: true,
+            existingBook: imageMatch,
+            message: `"${imageMatch.title}" is already in your database.`
+          });
+        }
       }
     }
 
@@ -438,11 +445,17 @@ export default async function handler(req, res) {
       isbn13: finalIsbn13,
       isbn: found.isbn || finalIsbn13,
       description: finalDescription,
-      coverUrl: found.coverUrl || ''
+      coverUrl: found.coverUrl || '',
+      aiProvider: provider,
+      aiModel: model || 'default'
     };
 
     return res.status(200).json({
       ok: true,
+      provider,
+      model: model || 'default',
+      aiProvider: provider,
+      aiModel: model || 'default',
       book: mergedBook
     });
   } catch (error) {

@@ -3,6 +3,7 @@ import { FiCheck, FiEye, FiEyeOff, FiRotateCcw, FiX } from 'react-icons/fi';
 import { LuSparkles, LuWand } from 'react-icons/lu';
 import { AI_PERSONAS, AI_SUMMARY_LENGTHS } from './aiPersonas';
 import DiffView from './DiffView';
+import AIModelBadge from './AIModelBadge';
 import { DEFAULT_AI_CONFIG, loadAiConfig, getActiveProviderCreds } from '@utils/admin/aiConfigStore';
 
 // text: the text to rephrase. scopeLabel: "selected text" or "whole article", for copy only.
@@ -109,8 +110,8 @@ export const AIRephraseModal = ({ isOpen, text, scopeLabel = 'selected text', on
               </h3>
               <p className='text-xs text-slate-500 dark:text-slate-400 mt-0.5'>
                 {summarizing ? 'Summarizing' : 'Rewriting'} the {scopeLabel} ({text.length.toLocaleString()} characters)
-                with {creds.provider}
               </p>
+              <AIModelBadge className='mt-1' />
             </div>
           </div>
           <button

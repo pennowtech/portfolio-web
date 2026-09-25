@@ -20,9 +20,10 @@ import {
 } from 'react-icons/fi';
 import { LuSparkles } from 'react-icons/lu';
 import { BOOK_SHELVES } from '@utils/books/bookService';
-import { createPersistedBook } from '@utils/books/bookApi';
+import { createPersistedBook, updatePersistedBook } from '@utils/books/bookApi';
 import { loadAiConfig, getActiveProviderCreds } from '@utils/admin/aiConfigStore';
 import { loadBookSettings } from '@utils/books/bookSettingsStore';
+import AIModelBadge from '../AIModelBadge';
 
 const READING_STATUSES = [
   { id: 'queued', label: 'Queued' },
@@ -194,7 +195,8 @@ export const BatchImportStudio = ({ onBookCreated, onClose, existingBooks = [] }
       apiKey: creds.apiKey,
       baseUrl: creds.baseUrl,
       model: creds.model,
-      googleBooksApiKey: bookSettings.googleBooksApiKey
+      googleBooksApiKey: bookSettings.googleBooksApiKey,
+      forceRefetch: Boolean(item.forceRefetch)
     };
 
     if (item.type === 'isbn') {
@@ -211,7 +213,7 @@ export const BatchImportStudio = ({ onBookCreated, onClose, existingBooks = [] }
     });
 
     const data = await response.json();
-    if (data.ok && data.alreadyExists && data.existingBook) {
+    if (!item.forceRefetch && data.ok && data.alreadyExists && data.existingBook) {
       return { ...data.existingBook, alreadyExists: true };
     }
     if (!data.ok || !data.book) {
@@ -459,8 +461,7 @@ export const BatchImportStudio = ({ onBookCreated, onClose, existingBooks = [] }
       try {
         const b = item.book;
         const totalPages = Math.max(1, Number(b.totalPages || b.pages) || 300);
-
-        await createPersistedBook({
+        const bookPayload = {
           title: b.title,
           author: b.author,
           shelf: b.shelf || 'technical',
@@ -483,7 +484,13 @@ export const BatchImportStudio = ({ onBookCreated, onClose, existingBooks = [] }
           publisher: b.publisher || undefined,
           publishedYear: b.publishedYear || undefined,
           legacy: b.legacy || undefined
-        });
+        };
+
+        if ((item.isOverwrite || item.alreadyExists) && b.id) {
+          await updatePersistedBook(b.id, bookPayload);
+        } else {
+          await createPersistedBook(bookPayload);
+        }
 
         savedCount++;
         setItems((prev) => prev.map((it) => (it.id === item.id ? { ...it, status: 'saved' } : it)));
@@ -512,6 +519,12 @@ export const BatchImportStudio = ({ onBookCreated, onClose, existingBooks = [] }
       {/* INPUT / STAGING STAGE                                          */}
       {/* ------------------------------------------------------------- */}
       <div className='rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/40 p-4 space-y-3 font-sans'>
+        <div className='flex flex-wrap items-center justify-between gap-2'>
+          <span className='text-[11px] font-semibold text-slate-500 dark:text-slate-400'>
+            AI model used for enrichment
+          </span>
+          <AIModelBadge />
+        </div>
         {/* Source Toggle & Upload */}
         <div className='flex flex-wrap items-center justify-between gap-3'>
           <div className='flex items-center gap-1.5 p-1 rounded-xl bg-slate-200/70 dark:bg-slate-800/80 text-xs font-bold font-sans'>
