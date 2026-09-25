@@ -186,3 +186,84 @@ export const setIssueArchived = async (projectKey, issueNumber, archived, actor)
   if (error) throw error;
   return getIssueByKey(projectKey, issueNumber);
 };
+
+const ATTACHMENT_BUCKET = 'issueboard-private';
+
+// Deletes an issue (soft delete: the row stays for the audit trail and its key is never reused, but it disappears
+// from every list, board and search). Related data is cleaned up so nothing points at a deleted issue:
+// - subtasks are deleted with their parent; an epic's children are detached instead, never deleted with it
+// - relationship links are removed, checklist items linked to a deleted subtask keep their text but are unlinked
+// - attachment files are removed from Supabase Storage to free the space
+// Returns { key, deletedSubtasks, detachedChildren } or null when the issue does not exist.
+export const deleteIssue = async (projectKey, issueNumber, actor) => {
+  const issue = await getIssueByKey(projectKey, issueNumber);
+  if (!issue) return null;
+  const project = await getProjectByKey(projectKey);
+  const admin = getIssueboardSupabaseAdmin();
+  const now = new Date().toISOString();
+
+  const { data: children, error: childrenError } = await admin
+    .from('issueboard_issues')
+    .select('id')
+    .eq('parent_issue_id', issue.id)
+    .is('deleted_at', null);
+  if (childrenError) throw childrenError;
+  const childIds = (children || []).map((child) => child.id);
+  const isEpic = issue.issueType === 'epic' || issue.type === 'epic';
+
+  const detachedChildren = isEpic ? childIds.length : 0;
+  if (isEpic && childIds.length > 0) {
+    const { error } = await admin.from('issueboard_issues').update({ parent_issue_id: null }).in('id', childIds);
+    if (error) throw error;
+  }
+  const doomedIds = [issue.id, ...(isEpic ? [] : childIds)];
+
+  // Attachment files first, so a failure leaves the issue intact rather than orphaning files.
+  const { data: attachments, error: attachmentsError } = await admin
+    .from('issueboard_attachments')
+    .select('id,object_path')
+    .in('issue_id', doomedIds)
+    .neq('state', 'deleted');
+  if (attachmentsError) throw attachmentsError;
+  if (attachments?.length) {
+    const { error: removeError } = await admin.storage
+      .from(ATTACHMENT_BUCKET)
+      .remove(attachments.map((a) => a.object_path));
+    if (removeError) throw removeError;
+    const { error: markError } = await admin
+      .from('issueboard_attachments')
+      .update({ state: 'deleted', deleted_at: now })
+      .in(
+        'id',
+        attachments.map((a) => a.id)
+      );
+    if (markError) throw markError;
+  }
+
+  for (const column of ['source_issue_id', 'target_issue_id']) {
+    const { error } = await admin.from('issueboard_relationships').delete().in(column, doomedIds);
+    if (error) throw error;
+  }
+  const { error: unlinkError } = await admin
+    .from('issueboard_checklist_items')
+    .update({ linked_subtask_id: null })
+    .in('linked_subtask_id', doomedIds);
+  if (unlinkError) throw unlinkError;
+
+  // source_reference is cleared so an idempotent retry after a deletion can create the issue again.
+  const { error: deleteError } = await admin
+    .from('issueboard_issues')
+    .update({ deleted_at: now, source_reference: null, updated_by: actor })
+    .in('id', doomedIds)
+    .is('deleted_at', null);
+  if (deleteError) throw deleteError;
+
+  await admin.from('issueboard_audit_events').insert({
+    project_id: project.id,
+    issue_id: issue.id,
+    actor,
+    action: 'issue.deleted',
+    safe_metadata: { key: issue.key, deletedSubtasks: isEpic ? 0 : childIds.length, detachedChildren }
+  });
+  return { key: issue.key, deletedSubtasks: isEpic ? 0 : childIds.length, detachedChildren };
+};

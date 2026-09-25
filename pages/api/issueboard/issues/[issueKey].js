@@ -1,4 +1,4 @@
-import { getIssueByKey, updateIssue } from '@utils/issueboard/issueService';
+import { deleteIssue, getIssueByKey, updateIssue } from '@utils/issueboard/issueService';
 import { getProjectByKey, listStatuses } from '@utils/issueboard/projectService';
 import {
   allowIssueboardMethods,
@@ -21,7 +21,7 @@ const sendDatastoreError = (res, requestId, error) => {
 
 export default async function handler(req, res) {
   const actor = await requireIssueboardAdminApi(req, res);
-  if (!actor || !allowIssueboardMethods(req, res, ['GET', 'PATCH'])) return;
+  if (!actor || !allowIssueboardMethods(req, res, ['GET', 'PATCH', 'DELETE'])) return;
   const requestId = issueboardRequestId(req);
   res.setHeader('X-Request-Id', requestId);
 
@@ -57,6 +57,32 @@ export default async function handler(req, res) {
   }
 
   if (!requireSameOriginMutation(req, res)) return;
+
+  if (req.method === 'DELETE') {
+    try {
+      const allowed = await consumeIssueboardRateLimit({
+        actor: actor.email,
+        operation: 'issues:delete',
+        limit: 30,
+        windowSeconds: 60
+      });
+      if (!allowed)
+        return res.status(429).json({
+          ok: false,
+          requestId,
+          error: { code: 'RATE_LIMITED', message: 'Too many requests. Try again shortly.' }
+        });
+      const result = await deleteIssue(projectKey, issueNumber, actor.email);
+      if (!result)
+        return res
+          .status(404)
+          .json({ ok: false, requestId, error: { code: 'ISSUE_NOT_FOUND', message: 'Issue not found.' } });
+      return res.status(200).json({ ok: true, requestId, ...result });
+    } catch (error) {
+      return sendDatastoreError(res, requestId, error);
+    }
+  }
+
   const parsed = updateIssueSchema.safeParse(req.body);
   if (!parsed.success)
     return res.status(400).json({ ok: false, requestId, error: validationErrorResponse(parsed.error) });
