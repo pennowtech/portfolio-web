@@ -27,9 +27,11 @@ Use this endpoint whenever you are building a "Report a Problem", "Send Feedback
 1. **Private Issueboard**: An issue is created immediately in your private Issueboard.
 2. **Lingora Auto-Routing**: If `targetRepo` is `'Lingora'` (or `'lemony'`), it is automatically routed to project **Lemony** (project key **`LEM`**).
 3. **Automatic Categories & Labels**: If the user selects a category (like `AudioBug` or `GrammarChecker`), the system automatically sets the issue type (e.g. `bug`) and creates a label with an accessible color if it doesn't already exist.
-4. **Attachment Hosting**: Any screenshots, voice audio logs, or text crash dumps sent with the report are automatically saved to our private Supabase storage bucket (`issueboard-private`) with signed download links.
-5. **GitHub Forwarding**: If a GitHub App is configured, the issue is forwarded to the corresponding GitHub repository with the execution metadata and embedded links to all attachments.
-6. **Graceful Safety**: If GitHub is temporarily unavailable, down, or not yet installed on the repo, the request still succeeds (`200 OK`) and the ticket is safely preserved in our private Issueboard.
+4. **Attachment Hosting**: Screenshots, logs and other files are stored as objects in the private Supabase Storage bucket (`issueboard-private`). The database only keeps metadata (name, type, size, checksum, storage path), never the file bytes.
+5. **GitHub Forwarding**: If a GitHub App is configured, the issue is forwarded to the corresponding GitHub repository with the execution metadata. GitHub's API cannot upload images, so each screenshot is embedded through a permanent signed link on this site (`/api/attachment-link/<id>?sig=…`) that redirects to a fresh short-lived storage URL each time it is opened. Only images are served this way; other files are listed by name and stay on the Issueboard ticket.
+6. **Graceful Safety**: If GitHub is temporarily unavailable, down, or not yet installed on the repo, the request still succeeds (`200 OK`) and the ticket is safely preserved in our private Issueboard. If the ticket or an attachment could not be saved, the response says so in a `warnings` array instead of failing silently.
+7. **Safe Retries**: Send an `Idempotency-Key` header (any unique string per user action, such as a UUID) and retry freely after a timeout: a repeat returns the existing ticket with `duplicate: true` instead of filing another issue.
+8. **Size Limit**: A request may be at most **4 MB in total**, attachments included (Vercel rejects larger bodies). Base64 inside JSON is about a third bigger than the file, so prefer multipart uploads and compress screenshots.
 
 ---
 
@@ -37,18 +39,19 @@ Use this endpoint whenever you are building a "Report a Problem", "Send Feedback
 
 You can send these as standard **JSON** (`Content-Type: application/json`) or as **Multipart Form Data** (`multipart/form-data`).
 
-| Parameter     | Type   | Required | Description                                                                                | Example                                                               |
-| :------------ | :----- | :------: | :----------------------------------------------------------------------------------------- | :-------------------------------------------------------------------- |
-| `title`       | string | **Yes**  | A short, clear headline describing the problem or suggestion.                              | `"Audio cuts off after 10 seconds"`                                   |
-| `body`        | string | **Yes**  | Full description, steps to reproduce, or feedback details.                                 | `"When speaking a sentence longer than 10s..."`                       |
-| `targetRepo`  | string | **Yes**  | The destination repository or project name. Use `'Lingora'` for the Lemony project.        | `'Lingora'`                                                           |
-| `targetOwner` | string |    No    | GitHub organization or owner. Defaults to `'pennowtech'`.                                  | `'pennowtech'`                                                        |
-| `category`    | string |    No    | Category name. Auto-maps to issue type and creates project label. Defaults to `'General'`. | `'AudioBug'`, `'UI'`, `'Vocabulary'`                                  |
-| `email`       | string |    No    | The end-user's contact email (if provided).                                                | `'user@example.com'`                                                  |
-| `app`         | string |    No    | Client application identifier. Automatically tagged as `app:<app>`.                        | `'lingora-mobile'`, `'lingora-web'`                                   |
-| `platform`    | string |    No    | Client platform or operating system version.                                               | `'iOS 18.2'`, `'Android 14'`, `'macOS 15'`                            |
-| `deviceMeta`  | string |    No    | Device hardware model, app build number, or diagnostic info.                               | `'iPhone 15 Pro, Build 1.0.4 (28)'`                                   |
-| `attachments` | array  |    No    | Screenshots or files. Accepts Base64 data strings or file objects.                         | `[{ "filename": "shot.png", "base64": "data:image/png;base64,..." }]` |
+| Parameter                  | Type   | Required | Description                                                                                | Example                                                               |
+| :------------------------- | :----- | :------: | :----------------------------------------------------------------------------------------- | :-------------------------------------------------------------------- |
+| `title`                    | string | **Yes**  | A short, clear headline describing the problem or suggestion.                              | `"Audio cuts off after 10 seconds"`                                   |
+| `body`                     | string | **Yes**  | Full description, steps to reproduce, or feedback details.                                 | `"When speaking a sentence longer than 10s..."`                       |
+| `targetRepo`               | string | **Yes**  | The destination repository or project name. Use `'Lingora'` for the Lemony project.        | `'Lingora'`                                                           |
+| `targetOwner`              | string |    No    | GitHub organization or owner. Defaults to `'pennowtech'`.                                  | `'pennowtech'`                                                        |
+| `category`                 | string |    No    | Category name. Auto-maps to issue type and creates project label. Defaults to `'General'`. | `'AudioBug'`, `'UI'`, `'Vocabulary'`                                  |
+| `email`                    | string |    No    | The end-user's contact email (if provided).                                                | `'user@example.com'`                                                  |
+| `app`                      | string |    No    | Client application identifier. Automatically tagged as `app:<app>`.                        | `'lingora-mobile'`, `'lingora-web'`                                   |
+| `platform`                 | string |    No    | Client platform or operating system version.                                               | `'iOS 18.2'`, `'Android 14'`, `'macOS 15'`                            |
+| `deviceMeta`               | string |    No    | Device hardware model, app build number, or diagnostic info.                               | `'iPhone 15 Pro, Build 1.0.4 (28)'`                                   |
+| `attachments`              | array  |    No    | Screenshots or files. Accepts Base64 data strings or file objects.                         | `[{ "filename": "shot.png", "base64": "data:image/png;base64,..." }]` |
+| `Idempotency-Key` (header) | string |    No    | Makes retries safe (see above). Also accepted as an `idempotencyKey` field.                | `'6f1c3f52-…'`                                                        |
 
 ---
 
@@ -130,15 +133,15 @@ Pass your key in any of these three ways:
 
 1. **HTTP Header (Recommended)**:
    ```http
-   Authorization: Bearer ib_live_0e1ad9ddfd55228b48c94720569649a2c2a99738a0ace28b
+   Authorization: Bearer ib_live_YOUR_API_KEY
    ```
 2. **Custom Header**:
    ```http
-   X-API-Key: ib_live_0e1ad9ddfd55228b48c94720569649a2c2a99738a0ace28b
+   X-API-Key: ib_live_YOUR_API_KEY
    ```
 3. **Query Parameter**:
    ```http
-   POST /api/issues?apiKey=ib_live_0e1ad9ddfd55228b48c94720569649a2c2a99738a0ace28b
+   POST /api/issues?apiKey=ib_live_YOUR_API_KEY
    ```
 
 ---
@@ -205,7 +208,7 @@ const createSprintTask = async () => {
 
 ```bash
 curl -X POST https://singhbuildstech.com/api/issues \
-  -H "Authorization: Bearer ib_live_0e1ad9ddfd55228b48c94720569649a2c2a99738a0ace28b" \
+  -H "Authorization: Bearer ib_live_YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "projectKey": "PORT",
@@ -223,7 +226,7 @@ curl -X POST https://singhbuildstech.com/api/issues \
 import os
 import requests
 
-API_KEY = os.getenv("ISSUEBOARD_API_KEY", "ib_live_0e1ad9ddfd55228b48c94720569649a2c2a99738a0ace28b")
+API_KEY = os.getenv("ISSUEBOARD_API_KEY", "ib_live_YOUR_API_KEY")
 
 response = requests.post(
     "https://singhbuildstech.com/api/issues",
@@ -284,7 +287,7 @@ node -e "console.log('ib_live_' + require('crypto').randomBytes(24).toString('he
 
 - **Locally**: Add or update it in your `.env.local`:
   ```bash
-  ISSUEBOARD_API_KEY=ib_live_0e1ad9ddfd55228b48c94720569649a2c2a99738a0ace28b
+  ISSUEBOARD_API_KEY=ib_live_YOUR_API_KEY
   ```
 - **Production**: Add it in **Vercel Settings → Environment Variables** for `Production`, `Preview`, and `Development` environments.
 

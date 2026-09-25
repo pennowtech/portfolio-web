@@ -1,8 +1,9 @@
 import { isIssueboardSupabaseConfigured, normalizeIssueboardDatastoreError } from '@utils/issueboard/supabaseAdmin';
 import { consumeIssueboardRateLimit, issueboardRequestId } from '@utils/issueboard/api';
 import { authenticateExternalApi } from '@utils/issueboard/externalAuth';
-import { createExternalIssue } from '@utils/issueboard/externalIssueService';
-import { readRawBody, RequestBodyTooLargeError } from '@utils/issueboard/readRawBody';
+import { createExternalIssue, idempotencyReference } from '@utils/issueboard/externalIssueService';
+import { readRawBody, RequestBodyTooLargeError, SERVERLESS_BODY_LIMIT_BYTES } from '@utils/issueboard/readRawBody';
+import { stableAttachmentUrl } from '@utils/issueboard/attachmentLinks';
 
 export const config = {
   api: {
@@ -22,7 +23,10 @@ export default async function handler(req, res) {
   // 1. Full CORS Support for external clients, desktop apps, webhooks & mobile apps
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-API-Key, X-Request-Id');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Content-Type, Authorization, X-API-Key, X-Request-Id, Idempotency-Key'
+  );
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -57,8 +61,13 @@ export default async function handler(req, res) {
         labels: 'array of strings or comma-separated string (e.g. ["frontend", "bug"])',
         checklist: 'array of items (strings or { body: string, isComplete: boolean })',
         attachments: 'array of { filename: string, mimeType?: string, base64?: string }',
-        sourceReference: 'string (Optional external tracking ID/URL)'
-      }
+        sourceReference: 'string (Optional external tracking ID/URL; unique -- reusing one returns the existing issue)'
+      },
+      headers: {
+        'Idempotency-Key':
+          'Optional. Retrying a request with the same key returns the issue it already created (duplicate: true) instead of creating another.'
+      },
+      limits: 'Request body up to 4 MB in total (attachments included). Prefer multipart/form-data for images.'
     });
   }
 
@@ -105,7 +114,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const rawBuffer = await readRawBody(req);
+    const rawBuffer = await readRawBody(req, SERVERLESS_BODY_LIMIT_BYTES);
     const contentType = req.headers['content-type'] || '';
     let payload = {};
 
@@ -202,20 +211,38 @@ export default async function handler(req, res) {
       });
     }
 
-    // 8. Create Issue via External Issue Service
+    // 8. Create Issue via External Issue Service. An Idempotency-Key header (used when the body has no
+    // sourceReference of its own) makes retries safe.
+    const headerKey = req.headers['idempotency-key'];
+    if (!payload.sourceReference && typeof headerKey === 'string' && headerKey.trim()) {
+      payload.sourceReference = idempotencyReference(payload.projectKey, headerKey);
+    }
     const createdIssue = await createExternalIssue(payload, auth.actor);
 
-    return res.status(201).json({
+    // Storage URLs expire in minutes; images also get a permanent signed link for pasting into other tools.
+    const issue = {
+      ...createdIssue,
+      attachments: (createdIssue.attachments || []).map((a) => ({
+        ...a,
+        permanentUrl: a.mimeType?.startsWith('image/') ? stableAttachmentUrl(a.id) : null
+      }))
+    };
+
+    return res.status(createdIssue.duplicate ? 200 : 201).json({
       ok: true,
       requestId,
-      issue: createdIssue
+      ...(createdIssue.duplicate ? { duplicate: true } : {}),
+      issue
     });
   } catch (error) {
     if (error instanceof RequestBodyTooLargeError) {
       return res.status(413).json({
         ok: false,
         requestId,
-        error: { code: 'PAYLOAD_TOO_LARGE', message: error.message }
+        error: {
+          code: 'PAYLOAD_TOO_LARGE',
+          message: 'Request is too large (limit 4 MB in total, including attachments). Send fewer or smaller images.'
+        }
       });
     }
     console.error('Error in /api/issues:', error);

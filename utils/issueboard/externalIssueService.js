@@ -4,8 +4,36 @@ import { getIssueByKey, createIssue, setIssueSprint } from './issueService';
 import { findOrCreateLabel, attachLabel } from './labelService';
 import { createChecklist, addChecklistItem } from './checklistService';
 import { uploadAttachmentDirect } from './attachmentService';
+import { createHash } from 'node:crypto';
 
 const issueKeyPattern = /^([A-Z][A-Z0-9]{1,9})-(\d{1,10})$/;
+
+// Turns a caller-supplied Idempotency-Key into the `source_reference` stored on the issue. (source, source_reference)
+// is unique in the database, so the same key can only ever name one issue. Scoped by project so two projects
+// can't collide on a short key like "1".
+export const idempotencyReference = (projectKey, idempotencyKey) => {
+  const key = String(idempotencyKey || '').trim();
+  if (!key) return null;
+  const digest = createHash('sha256').update(key).digest('hex').slice(0, 32);
+  return `idem:${String(projectKey).trim().toUpperCase()}:${digest}`;
+};
+
+const findIssueBySourceReference = async (admin, sourceReference) => {
+  const { data, error } = await admin
+    .from('issueboard_issues')
+    .select('issue_number,project_id,deleted_at')
+    .eq('source', 'api')
+    .eq('source_reference', sourceReference)
+    .maybeSingle();
+  if (error) throw error;
+  if (!data || data.deleted_at) return null;
+  const { data: project } = await admin
+    .from('issueboard_projects')
+    .select('key')
+    .eq('id', data.project_id)
+    .maybeSingle();
+  return project?.key ? getIssueByKey(project.key, Number(data.issue_number)) : null;
+};
 
 /**
  * Creates an issue from external API callers (CLI, webhooks, mobile apps, integrations)
@@ -38,6 +66,13 @@ export const createExternalIssue = async (input, actor = 'api') => {
     error.code = 'PROJECT_NOT_FOUND';
     error.status = 404;
     throw error;
+  }
+
+  // 0. Idempotency: a retry of a request that already created an issue returns that issue instead of a duplicate.
+  const sourceReference = input.sourceReference ? String(input.sourceReference).slice(0, 500) : null;
+  if (sourceReference) {
+    const existing = await findIssueBySourceReference(admin, sourceReference);
+    if (existing) return { ...existing, attachments: [], attachmentErrors: [], duplicate: true };
   }
 
   // 1. Resolve parent issue if provided as parentIssueKey (e.g., "PORT-12")
@@ -111,10 +146,10 @@ export const createExternalIssue = async (input, actor = 'api') => {
 
   // 4. Update source to 'api' and record source_reference if provided
   const sourceUpdates = { source: 'api' };
-  if (input.sourceReference) {
-    sourceUpdates.source_reference = String(input.sourceReference).slice(0, 500);
-  }
-  await admin.from('issueboard_issues').update(sourceUpdates).eq('id', created.id);
+  if (sourceReference) sourceUpdates.source_reference = sourceReference;
+  const { error: sourceError } = await admin.from('issueboard_issues').update(sourceUpdates).eq('id', created.id);
+  // Not fatal: the issue exists. (Most likely a concurrent retry claimed the same reference first.)
+  if (sourceError) console.error('Failed to record source for external issue:', sourceError.message);
 
   // 5. Target sprint assignment (sprintId or sprint: 'active')
   if (issueType !== 'epic') {
@@ -192,6 +227,7 @@ export const createExternalIssue = async (input, actor = 'api') => {
 
   // 8. Attachments: process direct file/image uploads
   const createdAttachments = [];
+  const attachmentErrors = [];
   if (Array.isArray(input.attachments) && input.attachments.length > 0) {
     for (const att of input.attachments) {
       try {
@@ -206,9 +242,12 @@ export const createExternalIssue = async (input, actor = 'api') => {
           buffer = Buffer.from(cleanBase64, 'base64');
         }
 
-        if (!buffer || buffer.length === 0) continue;
-
         const filename = att.filename || att.originalFilename || 'attachment';
+        if (!buffer || buffer.length === 0) {
+          attachmentErrors.push({ filename, code: 'EMPTY' });
+          continue;
+        }
+
         let mimeType = att.mimeType || att.contentType || 'application/octet-stream';
         if (mimeType === 'application/octet-stream') {
           const ext = filename.split('.').pop()?.toLowerCase();
@@ -231,9 +270,13 @@ export const createExternalIssue = async (input, actor = 'api') => {
 
         if (result?.attachment) {
           createdAttachments.push(result.attachment);
+        } else {
+          // uploadAttachmentDirect reports validation failures (type, size, invalid image) as { error }.
+          attachmentErrors.push({ filename, code: result?.error || 'UPLOAD_FAILED' });
         }
       } catch (attErr) {
         console.error('Failed to upload external attachment:', attErr);
+        attachmentErrors.push({ filename: att?.filename || 'attachment', code: 'UPLOAD_FAILED' });
       }
     }
   }
@@ -244,6 +287,7 @@ export const createExternalIssue = async (input, actor = 'api') => {
     ...freshIssue,
     labels: createdLabels.length > 0 ? createdLabels : freshIssue.labels,
     checklists: createdChecklists,
-    attachments: createdAttachments
+    attachments: createdAttachments,
+    attachmentErrors
   };
 };

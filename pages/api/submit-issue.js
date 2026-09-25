@@ -1,8 +1,9 @@
 import { App } from 'octokit';
 import { isIssueboardSupabaseConfigured } from '@utils/issueboard/supabaseAdmin';
 import { getProjectByKey, createProject } from '@utils/issueboard/projectService';
-import { createExternalIssue } from '@utils/issueboard/externalIssueService';
-import { readRawBody, RequestBodyTooLargeError } from '@utils/issueboard/readRawBody';
+import { createExternalIssue, idempotencyReference } from '@utils/issueboard/externalIssueService';
+import { readRawBody, RequestBodyTooLargeError, SERVERLESS_BODY_LIMIT_BYTES } from '@utils/issueboard/readRawBody';
+import { issueTicketUrl, stableAttachmentUrl } from '@utils/issueboard/attachmentLinks';
 import { consumeIssueboardRateLimit } from '@utils/issueboard/api';
 
 export const config = {
@@ -142,11 +143,64 @@ const extractAttachments = async (payload, formData) => {
   return attachments;
 };
 
+// Best-effort per-instance limiter, used only when the shared (Supabase) limiter is unavailable -- for example
+// before the database is configured. Without it the public endpoint would either 500 or be completely unguarded.
+const localHits = new Map();
+const consumeLocalRateLimit = (actor, limit, windowMs) => {
+  const now = Date.now();
+  const recent = (localHits.get(actor) || []).filter((at) => now - at < windowMs);
+  if (recent.length >= limit) {
+    localHits.set(actor, recent);
+    return false;
+  }
+  recent.push(now);
+  localHits.set(actor, recent);
+  if (localHits.size > 5000)
+    for (const [key, hits] of localHits) if (!hits.some((at) => now - at < windowMs)) localHits.delete(key);
+  return true;
+};
+
+const consumeSubmitRateLimit = async (actor) => {
+  if (isIssueboardSupabaseConfigured()) {
+    try {
+      return await consumeIssueboardRateLimit({
+        actor,
+        operation: 'submit-issue:create',
+        limit: 10,
+        windowSeconds: 60
+      });
+    } catch (error) {
+      console.error('Shared rate limiter unavailable, using local limiter:', error.message);
+    }
+  }
+  return consumeLocalRateLimit(actor, 10, 60_000);
+};
+
+// What the caller sees for an issueboard attachment: images get a permanent link (the raw storage URL expires in
+// minutes); other files are listed by name only.
+const describeAttachments = (attachments = []) =>
+  attachments.map((a) => ({
+    id: a.id,
+    filename: a.originalFilename,
+    mimeType: a.mimeType,
+    url: a.mimeType?.startsWith('image/') ? stableAttachmentUrl(a.id) : null
+  }));
+
+const issueboardSummary = (issue) => ({
+  key: issue.key,
+  issueNumber: issue.issueNumber,
+  url: issueTicketUrl(issue.key),
+  attachments: describeAttachments(issue.attachments)
+});
+
 export default async function handler(req, res) {
   // 1. Full CORS Support (Required for React Native and Tauri Desktop custom schemes)
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-API-Key, X-Request-Id');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Content-Type, Authorization, X-API-Key, X-Request-Id, Idempotency-Key'
+  );
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -162,12 +216,7 @@ export default async function handler(req, res) {
   const clientIp = String(req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown')
     .split(',')[0]
     .trim();
-  const allowed = await consumeIssueboardRateLimit({
-    actor: clientIp,
-    operation: 'submit-issue:create',
-    limit: 10,
-    windowSeconds: 60
-  });
+  const allowed = await consumeSubmitRateLimit(clientIp);
   if (!allowed) {
     return res.status(429).json({ success: false, error: 'Too many requests. Try again shortly.' });
   }
@@ -176,7 +225,7 @@ export default async function handler(req, res) {
   let formData = null;
 
   try {
-    const rawBuffer = await readRawBody(req);
+    const rawBuffer = await readRawBody(req, SERVERLESS_BODY_LIMIT_BYTES);
     const contentType = req.headers['content-type'] || '';
 
     // 2. Parse Body (Supports both multipart/form-data and application/json)
@@ -209,7 +258,10 @@ export default async function handler(req, res) {
     }
   } catch (parseErr) {
     if (parseErr instanceof RequestBodyTooLargeError) {
-      return res.status(413).json({ success: false, error: parseErr.message });
+      return res.status(413).json({
+        success: false,
+        error: 'Request is too large (limit 4 MB in total, including attachments). Send fewer or smaller images.'
+      });
     }
     return res.status(400).json({
       success: false,
@@ -242,7 +294,12 @@ export default async function handler(req, res) {
 
   // 5. Post issue to our Issueboard (Lemony/LEM for Lingora, or PORT)
   let issueboardIssue = null;
-  if (isIssueboardSupabaseConfigured()) {
+  // Anything the caller should know went wrong without the whole request failing.
+  const warnings = [];
+  const idempotencyKey = String(req.headers['idempotency-key'] || payload?.idempotencyKey || '').trim();
+  if (!isIssueboardSupabaseConfigured()) {
+    warnings.push('Issue board storage is not configured; no ticket was created.');
+  } else {
     try {
       const projectKey = await resolveTargetProject(targetRepo);
       const issueType = resolveIssueType(category);
@@ -262,43 +319,60 @@ export default async function handler(req, res) {
           assignee: null,
           labels: labelsToAttach,
           attachments,
-          sourceReference: `github:${targetOwner}/${targetRepo}`
+          // Only set when the caller sent an Idempotency-Key. (source, source_reference) is unique, so a shared
+          // constant here would make every submission after the first lose its reference.
+          sourceReference: idempotencyKey ? idempotencyReference(projectKey, idempotencyKey) : null
         },
         email?.trim() || 'user-report'
       );
     } catch (ibError) {
       console.error('Error posting issue to Issueboard in submit-issue:', ibError);
+      warnings.push('The issue board ticket could not be created.');
     }
   }
 
-  // 6. Forward to GitHub (keep as before)
+  if (issueboardIssue?.attachmentErrors?.length) {
+    warnings.push(
+      `Some attachments were not saved: ${issueboardIssue.attachmentErrors
+        .map((a) => `${a.filename} (${String(a.code).toLowerCase().replace(/_/g, ' ')})`)
+        .join(', ')}.`
+    );
+  }
+
+  // A retry of a request that already succeeded: the ticket (and its GitHub issue) exist, so don't file another.
+  if (issueboardIssue?.duplicate) {
+    return res.status(200).json({
+      success: true,
+      duplicate: true,
+      issueUrl: null,
+      issueNumber: null,
+      issueboard: issueboardSummary(issueboardIssue),
+      notice: 'This request was already received; no new issue was created.'
+    });
+  }
+
+  // 6. Forward to GitHub
+  const boardInfo = issueboardIssue ? issueboardSummary(issueboardIssue) : null;
+  const respond = (fields) =>
+    res.status(200).json({
+      success: true,
+      issueUrl: null,
+      issueNumber: null,
+      issueboard: boardInfo,
+      ...fields,
+      ...(warnings.length > 0 ? { warnings } : {})
+    });
+
   const app = getGitHubApp();
   if (!app) {
-    // If GitHub credentials are not configured, but Issueboard succeeded, return success with Issueboard info
-    if (issueboardIssue) {
-      return res.status(200).json({
-        success: true,
-        issueUrl: null,
-        issueNumber: null,
-        issueboard: {
-          key: issueboardIssue.key,
-          issueNumber: issueboardIssue.issueNumber,
-          url: `https://singhbuildstech.com/admin/issueboard?issue=${issueboardIssue.key}`,
-          attachments: (issueboardIssue.attachments || []).map((a) => ({
-            id: a.id,
-            filename: a.originalFilename,
-            mimeType: a.mimeType,
-            url: a.url
-          }))
-        },
-        notice: 'Issue saved to Issueboard. GitHub App credentials are not configured on the server.'
-      });
-    }
+    if (issueboardIssue)
+      return respond({ notice: 'Issue saved to Issueboard. GitHub App credentials are not configured.' });
 
     console.error('GITHUB_APP_ID or GITHUB_PRIVATE_KEY is not configured in server environment.');
     return res.status(500).json({
       success: false,
-      error: 'GitHub App credentials are not configured on the server.'
+      error: 'GitHub App credentials are not configured on the server.',
+      ...(warnings.length > 0 ? { warnings } : {})
     });
   }
 
@@ -310,17 +384,7 @@ export default async function handler(req, res) {
 
     if (!installation?.id) {
       if (issueboardIssue) {
-        return res.status(200).json({
-          success: true,
-          issueUrl: null,
-          issueNumber: null,
-          issueboard: {
-            key: issueboardIssue.key,
-            issueNumber: issueboardIssue.issueNumber,
-            url: `https://singhbuildstech.com/admin/issueboard?issue=${issueboardIssue.key}`
-          },
-          notice: `GitHub App is not installed for ${targetOwner}. Issue was safely saved to Issueboard.`
-        });
+        return respond({ notice: `GitHub App is not installed for ${targetOwner}. Issue was saved to Issueboard.` });
       }
 
       return res.status(404).json({
@@ -339,21 +403,24 @@ export default async function handler(req, res) {
       `- **Origin Client Application:** ${platform}`,
       `- **Operating System / Build:** ${deviceMeta || 'No diagnostic context provided.'}`,
       issueboardIssue
-        ? `- **Issueboard Ticket:** [${issueboardIssue.key}](https://singhbuildstech.com/admin/issueboard?issue=${issueboardIssue.key})`
+        ? `- **Issueboard Ticket:** [${issueboardIssue.key}](${issueTicketUrl(issueboardIssue.key)})`
         : null,
       `- **Generated Timestamp:** ${new Date().toISOString()}`
     ].filter(Boolean);
 
-    // Format attachment links for GitHub markdown
+    // GitHub's API cannot upload images, so screenshots stay in Supabase Storage and the issue embeds a permanent
+    // signed link that redirects to a fresh short-lived URL each time it is opened. Other files are only named.
+    const altText = (name) =>
+      String(name || 'screenshot')
+        .replace(/[[\]()\n\r]/g, ' ')
+        .trim() || 'screenshot';
     let attachmentMarkdown = '';
-    if (issueboardIssue?.attachments?.length > 0) {
-      const links = issueboardIssue.attachments.map((att) => {
-        const isImg = att.mimeType?.startsWith('image/');
-        if (isImg && att.url) {
-          return `![${att.originalFilename || 'screenshot'}](${att.url})`;
-        }
-        return `- 📄 [${att.originalFilename || 'file'}](${att.url || '#'})`;
-      });
+    if (boardInfo?.attachments?.length > 0) {
+      const links = boardInfo.attachments.map((att) =>
+        att.url
+          ? `![${altText(att.filename)}](${att.url})`
+          : `- 📄 ${altText(att.filename)} (attached to the Issueboard ticket)`
+      );
       attachmentMarkdown = `\n\n---\n### 📎 Attachments\n` + links.join('\n');
     }
 
@@ -382,45 +449,17 @@ export default async function handler(req, res) {
       labels
     });
 
-    return res.status(200).json({
-      success: true,
-      issueUrl: response.data.html_url,
-      issueNumber: response.data.number,
-      issueboard: issueboardIssue
-        ? {
-            key: issueboardIssue.key,
-            issueNumber: issueboardIssue.issueNumber,
-            url: `https://singhbuildstech.com/admin/issueboard?issue=${issueboardIssue.key}`,
-            attachments: (issueboardIssue.attachments || []).map((a) => ({
-              id: a.id,
-              filename: a.originalFilename,
-              mimeType: a.mimeType,
-              url: a.url
-            }))
-          }
-        : null
-    });
+    return respond({ issueUrl: response.data.html_url, issueNumber: response.data.number });
   } catch (error) {
     console.error('Internal Request Router Error:', error);
 
     // If GitHub failed but Issueboard succeeded, still provide a positive response
-    if (issueboardIssue) {
-      return res.status(200).json({
-        success: true,
-        issueUrl: null,
-        issueNumber: null,
-        issueboard: {
-          key: issueboardIssue.key,
-          issueNumber: issueboardIssue.issueNumber,
-          url: `https://singhbuildstech.com/admin/issueboard?issue=${issueboardIssue.key}`
-        },
-        notice: 'Issue saved to Issueboard. GitHub forward failed.'
-      });
-    }
+    if (issueboardIssue) return respond({ notice: 'Issue saved to Issueboard. GitHub forward failed.' });
 
     return res.status(500).json({
       success: false,
-      error: error instanceof Error ? error.message : 'Internal Server Processing Failure'
+      error: 'The issue could not be created. Please try again later.',
+      ...(warnings.length > 0 ? { warnings } : {})
     });
   }
 }
