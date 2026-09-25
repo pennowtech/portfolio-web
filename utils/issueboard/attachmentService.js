@@ -315,3 +315,22 @@ export const uploadAttachmentDirect = async (
 
   return { attachment: { ...toAttachment(attachment), url: signed?.signedUrl || null } };
 };
+
+// A fresh short-lived download URL for one ready *image*, addressed by attachment id alone. Used by the signed
+// public link (attachmentLinks.js); documents are deliberately not served this way.
+export const getReadyImageAttachmentUrl = async (attachmentId) => {
+  const admin = getIssueboardSupabaseAdmin();
+  const { data, error } = await admin
+    .from('issueboard_attachments')
+    .select('object_path,mime_type')
+    .eq('id', attachmentId)
+    .eq('state', 'ready')
+    .maybeSingle();
+  if (error) throw error;
+  if (!data || !isImageMime(data.mime_type)) return null;
+  const { data: signed, error: signError } = await admin.storage
+    .from(BUCKET)
+    .createSignedUrl(data.object_path, SIGNED_DOWNLOAD_TTL_SECONDS);
+  if (signError) throw signError;
+  return signed?.signedUrl || null;
+};

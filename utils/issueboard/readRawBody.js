@@ -5,6 +5,11 @@
 // intentionally public and unauthenticated.
 export const MAX_REQUEST_BODY_BYTES = 20 * 1024 * 1024; // 20 MB
 
+// The two public issue routes run as Vercel functions, which reject request bodies over ~4.5 MB before our code
+// runs. Capping at 4 MB lets us return a clear error instead of an opaque platform one. (Base64 attachments in a
+// JSON body count ~33% larger than the file, so prefer multipart uploads for screenshots.)
+export const SERVERLESS_BODY_LIMIT_BYTES = 4 * 1024 * 1024;
+
 export class RequestBodyTooLargeError extends Error {
   constructor() {
     super('Request body exceeds the maximum allowed size.');
