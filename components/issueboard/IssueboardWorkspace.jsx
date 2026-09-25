@@ -110,6 +110,23 @@ const stateDotClass = {
   Normal: 'bg-slate-400'
 };
 
+// Backlog rows show a work state only when it says something: Normal/Active is the default and stays quiet.
+const WorkStateBadge = ({ workState }) => {
+  const label = capitalize(String(workState || '').toLowerCase());
+  if (!label || label === 'Normal' || label === 'Active') return null;
+  return (
+    <span
+      className={`inline-flex shrink-0 items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-bold leading-none ${
+        stateCapsulePresentation[label] || stateCapsulePresentation.Normal
+      }`}
+      title={`Work state: ${label}`}
+    >
+      <span className={`size-1.5 rounded-full ${stateDotClass[label] || 'bg-slate-400'}`} aria-hidden='true' />
+      {label}
+    </span>
+  );
+};
+
 const severityCapsulePresentation = {
   Highest:
     'bg-rose-600/15 text-rose-700 border-rose-500/30 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800/60',
@@ -742,6 +759,7 @@ const IssueRow = ({ issue, returnTo, sprintOptions, onMoveSprint }) => (
       <div className='flex items-center gap-2'>
         <TypeIcon type={issue.type} />
         <strong className='text-sm'>{issue.title}</strong>
+        <WorkStateBadge workState={issue.workState} />
       </div>
       <IssueMeta issue={issue} showPriority />
     </IssueLink>
@@ -1311,6 +1329,7 @@ const BacklogIssueRow = ({ issue, sprints, returnTo, onMoveSprint, isChild = fal
         <span className='truncate font-medium text-slate-800 dark:text-slate-200' title={issue.title}>
           {issue.title}
         </span>
+        <WorkStateBadge workState={issue.workState} />
       </div>
       <div className='flex items-center gap-2.5 shrink-0'>
         <span
@@ -2051,12 +2070,15 @@ const BacklogHighDensity = ({
                     </Link>
                   </td>
                   <td className='p-2.5 font-sans font-semibold text-slate-800 dark:text-slate-200'>
-                    <Link
-                      href={issueHref(issue.key, returnTo)}
-                      className='hover:text-emerald-600 truncate block max-w-md'
-                    >
-                      {issue.title}
-                    </Link>
+                    <div className='flex items-center gap-2'>
+                      <Link
+                        href={issueHref(issue.key, returnTo)}
+                        className='hover:text-emerald-600 truncate block max-w-md'
+                      >
+                        {issue.title}
+                      </Link>
+                      <WorkStateBadge workState={issue.workState} />
+                    </div>
                   </td>
                   <td className='p-2.5 font-sans'>
                     <span className='inline-flex items-center gap-1 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold text-slate-700 dark:bg-slate-800 dark:text-slate-300'>
@@ -3043,7 +3065,8 @@ const Board = ({
   }, [data.projectUsers]);
 
   useEffect(() => {
-    if (!project?.key) return;
+    // The data hook already loads project users with the board; only fetch when it came back empty.
+    if (!project?.key || data.projectUsers?.length) return;
     let cancelled = false;
     fetch(`/api/issueboard/projects/${encodeURIComponent(project.key)}/users`)
       .then((res) => res.json())
@@ -3055,7 +3078,7 @@ const Board = ({
     return () => {
       cancelled = true;
     };
-  }, [project?.key]);
+  }, [project?.key, data.projectUsers?.length]);
 
   const assigneeOptions = useMemo(() => {
     const names = new Set();
@@ -3119,9 +3142,11 @@ const Board = ({
   const isClosedSprint = targetSprint?.state === 'closed';
   const isPlannedSprint = targetSprint?.state === 'planned';
 
-  const activeIssues = issues.filter(
-    (issue) => !issue.archivedAt && (!targetSprint || issue.sprintId === targetSprint.id)
-  );
+  // With no sprint there is nothing to show: the backlog is not a sprint. (Previously a missing sprint matched
+  // every issue, so the board listed the whole backlog.)
+  const activeIssues = targetSprint
+    ? issues.filter((issue) => !issue.archivedAt && issue.sprintId === targetSprint.id)
+    : [];
   const allParentIssues = activeIssues.filter((issue) => !issue.parentIssueId);
   const subtasksByParent = {};
   issues
@@ -3291,7 +3316,11 @@ const Board = ({
 
             {parentIssues.length === 0 ? (
               <p className='p-8 text-center text-sm text-slate-500'>
-                {filtersActive ? 'No parent issues match these filters.' : 'No parent issues in this sprint.'}
+                {filtersActive
+                  ? 'No parent issues match these filters.'
+                  : targetSprint
+                    ? 'No parent issues in this sprint.'
+                    : 'No sprint is running. Create and start a sprint from the Backlog to see its work here.'}
               </p>
             ) : (
               parentIssues.map((issue) => {
@@ -3415,7 +3444,11 @@ const Board = ({
         <div onScroll={handleBoardScroll} className='flex-1 min-h-0 sprint-board-scroll space-y-4 pr-1.5'>
           {parentIssues.length === 0 ? (
             <p className='rounded-2xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-500 dark:border-slate-800 dark:bg-slate-900'>
-              {filtersActive ? 'No parent issues match these filters.' : 'No parent issues in this sprint.'}
+              {filtersActive
+                ? 'No parent issues match these filters.'
+                : targetSprint
+                  ? 'No parent issues in this sprint.'
+                  : 'No sprint is running. Create and start a sprint from the Backlog to see its work here.'}
             </p>
           ) : (
             parentIssues.map((issue) => (

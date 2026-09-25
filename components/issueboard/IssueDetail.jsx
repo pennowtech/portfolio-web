@@ -619,6 +619,24 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
     setArchiving(false);
   };
 
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const deleteIssue = async () => {
+    if (!data.issue || deleting) return;
+    setDeleting(true);
+    setSaveError(null);
+    const { ok, payload } = await jsonFetch(`/api/issueboard/issues/${encodeURIComponent(issueKey)}`, {
+      method: 'DELETE'
+    });
+    if (!ok || !payload?.ok) {
+      setSaveError(payload?.error?.message || 'Could not delete the issue.');
+      setDeleting(false);
+      setConfirmingDelete(false);
+      return;
+    }
+    router.push(returnTo);
+  };
+
   const issue = data.issue;
   const closeIssue = () => router.push(returnTo);
   const reloadSubtasks = async () => {
@@ -893,6 +911,39 @@ const IssueDetail = ({ adminEmail, issueKey }) => {
           >
             {archiving ? '…' : issue.archivedAt ? 'Restore' : 'Archive'}
           </button>
+          {confirmingDelete ? (
+            <span className='inline-flex items-center gap-1.5 rounded-lg border border-rose-300 bg-rose-50 px-2 py-1 text-xs dark:border-rose-800 dark:bg-rose-950/40'>
+              <span className='font-semibold text-rose-800 dark:text-rose-200'>
+                {issue.type === 'epic'
+                  ? `Delete ${issue.key}? Its ${subtasks.length} child issue${subtasks.length === 1 ? '' : 's'} will be kept.`
+                  : `Delete ${issue.key}${subtasks.length > 0 ? ` and its ${subtasks.length} subtask${subtasks.length === 1 ? '' : 's'}` : ''}? This cannot be undone.`}
+              </span>
+              <button
+                type='button'
+                onClick={deleteIssue}
+                disabled={deleting}
+                className='rounded-md bg-rose-600 px-2 py-1 font-bold text-white hover:bg-rose-500 disabled:opacity-60'
+              >
+                {deleting ? 'Deleting…' : 'Delete'}
+              </button>
+              <button
+                type='button'
+                onClick={() => setConfirmingDelete(false)}
+                disabled={deleting}
+                className='rounded-md px-2 py-1 font-semibold text-slate-600 hover:bg-white/70 dark:text-slate-300 dark:hover:bg-slate-800'
+              >
+                Cancel
+              </button>
+            </span>
+          ) : (
+            <button
+              type='button'
+              onClick={() => setConfirmingDelete(true)}
+              className='rounded-lg border border-rose-300 bg-white px-3 py-1.5 text-xs font-semibold text-rose-700 shadow-sm transition hover:bg-rose-50 dark:border-rose-900 dark:bg-slate-900 dark:text-rose-300 dark:hover:bg-rose-950/40'
+            >
+              Delete
+            </button>
+          )}
           <button
             type='button'
             onClick={saveChanges}
