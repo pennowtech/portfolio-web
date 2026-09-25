@@ -8,7 +8,7 @@ const toIsoDate = (date) => {
   return `${year}-${month}-${day}`;
 };
 
-const PublicationDatePicker = ({ value, onChange, error }) => {
+const PublicationDatePicker = ({ value, onChange, error, id, disabled = false, invalid = false }) => {
   const selected = useMemo(() => {
     const [year, month, day] = value.split('-').map(Number);
     return year && month && day ? new Date(year, month - 1, day) : new Date();
@@ -16,14 +16,15 @@ const PublicationDatePicker = ({ value, onChange, error }) => {
   const [open, setOpen] = useState(false);
   const [visibleMonth, setVisibleMonth] = useState(() => new Date(selected.getFullYear(), selected.getMonth(), 1));
   const containerRef = useRef(null);
+  const triggerRef = useRef(null);
 
   useEffect(() => {
     if (!open) return undefined;
     const close = (event) => {
       if (!containerRef.current?.contains(event.target)) setOpen(false);
     };
-    document.addEventListener('mousedown', close);
-    return () => document.removeEventListener('mousedown', close);
+    document.addEventListener('pointerdown', close);
+    return () => document.removeEventListener('pointerdown', close);
   }, [open]);
 
   const firstWeekday = (new Date(visibleMonth.getFullYear(), visibleMonth.getMonth(), 1).getDay() + 6) % 7;
@@ -35,8 +36,24 @@ const PublicationDatePicker = ({ value, onChange, error }) => {
   const formatted = new Intl.DateTimeFormat('en-GB', { dateStyle: 'long' }).format(selected);
 
   return (
-    <div ref={containerRef} className='relative w-full text-xs font-medium text-slate-700 dark:text-slate-200'>
+    <div
+      ref={containerRef}
+      className='relative w-full text-xs font-medium text-slate-700 dark:text-slate-200'
+      onKeyDown={(event) => {
+        if (event.key === 'Escape' && open) {
+          event.preventDefault();
+          event.stopPropagation();
+          setOpen(false);
+          triggerRef.current?.focus();
+        }
+      }}
+    >
       <button
+        id={id}
+        ref={triggerRef}
+        disabled={disabled}
+        aria-describedby={invalid && id ? 'error-publicationDate' : undefined}
+        aria-haspopup='dialog'
         type='button'
         onClick={() => {
           setVisibleMonth(new Date(selected.getFullYear(), selected.getMonth(), 1));
@@ -48,8 +65,12 @@ const PublicationDatePicker = ({ value, onChange, error }) => {
         <span className='truncate'>{formatted}</span>
         <FiCalendar className='size-3.5 text-emerald-600 dark:text-emerald-400 shrink-0 ml-2' aria-hidden='true' />
       </button>
-      {open && (
-        <div className='absolute right-0 z-50 mt-1.5 w-72 rounded-xl border border-slate-200 bg-white p-3 shadow-xl dark:border-slate-800 dark:bg-slate-900'>
+      {open && !disabled && (
+        <div
+          role='dialog'
+          aria-label='Choose article date'
+          className='absolute right-0 z-50 mt-1.5 w-72 max-w-[calc(100vw-64px)] rounded-xl border border-slate-200 bg-white p-3 shadow-xl dark:border-slate-800 dark:bg-slate-900'
+        >
           <div className='mb-2.5 flex items-center justify-between'>
             <button
               type='button'
@@ -92,7 +113,12 @@ const PublicationDatePicker = ({ value, onChange, error }) => {
                   onClick={() => {
                     onChange(toIsoDate(new Date(visibleMonth.getFullYear(), visibleMonth.getMonth(), day)));
                     setOpen(false);
+                    triggerRef.current?.focus();
                   }}
+                  aria-pressed={Boolean(active)}
+                  aria-label={new Intl.DateTimeFormat('en-GB', { dateStyle: 'long' }).format(
+                    new Date(visibleMonth.getFullYear(), visibleMonth.getMonth(), day)
+                  )}
                   className={`aspect-square rounded-md text-xs font-medium transition ${
                     active
                       ? 'bg-emerald-600 text-white font-bold'
@@ -113,6 +139,7 @@ const PublicationDatePicker = ({ value, onChange, error }) => {
               onChange(toIsoDate(today));
               setVisibleMonth(new Date(today.getFullYear(), today.getMonth(), 1));
               setOpen(false);
+              triggerRef.current?.focus();
             }}
             className='mt-2.5 w-full rounded-lg border border-slate-200 bg-slate-50 py-1.5 text-xs font-medium text-slate-700 transition hover:border-emerald-500 hover:text-emerald-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:border-emerald-500/50 dark:hover:text-emerald-300'
           >

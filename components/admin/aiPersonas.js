@@ -73,3 +73,58 @@ export const buildCombinedInstruction = (personaIds = [], customPrompt = '') => 
   if (lines.length === 1) return personas[0]?.instruction || customPrompt.trim();
   return `Apply the following writing directives together, in harmony:\n${lines.join('\n')}`;
 };
+
+// Summarize is a separate action from the persona rewrites above: it condenses instead of restyling,
+// so it has its own length choices rather than being another persona.
+export const AI_SUMMARY_LENGTHS = [
+  {
+    id: 'sentence',
+    label: 'One sentence',
+    desc: 'The single most important point',
+    instruction: 'Summarize in exactly one sentence of at most 30 words that captures the single most important point.'
+  },
+  {
+    id: 'paragraph',
+    label: 'Short paragraph',
+    desc: '3-5 sentences',
+    instruction: 'Summarize in one short paragraph of 3 to 5 sentences covering the main argument and conclusion.'
+  },
+  {
+    id: 'bullets',
+    label: 'Key points',
+    desc: '4-6 bullet points',
+    instruction: 'Summarize as 4 to 6 concise Markdown bullet points, each a complete, self-contained takeaway.'
+  }
+];
+
+export const buildSummaryInstruction = (lengthId, customPrompt = '') => {
+  const length = AI_SUMMARY_LENGTHS.find((entry) => entry.id === lengthId);
+  if (!length) return '';
+  return [length.instruction, customPrompt.trim()].filter(Boolean).join(' ');
+};
+
+// Target sizes for "Write article with AI". maxTokens is the output budget sent to the provider
+// (about 1.5 tokens per word, plus headroom for headings and code).
+export const AI_ARTICLE_LENGTHS = [
+  {
+    id: 'short',
+    label: 'Short',
+    desc: '~600 words',
+    instruction: 'About 600 words: a focused piece on one idea.',
+    maxTokens: 1800
+  },
+  {
+    id: 'standard',
+    label: 'Standard',
+    desc: '~1,200 words',
+    instruction: 'About 1,200 words with a clear introduction, 3 to 5 sections, and a conclusion.',
+    maxTokens: 3600
+  },
+  {
+    id: 'deep',
+    label: 'In-depth',
+    desc: '~2,000 words',
+    instruction: 'About 2,000 words: thorough, with 5 or more sections, worked examples, and trade-offs.',
+    maxTokens: 6000
+  }
+];

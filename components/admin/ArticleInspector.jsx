@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import { FiX } from 'react-icons/fi';
+import { FiCheck, FiChevronDown, FiTag, FiX } from 'react-icons/fi';
 import CoverImagePicker from '../CoverImagePicker';
+import PublicationDatePicker from '../PublicationDatePicker';
+import StudioDialog from './StudioDialog';
+import AIDescriptionAssist from './AIDescriptionAssist';
 import { articleSlug, articleTags } from '@utils/articleDraft';
 import styles from './ArticleStudio.module.css';
 
@@ -21,9 +24,13 @@ export default function ArticleInspector({
   published,
   onUnpublish
 }) {
+  const [tagsOpen, setTagsOpen] = useState(false);
   const [tagInput, setTagInput] = useState('');
   const [tagError, setTagError] = useState('');
   const tags = articleTags(form.tags);
+  const knownTags = [...new Map([...taxonomy.tags, ...tags].map((tag) => [tag.toLowerCase(), tag])).values()];
+  const filteredTags = knownTags.filter((tag) => tag.toLowerCase().includes(tagInput.trim().toLowerCase()));
+  const isSelected = (tag) => tags.some((selected) => selected.toLowerCase() === tag.toLowerCase());
   const addTag = () => {
     const value = tagInput.trim();
     if (!value) return;
@@ -63,7 +70,7 @@ export default function ArticleInspector({
         error={errors.coverUrl}
       />
       <div className={styles.field}>
-        <label htmlFor='article-description'>Description</label>
+        <AIDescriptionAssist form={form} onUse={(value) => update('description', value)} />
         <textarea
           {...inputProps('description')}
           rows={4}
@@ -75,16 +82,21 @@ export default function ArticleInspector({
       </div>
       <div className={styles.field}>
         <label htmlFor='article-category'>Category</label>
-        <input {...inputProps('category')} list='article-categories' maxLength={80} />
-        <datalist id='article-categories'>
-          {taxonomy.categories.map((category) => (
-            <option key={category} value={category} />
-          ))}
-        </datalist>
+        <div className={styles.selectWrap}>
+          <select {...inputProps('category')}>
+            {!form.category && <option value=''>Choose a category</option>}
+            {[...new Set([form.category, ...taxonomy.categories])].filter(Boolean).map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
+          <FiChevronDown aria-hidden='true' />
+        </div>
         <FieldError name='category' errors={errors} />
       </div>
       <div className={styles.field}>
-        <label htmlFor='article-tag-input'>Tags</label>
+        <span className={styles.fieldLabel}>Tags</span>
         <div className={styles.tags}>
           {tags.map((tag) => (
             <span className={styles.tag} key={tag}>
@@ -99,15 +111,52 @@ export default function ArticleInspector({
             </span>
           ))}
         </div>
-        <div className={styles.row}>
+        <button
+          type='button'
+          className={styles.button}
+          onClick={() => {
+            setTagInput('');
+            setTagError('');
+            setTagsOpen(true);
+          }}
+          aria-haspopup='dialog'
+        >
+          <FiTag /> {tags.length ? 'Choose tags' : 'Select tags'}
+          <FiChevronDown />
+        </button>
+        <p className={styles.hint}>{tags.length}/12 tags selected</p>
+        <StudioDialog
+          open={tagsOpen}
+          onClose={() => setTagsOpen(false)}
+          title='Select article tags'
+          actions={
+            <>
+              <button
+                type='button'
+                className={styles.button}
+                disabled={disabled || !tags.length}
+                onClick={() => update('tags', '')}
+              >
+                Clear all
+              </button>
+              <button type='button' className={styles.primary} onClick={() => setTagsOpen(false)}>
+                Done
+              </button>
+            </>
+          }
+        >
+          <label className={styles.fieldLabel} htmlFor='article-tag-input'>
+            Search or add a tag
+          </label>
           <input
             id='article-tag-input'
             className={styles.input}
-            style={{ flex: 1, minWidth: 100 }}
             value={tagInput}
-            list='article-tag-suggestions'
-            onChange={(event) => setTagInput(event.target.value)}
-            placeholder='Add a tag…'
+            onChange={(event) => {
+              setTagInput(event.target.value);
+              setTagError('');
+            }}
+            placeholder='Search all tags...'
             maxLength={80}
             onKeyDown={(event) => {
               if (event.key === 'Enter' && !event.nativeEvent.isComposing) {
@@ -116,28 +165,56 @@ export default function ArticleInspector({
               }
             }}
           />
-          <button type='button' className={styles.button} onClick={addTag}>
-            Add
-          </button>
-        </div>
-        <datalist id='article-tag-suggestions'>
-          {taxonomy.tags
-            .filter((tag) => !tags.includes(tag))
-            .map((tag) => (
-              <option key={tag} value={tag} />
-            ))}
-        </datalist>
-        <p className={styles.hint}>{tags.length}/12 tags · Press Enter to add.</p>
-        {tagError && (
-          <p className={styles.error} role='status'>
-            {tagError}
+          <p className={styles.hint}>
+            {tags.length}/12 selected &middot; {filteredTags.length} matching tags
           </p>
-        )}
+          <div className={styles.tagChoices} aria-label='Available tags'>
+            {filteredTags.map((tag) => (
+              <button
+                key={tag}
+                type='button'
+                className={`${styles.button} ${isSelected(tag) ? styles.active : ''}`}
+                aria-pressed={isSelected(tag)}
+                disabled={disabled || (!isSelected(tag) && tags.length >= 12)}
+                onClick={() => {
+                  update(
+                    'tags',
+                    isSelected(tag)
+                      ? tags.filter((item) => item.toLowerCase() !== tag.toLowerCase()).join(', ')
+                      : [...tags, tag].join(', ')
+                  );
+                  setTagError('');
+                }}
+              >
+                {isSelected(tag) ? <FiCheck /> : <FiTag />}
+                {tag}
+              </button>
+            ))}
+          </div>
+          {!filteredTags.length && <p className={styles.hint}>No matching tags. You can add your own.</p>}
+          {tagInput.trim() && !knownTags.some((tag) => tag.toLowerCase() === tagInput.trim().toLowerCase()) && (
+            <button type='button' className={styles.button} onClick={addTag} disabled={disabled || tags.length >= 12}>
+              Add &ldquo;{tagInput.trim()}&rdquo;
+            </button>
+          )}
+          {tags.length >= 12 && <p className={styles.hint}>Remove a selected tag to choose another.</p>}
+          {tagError && (
+            <p className={styles.error} role='status'>
+              {tagError}
+            </p>
+          )}
+        </StudioDialog>
         <FieldError name='tags' errors={errors} />
       </div>
       <div className={styles.field}>
         <label htmlFor='article-publicationDate'>Article date</label>
-        <input {...inputProps('publicationDate')} type='date' />
+        <PublicationDatePicker
+          id='article-publicationDate'
+          value={form.publicationDate}
+          onChange={(value) => update('publicationDate', value)}
+          disabled={disabled}
+          invalid={Boolean(errors.publicationDate)}
+        />
         <p className={styles.hint}>The date shown on your article. This does not schedule publication.</p>
         <FieldError name='publicationDate' errors={errors} />
       </div>

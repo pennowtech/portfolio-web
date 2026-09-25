@@ -7,13 +7,25 @@ import { useTheme } from 'next-themes';
 import { markdown as markdownLanguage } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
 import { EditorView, keymap } from '@codemirror/view';
-import { FiArrowRight, FiDownload, FiFileText, FiMaximize2, FiMinimize2, FiSettings, FiX } from 'react-icons/fi';
+import {
+  FiArrowRight,
+  FiClock,
+  FiDownload,
+  FiFileText,
+  FiList,
+  FiMaximize2,
+  FiMinimize2,
+  FiSettings,
+  FiX
+} from 'react-icons/fi';
 import { LuSparkles } from 'react-icons/lu';
 import MarkdownToolbar from './MarkdownToolbar';
 import ArticleInspector from './admin/ArticleInspector';
 import StudioDialog from './admin/StudioDialog';
 import useArticleDraft from './admin/useArticleDraft';
+import { articleSlashCommands } from './admin/articleSlashCommands';
 import { articleSlug, articleTags } from '@utils/articleDraft';
+import { stripCover } from '@utils/articleHistory';
 import { validateArticle } from '@utils/articleValidation';
 import styles from './admin/ArticleStudio.module.css';
 
@@ -26,6 +38,7 @@ const ArticleLibrary = dynamic(() => import('./ArticleLibrary'));
 const ArticleEditorHelp = dynamic(() => import('./ArticleEditorHelp'));
 const AIConfigModal = dynamic(() => import('./admin/AIConfigModal'));
 const AIRephraseModal = dynamic(() => import('./admin/AIRephraseModal'));
+const AIWriteArticleModal = dynamic(() => import('./admin/AIWriteArticleModal'));
 const FrostedSelectionBubble = dynamic(() => import('./admin/FrostedSelectionBubble'));
 
 const formatShortcut = (marker) => (view) => {
@@ -71,6 +84,7 @@ function ArticleWorkspace({ articleId, adminEmail, defaultPublicationDate, focus
   const [helpOpen, setHelpOpen] = useState(false);
   const [aiConfigOpen, setAIConfigOpen] = useState(false);
   const [rephraseTarget, setRephraseTarget] = useState(null);
+  const [writeOpen, setWriteOpen] = useState(false);
   const [publishAction, setPublishAction] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
@@ -143,9 +157,11 @@ function ArticleWorkspace({ articleId, adminEmail, defaultPublicationDate, focus
     const escape = (event) => {
       if (
         event.key !== 'Escape' ||
+        event.defaultPrevented ||
         document.querySelector('dialog[open]') ||
         helpOpen ||
         aiConfigOpen ||
+        writeOpen ||
         rephraseTarget
       )
         return;
@@ -156,11 +172,12 @@ function ArticleWorkspace({ articleId, adminEmail, defaultPublicationDate, focus
     };
     window.addEventListener('keydown', escape);
     return () => window.removeEventListener('keydown', escape);
-  }, [onFocusModeChange, helpOpen, aiConfigOpen, rephraseTarget]);
+  }, [onFocusModeChange, helpOpen, aiConfigOpen, writeOpen, rephraseTarget]);
 
   const extensions = useMemo(
     () => [
       markdownLanguage({ codeLanguages: languages }),
+      articleSlashCommands,
       EditorView.lineWrapping,
       EditorView.contentAttributes.of({ 'aria-label': 'Article body', 'aria-describedby': 'article-body-help' }),
       keymap.of([
@@ -243,6 +260,16 @@ function ArticleWorkspace({ articleId, adminEmail, defaultPublicationDate, focus
         throw new Error('Notion did not return an article ID. Please check the article library before trying again.');
       const savedForm = { ...form, slug: result.article.slug || form.slug };
       createdIdRef.current = result.article.id;
+      // Version history: best effort, never blocks or fails a save.
+      fetch('/api/admin/article-snapshots', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          articleKey: result.article.id,
+          kind: published ? 'published' : 'notion_saved',
+          form: stripCover(savedForm)
+        })
+      }).catch(() => {});
       draft.markSaved(savedForm, published, savedForm.slug, !id);
       setSlugEdited(true);
       setPublishAction(null);
@@ -284,20 +311,27 @@ function ArticleWorkspace({ articleId, adminEmail, defaultPublicationDate, focus
     window.setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
 
-  const applyRephrase = (text) => {
-    if (rephraseTarget.whole) update('markdown', text);
+  const applyRephrase = (text, placement = 'replace') => {
+    const below = placement === 'below';
+    if (rephraseTarget.whole) update('markdown', below ? `${form.markdown.trimEnd()}\n\n${text}\n` : text);
     else {
       const view = editorRef.current;
       if (!view || view.state.sliceDoc(rephraseTarget.from, rephraseTarget.to) !== rephraseTarget.text) {
         setMessage({ type: 'error', text: 'That selection changed. Select the text again before applying a rewrite.' });
         return;
       }
+      const insert = below ? `\n\n${text}` : text;
+      const from = below ? rephraseTarget.to : rephraseTarget.from;
       view.dispatch({
-        changes: { from: rephraseTarget.from, to: rephraseTarget.to, insert: text },
-        selection: { anchor: rephraseTarget.from, head: rephraseTarget.from + text.length }
+        changes: { from, to: rephraseTarget.to, insert },
+        selection: { anchor: from + (below ? 2 : 0), head: from + insert.length }
       });
       view.focus();
     }
+  };
+
+  const applyWrittenArticle = (text, placement = 'replace') => {
+    update('markdown', placement === 'below' ? `${form.markdown.trimEnd()}\n\n${text}\n` : text);
   };
 
   const inspector = (
@@ -340,6 +374,24 @@ function ArticleWorkspace({ articleId, adminEmail, defaultPublicationDate, focus
               <FiFileText />
               Articles
             </button>
+          )}
+          {!focusMode && (
+            <Link className={styles.button} href='/admin/articles'>
+              <FiList />
+              Library
+            </Link>
+          )}
+          {!focusMode && (
+            <Link
+              className={styles.button}
+              href={{
+                pathname: '/admin/articles/recovery',
+                query: articleId ? { id: articleId } : {}
+              }}
+            >
+              <FiClock />
+              History
+            </Link>
           )}
         </div>
         <div className={styles.headerActions}>
@@ -480,6 +532,10 @@ function ArticleWorkspace({ articleId, adminEmail, defaultPublicationDate, focus
                   onToggleLineNumbers={() => setShowLineNumbers((value) => !value)}
                   extraActions={
                     <>
+                      <button type='button' onClick={() => setWriteOpen(true)}>
+                        <LuSparkles />
+                        Write article with AI
+                      </button>
                       <button
                         type='button'
                         disabled={!form.markdown.trim()}
@@ -583,7 +639,8 @@ function ArticleWorkspace({ articleId, adminEmail, defaultPublicationDate, focus
             </div>
             <div className={styles.underCanvas}>
               <p id='article-body-help' className={styles.hint}>
-                Markdown supported · Ctrl/⌘ B for bold · Ctrl/⌘ I for italic
+                Type / at the start of a line to insert a block. Markdown supported · Ctrl/⌘ B for bold · Ctrl/⌘ I for
+                italic
               </p>
               {draft.published && draft.liveSlug && (
                 <Link className={styles.link} href={`/blog/${draft.liveSlug}`} target='_blank' rel='noreferrer'>
@@ -690,6 +747,17 @@ function ArticleWorkspace({ articleId, adminEmail, defaultPublicationDate, focus
       </StudioDialog>
       {helpOpen && <ArticleEditorHelp open={helpOpen} onClose={() => setHelpOpen(false)} />}
       {aiConfigOpen && <AIConfigModal isOpen={aiConfigOpen} onClose={() => setAIConfigOpen(false)} />}
+      {writeOpen && (
+        <AIWriteArticleModal
+          isOpen
+          hasContent={Boolean(form.markdown.trim())}
+          title={form.title}
+          category={form.category}
+          tags={articleTags(form.tags)}
+          onApply={applyWrittenArticle}
+          onClose={() => setWriteOpen(false)}
+        />
+      )}
       {rephraseTarget && (
         <AIRephraseModal
           isOpen

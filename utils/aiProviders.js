@@ -122,9 +122,10 @@ const parseImageDataUrl = (imageDataUrl) => {
 
 export const chatComplete = async (
   provider,
-  { apiKey, baseUrl, model, systemPrompt, userText, temperature = 0.3, imageDataUrl }
+  { apiKey, baseUrl, model, systemPrompt, userText, temperature = 0.3, imageDataUrl, maxOutputTokens }
 ) => {
-  const maxTokens = Math.min(8192, Math.max(1024, estimateTokens(userText) * 2));
+  // Rewrites are sized from the input; generation from a short brief needs an explicit output budget.
+  const maxTokens = Math.min(8192, maxOutputTokens || Math.max(1024, estimateTokens(userText) * 2));
 
   if (OPENAI_COMPATIBLE.has(provider)) {
     const resolvedBaseUrl = resolveBaseUrl(provider, baseUrl);

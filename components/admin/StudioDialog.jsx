@@ -16,6 +16,7 @@ export default function StudioDialog({ open, onClose, title, children, actions, 
       aria-label={title}
       onCancel={(event) => {
         event.preventDefault();
+        event.stopPropagation();
         if (!busy) onClose();
       }}
       onClick={(event) => {
