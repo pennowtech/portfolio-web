@@ -3,6 +3,7 @@ import { FiCheck, FiRefreshCw, FiX } from 'react-icons/fi';
 import { LuSparkles } from 'react-icons/lu';
 import { articleTags } from '@utils/articleDraft';
 import { loadAiConfig, getActiveProviderCreds } from '@utils/admin/aiConfigStore';
+import AIModelBadge, { useActiveAiModel } from './AIModelBadge';
 import styles from './ArticleStudio.module.css';
 
 // The Description label row with an AI button, plus a suggestion panel. A suggestion never overwrites the
@@ -12,6 +13,7 @@ export default function AIDescriptionAssist({ form, onUse }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [suggestion, setSuggestion] = useState('');
+  const active = useActiveAiModel();
   const shown = useRef([]); // everything suggested this session, so regenerating doesn't repeat itself
 
   const generate = async () => {
@@ -63,13 +65,14 @@ export default function AIDescriptionAssist({ form, onUse }) {
           disabled={loading}
           aria-busy={loading}
           aria-label='Write a description with AI'
-          title='Write an SEO-friendly description with AI'
+          title={`Write an SEO-friendly description with AI (${active.label}${active.model ? ` · ${active.model}` : ''})`}
         >
           <LuSparkles className={loading ? styles.spin : ''} />
         </button>
       </div>
       {open && (
         <div className={styles.aiSuggestion} role='region' aria-live='polite' aria-label='AI description suggestion'>
+          <AIModelBadge />
           {loading && !suggestion && <p className={styles.hint}>Writing a description from your article…</p>}
           {suggestion && (
             <>

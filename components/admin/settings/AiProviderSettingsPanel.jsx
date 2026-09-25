@@ -22,6 +22,11 @@ const PROVIDER_META = {
     hint: 'Local',
     fallbackModels: ['deepseek-r1:14b', 'llama3.2:latest', 'qwen2.5-coder:7b']
   },
+  unsloth: {
+    label: 'Unsloth',
+    hint: 'Local / Dynamic',
+    fallbackModels: ['unsloth-model', 'llama-3-8b-instruct', 'qwen2.5-14b-instruct']
+  },
   mistral: {
     label: 'Mistral',
     hint: '',
@@ -33,7 +38,7 @@ const PROVIDER_META = {
 // "Has credentials entered" -- used to gate the fetch/test actions. This is
 // NOT the same as "verified working"; see block.validated for that.
 const hasCredentials = (provider, block) => {
-  if (provider === 'ollama') return Boolean(block.baseUrl?.trim());
+  if (provider === 'ollama' || provider === 'unsloth') return Boolean(block.baseUrl?.trim() || block.apiKey?.trim());
   return Boolean(block.apiKey?.trim());
 };
 
@@ -103,7 +108,11 @@ const ProviderCard = ({
   const handleTestConnection = async () => {
     if (!configured) {
       setTestingStatus('error');
-      setTestMessage(provider === 'ollama' ? 'Enter a base URL first.' : 'Enter an API key first.');
+      setTestMessage(
+        provider === 'ollama' || provider === 'unsloth'
+          ? 'Enter a base URL or API key first.'
+          : 'Enter an API key first.'
+      );
       setTimeout(() => setTestingStatus(null), 3000);
       return;
     }
@@ -186,54 +195,66 @@ const ProviderCard = ({
 
       {expanded && (
         <div className='space-y-2.5 border-t border-slate-100 p-3 dark:border-slate-800'>
-          {provider !== 'ollama' ? (
-            <div>
-              <label className='block font-semibold text-slate-700 dark:text-slate-200 mb-1 text-xs'>
-                API Key (stored locally in browser)
-              </label>
-              <div className='relative'>
-                <input
-                  type={showKey ? 'text' : 'password'}
-                  value={block.apiKey}
-                  onChange={(e) => {
-                    onChange({ ...block, apiKey: e.target.value, validated: false });
-                    setFetchedModels(null);
-                    setModelsError('');
-                  }}
-                  placeholder={`Enter your ${meta.label} API key…`}
-                  className='w-full rounded-lg border border-slate-200 bg-white pl-8 pr-8 py-1.5 text-xs text-slate-900 outline-none transition focus:border-purple-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white'
-                />
-                <FiKey className='absolute left-2.5 top-2 size-3.5 text-slate-400' />
-                <button
-                  type='button'
-                  onClick={() => setShowKey((v) => !v)}
-                  className='absolute right-2.5 top-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
-                >
-                  {showKey ? <FiEyeOff className='size-3.5' /> : <FiEye className='size-3.5' />}
-                </button>
-              </div>
+          <div>
+            <label className='block font-semibold text-slate-700 dark:text-slate-200 mb-1 text-xs'>
+              {provider === 'ollama' || provider === 'unsloth'
+                ? `${meta.label} Base URL / IP`
+                : 'Base URL (optional override)'}
+            </label>
+            <div className='relative'>
+              <input
+                type='url'
+                value={block.baseUrl}
+                onChange={(e) => {
+                  onChange({ ...block, baseUrl: e.target.value, validated: false });
+                  setFetchedModels(null);
+                  setModelsError('');
+                }}
+                placeholder={
+                  provider === 'unsloth'
+                    ? 'http://127.0.0.1:8888/v1'
+                    : provider === 'ollama'
+                      ? 'http://localhost:11434/v1'
+                      : 'Default provider URL'
+                }
+                className='w-full rounded-lg border border-slate-200 bg-white pl-8 pr-3 py-1.5 text-xs text-slate-900 outline-none transition focus:border-purple-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white'
+              />
+              <FiServer className='absolute left-2.5 top-2 size-3.5 text-slate-400' />
             </div>
-          ) : (
-            <div>
-              <label className='block font-semibold text-slate-700 dark:text-slate-200 mb-1 text-xs'>
-                Ollama Base URL / IP
-              </label>
-              <div className='relative'>
-                <input
-                  type='url'
-                  value={block.baseUrl}
-                  onChange={(e) => {
-                    onChange({ ...block, baseUrl: e.target.value, validated: false });
-                    setFetchedModels(null);
-                    setModelsError('');
-                  }}
-                  placeholder='http://localhost:11434/v1'
-                  className='w-full rounded-lg border border-slate-200 bg-white pl-8 pr-3 py-1.5 text-xs text-slate-900 outline-none transition focus:border-purple-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white'
-                />
-                <FiServer className='absolute left-2.5 top-2 size-3.5 text-slate-400' />
-              </div>
+          </div>
+
+          <div>
+            <label className='block font-semibold text-slate-700 dark:text-slate-200 mb-1 text-xs'>
+              {provider === 'ollama' || provider === 'unsloth'
+                ? 'API Key (optional for local/authenticated server)'
+                : 'API Key (stored locally in browser)'}
+            </label>
+            <div className='relative'>
+              <input
+                type={showKey ? 'text' : 'password'}
+                value={block.apiKey}
+                onChange={(e) => {
+                  onChange({ ...block, apiKey: e.target.value, validated: false });
+                  setFetchedModels(null);
+                  setModelsError('');
+                }}
+                placeholder={
+                  provider === 'ollama' || provider === 'unsloth'
+                    ? 'Enter API key if required by server…'
+                    : `Enter your ${meta.label} API key…`
+                }
+                className='w-full rounded-lg border border-slate-200 bg-white pl-8 pr-8 py-1.5 text-xs text-slate-900 outline-none transition focus:border-purple-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white'
+              />
+              <FiKey className='absolute left-2.5 top-2 size-3.5 text-slate-400' />
+              <button
+                type='button'
+                onClick={() => setShowKey((v) => !v)}
+                className='absolute right-2.5 top-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
+              >
+                {showKey ? <FiEyeOff className='size-3.5' /> : <FiEye className='size-3.5' />}
+              </button>
             </div>
-          )}
+          </div>
 
           <div>
             <div className='mb-1 flex items-center justify-between gap-2'>

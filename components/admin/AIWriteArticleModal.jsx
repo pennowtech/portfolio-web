@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FiCheck, FiRotateCcw, FiX } from 'react-icons/fi';
 import { LuSparkles, LuWand } from 'react-icons/lu';
 import { AI_ARTICLE_LENGTHS, AI_PERSONAS } from './aiPersonas';
+import AIModelBadge from './AIModelBadge';
 import { DEFAULT_AI_CONFIG, loadAiConfig, getActiveProviderCreds } from '@utils/admin/aiConfigStore';
 
 const fieldClass =
@@ -103,8 +104,9 @@ export const AIWriteArticleModal = ({ isOpen, hasContent, title, category, tags,
                 Write article with AI
               </h3>
               <p className='mt-0.5 text-xs text-slate-500 dark:text-slate-400'>
-                Drafts a full article with {creds.provider}. You review it before anything changes.
+                Drafts a full article. You review it before anything changes.
               </p>
+              <AIModelBadge className='mt-1' />
             </div>
           </div>
           <button

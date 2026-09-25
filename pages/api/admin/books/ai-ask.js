@@ -55,7 +55,9 @@ export default async function handler(req, res) {
   let { provider, apiKey, baseUrl, model } = parsed.data;
 
   // If credentials are not provided in the request body, fallback to server environment variables
-  if (!apiKey?.trim()) {
+  // Keyless local providers (Ollama/Unsloth) must never receive a cloud key from the server environment.
+  const keylessLocalProvider = provider === 'ollama' || provider === 'unsloth';
+  if (!apiKey?.trim() && !keylessLocalProvider) {
     if (process.env.GEMINI_API_KEY) {
       provider = provider || 'gemini';
       apiKey = process.env.GEMINI_API_KEY;
@@ -75,11 +77,11 @@ export default async function handler(req, res) {
     }
   }
 
-  if (!provider || provider === 'builtin' || !apiKey?.trim()) {
+  if (!provider || provider === 'builtin' || (!apiKey?.trim() && !keylessLocalProvider)) {
     return res.status(400).json({
       ok: false,
       message:
-        'Please configure an active AI provider (e.g. Gemini, OpenAI, Groq, or Anthropic) in AI Configure first to use Ask AI.'
+        'Please configure an active AI provider (e.g. Gemini, OpenAI, Groq, Ollama, or Unsloth) in AI Configure first to use Ask AI.'
     });
   }
 
@@ -131,7 +133,7 @@ INSTRUCTIONS FOR YOUR RESPONSE:
 
   try {
     const answer = await chatComplete(provider, {
-      apiKey: apiKey.trim(),
+      apiKey: apiKey?.trim() || '',
       baseUrl,
       model,
       systemPrompt,
@@ -143,7 +145,9 @@ INSTRUCTIONS FOR YOUR RESPONSE:
       ok: true,
       answer: answer.trim(),
       provider,
-      model
+      model: model || 'default',
+      aiProvider: provider,
+      aiModel: model || 'default'
     });
   } catch (error) {
     if (error instanceof AiProviderError) {

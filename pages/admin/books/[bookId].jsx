@@ -30,6 +30,7 @@ import { LuSparkles } from 'react-icons/lu';
 import { getBookCoverSrc, BOOK_SHELVES } from '@utils/books/bookService';
 import { deletePersistedBook, fetchBook, updatePersistedBook } from '@utils/books/bookApi';
 import BookAskAiModal from '@components/admin/BookAskAiModal';
+import WhyReadContent from '@components/admin/books/WhyReadContent';
 
 // ─── Inline editable text component ────────────────────────────────────────
 const InlineText = ({
@@ -38,7 +39,8 @@ const InlineText = ({
   className = '',
   placeholder = 'Click to edit...',
   multiline = false,
-  inputClassName = ''
+  inputClassName = '',
+  renderValue = null
 }) => {
   const [editing, setEditing] = useState(false);
   const [hovered, setHovered] = useState(false);
@@ -107,7 +109,9 @@ const InlineText = ({
       }}
       className={`relative inline-flex items-start gap-1 rounded transition-colors ${hovered ? 'bg-amber-500/8' : ''} ${className}`}
     >
-      <span className={!value ? 'italic text-neutral-500' : ''}>{value || placeholder}</span>
+      <span className={!value ? 'italic text-neutral-500' : 'w-full block'}>
+        {value ? (renderValue ? renderValue(value) : value) : placeholder}
+      </span>
       {hovered && (
         <FiEdit2 style={{ marginLeft: 4, marginTop: 2, flexShrink: 0, color: '#f59e0b', width: 11, height: 11 }} />
       )}
@@ -986,14 +990,12 @@ const BookDetailPage = ({ adminEmail }) => {
                   <FiAward className='size-3.5 text-indigo-500 dark:text-indigo-400' />
                   Why Read &amp; Core Value Proposition
                 </h2>
-                <span className='text-[10px] uppercase tracking-wider font-semibold text-indigo-700 dark:text-indigo-300/80 bg-indigo-500/10 border border-indigo-500/20 dark:border-indigo-500/30 px-2 py-0.5 rounded-full'>
-                  Reader ROI &amp; Worth
-                </span>
               </div>
               <InlineText
                 value={book.whyRead || book.notes || ''}
                 onSave={(v) => handleFieldSave('whyRead', v)}
                 multiline
+                renderValue={(val) => <WhyReadContent text={val} />}
                 placeholder='Why should one read this book, what value does it deliver, and is it really worth reading?...'
                 className='w-full text-sm leading-relaxed text-slate-800 dark:text-neutral-200 sm:text-base font-normal block'
                 inputClassName='text-sm sm:text-base font-normal leading-relaxed'

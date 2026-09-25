@@ -46,6 +46,7 @@ import { getBookCoverSrc, BOOK_SHELVES } from '@utils/books/bookService';
 import { deletePersistedBook, fetchBooks, updatePersistedBook } from '@utils/books/bookApi';
 import QuickAddModal from '@components/admin/QuickAddModal';
 import BookAskAiModal from '@components/admin/BookAskAiModal';
+import WhyReadContent from '@components/admin/books/WhyReadContent';
 
 const SHELF_DEFINITIONS = [
   {
@@ -2255,9 +2256,6 @@ const BooksPage = ({ adminEmail }) => {
                           <FiAward className='size-3.5 text-indigo-500' />
                           Why Read &amp; Core Value Proposition
                         </h4>
-                        <span className='text-[10px] font-sans font-semibold text-indigo-600 dark:text-indigo-300 bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded-full'>
-                          Reader ROI &amp; Worth
-                        </span>
                       </div>
                       {detailEditMode ? (
                         <InlineText
@@ -2272,9 +2270,7 @@ const BooksPage = ({ adminEmail }) => {
                           className='text-sm leading-relaxed text-slate-800 dark:text-neutral-200 font-sans'
                         />
                       ) : (
-                        <p className='text-sm leading-relaxed text-slate-800 dark:text-neutral-200 font-sans font-medium'>
-                          {activeDetailBook.whyRead || activeDetailBook.notes}
-                        </p>
+                        <WhyReadContent text={activeDetailBook.whyRead || activeDetailBook.notes} />
                       )}
                     </div>
                   )}

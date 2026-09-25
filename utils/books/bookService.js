@@ -39,6 +39,8 @@ export const INITIAL_BOOKS = [
     location: 'India, Delhi',
     description:
       "Napoleon Hill's classic work outlines his philosophy of success based on interviews with over 500 successful individuals, including Andrew Carnegie and Henry Ford. The book presents a systematic approach to achieving wealth through the power of thoughts, desires, and organized planning.",
+    whyRead:
+      "Timeless principles: The fundamental concepts about success, motivation, and achievement remain relevant across generations\nProven methodology: Based on Hill's extensive research of over 500 successful individuals\nPractical application: Offers actionable steps rather than just theoretical concepts\nMindset transformation: Helps reframe how you approach goals, obstacles, and success\nClassic foundation: Considered one of the foundational texts in the self-help and personal development genre",
     keyThemes: [
       'The power of positive thinking',
       'The subconscious mind and autosuggestion',

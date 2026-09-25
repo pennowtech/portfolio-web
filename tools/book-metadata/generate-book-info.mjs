@@ -170,13 +170,14 @@ if (!provider) {
   }
 }
 
-if (!['mistral', 'ollama', 'openai', 'gemini'].includes(provider)) {
-  fail(`Unknown provider '${provider}'. Use: mistral, ollama, openai, gemini`);
+if (!['mistral', 'ollama', 'unsloth', 'openai', 'gemini'].includes(provider)) {
+  fail(`Unknown provider '${provider}'. Use: mistral, ollama, unsloth, openai, gemini`);
 }
 
 const defaultModels = {
   mistral: 'mistral-small-latest',
   ollama: 'llama3.2:latest',
+  unsloth: 'unsloth-model',
   openai: 'gpt-4o-mini',
   gemini: 'gemini-2.5-flash'
 };
@@ -191,7 +192,9 @@ if (!apiKey) {
         ? 'OPENAI_API_KEY'
         : provider === 'gemini'
           ? 'GEMINI_API_KEY'
-          : 'OLLAMA_API_KEY';
+          : provider === 'unsloth'
+            ? 'UNSLOTH_API_KEY'
+            : 'OLLAMA_API_KEY';
   apiKey = process.env[envVar]?.trim() ?? '';
 }
 
@@ -592,7 +595,7 @@ Return strict JSON matching this schema:
   "language": "Primary language (e.g., 'German', 'English', etc.)",
   "isbn13": "ISBN-13 code or null",
   "description": "Brief overview/synopsis of the book written in ENGLISH (2-4 sentences)",
-  "whyRead": "Why one should read this book, the concrete value and ROI it provides, and whether it is truly worth reading written in ENGLISH (2-3 sentences)",
+  "whyRead": "Why one should read this book, formatted as 3-5 structured bullet points 'Key Point: Brief description' separated by \\n written in ENGLISH (e.g. 'Timeless principles: ... \\n Proven methodology: ...')",
   "keyThemes": ["Theme 1 in English", "Theme 2 in English", "Theme 3 in English"],
   "targetAudience": ["Primary audience in English", "Secondary audience in English"],
   "notableQuotes": ["Famous quote from the book"],
@@ -732,15 +735,7 @@ function validateBookEntry(entry, requestedTitle) {
   const result = { ...defaults, ...entry };
 
   // Clean up string fields (exclude numeric fields handled below)
-  [
-    'title',
-    'author',
-    'genre',
-    'publisher',
-    'language',
-    'description',
-    'legacy'
-  ].forEach((f) => {
+  ['title', 'author', 'genre', 'publisher', 'language', 'description', 'legacy'].forEach((f) => {
     if (typeof result[f] !== 'string' || result[f].trim() === '') {
       result[f] = defaults[f];
     } else {
@@ -775,7 +770,7 @@ async function generateBookMetadata(title, index) {
 
   for (let attempt = 1; attempt <= 5; attempt++) {
     try {
-      debug(`\n--- Attempt ${attempt}/5 for "${title}" ---`);
+      debug(`\n--- Attempt ${attempt}/5 for "${title}" [Provider: ${provider}, Model: ${model}] ---`);
       const response = await requestAI({ prompt });
       if (!response.ok) {
         const body = await response.text().catch(() => '');
@@ -784,10 +779,15 @@ async function generateBookMetadata(title, index) {
       const { rawText } = await extractRawContent(response);
       debug(`Parsing response...`);
       const parsed = JSON.parse(rawText);
-      return validateBookEntry(parsed, title);
+      const validated = validateBookEntry(parsed, title);
+      validated.aiProvider = provider;
+      validated.aiModel = model;
+      validated.provider = provider;
+      validated.model = model;
+      return validated;
     } catch (err) {
       failureLogger.logFailure({ title, index, attempt, provider, model, errorMessage: err.message });
-      console.warn(`  [Warning] Attempt ${attempt}/5 failed: ${err.message}`);
+      console.warn(`  [Warning] Attempt ${attempt}/5 failed (Provider: ${provider}, Model: ${model}): ${err.message}`);
       if (attempt === 5) throw err;
       await new Promise((r) => setTimeout(r, 1500 * attempt));
     }

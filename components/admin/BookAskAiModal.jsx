@@ -14,6 +14,7 @@ import {
 import { LuSparkles } from 'react-icons/lu';
 import { getBookCoverSrc } from '@utils/books/bookService';
 import { loadAiConfig, getActiveProviderCreds } from '@utils/admin/aiConfigStore';
+import AIModelBadge from './AIModelBadge';
 
 export const BookAskAiModal = ({ isOpen, onClose, book, onSaveNote }) => {
   const [messages, setMessages] = useState([]);
@@ -22,7 +23,6 @@ export const BookAskAiModal = ({ isOpen, onClose, book, onSaveNote }) => {
   const [error, setError] = useState('');
   const [copiedId, setCopiedId] = useState(null);
   const [savedId, setSavedId] = useState(null);
-  const [activeModel, setActiveModel] = useState('');
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const messageSequenceRef = useRef(0);
@@ -36,16 +36,6 @@ export const BookAskAiModal = ({ isOpen, onClose, book, onSaveNote }) => {
   useEffect(() => {
     if (isOpen) {
       setError('');
-      try {
-        const creds = getActiveProviderCreds(loadAiConfig());
-        if (creds?.model) {
-          setActiveModel(`${creds.provider}: ${creds.model}`);
-        } else if (creds?.provider) {
-          setActiveModel(creds.provider);
-        }
-      } catch {
-        setActiveModel('AI Assistant');
-      }
       setTimeout(() => {
         inputRef.current?.focus();
       }, 100);
@@ -205,11 +195,7 @@ export const BookAskAiModal = ({ isOpen, onClose, book, onSaveNote }) => {
                 <span className='h-[20px] inline-flex items-center gap-1.5 rounded-full bg-indigo-500/15 border border-indigo-500/30 px-2.5 text-[10px] font-bold uppercase tracking-wider text-indigo-700 dark:text-indigo-300 font-sans leading-none'>
                   <LuSparkles className='size-3 text-amber-500 dark:text-amber-300 animate-pulse' /> Ask AI Companion
                 </span>
-                {activeModel && (
-                  <span className='text-[10.5px] text-slate-500 dark:text-slate-400 truncate hidden sm:inline-block font-sans'>
-                    {activeModel}
-                  </span>
-                )}
+                <AIModelBadge />
               </div>
               <h2 className='text-sm sm:text-base font-bold text-slate-900 dark:text-white truncate font-sans'>
                 {book.title}

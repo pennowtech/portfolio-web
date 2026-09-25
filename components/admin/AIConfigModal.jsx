@@ -1,3 +1,4 @@
+import AIModelBadge from './AIModelBadge';
 import React from 'react';
 import { FiX } from 'react-icons/fi';
 import { LuSparkles } from 'react-icons/lu';
@@ -29,6 +30,7 @@ export const AIConfigModal = ({ isOpen, onClose, onSave }) => {
               <p className='text-xs text-slate-500 dark:text-slate-400 mt-0.5'>
                 Configure provider, tone persona, and writing assistants
               </p>
+              <AIModelBadge className='mt-1' />
             </div>
           </div>
           <button
