@@ -123,7 +123,7 @@ const parseImageDataUrl = (imageDataUrl) => {
 
 export const chatComplete = async (
   provider,
-  { apiKey, baseUrl, model, systemPrompt, userText, temperature = 0.3, imageDataUrl, maxOutputTokens }
+  { apiKey, baseUrl, model, systemPrompt, userText, temperature = 0.3, imageDataUrl, maxOutputTokens, meta }
 ) => {
   // Rewrites are sized from the input; generation from a short brief needs an explicit output budget.
   const maxTokens = Math.min(8192, maxOutputTokens || Math.max(1024, estimateTokens(userText) * 2));
@@ -154,6 +154,8 @@ export const chatComplete = async (
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content;
     if (!content) throw new AiProviderError('Provider response did not include any content.');
+    // Optional out-param so callers can tell a complete answer from one cut off at the token limit.
+    if (meta) meta.truncated = data.choices?.[0]?.finish_reason === 'length';
     return content;
   }
 
@@ -183,6 +185,7 @@ export const chatComplete = async (
     const data = await response.json();
     const content = data.content?.[0]?.text;
     if (!content) throw new AiProviderError('Anthropic response did not include any content.');
+    if (meta) meta.truncated = data.stop_reason === 'max_tokens';
     return content;
   }
 

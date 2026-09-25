@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { FiCheck, FiEye, FiEyeOff, FiRotateCcw, FiX } from 'react-icons/fi';
 import { LuSparkles, LuWand } from 'react-icons/lu';
 import { AI_PERSONAS, AI_SUMMARY_LENGTHS } from './aiPersonas';
 import DiffView from './DiffView';
+import { diffWords, summarizeDiff } from './wordDiff';
 import AIModelBadge from './AIModelBadge';
 import { DEFAULT_AI_CONFIG, loadAiConfig, getActiveProviderCreds } from '@utils/admin/aiConfigStore';
 
@@ -18,6 +19,7 @@ export const AIRephraseModal = ({ isOpen, text, scopeLabel = 'selected text', on
   const [error, setError] = useState('');
   const [result, setResult] = useState('');
   const [showDiff, setShowDiff] = useState(false);
+  const [truncated, setTruncated] = useState(false);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -29,6 +31,7 @@ export const AIRephraseModal = ({ isOpen, text, scopeLabel = 'selected text', on
     setCustomPrompt('');
     setError('');
     setResult('');
+    setTruncated(false);
     setShowDiff(false);
   }, [isOpen]);
 
@@ -37,8 +40,15 @@ export const AIRephraseModal = ({ isOpen, text, scopeLabel = 'selected text', on
     setMode(next);
     setError('');
     setResult('');
+    setTruncated(false);
     setShowDiff(false);
   };
+
+  // How much the rewrite actually changed; an unchanged result is the usual reason a diff looks empty.
+  const changes = useMemo(
+    () => (result && !summarizing ? summarizeDiff(diffWords(text, result)) : null),
+    [result, text, summarizing]
+  );
 
   if (!isOpen) return null;
 
@@ -75,6 +85,9 @@ export const AIRephraseModal = ({ isOpen, text, scopeLabel = 'selected text', on
       const data = await response.json();
       if (data.ok) {
         setResult(data.result);
+        setTruncated(Boolean(data.truncated));
+        // A rewrite is judged by what changed, so show the diff straight away; a summary reads better as plain text.
+        setShowDiff(!summarizing);
       } else {
         setError(data.message || `The ${summarizing ? 'summary' : 'rephrase'} request failed.`);
       }
@@ -268,6 +281,11 @@ export const AIRephraseModal = ({ isOpen, text, scopeLabel = 'selected text', on
               <div className='flex items-center justify-between border-b border-emerald-500/20 px-3 py-2'>
                 <span className='font-mono text-[10px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400'>
                   Result
+                  {changes?.changed && (
+                    <span className='ml-2 normal-case tracking-normal'>
+                      +{changes.added} / −{changes.removed} words
+                    </span>
+                  )}
                 </span>
                 <button
                   type='button'
@@ -278,6 +296,18 @@ export const AIRephraseModal = ({ isOpen, text, scopeLabel = 'selected text', on
                   {showDiff ? 'Hide diff' : 'View diff'}
                 </button>
               </div>
+              {changes && !changes.changed && (
+                <p className='border-b border-amber-300/60 bg-amber-50 px-3 py-2 text-[11px] font-semibold text-amber-800 dark:bg-amber-950/40 dark:text-amber-200'>
+                  The AI returned your text unchanged, so there is nothing to diff. Try again, add a more specific
+                  instruction, or raise the temperature in AI settings.
+                </p>
+              )}
+              {truncated && (
+                <p className='border-b border-amber-300/60 bg-amber-50 px-3 py-2 text-[11px] font-semibold text-amber-800 dark:bg-amber-950/40 dark:text-amber-200'>
+                  The model hit its output limit, so this result is cut off and the diff will show the missing end as
+                  removed. Rewrite a smaller section, or pick a model with a larger output limit.
+                </p>
+              )}
               <div className='max-h-64 overflow-y-auto p-3 custom-scrollbar'>
                 {showDiff ? (
                   <DiffView before={text} after={result} />

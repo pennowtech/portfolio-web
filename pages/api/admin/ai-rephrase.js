@@ -66,6 +66,7 @@ export default async function handler(req, res) {
     .filter(Boolean)
     .join('\n\n');
 
+  const meta = {};
   try {
     const result = await chatComplete(provider, {
       apiKey: typeof apiKey === 'string' ? apiKey.trim() : '',
@@ -73,11 +74,13 @@ export default async function handler(req, res) {
       model,
       systemPrompt: combinedSystemPrompt,
       userText: text,
-      temperature: typeof temperature === 'number' ? temperature : summarize ? 0.2 : 0.3
+      temperature: typeof temperature === 'number' ? temperature : summarize ? 0.2 : 0.3,
+      meta
     });
     return res.status(200).json({
       ok: true,
       result: result.trim(),
+      truncated: Boolean(meta.truncated),
       provider,
       model: model || 'default',
       aiProvider: provider,

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import {
   FiBold,
   FiCheckSquare,
@@ -40,6 +40,25 @@ const MarkdownToolbar = ({
   studio = false,
   extraActions
 }) => {
+  const toolbarRef = useRef(null);
+
+  // The studio menus are <details> elements, which stay open until their summary is clicked again. Close them
+  // when the writer clicks or tabs anywhere else, like a normal dropdown.
+  useEffect(() => {
+    if (!studio) return undefined;
+    const closeOthers = (event) => {
+      toolbarRef.current?.querySelectorAll('details[open]').forEach((details) => {
+        if (!details.contains(event.target)) details.removeAttribute('open');
+      });
+    };
+    document.addEventListener('pointerdown', closeOthers);
+    document.addEventListener('focusin', closeOthers);
+    return () => {
+      document.removeEventListener('pointerdown', closeOthers);
+      document.removeEventListener('focusin', closeOthers);
+    };
+  }, [studio]);
+
   const headings = useMemo(
     () =>
       [...markdown.matchAll(/^(#{2,6})\s+(.+)$/gm)].map((match) => ({
@@ -271,7 +290,15 @@ const MarkdownToolbar = ({
       action();
     };
     return (
-      <div className={styles.toolbar} aria-label='Markdown formatting'>
+      <div
+        ref={toolbarRef}
+        className={styles.toolbar}
+        aria-label='Markdown formatting'
+        onClick={(event) => {
+          // Choosing an item (including the ones the editor adds to the ••• menu) closes its menu.
+          if (event.target.closest('button')) event.target.closest('details')?.removeAttribute('open');
+        }}
+      >
         <select
           aria-label='Text style'
           defaultValue=''
